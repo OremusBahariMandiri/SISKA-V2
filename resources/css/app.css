@@ -1,0 +1,131 @@
+/* Import Bootstrap CSS from node_modules */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'select2/dist/css/select2.min.css';
+
+/* Define variables for consistency - Updated to blue theme */
+:root {
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 60px;
+    --topbar-height: 70px;
+    --navbar-height: 70px;
+
+    /* Updated to blue theme */
+    --primary-blue: #2563eb;
+    --primary-blue-dark: #1d4ed8;
+    --primary-blue-light: #3b82f6;
+    --secondary-blue: #1e40af;
+    --light-blue: #eff6ff;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+
+    --sidebar-bg: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+    --sidebar-text: #ffffff;
+    --sidebar-hover: rgba(255, 255, 255, 0.1);
+    --sidebar-active: rgba(255, 255, 255, 0.2);
+
+    /* Updated primary colors */
+    --primary-color: var(--primary-blue);
+    --primary-dark: var(--primary-blue-dark);
+    --primary-light: var(--light-blue);
+    --transition-speed: 0.3s;
+    --secondary-bg: var(--primary-blue);
+    --secondary-border: var(--primary-blue);
+    --secondary-dark: var(--primary-blue-dark);
+}
+
+.bg-secondary{
+    background-color: var(--secondary-bg) !important;
+}
+.border-secondary {
+    border-color: var(--secondary-border) !important;
+}
+
+.btn-secondary{
+    background-color: var(--secondary-bg) !important;
+    border-color: var(--primary-blue);
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-dark) !important;
+    border-color: var(--primary-blue);
+}
+
+/* Base styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fc;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.layout-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+}
+
+
+
+/* DataTables Styling */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+table.dataTable thead th {
+    position: relative;
+    background-image: none !important;
+}
+
+table.dataTable thead th.sorting:after,
+table.dataTable thead th.sorting_asc:after,
+table.dataTable thead th.sorting_desc:after {
+    position: absolute;
+    top: 12px;
+    right: 8px;
+    display: block;
+    font-family: "Font Awesome 5 Free";
+}
+
+table.dataTable thead th.sorting:after {
+    content: "\f0dc";
+    color: #ddd;
+    font-size: 0.8em;
+    opacity: 0.5;
+}
+
+table.dataTable thead th.sorting_asc:after {
+    content: "\f0de";
+}
+
+table.dataTable thead th.sorting_desc:after {
+    content: "\f0dd";
+}
+
+/* Add hover effect to action buttons */
+.btn-sm {
+    transition: transform 0.2s;
+}
+
+.btn-sm:hover {
+    transform: scale(1.1);
+}
+
+/* Button primary untuk mencocokkan color theme */
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-blue-dark);
+    border-color: var(--primary-blue-dark);
+}
+
+/* Card header untuk mencocokkan primary color */
+.card-header.bg-primary {
+    background-color: var(--primary-blue) !important;
+}

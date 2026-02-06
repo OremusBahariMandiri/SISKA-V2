@@ -11,6 +11,7 @@ use App\Models\DataMaster\WilayahKerja;
 use App\Models\DataMaster\Departemen;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\DataKaryawanExport;
+use App\Models\DataMaster\KontrakKerja;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DataKaryawanController extends Controller
@@ -82,11 +83,22 @@ class DataKaryawanController extends Controller
         $newId = $this->generateId('201', '201_dm_data_karyawan');
 
         // Get master data for dropdowns
+        $kontraks = KontrakKerja::orderBy('singkatan_ktr', 'asc')->get();
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
-        $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
-        $departemens = Departemen::orderBy('kode_dep', 'asc')->get();
 
-        return view('data.data-karyawan.create', compact('newId', 'perusahaans', 'wilayahKerjas', 'departemens'));
+        // Get unique wilayah kerja (grouped by wilayah_krj)
+        $wilayahKerjas = WilayahKerja::select('wilayah_krj', 'singkatan_wk')
+            ->groupBy('wilayah_krj',  'singkatan_wk')
+            ->orderBy('wilayah_krj', 'asc')
+            ->get();
+
+        // Get unique departemen (grouped by nama_dep)
+        $departemens = Departemen::select('nama_dep', 'singkatan_dep',)
+            ->groupBy('nama_dep', 'singkatan_dep')
+            ->orderBy('nama_dep', 'asc')
+            ->get();
+
+        return view('data.data-karyawan.create', compact('newId', 'perusahaans', 'wilayahKerjas', 'departemens', 'kontraks'));
     }
 
     public function store(Request $request)
@@ -140,11 +152,11 @@ class DataKaryawanController extends Controller
             'durasi_ktr' => 'nullable|integer',
             'perusahaan' => 'nullable|exists:101_dm_perusahaan,id',
             // Karir
-            'departemen' => 'nullable|exists:103_dm_departemen,id',
-            'jabatan' => 'nullable|string|max:255',
+            'departemen' => 'nullable|string|max:255',
+            'jabatan' => 'nullable|exists:103_dm_departemen,id',
             'tugas' => 'nullable|string',
             'unit_krj' => 'nullable|string|max:255',
-            'wilker' => 'nullable|exists:102_dm_wilker,id',
+            'wilker' => 'nullable|string|max:255',
             // Hubungan Industrial
             'sts_kry' => 'required|in:CALON,AKTIF,NON-AKTIF',
             'tgl_phk' => 'nullable|date',
@@ -213,6 +225,7 @@ class DataKaryawanController extends Controller
             'id_pendidikan' => $this->generateAutoIncrement(),
             'jenjang_skl' => $request->jenjang_skl,
             'institusi_skl' => $request->institusi_skl,
+            'skt_inst_skl' => $request->skt_inst_skl,
             'kota_skl' => $request->kota_skl,
             'fakultas_skl' => $request->fakultas_skl,
             'jurusan_skl' => $request->jurusan_skl,
@@ -221,20 +234,26 @@ class DataKaryawanController extends Controller
             // Kontrak
             'idktr' => $this->generateAutoIncrement(),
             'sts_ktr' => $request->sts_ktr,
+            'skt_sts_ktr' => $request->skt_sts_ktr,
             'tgl_awal_ktr' => $request->tgl_awal_ktr,
             'tgl_akhir_ktr' => $request->tgl_akhir_ktr,
             'durasi_ktr' => $request->durasi_ktr,
             'perusahaan' => $request->perusahaan,
+            'skt_prs' => $request->skt_prs,
             // Karir
             'id_karir' => $this->generateAutoIncrement(),
-            'departemen' => $request->departemen,
-            'jabatan' => $request->jabatan,
+            'departemen' => $request->jabatan, // Store the departemen ID from jabatan select
+            'skt_dep' => $request->skt_dep,
+            'jabatan' => $request->departemen, // Store the departemen name
+            'skt_jbt' => $request->skt_jbt,
             'tugas' => $request->tugas,
             'unit_krj' => $request->unit_krj,
+            'skt_wil_krj' => $request->skt_wil_krj,
             'wilker' => $request->wilker,
             // Hubungan Industrial
             'id_hubin' => $this->generateAutoIncrement(),
             'sts_kry' => $request->sts_kry,
+            'skt_sts_kry' => $request->skt_sts_kry,
             'tgl_phk' => $request->tgl_phk,
             'ket_phk' => $request->ket_phk,
             'created_by' => auth()->user()->id_kode ?? null,
@@ -246,7 +265,7 @@ class DataKaryawanController extends Controller
 
     public function show($id)
     {
-        $dataKaryawan = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'creator', 'updater'])
+        $dataKaryawan = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation','kontrakRelation', 'creator', 'updater'])
             ->findOrFail($id);
         return view('data.data-karyawan.show', compact('dataKaryawan'));
     }
@@ -257,10 +276,22 @@ class DataKaryawanController extends Controller
 
         // Get master data for dropdowns
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
-        $wilayahKerjas = WilayahKerja::orderBy('kode_wk', 'asc')->get();
-        $departemens = Departemen::orderBy('kode_dep', 'asc')->get();
+        $kontraks = KontrakKerja::orderBy('singkatan_ktr', 'asc')->get();
 
-        return view('data.data-karyawan.edit', compact('dataKaryawan', 'perusahaans', 'wilayahKerjas', 'departemens'));
+        // Get unique wilayah kerja (grouped by wilayah_krj)
+        $wilayahKerjas = WilayahKerja::select('wilayah_krj', 'singkatan_wk')
+            ->groupBy('wilayah_krj', 'singkatan_wk')
+            ->orderBy('wilayah_krj', 'asc')
+            ->get();
+
+        // Get unique departemen (grouped by nama_dep)
+        $departemens = Departemen::select('nama_dep', 'singkatan_dep')
+            ->groupBy('nama_dep', 'singkatan_dep')
+            ->orderBy('nama_dep', 'asc')
+            ->get();
+
+
+        return view('data.data-karyawan.edit', compact('dataKaryawan', 'perusahaans', 'wilayahKerjas', 'departemens', 'kontraks'));
     }
 
     public function update(Request $request, $id)
@@ -340,6 +371,7 @@ class DataKaryawanController extends Controller
             // Pendidikan
             'jenjang_skl' => $request->jenjang_skl,
             'institusi_skl' => $request->institusi_skl,
+            'skt_inst_skl' => $request->skt_inst_skl,
             'kota_skl' => $request->kota_skl,
             'fakultas_skl' => $request->fakultas_skl,
             'jurusan_skl' => $request->jurusan_skl,
@@ -347,18 +379,24 @@ class DataKaryawanController extends Controller
             'tgl_lulus_skl' => $request->tgl_lulus_skl,
             // Kontrak
             'sts_ktr' => $request->sts_ktr,
+            'skt_sts_ktr' => $request->skt_sts_ktr,
             'tgl_awal_ktr' => $request->tgl_awal_ktr,
             'tgl_akhir_ktr' => $request->tgl_akhir_ktr,
             'durasi_ktr' => $request->durasi_ktr,
             'perusahaan' => $request->perusahaan,
+            'skt_prs' => $request->skt_prs,
             // Karir
-            'departemen' => $request->departemen,
-            'jabatan' => $request->jabatan,
+            'departemen' => $request->jabatan,
+            'skt_dep' => $request->skt_dep,
+            'jabatan' => $request->departemen,
+            'skt_jbt' => $request->skt_jbt,
             'tugas' => $request->tugas,
             'unit_krj' => $request->unit_krj,
+            'skt_wil_krj' => $request->skt_wil_krj,
             'wilker' => $request->wilker,
             // Hubungan Industrial
             'sts_kry' => $request->sts_kry,
+            'skt_sts_kry' => $request->skt_sts_kry,
             'tgl_phk' => $request->tgl_phk,
             'ket_phk' => $request->ket_phk,
             'updated_by' => auth()->user()->id_kode ?? null,
@@ -470,6 +508,51 @@ class DataKaryawanController extends Controller
             'filters' => $filters
         ];
     }
+
+    /**
+     * Get jabatan list by departemen name
+     */
+    public function getJabatanByDepartemen($namaDep)
+    {
+        try {
+            $jabatans = Departemen::where('nama_dep', $namaDep)
+                ->orderBy('nama_jbt', 'asc')
+                ->get(['id', 'nama_jbt', 'singkatan_jbt']);
+
+            return response()->json([
+                'success' => true,
+                'data' => $jabatans
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memuat data jabatan'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get unit kerja (area) list by wilayah kerja
+     */
+    public function getUnitKerjaByWilayah($wilayahKrj)
+    {
+        try {
+            $unitKerjas = WilayahKerja::where('wilayah_krj', $wilayahKrj)
+                ->orderBy('area_krj', 'asc')
+                ->get(['id', 'area_krj', 'wilayah_krj']);
+
+            return response()->json([
+                'success' => true,
+                'data' => $unitKerjas
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memuat data unit kerja'
+            ], 500);
+        }
+    }
+
     public function getDepartemenJabatan($id)
     {
         try {

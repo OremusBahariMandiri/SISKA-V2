@@ -90,6 +90,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
+                                                {{-- NIK Ktp --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="nik" class="form-label fw-bold">NIK KTP <span
@@ -105,23 +106,7 @@
                                                         <div class="form-text text-muted">16 digit angka NIK KTP</div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="nama" class="form-label fw-bold">Nama Lengkap
-                                                            <span class="text-danger">*</span></label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-user"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="nama" name="nama"
-                                                                value="{{ old('nama', $dataKaryawan->nama) }}"
-                                                                data-required="true">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
+                                                {{-- Tempat Lahir --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="tpt_lahir" class="form-label fw-bold">Tempat Lahir
@@ -136,6 +121,25 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+
+                                            <div class="row">
+                                                {{-- nama lengkap --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="nama" class="form-label fw-bold">Nama Lengkap
+                                                            <span class="text-danger">*</span></label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-user"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="nama" name="nama"
+                                                                value="{{ old('nama', $dataKaryawan->nama) }}"
+                                                                data-required="true">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- Tgl Lahir --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="tgl_lahir" class="form-label fw-bold">
@@ -503,7 +507,7 @@
                                                                     class="fas fa-home"></i></span>
                                                             <input type="text" class="form-control auto-uppercase"
                                                                 id="rt_rw_ktp" name="rt_rw_ktp"
-                                                                value="{{ old('rt_rw_ktp', $karyawan->rt_rw_ktp ?? '') }}"
+                                                                value="{{ old('rt_rw_ktp', $dataKaryawan->rt_rw_ktp ?? '') }}"
                                                                 placeholder="001/002">
                                                         </div>
                                                     </div>
@@ -538,7 +542,7 @@
                                                                     class="fas fa-mail-bulk"></i></span>
                                                             <input type="text" class="form-control no-uppercase"
                                                                 id="kd_pos_ktp" name="kd_pos_ktp"
-                                                                value="{{ old('kd_pos_ktp', $karyawan->kd_pos_ktp ?? '') }}"
+                                                                value="{{ old('kd_pos_ktp', $dataKaryawan->kd_pos_ktp ?? '') }}"
                                                                 maxlength="5" pattern="[0-9]{5}">
                                                         </div>
                                                     </div>
@@ -557,7 +561,7 @@
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-map-marked-alt"></i></span>
                                                             <textarea class="form-control auto-uppercase" id="alamat_ktp" name="alamat_ktp" rows="3"
-                                                                data-required="true">{{ old('alamat_ktp', $karyawan->alamat_ktp ?? '') }}</textarea>
+                                                                data-required="true">{{ old('alamat_ktp', $dataKaryawan->alamat_ktp ?? '') }}</textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -647,7 +651,7 @@
                                                                     class="fas fa-home"></i></span>
                                                             <input type="text" class="form-control auto-uppercase"
                                                                 id="rt_rw_dom" name="rt_rw_dom"
-                                                                value="{{ old('rt_rw_dom', $karyawan->rt_rw_dom ?? '') }}"
+                                                                value="{{ old('rt_rw_dom', $dataKaryawan->rt_rw_dom ?? '') }}"
                                                                 placeholder="001/002">
                                                         </div>
                                                     </div>
@@ -682,7 +686,7 @@
                                                                     class="fas fa-mail-bulk"></i></span>
                                                             <input type="text" class="form-control no-uppercase"
                                                                 id="kd_pos_dom" name="kd_pos_dom"
-                                                                value="{{ old('kd_pos_dom', $karyawan->kd_pos_dom ?? '') }}"
+                                                                value="{{ old('kd_pos_dom', $dataKaryawan->kd_pos_dom ?? '') }}"
                                                                 maxlength="5" pattern="[0-9]{5}">
                                                         </div>
                                                     </div>
@@ -699,7 +703,7 @@
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-map-marked-alt"></i></span>
                                                             <textarea class="form-control auto-uppercase" id="alamat_dom" name="alamat_dom" rows="3"
-                                                                data-required="true">{{ old('alamat_dom', $karyawan->alamat_dom ?? '') }}</textarea>
+                                                                data-required="true">{{ old('alamat_dom', $dataKaryawan->alamat_dom ?? '') }}</textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -719,7 +723,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="jenjang_skl" class="form-label fw-bold">Jenjang
                                                             Pendidikan</label>
@@ -738,9 +742,12 @@
                                                                         {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'SMP' ? 'selected' : '' }}>
                                                                         SMP
                                                                     </option>
-                                                                    <option value="SMA/SMK"
-                                                                        {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'SMA/SMK' ? 'selected' : '' }}>
-                                                                        SMA/SMK</option>
+                                                                    <option value="SMA"
+                                                                        {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'SMA' ? 'selected' : '' }}>
+                                                                        SMA</option>
+                                                                    <option value="SMK"
+                                                                        {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'SMK' ? 'selected' : '' }}>
+                                                                        SMK</option>
                                                                     <option value="D1"
                                                                         {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'D1' ? 'selected' : '' }}>
                                                                         D1
@@ -753,9 +760,12 @@
                                                                         {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'D3' ? 'selected' : '' }}>
                                                                         D3
                                                                     </option>
-                                                                    <option value="D4/S1"
-                                                                        {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'D4/S1' ? 'selected' : '' }}>
-                                                                        D4/S1</option>
+                                                                    <option value="D4"
+                                                                        {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'D4' ? 'selected' : '' }}>
+                                                                        D4</option>
+                                                                    <option value="S1"
+                                                                        {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'S1' ? 'selected' : '' }}>
+                                                                        S1</option>
                                                                     <option value="S2"
                                                                         {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'S2' ? 'selected' : '' }}>
                                                                         S2
@@ -766,6 +776,20 @@
                                                                     </option>
                                                                 </select>
                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- Jurusan --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="jurusan_skl"
+                                                            class="form-label fw-bold">Jurusan</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-book-open"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="jurusan_skl" name="jurusan_skl"
+                                                                value="{{ old('jurusan_skl', $dataKaryawan->jurusan_skl) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -799,17 +823,16 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- Fakultas --}}
+                                                {{-- SKT --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
-                                                        <label for="fakultas_skl"
-                                                            class="form-label fw-bold">Fakultas</label>
+                                                        <label for="skt_inst_skl" class="form-label fw-bold">SKT</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-building-columns"></i></span>
                                                             <input type="text" class="form-control auto-uppercase"
-                                                                id="fakultas_skl" name="fakultas_skl"
-                                                                value="{{ old('fakultas_skl', $dataKaryawan->fakultas_skl) }}">
+                                                                id="skt_inst_skl" name="skt_inst_skl"
+                                                                value="{{ old('skt_inst_skl', $dataKaryawan->skt_inst_skl) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -826,23 +849,21 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div class="row">
-                                                {{-- Jurusan --}}
+                                                {{-- Fakultas --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
-                                                        <label for="jurusan_skl"
-                                                            class="form-label fw-bold">Jurusan</label>
+                                                        <label for="fakultas_skl"
+                                                            class="form-label fw-bold">Fakultas</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text"><i
-                                                                    class="fas fa-book-open"></i></span>
+                                                                    class="fas fa-building-columns"></i></span>
                                                             <input type="text" class="form-control auto-uppercase"
-                                                                id="jurusan_skl" name="jurusan_skl"
-                                                                value="{{ old('jurusan_skl', $dataKaryawan->jurusan_skl) }}">
+                                                                id="fakultas_skl" name="fakultas_skl"
+                                                                value="{{ old('fakultas_skl', $dataKaryawan->fakultas_skl) }}">
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- Tgl Lulus --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="tgl_lulus_skl" class="form-label fw-bold">
@@ -868,6 +889,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
+                                                {{-- Status KTR --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="sts_ktr" class="form-label fw-bold">Status
@@ -878,26 +900,32 @@
                                                             <div style="flex: 1">
                                                                 <select class="form-select select2" id="sts_ktr"
                                                                     name="sts_ktr">
-                                                                    <option value="">Pilih Status</option>
-                                                                    <option value="PKWT"
-                                                                        {{ old('sts_ktr', $dataKaryawan->sts_ktr) == 'PKWT' ? 'selected' : '' }}>
-                                                                        PKWT
-                                                                    </option>
-                                                                    <option value="PKWTT"
-                                                                        {{ old('sts_ktr', $dataKaryawan->sts_ktr) == 'PKWTT' ? 'selected' : '' }}>
-                                                                        PKWTT
-                                                                    </option>
-                                                                    <option value="FREELANCE"
-                                                                        {{ old('sts_ktr', $dataKaryawan->sts_ktr) == 'FREELANCE' ? 'selected' : '' }}>
-                                                                        FREELANCE</option>
-                                                                    <option value="MAGANG"
-                                                                        {{ old('sts_ktr', $dataKaryawan->sts_ktr) == 'MAGANG' ? 'selected' : '' }}>
-                                                                        MAGANG</option>
+                                                                    <option value="">Pilih Kontrak</option>
+                                                                    @foreach ($kontraks as $ktr)
+                                                                        <option value="{{ $ktr->id }}"
+                                                                            {{ old('sts_ktr', $dataKaryawan->sts_ktr) == $ktr->id ? 'selected' : '' }}>
+                                                                            {{ $ktr->singkatan_ktr }}
+                                                                        </option>
+                                                                    @endforeach
                                                                 </select>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- SKT KTR --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="skt_sts_ktr" class="form-label fw-bold">SKT</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-map-marker-alt"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="skt_sts_ktr" name="skt_sts_ktr"
+                                                                value="{{ old('skt_sts_ktr', $dataKaryawan->skt_sts_ktr) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- Perusahaan --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="perusahaan"
@@ -920,9 +948,24 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- SKT PRS --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="skt_prs" class="form-label fw-bold">SKT
+                                                            Perusahaan</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-map-marker-alt"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="skt_prs" name="skt_prs"
+                                                                value="{{ old('skt_prs', $dataKaryawan->skt_prs) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="row">
+                                                {{-- Tgl Mulai Ktr --}}
                                                 <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="tgl_awal_ktr" class="form-label fw-bold">
@@ -933,6 +976,7 @@
                                                             value="{{ old('tgl_awal_ktr', $dataKaryawan->tgl_awal_ktr ? \Carbon\Carbon::parse($dataKaryawan->tgl_awal_ktr)->format('Y-m-d') : '') }}">
                                                     </div>
                                                 </div>
+                                                {{-- Tgl Akhir Ktr --}}
                                                 <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="tgl_akhir_ktr" class="form-label fw-bold">
@@ -943,6 +987,7 @@
                                                             value="{{ old('tgl_akhir_ktr', $dataKaryawan->tgl_akhir_ktr ? \Carbon\Carbon::parse($dataKaryawan->tgl_akhir_ktr)->format('Y-m-d') : '') }}">
                                                     </div>
                                                 </div>
+                                                {{-- Durasi Ktr --}}
                                                 <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="durasi_ktr" class="form-label fw-bold">Durasi Kontrak
@@ -963,6 +1008,7 @@
                                 </div>
 
                                 <!-- Jenjang Karir -->
+                                <!-- Jenjang Karir -->
                                 <div class="tab-pane fade" id="karir" role="tabpanel" aria-labelledby="karir-tab">
                                     <div class="card border-primary mb-4">
                                         <div class="card-header bg-primary bg-opacity-25">
@@ -972,6 +1018,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
+                                                {{-- Departemen --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="departemen"
@@ -985,10 +1032,9 @@
                                                                     name="departemen">
                                                                     <option value="">Pilih Departemen</option>
                                                                     @foreach ($departemens as $departemen)
-                                                                        <option value="{{ $departemen->id }}"
-                                                                            {{ old('departemen', $dataKaryawan->departemen) == $departemen->id ? 'selected' : '' }}>
-                                                                            {{ $departemen->nama_dep }} -
-                                                                            {{ $departemen->nama_jbt }}
+                                                                        <option value="{{ $departemen->nama_dep }}"
+                                                                            {{ old('departemen', $dataKaryawan->jabatan) == $departemen->nama_dep ? 'selected' : '' }}>
+                                                                            {{ $departemen->singkatan_dep }} - {{ $departemen->nama_dep }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -996,22 +1042,54 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- Jabatan --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="jabatan" class="form-label fw-bold">Jabatan</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-user-tie"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="jabatan"
+                                                                    name="jabatan" disabled>
+                                                                    <option value="">Pilih Jabatan</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- SKT DEP --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="skt_dep" class="form-label fw-bold">SKT
+                                                            Departemen</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-map-marker-alt"></i></span>
                                                             <input type="text" class="form-control auto-uppercase"
-                                                                id="jabatan" name="jabatan"
-                                                                value="{{ old('jabatan', $dataKaryawan->jabatan) }}"
-                                                                readonly>
+                                                                id="skt_dep" name="skt_dep"
+                                                                value="{{ old('skt_dep', $dataKaryawan->skt_dep) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- SKT Jabatan --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="skt_jbt" class="form-label fw-bold">SKT
+                                                            Jabatan</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-map-marker-alt"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="skt_jbt" name="skt_jbt"
+                                                                value="{{ old('skt_jbt', $dataKaryawan->skt_jbt) }}">
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row">
+                                                {{-- Wilker --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="wilker" class="form-label fw-bold">Wilayah
@@ -1024,9 +1102,9 @@
                                                                     name="wilker">
                                                                     <option value="">Pilih Wilayah Kerja</option>
                                                                     @foreach ($wilayahKerjas as $wilayah)
-                                                                        <option value="{{ $wilayah->id }}"
-                                                                            {{ old('wilker', $dataKaryawan->wilker) == $wilayah->id ? 'selected' : '' }}>
-                                                                            {{ $wilayah->wilayah_krj }}
+                                                                        <option value="{{ $wilayah->wilayah_krj }}"
+                                                                            {{ old('wilker', $dataKaryawan->wilker) == $wilayah->wilayah_krj ? 'selected' : '' }}>
+                                                                            {{ $wilayah->singkatan_wk }} - {{ $wilayah->wilayah_krj }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -1034,6 +1112,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- Unit Kerja --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="unit_krj" class="form-label fw-bold">Unit
@@ -1041,13 +1120,29 @@
                                                         <div class="input-group">
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-users-cog"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="unit_krj" name="unit_krj"
-                                                                value="{{ old('unit_krj', $dataKaryawan->unit_krj) }}">
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="unit_krj"
+                                                                    name="unit_krj" disabled>
+                                                                    <option value="">Pilih Unit Kerja</option>
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                {{-- SKT Wilker --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="skt_wil_krj" class="form-label fw-bold">SKT Wilayah
+                                                            Kerja</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-map-marker-alt"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="skt_wil_krj" name="skt_wil_krj"
+                                                                value="{{ old('skt_wil_krj', $dataKaryawan->skt_wil_krj) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <div class="row">
@@ -1078,7 +1173,32 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                {{-- Nrk  --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="nrk" class="form-label fw-bold">NRK</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-id-badge"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="nrk" name="nrk"
+                                                                value="{{ old('nrk', $dataKaryawan->nrk) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- TGL Masuk Kry --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="tgl_masuk" class="form-label fw-bold">
+                                                            <i class="fas fa-calendar-plus me-1"></i>Tanggal Masuk
+                                                        </label>
+                                                        <input type="date" class="form-control" id="tgl_masuk"
+                                                            name="tgl_masuk"
+                                                            value="{{ old('tgl_masuk', $dataKaryawan->tgl_masuk ? \Carbon\Carbon::parse($dataKaryawan->tgl_masuk)->format('Y-m-d') : '') }}">
+                                                    </div>
+                                                </div>
+                                                {{-- STS Kry --}}
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="sts_kry" class="form-label fw-bold">Status Karyawan
                                                             <span class="text-danger">*</span></label>
@@ -1103,25 +1223,17 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                {{-- SKT Status Karyawan --}}
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
-                                                        <label for="tgl_masuk" class="form-label fw-bold">
-                                                            <i class="fas fa-calendar-plus me-1"></i>Tanggal Masuk
-                                                        </label>
-                                                        <input type="date" class="form-control" id="tgl_masuk"
-                                                            name="tgl_masuk"
-                                                            value="{{ old('tgl_masuk', $dataKaryawan->tgl_masuk ? \Carbon\Carbon::parse($dataKaryawan->tgl_masuk)->format('Y-m-d') : '') }}">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group mb-3">
-                                                        <label for="nrk" class="form-label fw-bold">NRK</label>
+                                                        <label for="skt_sts_kry" class="form-label fw-bold">SKT Status
+                                                            Karyawan</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text"><i
-                                                                    class="fas fa-id-badge"></i></span>
+                                                                    class="fas fa-map-marker-alt"></i></span>
                                                             <input type="text" class="form-control auto-uppercase"
-                                                                id="nrk" name="nrk"
-                                                                value="{{ old('nrk', $dataKaryawan->nrk) }}">
+                                                                id="skt_sts_kry" name="skt_sts_kry"
+                                                                value="{{ old('skt_sts_kry', $dataKaryawan->skt_sts_kry) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1325,8 +1437,10 @@
 
                     // Load both addresses in parallel
                     await Promise.all([
-                        addresses.ktp.prov ? loadAddressDataOptimized('ktp', addresses.ktp) : Promise.resolve(),
-                        addresses.dom.prov ? loadAddressDataOptimized('dom', addresses.dom) : Promise.resolve()
+                        addresses.ktp.prov ? loadAddressDataOptimized('ktp', addresses.ktp) : Promise
+                        .resolve(),
+                        addresses.dom.prov ? loadAddressDataOptimized('dom', addresses.dom) : Promise
+                        .resolve()
                     ]);
 
                 } catch (error) {
@@ -1436,61 +1550,252 @@
             // Copy KTP address to domicile
             document.getElementById('samaWithKtp').addEventListener('change', function() {
                 if (this.checked) {
-                    document.getElementById('alamat_dom').value = document.getElementById('alamat_ktp').value;
+                    document.getElementById('alamat_dom').value = document.getElementById('alamat_ktp')
+                        .value;
                     document.getElementById('rt_rw_dom').value = document.getElementById('rt_rw_ktp').value;
-                    document.getElementById('kd_pos_dom').value = document.getElementById('kd_pos_ktp').value;
+                    document.getElementById('kd_pos_dom').value = document.getElementById('kd_pos_ktp')
+                        .value;
                 }
             });
+
+            async function loadExistingKarirData() {
+                try {
+                    const departemen = "{{ old('departemen', $dataKaryawan->jabatan ?? '') }}";
+                    const jabatanId = "{{ old('jabatan', $dataKaryawan->departemen ?? '') }}";
+                    const wilker = "{{ old('wilker', $dataKaryawan->wilker ?? '') }}";
+                    const unitKrj = "{{ old('unit_krj', $dataKaryawan->unit_krj ?? '') }}";
+
+                    if (departemen) {
+                        await loadJabatanByDepartemen(departemen, jabatanId);
+                    }
+
+                    if (wilker) {
+                        await loadUnitKerjaByWilker(wilker, unitKrj);
+                    }
+                } catch (error) {
+                    console.error('Error loading karir data:', error);
+                }
+            }
+
+            async function loadJabatanByDepartemen(namaDep, selectedJabatanId) {
+                const jabatanSelect = $('#jabatan');
+
+                if (!namaDep) return;
+
+                jabatanSelect.prop('disabled', true);
+                jabatanSelect.html('<option value="">Loading...</option>');
+
+                try {
+                    const response = await $.ajax({
+                        url: `/data-karyawan/jabatan/${encodeURIComponent(namaDep)}`,
+                        type: 'GET',
+                        dataType: 'json'
+                    });
+
+                    if (response.success) {
+                        jabatanSelect.html('<option value="">Pilih Jabatan</option>');
+
+                        response.data.forEach(function(jabatan) {
+                            const displayText = jabatan.singkatan_jbt ?
+                                `${jabatan.nama_jbt} (${jabatan.singkatan_jbt})` :
+                                jabatan.nama_jbt;
+
+                            const selected = jabatan.id == selectedJabatanId ? 'selected' : '';
+                            jabatanSelect.append(
+                                `<option value="${jabatan.id}" ${selected}>${displayText}</option>`
+                            );
+                        });
+
+                        jabatanSelect.prop('disabled', false);
+
+                        if (jabatanSelect.hasClass('select2-hidden-accessible')) {
+                            jabatanSelect.select2('destroy');
+                        }
+                        jabatanSelect.select2({
+                            theme: 'bootstrap-5'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading jabatan:', error);
+                    jabatanSelect.html('<option value="">Pilih Jabatan</option>');
+                    jabatanSelect.prop('disabled', false);
+                }
+            }
+
+            async function loadUnitKerjaByWilker(wilayahKrj, selectedUnitKrj) {
+                const unitSelect = $('#unit_krj');
+
+                if (!wilayahKrj) return;
+
+                unitSelect.prop('disabled', true);
+                unitSelect.html('<option value="">Loading...</option>');
+
+                try {
+                    const response = await $.ajax({
+                        url: `/data-karyawan/unit-kerja/${encodeURIComponent(wilayahKrj)}`,
+                        type: 'GET',
+                        dataType: 'json'
+                    });
+
+                    if (response.success) {
+                        unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+
+                        response.data.forEach(function(unit) {
+                            const selected = unit.area_krj === selectedUnitKrj ? 'selected' : '';
+                            unitSelect.append(
+                                `<option value="${unit.area_krj}" ${selected}>${unit.area_krj}</option>`
+                            );
+                        });
+
+                        unitSelect.prop('disabled', false);
+
+                        if (unitSelect.hasClass('select2-hidden-accessible')) {
+                            unitSelect.select2('destroy');
+                        }
+                        unitSelect.select2({
+                            theme: 'bootstrap-5'
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading unit kerja:', error);
+                    unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+                    unitSelect.prop('disabled', false);
+                }
+            }
 
             // Departemen change handler
             $('#departemen').on('change', function() {
-                const departemenId = $(this).val();
-                const jabatanInput = $('#jabatan');
+                const namaDep = $(this).val();
+                const jabatanSelect = $('#jabatan');
 
-                if (departemenId) {
-                    jabatanInput.prop('disabled', true).val('Loading...');
+                if (namaDep) {
+                    jabatanSelect.prop('disabled', true);
+                    jabatanSelect.html('<option value="">Loading...</option>');
 
                     $.ajax({
-                        url: `/departemen/${departemenId}/jabatan`,
+                        url: `/data-karyawan/jabatan/${encodeURIComponent(namaDep)}`,
                         type: 'GET',
                         dataType: 'json',
                         success: function(response) {
                             if (response.success) {
-                                jabatanInput.val(response.data.nama_jbt || '').prop('disabled', false);
+                                jabatanSelect.html('<option value="">Pilih Jabatan</option>');
+
+                                response.data.forEach(function(jabatan) {
+                                    const displayText = jabatan.singkatan_jbt ?
+                                        `${jabatan.nama_jbt} (${jabatan.singkatan_jbt})` :
+                                        jabatan.nama_jbt;
+
+                                    jabatanSelect.append(
+                                        `<option value="${jabatan.id}">${displayText}</option>`
+                                    );
+                                });
+
+                                jabatanSelect.prop('disabled', false);
+
+                                if (jabatanSelect.hasClass('select2-hidden-accessible')) {
+                                    jabatanSelect.select2('destroy');
+                                }
+                                jabatanSelect.select2({
+                                    theme: 'bootstrap-5'
+                                });
+
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Data jabatan berhasil dimuat',
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
                             }
                         },
-                        error: function() {
-                            jabatanInput.val('').prop('disabled', false);
+                        error: function(xhr, status, error) {
+                            jabatanSelect.html('<option value="">Pilih Jabatan</option>');
+                            jabatanSelect.prop('disabled', false);
+
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Gagal memuat data jabatan',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+
+                            console.error('Error:', error);
                         }
                     });
                 } else {
-                    jabatanInput.val('').prop('disabled', false);
+                    jabatanSelect.html('<option value="">Pilih Jabatan</option>');
+                    jabatanSelect.prop('disabled', true);
                 }
             });
 
-            // Wilker change handler
+            // Handle Wilayah Kerja Change - Load Unit Kerja
             $('#wilker').on('change', function() {
-                const wilkerId = $(this).val();
-                const unitInput = $('#unit_krj');
+                const wilayahKrj = $(this).val();
+                const unitSelect = $('#unit_krj');
 
-                if (wilkerId) {
-                    unitInput.prop('disabled', true).val('Loading...');
+                if (wilayahKrj) {
+                    unitSelect.prop('disabled', true);
+                    unitSelect.html('<option value="">Loading...</option>');
 
                     $.ajax({
-                        url: `/wilker/${wilkerId}/unitkrj`,
+                        url: `/data-karyawan/unit-kerja/${encodeURIComponent(wilayahKrj)}`,
                         type: 'GET',
                         dataType: 'json',
                         success: function(response) {
                             if (response.success) {
-                                unitInput.val(response.datawilker.area_krj || '').prop('disabled', false);
+                                unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+
+                                response.data.forEach(function(unit) {
+                                    unitSelect.append(
+                                        `<option value="${unit.area_krj}">${unit.area_krj}</option>`
+                                    );
+                                });
+
+                                unitSelect.prop('disabled', false);
+
+                                if (unitSelect.hasClass('select2-hidden-accessible')) {
+                                    unitSelect.select2('destroy');
+                                }
+                                unitSelect.select2({
+                                    theme: 'bootstrap-5'
+                                });
+
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Data unit kerja berhasil dimuat',
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
                             }
                         },
-                        error: function() {
-                            unitInput.val('').prop('disabled', false);
+                        error: function(xhr, status, error) {
+                            unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+                            unitSelect.prop('disabled', false);
+
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Gagal memuat data unit kerja',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+
+                            console.error('Error:', error);
                         }
                     });
                 } else {
-                    unitInput.val('').prop('disabled', false);
+                    unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+                    unitSelect.prop('disabled', true);
                 }
             });
 
@@ -1513,7 +1818,8 @@
                 if (startDate && endDate) {
                     const start = new Date(startDate);
                     const end = new Date(endDate);
-                    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+                    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start
+                        .getMonth());
                     document.getElementById('durasi_ktr').value = months > 0 ? months : '';
                 }
             }
@@ -1546,7 +1852,8 @@
                 requiredFields.forEach(function(field) {
                     if (!field.value.trim()) {
                         field.classList.add('is-invalid');
-                        missingFields.push(field.previousElementSibling?.textContent?.replace('*', '').trim() || field.name);
+                        missingFields.push(field.previousElementSibling?.textContent?.replace('*',
+                            '').trim() || field.name);
                         if (!firstInvalidField) firstInvalidField = field;
                     }
                 });
@@ -1571,7 +1878,10 @@
                             if (tabButton) {
                                 tabButton.classList.add('has-error');
                                 new bootstrap.Tab(tabButton).show();
-                                setTimeout(() => firstInvalidField.scrollIntoView({behavior: 'smooth', block: 'center'}), 300);
+                                setTimeout(() => firstInvalidField.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'center'
+                                }), 300);
                             }
                         }
                     }
@@ -1588,14 +1898,18 @@
 
                         const tabPane = this.closest('.tab-pane');
                         if (tabPane && !tabPane.querySelectorAll('.is-invalid').length) {
-                            document.querySelector(`[data-bs-target="#${tabPane.id}"]`)?.classList.remove('has-error');
+                            document.querySelector(`[data-bs-target="#${tabPane.id}"]`)?.classList
+                                .remove('has-error');
                         }
                     }
                 });
             });
 
             // START LOADING - Wait minimal time for region API init
-            setTimeout(() => loadExistingAddressData(), 800);
+            setTimeout(() => {
+                loadExistingAddressData();
+                loadExistingKarirData(); // TAMBAHKAN INI
+            }, 800);
         });
     </script>
 @endpush

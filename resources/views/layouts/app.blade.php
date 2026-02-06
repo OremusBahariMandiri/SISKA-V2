@@ -26,7 +26,8 @@
 
     <!-- Select2 CSS from CDN -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
 
     <!-- Custom CSS - LAST -->
     @vite(['resources/js/app.js', 'resources/css/layout.css'])
@@ -254,9 +255,21 @@
 
                     @php
                         // Data Master Access Management
-                        $dataMasterActive = isMenuActive(['users*', 'perusahaan*', 'wilayah-kerja*', 'departemen*']);
+                        $dataMasterActive = isMenuActive([
+                            'users*',
+                            'perusahaan*',
+                            'wilayah-kerja*',
+                            'departemen*',
+                            'kontrak-kerja*',
+                        ]);
 
-                        $hasDataMasterAccess = hasMenuAccess(['pengguna', 'perusahaan', 'wilayah-kerja', 'departemen']);
+                        $hasDataMasterAccess = hasMenuAccess([
+                            'pengguna',
+                            'perusahaan',
+                            'wilayah-kerja',
+                            'departemen',
+                            'kontrak-kerja',
+                        ]);
 
                         // Dokumen Access Management
                         $manajemenDataActive = isMenuActive(['data-karyawan*']);
@@ -298,7 +311,7 @@
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('wilayah-kerja'))
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('wilayah-kerja*') ? 'active' : '' }}"
-                                            href="{{route('wilayah-kerja.index')}}">
+                                            href="{{ route('wilayah-kerja.index') }}">
                                             <i class="fas fa-map-marker-alt"></i>
                                             <span class="sidebar-menu-text">Wilayah Kerja</span>
                                         </a>
@@ -308,9 +321,19 @@
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('departemen'))
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('departemen*') ? 'active' : '' }}"
-                                            href="{{route('departemen.index')}}">
+                                            href="{{ route('departemen.index') }}">
                                             <i class="fas fa-building"></i>
                                             <span class="sidebar-menu-text">Departemen</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('kontrak-kerja'))
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('kontrak-kerja*') ? 'active' : '' }}"
+                                            href="{{ route('kontrak-kerja.index') }}">
+                                            <i class="fas fa-building"></i>
+                                            <span class="sidebar-menu-text">Kontrak Kerja</span>
                                         </a>
                                     </li>
                                 @endif
@@ -332,7 +355,7 @@
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-karyawan'))
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('data-karyawan*') ? 'active' : '' }}"
-                                            href="{{route('data-karyawan.index')}}">
+                                            href="{{ route('data-karyawan.index') }}">
                                             <i class="fas fa-id-card"></i>
                                             <span class="sidebar-menu-text">Data Karyawan</span>
                                         </a>
@@ -380,7 +403,8 @@
     <script>
         // Verify libraries are loaded
         console.log('jQuery loaded:', typeof jQuery !== 'undefined' ? jQuery.fn.jquery : 'NO');
-        console.log('Select2 loaded:', typeof jQuery !== 'undefined' && typeof jQuery.fn.select2 !== 'undefined' ? 'YES' : 'NO');
+        console.log('Select2 loaded:', typeof jQuery !== 'undefined' && typeof jQuery.fn.select2 !== 'undefined' ? 'YES' :
+            'NO');
     </script>
 
     <script>

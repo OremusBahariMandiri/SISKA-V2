@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Data\DataKaryawanController;
 use App\Http\Controllers\DataMaster\DepartemenController;
+use App\Http\Controllers\DataMaster\KontrakKerjaController;
 use App\Http\Controllers\DataMaster\PerusahaanController;
 use App\Http\Controllers\DataMaster\UserAccessController;
 use App\Http\Controllers\DataMaster\UserController;
@@ -57,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('perusahaan', PerusahaanController::class);
     Route::resource('wilayah-kerja', WilayahKerjaController::class);
     Route::resource('departemen', DepartemenController::class);
+    Route::resource('kontrak-kerja', KontrakKerjaController::class);
 
     // ================================================ MANAJEMEN DATA ROUTE ======================================== //
     // ============================================================================================================== //
@@ -70,4 +72,7 @@ Route::middleware('auth')->group(function () {
     // Route untuk mendapatkan jabatan berdasarkan departemen
     Route::get('/wilker/{id}/unitkrj', [DataKaryawanController::class, 'getWilkerUnitKrj'])
         ->name('wilker.unitkrj');
+    // Tambahkan di dalam group route data-karyawan
+    Route::get('/data-karyawan/jabatan/{namaDep}', [DataKaryawanController::class, 'getJabatanByDepartemen'])->name('data-karyawan.jabatan');
+    Route::get('/data-karyawan/unit-kerja/{wilayahKrj}', [DataKaryawanController::class, 'getUnitKerjaByWilayah'])->name('data-karyawan.unit-kerja');
 });

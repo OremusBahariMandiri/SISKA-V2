@@ -48,18 +48,29 @@
                             <table id="dataKaryawanTable" class="table table-bordered table-striped data-table">
                                 <thead class="table-light">
                                     <tr>
-                                        <th width="5%">No</th>
-                                        <th width="7%">NRK</th>
-                                        <th>Nama</th>
-                                        <th>Tempat Lahir</th>
-                                        <th>Tanggal Lahir</th>
-                                        <th>Umur</th>
-                                        <th>Tanggal Masuk</th>
-                                        <th>Masa Kerja</th>
-                                        <th width="6%" class="text-center">Foto</th>
-                                        <th width="10%" class="text-center">Status</th>
-                                        <th width="10%">Alamat</th>
-                                        <th class="text-center" width="12%">Aksi</th>
+                                        <!-- Kolom Prioritas -->
+                                        <th width="3%">No</th>
+                                        <th width="6%">NRK</th>
+                                        <th width="12%">Nama</th>
+                                        <th width="8%">Tpt Lhr</th>
+                                        <th width="7%">Tgl Lhr</th>
+                                        <th width="4%">Sex</th>
+                                        <th width="5%" class="text-center">Foto</th>
+                                        <th width="7%">Tgl Msk</th>
+                                        <th width="8%">Prsh</th>
+                                        <th width="6%">Knt</th>
+                                        <th width="7%">Tgl HK</th>
+                                        <th width="7%" class="text-center">STKAR</th>
+                                        <!-- Kolom Tambahan -->
+                                        <th width="8%">Wilker</th>
+                                        <th width="8%">Unker</th>
+                                        <th width="8%">Dep</th>
+                                        <th width="8%">Jbt</th>
+                                        <th width="10%">Mkr</th>
+                                        <th width="5%">Umur</th>
+                                        <th width="7%">Tgl NA</th>
+                                        <th width="8%">Ket NA</th>
+                                        <th width="8%" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,41 +102,55 @@
 
                                                 $workDuration = '';
                                                 if ($years > 0) {
-                                                    $workDuration .= $years . ' thn ';
+                                                    $workDuration .= $years . ' th ';
                                                 }
                                                 if ($months > 0) {
                                                     $workDuration .= $months . ' bln ';
                                                 }
                                                 if ($days > 0) {
-                                                    $workDuration .= $days . ' hri';
+                                                    $workDuration .= $days . ' hr';
                                                 }
                                                 $workDuration = trim($workDuration);
                                             }
 
-                                            // Get full address (shortened)
-                                            $fullAddress = $karyawan->alamat_dom ?: $karyawan->alamat_ktp ?: '-';
-                                            $city = $karyawan->kota_dom ?: $karyawan->kota_ktp ?: '';
-                                            $shortAddress = '-';
-                                            if ($city) {
-                                                $shortAddress = $city;
-                                            } elseif ($fullAddress != '-') {
-                                                $shortAddress = Str::limit($fullAddress, 20);
-                                            }
+                                            // Get company name
+                                            $perusahaan = $karyawan->perusahaanRelation
+                                                ? $karyawan->perusahaanRelation->nama_prs2
+                                                : '-';
+
+                                            // Get contract status
+                                            $kontrak = $karyawan->kontrakRelation
+                                                ? $karyawan->kontrakRelation->singkatan_ktr
+                                                : '-';
+
+                                            // Get department
+                                            $departemen = $karyawan->departemenRelation
+                                                ? $karyawan->departemenRelation->singkatan_dep
+                                                : '-';
+                                            $jabatan = $karyawan->departemenRelation
+                                                ? $karyawan->departemenRelation->singkatan_jbt
+                                                : '-';
                                         @endphp
                                         <tr data-status="{{ $karyawan->sts_kry }}" data-nama="{{ $karyawan->nama }}"
                                             data-tempat-lahir="{{ $karyawan->tpt_lahir }}" data-umur="{{ $age }}"
                                             data-masa-kerja-tahun="{{ $workYears }}"
                                             data-masa-kerja-bulan="{{ $workMonths }}">
+                                            <!-- Kolom Prioritas -->
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $karyawan->nrk }}</td>
+                                            <td>{{ $karyawan->nrk ?? '-' }}</td>
                                             <td>{{ $karyawan->nama }}</td>
-                                            <td>{{ $karyawan->tpt_lahir }}</td>
+                                            <td>{{ $karyawan->tpt_lahir ?? '-' }}</td>
                                             <td>{{ $karyawan->tgl_lahir ? date('d-m-Y', strtotime($karyawan->tgl_lahir)) : '-' }}
                                             </td>
-                                            <td>{{ $age }} {{ is_numeric($age) ? 'thn' : '' }}</td>
-                                            <td>{{ $karyawan->tgl_masuk ? date('d-m-Y', strtotime($karyawan->tgl_masuk)) : '-' }}
+                                            <td class="text-center">
+                                                @if ($karyawan->sex == 'LAKI-LAKI')
+                                                    <i class="fas fa-mars text-primary" title="Laki-laki"></i>
+                                                @elseif($karyawan->sex == 'PEREMPUAN')
+                                                    <i class="fas fa-venus text-danger" title="Perempuan"></i>
+                                                @else
+                                                    -
+                                                @endif
                                             </td>
-                                            <td>{{ $workDuration }}</td>
                                             <td class="text-center">
                                                 @if ($karyawan->foto_dokumen)
                                                     @php
@@ -145,19 +170,25 @@
                                                         <img src="{{ asset('storage/' . $karyawan->foto_dokumen) }}"
                                                             class="employee-photo rounded-circle"
                                                             alt="Foto {{ $karyawan->nama }}"
-                                                            style="width: 32px; height: 32px; max-width: 32px; max-height: 32px; min-width: 32px; min-height: 32px;">
+                                                            style="width: 32px; height: 32px; object-fit: cover; cursor: pointer;">
                                                     @else
-                                                        <div class="employee-photo-placeholder"
-                                                            style="width: 32px; height: 32px; max-width: 32px; max-height: 32px; min-width: 32px; min-height: 32px; font-size: 0.85rem;">
+                                                        <div class="employee-photo-placeholder">
                                                             {{ substr($karyawan->nama, 0, 1) }}
                                                         </div>
                                                     @endif
                                                 @else
-                                                    <div class="employee-photo-placeholder"
-                                                        style="width: 32px; height: 32px; max-width: 32px; max-height: 32px; min-width: 32px; min-height: 32px; font-size: 0.85rem;">
+                                                    <div class="employee-photo-placeholder">
                                                         {{ substr($karyawan->nama, 0, 1) }}
                                                     </div>
                                                 @endif
+                                            </td>
+                                            <td>{{ $karyawan->tgl_masuk ? date('d-m-Y', strtotime($karyawan->tgl_masuk)) : '-' }}
+                                            </td>
+                                            <td><small>{{ Str::limit($perusahaan, 15) }}</small></td>
+                                            <td class="text-center">
+                                                <span class="badge bg-secondary">{{ $kontrak }}</span>
+                                            </td>
+                                            <td>{{ $karyawan->tgl_akhir_ktr ? date('d-m-Y', strtotime($karyawan->tgl_akhir_ktr)) : '-' }}
                                             </td>
                                             <td class="text-center">
                                                 @if ($karyawan->sts_kry == 'CALON')
@@ -166,20 +197,26 @@
                                                     </span>
                                                 @elseif ($karyawan->sts_kry == 'AKTIF')
                                                     <span class="badge badge-lg bg-success">
-                                                        <i class="fas fa-check-circle me-1"></i>AKTIF
+                                                        <i class="fas fa-check-circle me-1"></i>AK
                                                     </span>
                                                 @elseif ($karyawan->sts_kry == 'NON-AKTIF')
                                                     <span class="badge badge-lg bg-danger">
-                                                        <i class="fas fa-times-circle me-1"></i>NON-AKTIF
+                                                        <i class="fas fa-times-circle me-1"></i>NA
                                                     </span>
                                                 @else
                                                     <span class="badge badge-lg bg-dark">{{ $karyawan->sts_kry }}</span>
                                                 @endif
                                             </td>
-                                            <td class="text-black small"
-                                                title="{{ $karyawan->alamat_dom ?: $karyawan->alamat_ktp ?: '-' }}">
-                                                {{ $shortAddress }}
+                                            <!-- Kolom Tambahan -->
+                                            <td><small>{{ $karyawan->wilker ?? '-' }}</small></td>
+                                            <td><small>{{ $karyawan->unit_krj ?? '-' }}</small></td>
+                                            <td><small>{{ Str::limit($departemen, 15) }}</small></td>
+                                            <td><small>{{ Str::limit($jabatan, 15) }}</small></td>
+                                            <td>{{ $workDuration }}</td>
+                                            <td>{{ $age }} {{ is_numeric($age) ? 'thn' : '' }}</td>
+                                            <td>{{ $karyawan->tgl_phk ? date('d-m-Y', strtotime($karyawan->tgl_phk)) : '-' }}
                                             </td>
+                                            <td><small>{{ $karyawan->ket_phk ?? '-' }}</small></td>
                                             <td>
                                                 <div class="d-flex gap-1 justify-content-center">
                                                     @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
@@ -199,7 +236,8 @@
                                                     @endif
 
                                                     @if (auth()->user()->is_admin || ($userPermissions['hapus'] ?? false))
-                                                        <button type="button" class="btn btn-sm btn-danger delete-confirm"
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-danger delete-confirm"
                                                             data-bs-toggle="tooltip" title="Hapus"
                                                             data-id="{{ $karyawan->id }}"
                                                             data-name="{{ $karyawan->nama }}">
@@ -381,6 +419,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Summary Modal -->
     <div class="modal fade" id="summaryModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -526,7 +566,6 @@
                         </div>
                     </div>
 
-
                     <hr class="my-4">
 
                     <!-- By Work Area -->
@@ -605,13 +644,14 @@
             background-color: #f8f9fa;
             border-color: #dee2e6;
             font-weight: 600;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
         }
 
         .table td {
             vertical-align: middle;
             border-color: #dee2e6;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
         }
 
         .employee-photo {
@@ -653,9 +693,9 @@
         }
 
         .badge-lg {
-            font-size: 0.85em;
+            font-size: 0.75em;
             font-weight: 600;
-            padding: 0.5em 1em;
+            padding: 0.4em 0.8em;
             border-radius: 0.5rem;
             display: inline-flex;
             align-items: center;
@@ -686,26 +726,39 @@
             border-radius: 0.5rem;
         }
 
+        /* Responsive table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
         @media (max-width: 768px) {
             .table-responsive {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
 
             .employee-photo,
             .employee-photo-placeholder {
-                width: 30px;
-                height: 30px;
-                font-size: 0.85rem;
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
             }
 
             .badge-lg {
-                font-size: 0.7em;
-                padding: 0.4em 0.8em;
+                font-size: 0.65em;
+                padding: 0.3em 0.6em;
             }
 
             .btn {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            .table th {
                 font-size: 0.75rem;
-                padding: 0.25rem 0.5rem;
+            }
+
+            .table td {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -718,8 +771,34 @@
 
     <script>
         $(document).ready(function() {
-            // Initialize DataTable
-            let table = $('#dataKaryawanTable').DataTable();
+            // Initialize DataTable with horizontal scroll
+            // Check if table is already initialized
+            let table;
+            if (!$.fn.DataTable.isDataTable('#dataKaryawanTable')) {
+                table = $('#dataKaryawanTable').DataTable({
+                    columnDefs: [{
+                        targets: [13, 14, 15, 16, 17, 18, 19, 20, 21],
+                        visible: true
+                    }], // Show additional columns
+                    pageLength: 25,
+                    language: {
+                        lengthMenu: "Tampilkan _MENU_ data per halaman",
+                        zeroRecords: "Data tidak ditemukan",
+                        info: "Menampilkan halaman _PAGE_ dari _PAGES_",
+                        infoEmpty: "Tidak ada data yang tersedia",
+                        infoFiltered: "(difilter dari _MAX_ total data)",
+                        search: "Cari:",
+                        paginate: {
+                            first: "Pertama",
+                            last: "Terakhir",
+                            next: "Selanjutnya",
+                            previous: "Sebelumnya"
+                        }
+                    }
+                });
+            } else {
+                table = $('#dataKaryawanTable').DataTable();
+            }
 
             // Initialize tooltips
             $('[data-bs-toggle="tooltip"]').tooltip();
@@ -745,6 +824,9 @@
                     masa_kerja_bulan_min: $('#filter_masa_kerja_bulan_min').val(),
                     masa_kerja_bulan_max: $('#filter_masa_kerja_bulan_max').val()
                 };
+
+                // Clear previous custom search filters
+                $.fn.dataTable.ext.search.splice(0);
 
                 // Apply custom search function
                 $.fn.dataTable.ext.search.push(
@@ -789,7 +871,10 @@
             $('#resetFilter').click(function() {
                 $('#filterForm')[0].reset();
                 activeFilters = {};
-                $.fn.dataTable.ext.search.pop();
+
+                // Clear all custom search filters
+                $.fn.dataTable.ext.search.splice(0);
+
                 table.draw();
             });
 
@@ -826,28 +911,41 @@
             }, 5000);
 
             // Click to view larger photo
-            $(document).on('click', '.employee-photo', function() {
+            $(document).on('click', '.employee-photo', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
                 let src = $(this).attr('src');
                 let alt = $(this).attr('alt');
+
+                // Remove existing modal if any
+                $('#photoModal').remove();
+
                 let modal = `
-                    <div class="modal fade" id="photoModal" tabindex="-1">
+                    <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">${alt}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <h5 class="modal-title" id="photoModalLabel">${alt}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center">
-                                    <img src="${src}" class="img-fluid rounded" alt="${alt}" style="max-height: 70vh;">
+                                    <img src="${src}" class="img-fluid rounded" alt="${alt}" style="max-height: 70vh; object-fit: contain;">
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
+
                 $('body').append(modal);
-                $('#photoModal').modal('show');
-                $('#photoModal').on('hidden.bs.modal', function() {
-                    $(this).remove();
+
+                // Create Bootstrap modal instance and show it
+                let photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+                photoModal.show();
+
+                // Remove modal from DOM when hidden
+                document.getElementById('photoModal').addEventListener('hidden.bs.modal', function() {
+                    this.remove();
                 });
             });
         });

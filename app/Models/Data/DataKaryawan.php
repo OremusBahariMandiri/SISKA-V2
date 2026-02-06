@@ -3,6 +3,7 @@
 namespace App\Models\Data;
 
 use App\Models\DataMaster\Departemen;
+use App\Models\DataMaster\KontrakKerja;
 use App\Models\DataMaster\Perusahaan;
 use App\Models\DataMaster\WilayahKerja;
 use App\Models\User;
@@ -67,6 +68,7 @@ class DataKaryawan extends Model
         'id_pendidikan',
         'jenjang_skl',
         'institusi_skl',
+        'skt_inst_skl', //1
         'kota_skl',
         'fakultas_skl',
         'jurusan_skl',
@@ -75,20 +77,26 @@ class DataKaryawan extends Model
         // Kontrak Kerja
         'idktr',
         'sts_ktr',
+        'skt_sts_ktr', //2
         'tgl_awal_ktr',
         'tgl_akhir_ktr',
         'durasi_ktr',
         'perusahaan',
+        'skt_prs', //3
          // Jenjang Karir
         'id_karir',
         'departemen',
+        'skt_dep', //4
         'jabatan',
+        'skt_jbt', //5
         'tugas',
         'unit_krj',
+        'skt_wil_krj', //6
         'wilker',
         // Hubungan Industrial
         'id_hubin',
         'sts_kry',
+        'skt_sts_kry', //7
         'tgl_phk',
         'ket_phk',
         'created_by',
@@ -141,6 +149,11 @@ class DataKaryawan extends Model
     public function wilayahKerjaRelation(): BelongsTo
     {
         return $this->belongsTo(WilayahKerja::class, 'wilker', 'id');
+    }
+
+    public function kontrakRelation(): BelongsTo
+    {
+        return $this->belongsTo(KontrakKerja::class, 'sts_ktr', 'id');
     }
 
     /**

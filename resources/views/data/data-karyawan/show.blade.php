@@ -10,8 +10,9 @@
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <span class="fw-bold"><i class="fas fa-user me-2"></i>Detail Karyawan</span>
                         <div>
-                            @if(isset($userPermissions['ubah']) && $userPermissions['ubah'])
-                                <a href="{{ route('data-karyawan.edit', $dataKaryawan->id) }}" class="btn btn-warning btn-sm me-2">
+                            @if (isset($userPermissions['ubah']) && $userPermissions['ubah'])
+                                <a href="{{ route('data-karyawan.edit', $dataKaryawan->id) }}"
+                                    class="btn btn-warning btn-sm me-2">
                                     <i class="fas fa-edit me-1"></i>Edit
                                 </a>
                             @endif
@@ -39,8 +40,8 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pendidikan-tab" data-bs-toggle="tab"
-                                    data-bs-target="#pendidikan" type="button" role="tab"
-                                    aria-controls="pendidikan" aria-selected="false">
+                                    data-bs-target="#pendidikan" type="button" role="tab" aria-controls="pendidikan"
+                                    aria-selected="false">
                                     <i class="fas fa-graduation-cap me-1"></i> Pendidikan
                                 </button>
                             </li>
@@ -70,8 +71,8 @@
                             <div class="tab-pane fade show active" id="biodata" role="tabpanel"
                                 aria-labelledby="biodata-tab">
                                 <!-- Data Pribadi -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
                                         <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Data Pribadi</h5>
                                     </div>
                                     <div class="card-body">
@@ -105,7 +106,7 @@
                                                 <div class="detail-value">
                                                     <i class="fas fa-calendar-alt text-primary me-2"></i>
                                                     {{ $dataKaryawan->tgl_lahir ? \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->format('d F Y') : '-' }}
-                                                    @if($dataKaryawan->tgl_lahir)
+                                                    @if ($dataKaryawan->tgl_lahir)
                                                         <span class="badge bg-info ms-2">
                                                             {{ \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->age }} tahun
                                                         </span>
@@ -144,9 +145,10 @@
                                 </div>
 
                                 <!-- Status Keluarga -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Status Keluarga</h5>
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
+                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Status Keluarga
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -176,9 +178,10 @@
                                 </div>
 
                                 <!-- Informasi Kontak -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Informasi Kontak</h5>
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
+                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Informasi Kontak
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -237,8 +240,9 @@
                                                 <label class="form-label fw-bold text-muted">Dokumen</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-file-pdf text-primary me-2"></i>
-                                                    @if($dataKaryawan->foto_dokumen)
-                                                        <a href="{{ Storage::url($dataKaryawan->foto_dokumen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    @if ($dataKaryawan->foto_dokumen)
+                                                        <a href="{{ Storage::url($dataKaryawan->foto_dokumen) }}"
+                                                            target="_blank" class="btn btn-sm btn-outline-primary">
                                                             <i class="fas fa-download me-1"></i>Unduh Dokumen
                                                         </a>
                                                     @else
@@ -325,7 +329,8 @@
                                 <!-- Alamat Domisili -->
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-house-user me-2"></i>Alamat Domisili</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-house-user me-2"></i>Alamat Domisili
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -396,7 +401,8 @@
                             <div class="tab-pane fade" id="pendidikan" role="tabpanel" aria-labelledby="pendidikan-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-graduation-cap me-2"></i>Pendidikan Terakhir</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-graduation-cap me-2"></i>Pendidikan
+                                            Terakhir</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -428,10 +434,10 @@
 
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Fakultas</label>
+                                                <label class="form-label fw-bold text-muted">Fakultas/SKT</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-building-columns text-primary me-2"></i>
-                                                    {{ $dataKaryawan->fakultas_skl ?? '-' }}
+                                                    {{ $dataKaryawan->fakultas_skl ?? ($dataKaryawan->skt_inst_skl ?? '-') }}
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
@@ -467,7 +473,8 @@
                             <div class="tab-pane fade" id="kontrak" role="tabpanel" aria-labelledby="kontrak-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-file-contract me-2"></i>Informasi Kontrak Kerja</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-file-contract me-2"></i>Informasi
+                                            Kontrak Kerja</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -475,18 +482,33 @@
                                                 <label class="form-label fw-bold text-muted">Status Kontrak</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-clipboard-check text-primary me-2"></i>
-                                                    @if($dataKaryawan->sts_ktr)
-                                                        <span class="badge bg-info">{{ $dataKaryawan->sts_ktr }}</span>
-                                                    @else
-                                                        -
-                                                    @endif
+                                                    {{ $dataKaryawan->kontrakRelation && is_object($dataKaryawan->kontrakRelation) ? $dataKaryawan->kontrakRelation->singkatan_ktr : '-' }}
+                                                    -
+                                                    {{ $dataKaryawan->kontrakRelation && is_object($dataKaryawan->kontrakRelation) ? $dataKaryawan->kontrakRelation->nama_ktr : '-' }}
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-bold text-muted">Perusahaan</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-building text-primary me-2"></i>
-                                                    {{ ($dataKaryawan->perusahaan && is_object($dataKaryawan->perusahaan)) ? $dataKaryawan->perusahaan->nama_prs1 : '-' }}
+                                                    {{ $dataKaryawan->perusahaanRelation && is_object($dataKaryawan->perusahaanRelation) ? $dataKaryawan->perusahaanRelation->nama_prs1 : '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">SKT Status Kontrak</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->skt_sts_ktr ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">SKT Perusahaan</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->skt_prs ?? '-' }}
                                                 </div>
                                             </div>
                                         </div>
@@ -522,7 +544,8 @@
                             <div class="tab-pane fade" id="karir" role="tabpanel" aria-labelledby="karir-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Informasi Jenjang Karir</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Informasi Jenjang
+                                            Karir</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -530,31 +553,62 @@
                                                 <label class="form-label fw-bold text-muted">Departemen</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-sitemap text-primary me-2"></i>
-                                                    {{ ($dataKaryawan->departemenRelation && is_object($dataKaryawan->departemenRelation)) ? $dataKaryawan->departemenRelation->nama_dep : '-' }}
+                                                    {{ $dataKaryawan->departemenRelation && is_object($dataKaryawan->departemenRelation) ? $dataKaryawan->departemenRelation->singkatan_dep : '-' }}
+                                                    -
+                                                    {{ $dataKaryawan->departemenRelation && is_object($dataKaryawan->departemenRelation) ? $dataKaryawan->departemenRelation->nama_dep : '-' }}
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label fw-bold text-muted">Jabatan</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-user-tie text-primary me-2"></i>
-                                                    {{ $dataKaryawan->jabatan ?? '-' }}
+                                                    {{ $dataKaryawan->departemenRelation && is_object($dataKaryawan->departemenRelation) ? $dataKaryawan->departemenRelation->singkatan_jbt : '-' }}
+                                                    -
+                                                    {{ $dataKaryawan->departemenRelation && is_object($dataKaryawan->departemenRelation) ? $dataKaryawan->departemenRelation->nama_jbt : '-' }}
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Unit Kerja</label>
+                                                <label class="form-label fw-bold text-muted">SKT Departemen</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->skt_dep ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">SKT Jabatan</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->skt_jbt ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Wilayah Kerja</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map text-primary me-2"></i>
+                                                    {{ $dataKaryawan->wilker ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Area Kerja</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-users-cog text-primary me-2"></i>
                                                     {{ $dataKaryawan->unit_krj ?? '-' }}
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Wilayah Kerja</label>
+                                                <label class="form-label fw-bold text-muted">SKT Wilayah Kerja</label>
                                                 <div class="detail-value">
-                                                    <i class="fas fa-map text-primary me-2"></i>
-                                                    {{ ($dataKaryawan->wilayahKerjaRelation && is_object($dataKaryawan->wilayahKerjaRelation)) ? $dataKaryawan->wilayahKerjaRelation->wilayah_krj : '-' }}
+                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->skt_wil_krj ?? '-' }}
                                                 </div>
                                             </div>
                                         </div>
@@ -575,9 +629,10 @@
                             <!-- Hubungan Industrial -->
                             <div class="tab-pane fade" id="hubin" role="tabpanel" aria-labelledby="hubin-tab">
                                 <!-- Status Karyawan -->
-                                <div class="card border-success mb-4">
-                                    <div class="card-header bg-success bg-opacity-25">
-                                        <h5 class="mb-0"><i class="fas fa-user-check me-2"></i>Status Hubungan Industrial</h5>
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
+                                        <h5 class="mb-0 text-white"><i class="fas fa-user-check me-2"></i>Status Hubungan
+                                            Industrial</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -585,7 +640,7 @@
                                                 <label class="form-label fw-bold text-muted">Status Karyawan</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-user-check text-primary me-2"></i>
-                                                    @if($dataKaryawan->sts_kry == 'AKTIF')
+                                                    @if ($dataKaryawan->sts_kry == 'AKTIF')
                                                         <span class="badge bg-success">{{ $dataKaryawan->sts_kry }}</span>
                                                     @elseif($dataKaryawan->sts_kry == 'CALON')
                                                         <span class="badge bg-warning">{{ $dataKaryawan->sts_kry }}</span>
@@ -611,11 +666,21 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label class="form-label fw-bold text-muted">SKT Status Karyawan</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->skt_sts_kry ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Status PHK (jika ada) -->
-                                @if($dataKaryawan->sts_kry == 'NON-AKTIF' && ($dataKaryawan->tgl_phk || $dataKaryawan->ket_phk))
+                                @if ($dataKaryawan->sts_kry == 'NON-AKTIF' && ($dataKaryawan->tgl_phk || $dataKaryawan->ket_phk))
                                     <div class="card border-danger mb-4">
                                         <div class="card-header bg-danger bg-opacity-25">
                                             <h5 class="mb-0"><i class="fas fa-user-times me-2"></i>Informasi PHK</h5>
@@ -652,7 +717,7 @@
                                                 <label class="form-label fw-bold text-muted">Dibuat Oleh</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-user text-info me-2"></i>
-                                                    {{ $dataKaryawan->creator ? $dataKaryawan->creator->name : '-' }}
+                                                    {{ $dataKaryawan->creator ? $dataKaryawan->creator->nama_kry : '-' }}
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
@@ -669,7 +734,7 @@
                                                 <label class="form-label fw-bold text-muted">Diubah Oleh</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-user-edit text-info me-2"></i>
-                                                    {{ $dataKaryawan->updater ? $dataKaryawan->updater->name : '-' }}
+                                                    {{ $dataKaryawan->updater ? $dataKaryawan->updater->nama_kry : '-' }}
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
@@ -740,9 +805,9 @@
     <script>
         // Additional scripts can be added here if needed
     </script>
-@endpush@extends('layouts.app')
+    @endpush@extends('layouts.app')
 
-@section('title', 'Detail Karyawan')
+    @section('title', 'Detail Karyawan')
 
 @section('content')
     <div class="container">
@@ -752,8 +817,9 @@
                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <span class="fw-bold"><i class="fas fa-user me-2"></i>Detail Karyawan</span>
                         <div>
-                            @if(isset($userPermissions['ubah']) && $userPermissions['ubah'])
-                                <a href="{{ route('data-karyawan.edit', $dataKaryawan->id) }}" class="btn btn-warning btn-sm me-2">
+                            @if (isset($userPermissions['ubah']) && $userPermissions['ubah'])
+                                <a href="{{ route('data-karyawan.edit', $dataKaryawan->id) }}"
+                                    class="btn btn-warning btn-sm me-2">
                                     <i class="fas fa-edit me-1"></i>Edit
                                 </a>
                             @endif
@@ -812,8 +878,8 @@
                             <div class="tab-pane fade show active" id="biodata" role="tabpanel"
                                 aria-labelledby="biodata-tab">
                                 <!-- Data Pribadi -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
                                         <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Data Pribadi</h5>
                                     </div>
                                     <div class="card-body">
@@ -847,9 +913,10 @@
                                                 <div class="detail-value">
                                                     <i class="fas fa-calendar-alt text-primary me-2"></i>
                                                     {{ $dataKaryawan->tgl_lahir ? \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->format('d F Y') : '-' }}
-                                                    @if($dataKaryawan->tgl_lahir)
+                                                    @if ($dataKaryawan->tgl_lahir)
                                                         <span class="badge bg-info ms-2">
-                                                            {{ \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->age }} tahun
+                                                            {{ \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->age }}
+                                                            tahun
                                                         </span>
                                                     @endif
                                                 </div>
@@ -886,9 +953,10 @@
                                 </div>
 
                                 <!-- Status Keluarga -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Status Keluarga</h5>
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
+                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Status Keluarga
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -920,7 +988,8 @@
                                 <!-- Informasi Kontak -->
                                 <div class="card border-secondary mb-4">
                                     <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Informasi Kontak</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Informasi Kontak
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -979,8 +1048,9 @@
                                                 <label class="form-label fw-bold text-muted">Dokumen</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-file-pdf text-primary me-2"></i>
-                                                    @if($dataKaryawan->foto_dokumen)
-                                                        <a href="{{ Storage::url($dataKaryawan->foto_dokumen) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    @if ($dataKaryawan->foto_dokumen)
+                                                        <a href="{{ Storage::url($dataKaryawan->foto_dokumen) }}"
+                                                            target="_blank" class="btn btn-sm btn-outline-primary">
                                                             <i class="fas fa-download me-1"></i>Unduh Dokumen
                                                         </a>
                                                     @else
@@ -1067,7 +1137,8 @@
                                 <!-- Alamat Domisili -->
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-house-user me-2"></i>Alamat Domisili</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-house-user me-2"></i>Alamat Domisili
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -1138,7 +1209,8 @@
                             <div class="tab-pane fade" id="pendidikan" role="tabpanel" aria-labelledby="pendidikan-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-graduation-cap me-2"></i>Pendidikan Terakhir</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-graduation-cap me-2"></i>Pendidikan
+                                            Terakhir</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -1209,7 +1281,8 @@
                             <div class="tab-pane fade" id="kontrak" role="tabpanel" aria-labelledby="kontrak-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-file-contract me-2"></i>Informasi Kontrak Kerja</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-file-contract me-2"></i>Informasi
+                                            Kontrak Kerja</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -1217,7 +1290,7 @@
                                                 <label class="form-label fw-bold text-muted">Status Kontrak</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-clipboard-check text-primary me-2"></i>
-                                                    @if($dataKaryawan->sts_ktr)
+                                                    @if ($dataKaryawan->sts_ktr)
                                                         <span class="badge bg-info">{{ $dataKaryawan->sts_ktr }}</span>
                                                     @else
                                                         -
@@ -1228,7 +1301,7 @@
                                                 <label class="form-label fw-bold text-muted">Perusahaan</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-building text-primary me-2"></i>
-                                                    {{ ($dataKaryawan->perusahaanRelation && is_object($dataKaryawan->perusahaanRelation)) ? $dataKaryawan->perusahaanRelation  ->nama_prs1 : '-' }}
+                                                    {{ $dataKaryawan->perusahaanRelation && is_object($dataKaryawan->perusahaanRelation) ? $dataKaryawan->perusahaanRelation->nama_prs1 : '-' }}
                                                 </div>
                                             </div>
                                         </div>
@@ -1264,7 +1337,8 @@
                             <div class="tab-pane fade" id="karir" role="tabpanel" aria-labelledby="karir-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Informasi Jenjang Karir</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Informasi Jenjang
+                                            Karir</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -1272,7 +1346,7 @@
                                                 <label class="form-label fw-bold text-muted">Departemen</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-sitemap text-primary me-2"></i>
-                                                    {{ ($dataKaryawan->departemen && is_object($dataKaryawan->departemen)) ? $dataKaryawan->departemen->nama_dep : '-' }}
+                                                    {{ $dataKaryawan->departemen && is_object($dataKaryawan->departemen) ? $dataKaryawan->departemen->nama_dep : '-' }}
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
@@ -1296,7 +1370,7 @@
                                                 <label class="form-label fw-bold text-muted">Wilayah Kerja</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-map text-primary me-2"></i>
-                                                    {{ ($dataKaryawan->wilayahKerja && is_object($dataKaryawan->wilayahKerja)) ? $dataKaryawan->wilayahKerja->wilayah_krj : '-' }}
+                                                    {{ $dataKaryawan->wilayahKerja && is_object($dataKaryawan->wilayahKerja) ? $dataKaryawan->wilayahKerja->wilayah_krj : '-' }}
                                                 </div>
                                             </div>
                                         </div>
@@ -1319,7 +1393,8 @@
                                 <!-- Status Karyawan -->
                                 <div class="card border-success mb-4">
                                     <div class="card-header bg-success bg-opacity-25">
-                                        <h5 class="mb-0"><i class="fas fa-user-check me-2"></i>Status Hubungan Industrial</h5>
+                                        <h5 class="mb-0"><i class="fas fa-user-check me-2"></i>Status Hubungan
+                                            Industrial</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -1327,10 +1402,12 @@
                                                 <label class="form-label fw-bold text-muted">Status Karyawan</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-user-check text-primary me-2"></i>
-                                                    @if($dataKaryawan->sts_kry == 'AKTIF')
-                                                        <span class="badge bg-success">{{ $dataKaryawan->sts_kry }}</span>
+                                                    @if ($dataKaryawan->sts_kry == 'AKTIF')
+                                                        <span
+                                                            class="badge bg-success">{{ $dataKaryawan->sts_kry }}</span>
                                                     @elseif($dataKaryawan->sts_kry == 'CALON')
-                                                        <span class="badge bg-warning">{{ $dataKaryawan->sts_kry }}</span>
+                                                        <span
+                                                            class="badge bg-warning">{{ $dataKaryawan->sts_kry }}</span>
                                                     @elseif($dataKaryawan->sts_kry == 'NON-AKTIF')
                                                         <span class="badge bg-danger">{{ $dataKaryawan->sts_kry }}</span>
                                                     @else
@@ -1357,7 +1434,7 @@
                                 </div>
 
                                 <!-- Status PHK (jika ada) -->
-                                @if($dataKaryawan->sts_kry == 'NON-AKTIF' && ($dataKaryawan->tgl_phk || $dataKaryawan->ket_phk))
+                                @if ($dataKaryawan->sts_kry == 'NON-AKTIF' && ($dataKaryawan->tgl_phk || $dataKaryawan->ket_phk))
                                     <div class="card border-danger mb-4">
                                         <div class="card-header bg-danger bg-opacity-25">
                                             <h5 class="mb-0"><i class="fas fa-user-times me-2"></i>Informasi PHK</h5>

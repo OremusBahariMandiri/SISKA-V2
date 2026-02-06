@@ -49,28 +49,28 @@
                                 <thead class="table-light">
                                     <tr>
                                         <!-- Kolom Prioritas -->
-                                        <th width="3%">No</th>
+                                        <th width="3%">NO</th>
                                         <th width="6%">NRK</th>
-                                        <th width="12%">Nama</th>
-                                        <th width="8%">Tpt Lhr</th>
-                                        <th width="7%">Tgl Lhr</th>
-                                        <th width="4%">Sex</th>
-                                        <th width="5%" class="text-center">Foto</th>
-                                        <th width="7%">Tgl Msk</th>
-                                        <th width="8%">Prsh</th>
-                                        <th width="6%">Knt</th>
-                                        <th width="7%">Tgl HK</th>
+                                        <th width="12%">NAMA</th>
+                                        <th width="8%">TPT LHR</th>
+                                        <th width="7%">TGL LHR</th>
+                                        <th width="4%">SEX</th>
+                                        <th width="5%" class="text-center">FOTO</th>
+                                        <th width="7%">TGL MSK</th>
+                                        <th width="8%">PRSH</th>
+                                        <th width="6%">KNT</th>
+                                        <th width="7%">TGL HK</th>
                                         <th width="7%" class="text-center">STKAR</th>
                                         <!-- Kolom Tambahan -->
-                                        <th width="8%">Wilker</th>
-                                        <th width="8%">Unker</th>
-                                        <th width="8%">Dep</th>
-                                        <th width="8%">Jbt</th>
-                                        <th width="10%">Mkr</th>
-                                        <th width="5%">Umur</th>
-                                        <th width="7%">Tgl NA</th>
-                                        <th width="8%">Ket NA</th>
-                                        <th width="8%" class="text-center">Aksi</th>
+                                        <th width="8%">SILKER</th>
+                                        <th width="8%">UNKER</th>
+                                        <th width="8%">DEP</th>
+                                        <th width="8%">JBT</th>
+                                        <th width="10%">MKR</th>
+                                        <th width="5%">UMUR</th>
+                                        <th width="7%">TGL NA</th>
+                                        <th width="8%">KET NA</th>
+                                        <th width="8%" class="text-center">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>

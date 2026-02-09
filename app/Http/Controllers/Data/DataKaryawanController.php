@@ -515,8 +515,8 @@ class DataKaryawanController extends Controller
     {
         try {
             $jabatans = Departemen::where('nama_dep', $namaDep)
-                ->sortByCode()
-                ->orderBy('nama_jbt', 'asc')
+                ->orderByRaw('CAST(kode_dep AS UNSIGNED) ASC')
+                ->orderBy('nama_jbt', 'ASC')
                 ->get(['id', 'kode_dep', 'nama_jbt', 'singkatan_jbt']);
 
             return response()->json([
@@ -538,8 +538,8 @@ class DataKaryawanController extends Controller
     {
         try {
             $unitKerjas = WilayahKerja::where('wilayah_krj', $wilayahKrj)
-                ->sortByCode()
-                ->orderBy('area_krj', 'asc')
+                ->orderByRaw('CAST(kode_wk AS UNSIGNED) ASC')
+          ->orderBy('kode_wk', 'ASC')
                 ->get(['id', 'kode_wk', 'area_krj', 'singkatan_wk']);
 
             return response()->json([

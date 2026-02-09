@@ -164,4 +164,22 @@ class WilayahKerja extends Model
     {
         return $this->belongsTo(User::class, 'updated_by', 'id_kode');
     }
+
+    public function scopeSortByCode($query)
+    {
+        return $query->orderByRaw('CAST(kode_wk AS UNSIGNED) ASC');
+    }
+
+    /**
+     * Scope a query to sort by region and code ascending.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortByCodeAndRegion($query)
+    {
+        return $query->orderByRaw('CAST(kode_wk AS UNSIGNED) ASC')
+                    ->orderBy('wilayah_krj', 'ASC')
+                    ->orderBy('area_krj', 'ASC');
+    }
 }

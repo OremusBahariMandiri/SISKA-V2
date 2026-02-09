@@ -90,7 +90,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                {{-- NIK Ktp --}}
+                                                {{-- NIK --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="nik" class="form-label fw-bold">NIK KTP <span
@@ -124,7 +124,7 @@
                                             </div>
 
                                             <div class="row">
-                                                {{-- nama lengkap --}}
+                                                {{-- Nama Lengkap --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="nama" class="form-label fw-bold">Nama Lengkap
@@ -156,6 +156,7 @@
                                             </div>
 
                                             <div class="row">
+                                                {{-- Sex --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="sex" class="form-label fw-bold">Jenis Kelamin
@@ -178,6 +179,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- Agama --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="agama" class="form-label fw-bold">Agama <span
@@ -215,7 +217,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12">
+                                                {{-- KWN --}}
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="kewarganegaraan"
                                                             class="form-label fw-bold">Kewarganegaraan</label>
@@ -228,7 +231,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12">
+                                                {{-- FOTO --}}
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="foto_dokumen" class="form-label fw-bold">Unggah
                                                             Dokumen</label>
@@ -430,13 +434,13 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Tab Alamat (KTP dan Domisili) -->
                                 <div class="tab-pane fade" id="alamat" role="tabpanel" aria-labelledby="alamat-tab">
-                                    <!-- Alamat KTP -->
                                     <div class="card border-primary mb-4">
                                         <div class="card-header bg-primary bg-opacity-25">
                                             <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Alamat KTP</h5>
@@ -568,9 +572,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-                                    {{-- ALAMAT DOMISILI SECTION - EDIT VERSION --}}
                                     <div class="card border-primary mb-4">
                                         <div
                                             class="card-header bg-primary bg-opacity-25 d-flex justify-content-between align-items-center">
@@ -723,7 +724,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <div class="form-group mb-3">
                                                         <label for="jenjang_skl" class="form-label fw-bold">Jenjang
                                                             Pendidikan</label>
@@ -734,6 +735,10 @@
                                                                 <select class="form-select select2" id="jenjang_skl"
                                                                     name="jenjang_skl">
                                                                     <option value="">Pilih Jenjang</option>
+                                                                    <option value="-"
+                                                                        {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == '-' ? 'selected' : '' }}>
+                                                                        -
+                                                                    </option>
                                                                     <option value="SD"
                                                                         {{ old('jenjang_skl', $dataKaryawan->jenjang_skl) == 'SD' ? 'selected' : '' }}>
                                                                         SD
@@ -779,20 +784,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- Jurusan --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="jurusan_skl"
-                                                            class="form-label fw-bold">Jurusan</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-book-open"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="jurusan_skl" name="jurusan_skl"
-                                                                value="{{ old('jurusan_skl', $dataKaryawan->jurusan_skl) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div class="row">
@@ -810,6 +801,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
                                                 {{-- Kota --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -823,19 +815,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- SKT --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="skt_inst_skl" class="form-label fw-bold">SKT</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-building-columns"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="skt_inst_skl" name="skt_inst_skl"
-                                                                value="{{ old('skt_inst_skl', $dataKaryawan->skt_inst_skl) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 {{-- Gelar --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -846,6 +825,20 @@
                                                             <input type="text" class="form-control auto-uppercase"
                                                                 id="gelar_skl" name="gelar_skl"
                                                                 value="{{ old('gelar_skl', $dataKaryawan->gelar_skl) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- Jurusan --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="jurusan_skl"
+                                                            class="form-label fw-bold">Jurusan</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-book-open"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="jurusan_skl" name="jurusan_skl"
+                                                                value="{{ old('jurusan_skl', $dataKaryawan->jurusan_skl) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -904,24 +897,12 @@
                                                                     @foreach ($kontraks as $ktr)
                                                                         <option value="{{ $ktr->id }}"
                                                                             {{ old('sts_ktr', $dataKaryawan->sts_ktr) == $ktr->id ? 'selected' : '' }}>
+                                                                            {{ $ktr->nama_ktr }} -
                                                                             {{ $ktr->singkatan_ktr }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {{-- SKT KTR --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="skt_sts_ktr" class="form-label fw-bold">SKT</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-map-marker-alt"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="skt_sts_ktr" name="skt_sts_ktr"
-                                                                value="{{ old('skt_sts_ktr', $dataKaryawan->skt_sts_ktr) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -940,7 +921,8 @@
                                                                     @foreach ($perusahaans as $perusahaan)
                                                                         <option value="{{ $perusahaan->id }}"
                                                                             {{ old('perusahaan', $dataKaryawan->perusahaan) == $perusahaan->id ? 'selected' : '' }}>
-                                                                            {{ $perusahaan->nama_prs1 }}
+                                                                            {{ $perusahaan->nama_prs1 }} -
+                                                                            {{ $perusahaan->nama_prs2 }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -948,24 +930,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- SKT PRS --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="skt_prs" class="form-label fw-bold">SKT
-                                                            Perusahaan</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-map-marker-alt"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="skt_prs" name="skt_prs"
-                                                                value="{{ old('skt_prs', $dataKaryawan->skt_prs) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div class="row">
-                                                {{-- Tgl Mulai Ktr --}}
+                                                {{-- Tgl Mulai KTR --}}
                                                 <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="tgl_awal_ktr" class="form-label fw-bold">
@@ -976,7 +944,7 @@
                                                             value="{{ old('tgl_awal_ktr', $dataKaryawan->tgl_awal_ktr ? \Carbon\Carbon::parse($dataKaryawan->tgl_awal_ktr)->format('Y-m-d') : '') }}">
                                                     </div>
                                                 </div>
-                                                {{-- Tgl Akhir Ktr --}}
+                                                {{-- Tgl Akhir KTR --}}
                                                 <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="tgl_akhir_ktr" class="form-label fw-bold">
@@ -987,7 +955,7 @@
                                                             value="{{ old('tgl_akhir_ktr', $dataKaryawan->tgl_akhir_ktr ? \Carbon\Carbon::parse($dataKaryawan->tgl_akhir_ktr)->format('Y-m-d') : '') }}">
                                                     </div>
                                                 </div>
-                                                {{-- Durasi Ktr --}}
+                                                {{-- Durasi KTR --}}
                                                 <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="durasi_ktr" class="form-label fw-bold">Durasi Kontrak
@@ -1008,7 +976,6 @@
                                 </div>
 
                                 <!-- Jenjang Karir -->
-                                <!-- Jenjang Karir -->
                                 <div class="tab-pane fade" id="karir" role="tabpanel" aria-labelledby="karir-tab">
                                     <div class="card border-primary mb-4">
                                         <div class="card-header bg-primary bg-opacity-25">
@@ -1018,7 +985,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                {{-- Departemen --}}
+                                                {{-- departemen --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="departemen"
@@ -1034,7 +1001,8 @@
                                                                     @foreach ($departemens as $departemen)
                                                                         <option value="{{ $departemen->nama_dep }}"
                                                                             {{ old('departemen', $dataKaryawan->jabatan) == $departemen->nama_dep ? 'selected' : '' }}>
-                                                                            {{ $departemen->singkatan_dep }} - {{ $departemen->nama_dep }}
+                                                                            {{ $departemen->nama_dep }} -
+                                                                            {{ $departemen->singkatan_dep }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -1042,7 +1010,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- Jabatan --}}
+                                                {{-- jabatan --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="jabatan" class="form-label fw-bold">Jabatan</label>
@@ -1058,39 +1026,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- SKT DEP --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="skt_dep" class="form-label fw-bold">SKT
-                                                            Departemen</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-map-marker-alt"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="skt_dep" name="skt_dep"
-                                                                value="{{ old('skt_dep', $dataKaryawan->skt_dep) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {{-- SKT Jabatan --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="skt_jbt" class="form-label fw-bold">SKT
-                                                            Jabatan</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-map-marker-alt"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="skt_jbt" name="skt_jbt"
-                                                                value="{{ old('skt_jbt', $dataKaryawan->skt_jbt) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div class="row">
-                                                {{-- Wilker --}}
-                                                <div class="col-md-6">
+                                                {{-- wilker --}}
+                                                <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="wilker" class="form-label fw-bold">Wilayah
                                                             Kerja</label>
@@ -1104,7 +1044,7 @@
                                                                     @foreach ($wilayahKerjas as $wilayah)
                                                                         <option value="{{ $wilayah->wilayah_krj }}"
                                                                             {{ old('wilker', $dataKaryawan->wilker) == $wilayah->wilayah_krj ? 'selected' : '' }}>
-                                                                            {{ $wilayah->singkatan_wk }} - {{ $wilayah->wilayah_krj }}
+                                                                            {{ $wilayah->wilayah_krj }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -1112,10 +1052,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- Unit Kerja --}}
-                                                <div class="col-md-6">
+                                                {{-- unit krj --}}
+                                                <div class="col-md-4">
                                                     <div class="form-group mb-3">
-                                                        <label for="unit_krj" class="form-label fw-bold">Unit
+                                                        <label for="unit_krj" class="form-label fw-bold">Area
                                                             Kerja</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text"><i
@@ -1130,7 +1070,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- SKT Wilker --}}
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_wil_krj" class="form-label fw-bold">SKT Wilayah
                                                             Kerja</label>
@@ -1139,7 +1079,8 @@
                                                                     class="fas fa-map-marker-alt"></i></span>
                                                             <input type="text" class="form-control auto-uppercase"
                                                                 id="skt_wil_krj" name="skt_wil_krj"
-                                                                value="{{ old('skt_wil_krj', $dataKaryawan->skt_wil_krj) }}">
+                                                                value="{{ old('skt_wil_krj', $dataKaryawan->skt_wil_krj) }}"
+                                                                readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1173,7 +1114,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                {{-- Nrk  --}}
+                                                {{-- NRK --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="nrk" class="form-label fw-bold">NRK</label>
@@ -1186,7 +1127,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- TGL Masuk Kry --}}
+                                                {{-- Tanggal Masuk --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="tgl_masuk" class="form-label fw-bold">
@@ -1197,8 +1138,8 @@
                                                             value="{{ old('tgl_masuk', $dataKaryawan->tgl_masuk ? \Carbon\Carbon::parse($dataKaryawan->tgl_masuk)->format('Y-m-d') : '') }}">
                                                     </div>
                                                 </div>
-                                                {{-- STS Kry --}}
-                                                <div class="col-md-6">
+                                                {{-- Status Karyawan --}}
+                                                <div class="col-md-12">
                                                     <div class="form-group mb-3">
                                                         <label for="sts_kry" class="form-label fw-bold">Status Karyawan
                                                             <span class="text-danger">*</span></label>
@@ -1220,20 +1161,6 @@
                                                                     {{ old('sts_kry', $dataKaryawan->sts_kry) == 'NON-AKTIF' ? 'selected' : '' }}>
                                                                     NON-AKTIF</option>
                                                             </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {{-- SKT Status Karyawan --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="skt_sts_kry" class="form-label fw-bold">SKT Status
-                                                            Karyawan</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-map-marker-alt"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="skt_sts_kry" name="skt_sts_kry"
-                                                                value="{{ old('skt_sts_kry', $dataKaryawan->skt_sts_kry) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1409,15 +1336,17 @@
 @endpush
 
 @push('scripts')
-    @vite(['resources/js/region-api.js'])
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @vite(['resources/js/region-api.js'])
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // ============ OPTIMIZED LOAD EXISTING DATA ============
+            // ============ LOAD EXISTING DATA FUNCTIONS ============
             async function loadExistingAddressData() {
                 try {
                     const addresses = {
@@ -1520,44 +1449,6 @@
                 return dataId;
             }
 
-            // Auto-uppercase functionality
-            document.querySelectorAll('.auto-uppercase').forEach(function(element) {
-                element.addEventListener('input', function() {
-                    this.value = this.value.toUpperCase();
-                });
-            });
-
-            // Calculate age
-            document.getElementById('tgl_lahir').addEventListener('change', function() {
-                const birthDate = new Date(this.value);
-                const today = new Date();
-                let age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
-
-                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-
-                document.getElementById('usiaInfo').textContent = this.value ? `Usia: ${age} tahun` : '';
-            });
-
-            // Trigger age calculation on page load
-            const tglLahir = document.getElementById('tgl_lahir');
-            if (tglLahir.value) {
-                tglLahir.dispatchEvent(new Event('change'));
-            }
-
-            // Copy KTP address to domicile
-            document.getElementById('samaWithKtp').addEventListener('change', function() {
-                if (this.checked) {
-                    document.getElementById('alamat_dom').value = document.getElementById('alamat_ktp')
-                        .value;
-                    document.getElementById('rt_rw_dom').value = document.getElementById('rt_rw_ktp').value;
-                    document.getElementById('kd_pos_dom').value = document.getElementById('kd_pos_ktp')
-                        .value;
-                }
-            });
-
             async function loadExistingKarirData() {
                 try {
                     const departemen = "{{ old('departemen', $dataKaryawan->jabatan ?? '') }}";
@@ -1624,11 +1515,13 @@
 
             async function loadUnitKerjaByWilker(wilayahKrj, selectedUnitKrj) {
                 const unitSelect = $('#unit_krj');
+                const sktInput = $('#skt_wil_krj');
 
                 if (!wilayahKrj) return;
 
                 unitSelect.prop('disabled', true);
                 unitSelect.html('<option value="">Loading...</option>');
+                sktInput.val('');
 
                 try {
                     const response = await $.ajax({
@@ -1641,13 +1534,26 @@
                         unitSelect.html('<option value="">Pilih Unit Kerja</option>');
 
                         response.data.forEach(function(unit) {
-                            const selected = unit.area_krj === selectedUnitKrj ? 'selected' : '';
+                            const displayText = unit.singkatan_wk ?
+                                `${unit.area_krj}` :
+                                unit.area_krj;
+
+                            const selected = unit.id == selectedUnitKrj ? 'selected' : '';
                             unitSelect.append(
-                                `<option value="${unit.area_krj}" ${selected}>${unit.area_krj}</option>`
+                                `<option value="${unit.id}" data-singkatan="${unit.singkatan_wk || ''}" ${selected}>${displayText}</option>`
                             );
                         });
 
                         unitSelect.prop('disabled', false);
+
+                        // Set SKT value if a unit is selected
+                        if (selectedUnitKrj) {
+                            const selectedOption = unitSelect.find('option:selected');
+                            const singkatan = selectedOption.data('singkatan');
+                            if (singkatan) {
+                                sktInput.val(singkatan);
+                            }
+                        }
 
                         if (unitSelect.hasClass('select2-hidden-accessible')) {
                             unitSelect.select2('destroy');
@@ -1663,7 +1569,76 @@
                 }
             }
 
-            // Departemen change handler
+            // ============ AUTO-UPPERCASE FUNCTIONALITY ============
+            document.querySelectorAll('.auto-uppercase').forEach(function(element) {
+                element.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+            });
+
+            // ============ CALCULATE AGE ============
+            document.getElementById('tgl_lahir').addEventListener('change', function() {
+                const birthDate = new Date(this.value);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                document.getElementById('usiaInfo').textContent =
+                    this.value ? `Usia: ${age} tahun` : '';
+            });
+
+            // Trigger age calculation on page load if date exists
+            const tglLahir = document.getElementById('tgl_lahir');
+            if (tglLahir.value) {
+                tglLahir.dispatchEvent(new Event('change'));
+            }
+
+            // ============ COPY KTP ADDRESS TO DOMICILE ============
+            document.getElementById('samaWithKtp').addEventListener('change', function() {
+                if (this.checked) {
+                    // Copy text fields
+                    document.getElementById('alamat_dom').value = document.getElementById('alamat_ktp')
+                        .value;
+                    document.getElementById('rt_rw_dom').value = document.getElementById('rt_rw_ktp').value;
+                    document.getElementById('kd_pos_dom').value = document.getElementById('kd_pos_ktp')
+                        .value;
+
+                    // Copy select2 values
+                    const ktpProv = $('#prov_ktp').val();
+                    const ktpKota = $('#kota_ktp').val();
+                    const ktpKec = $('#kec_ktp').val();
+                    const ktpKel = $('#kel_ktp').val();
+
+                    // Trigger cascading updates
+                    if (ktpProv) {
+                        $('#prov_dom').val(ktpProv).trigger('change');
+
+                        setTimeout(() => {
+                            if (ktpKota) {
+                                $('#kota_dom').val(ktpKota).trigger('change');
+
+                                setTimeout(() => {
+                                    if (ktpKec) {
+                                        $('#kec_dom').val(ktpKec).trigger('change');
+
+                                        setTimeout(() => {
+                                            if (ktpKel) {
+                                                $('#kel_dom').val(ktpKel).trigger('change');
+                                            }
+                                        }, 500);
+                                    }
+                                }, 500);
+                            }
+                        }, 500);
+                    }
+                }
+            });
+
+            // ============ DEPARTEMEN CHANGE HANDLER ============
             $('#departemen').on('change', function() {
                 const namaDep = $(this).val();
                 const jabatanSelect = $('#jabatan');
@@ -1733,183 +1708,243 @@
                 }
             });
 
-            // Handle Wilayah Kerja Change - Load Unit Kerja
+            // ============ WILAYAH KERJA CHANGE HANDLER ============
             $('#wilker').on('change', function() {
                 const wilayahKrj = $(this).val();
                 const unitSelect = $('#unit_krj');
+                const sktInput = $('#skt_wil_krj');
 
                 if (wilayahKrj) {
                     unitSelect.prop('disabled', true);
                     unitSelect.html('<option value="">Loading...</option>');
-
                     $.ajax({
-                        url: `/data-karyawan/unit-kerja/${encodeURIComponent(wilayahKrj)}`,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                unitSelect.html('<option value="">Pilih Unit Kerja</option>');
-
-                                response.data.forEach(function(unit) {
-                                    unitSelect.append(
-                                        `<option value="${unit.area_krj}">${unit.area_krj}</option>`
-                                    );
-                                });
-
-                                unitSelect.prop('disabled', false);
-
-                                if (unitSelect.hasClass('select2-hidden-accessible')) {
-                                    unitSelect.select2('destroy');
-                                }
-                                unitSelect.select2({
-                                    theme: 'bootstrap-5'
-                                });
-
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Data unit kerja berhasil dimuat',
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                    timerProgressBar: true
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
+                    url: `/data-karyawan/unit-kerja/${encodeURIComponent(wilayahKrj)}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
                             unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+
+                            response.data.forEach(function(unit) {
+                                const displayText = unit.singkatan_wk ?
+                                    `${unit.area_krj}` :
+                                    unit.area_krj;
+
+                                unitSelect.append(
+                                    `<option value="${unit.id}" data-singkatan="${unit.singkatan_wk || ''}">${displayText}</option>`
+                                );
+                            });
+
                             unitSelect.prop('disabled', false);
+
+                            if (unitSelect.hasClass('select2-hidden-accessible')) {
+                                unitSelect.select2('destroy');
+                            }
+                            unitSelect.select2({
+                                theme: 'bootstrap-5'
+                            });
 
                             Swal.fire({
                                 toast: true,
                                 position: 'top-end',
-                                icon: 'error',
-                                title: 'Gagal memuat data unit kerja',
+                                icon: 'success',
+                                title: 'Data unit kerja berhasil dimuat',
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 2000,
                                 timerProgressBar: true
                             });
-
-                            console.error('Error:', error);
                         }
-                    });
-                } else {
-                    unitSelect.html('<option value="">Pilih Unit Kerja</option>');
-                    unitSelect.prop('disabled', true);
-                }
-            });
+                    },
+                    error: function(xhr, status, error) {
+                        unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+                        unitSelect.prop('disabled', false);
 
-            // Show/hide PHK card
-            document.getElementById('sts_kry').addEventListener('change', function() {
-                const phkCard = document.getElementById('phkCard');
-                phkCard.style.display = this.value === 'NON-AKTIF' ? 'block' : 'none';
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Gagal memuat data unit kerja',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
 
-                if (this.value !== 'NON-AKTIF') {
-                    document.getElementById('tgl_phk').value = '';
-                    document.getElementById('ket_phk').value = '';
-                }
-            });
-
-            // Calculate contract duration
-            function calculateContractDuration() {
-                const startDate = document.getElementById('tgl_awal_ktr').value;
-                const endDate = document.getElementById('tgl_akhir_ktr').value;
-
-                if (startDate && endDate) {
-                    const start = new Date(startDate);
-                    const end = new Date(endDate);
-                    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start
-                        .getMonth());
-                    document.getElementById('durasi_ktr').value = months > 0 ? months : '';
-                }
-            }
-
-            document.getElementById('tgl_awal_ktr').addEventListener('change', calculateContractDuration);
-            document.getElementById('tgl_akhir_ktr').addEventListener('change', calculateContractDuration);
-
-            // NIK validation
-            document.getElementById('nik').addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '').slice(0, 16);
-            });
-
-            // Phone validation
-            document.querySelectorAll('#tlp1, #tlp2').forEach(function(element) {
-                element.addEventListener('input', function() {
-                    this.value = this.value.replace(/[^0-9+\-\s]/g, '');
+                        console.error('Error:', error);
+                    }
                 });
+            } else {
+                unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+                unitSelect.prop('disabled', true);
+                sktInput.val('');
+            }
+        });
+
+        // ============ UNIT KERJA CHANGE HANDLER - AUTO-FILL SKT ============
+        $('#unit_krj').on('change', function() {
+            const selectedOption = $(this).find('option:selected');
+            const singkatan = selectedOption.data('singkatan');
+            const sktInput = $('#skt_wil_krj');
+
+            if (singkatan) {
+                sktInput.val(singkatan);
+            } else {
+                sktInput.val('');
+            }
+        });
+
+        // ============ SHOW/HIDE PHK CARD ============
+        document.getElementById('sts_kry').addEventListener('change', function() {
+            const phkCard = document.getElementById('phkCard');
+            if (this.value === 'NON-AKTIF') {
+                phkCard.style.display = 'block';
+            } else {
+                phkCard.style.display = 'none';
+                document.getElementById('tgl_phk').value = '';
+                document.getElementById('ket_phk').value = '';
+            }
+        });
+
+        // ============ CALCULATE CONTRACT DURATION ============
+        function calculateContractDuration() {
+            const startDate = document.getElementById('tgl_awal_ktr').value;
+            const endDate = document.getElementById('tgl_akhir_ktr').value;
+
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start
+                    .getMonth());
+                document.getElementById('durasi_ktr').value = months > 0 ? months : '';
+            }
+        }
+
+        document.getElementById('tgl_awal_ktr').addEventListener('change', calculateContractDuration);
+        document.getElementById('tgl_akhir_ktr').addEventListener('change', calculateContractDuration);
+
+        // Trigger on page load if dates exist
+        if (document.getElementById('tgl_awal_ktr').value && document.getElementById('tgl_akhir_ktr').value) {
+            calculateContractDuration();
+        }
+
+        // ============ NIK VALIDATION ============
+        document.getElementById('nik').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, ''); // Only numbers
+            if (this.value.length > 16) {
+                this.value = this.value.slice(0, 16);
+            }
+        });
+
+        // ============ PHONE NUMBER VALIDATION ============
+        document.querySelectorAll('#tlp1, #tlp2').forEach(function(element) {
+            element.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9+\-\s]/g, '');
+            });
+        });
+
+        // ============ FORM VALIDATION BEFORE SUBMIT ============
+        document.getElementById('karyawanForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Always prevent default to check validation first
+
+            const requiredFields = this.querySelectorAll('[data-required="true"]');
+            let missingFields = [];
+            let firstInvalidField = null;
+
+            // Clear previous error states
+            requiredFields.forEach(function(field) {
+                field.classList.remove('is-invalid');
             });
 
-            // Form validation
-            document.getElementById('karyawanForm').addEventListener('submit', function(e) {
-                e.preventDefault();
+            // Check all required fields
+            requiredFields.forEach(function(field) {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    missingFields.push(field.previousElementSibling?.textContent?.replace('*',
+                        '').trim() || field.name);
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                }
+            });
 
-                const requiredFields = this.querySelectorAll('[data-required="true"]');
-                let missingFields = [];
-                let firstInvalidField = null;
+            if (missingFields.length > 0) {
+                // Create list of missing fields
+                let fieldsList = '<ul class="text-start mb-0">';
+                missingFields.forEach(function(fieldName) {
+                    fieldsList += '<li>' + fieldName + '</li>';
+                });
+                fieldsList += '</ul>';
 
-                requiredFields.forEach(field => field.classList.remove('is-invalid'));
-
-                requiredFields.forEach(function(field) {
-                    if (!field.value.trim()) {
-                        field.classList.add('is-invalid');
-                        missingFields.push(field.previousElementSibling?.textContent?.replace('*',
-                            '').trim() || field.name);
-                        if (!firstInvalidField) firstInvalidField = field;
+                // Show SweetAlert2 warning
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data Belum Lengkap',
+                    html: '<p class="mb-2">Mohon lengkapi field berikut yang wajib diisi:</p>' +
+                        fieldsList,
+                    confirmButtonText: 'OK, Saya Mengerti',
+                    confirmButtonColor: '#0d6efd',
+                    customClass: {
+                        confirmButton: 'btn btn-primary'
                     }
                 });
 
-                if (missingFields.length > 0) {
-                    let fieldsList = '<ul class="text-start mb-0">';
-                    missingFields.forEach(name => fieldsList += '<li>' + name + '</li>');
-                    fieldsList += '</ul>';
+                // Find and activate the first tab with error
+                if (firstInvalidField) {
+                    const tabPane = firstInvalidField.closest('.tab-pane');
+                    if (tabPane) {
+                        const tabId = tabPane.id;
+                        const tabButton = document.querySelector(`[data-bs-target="#${tabId}"]`);
+                        if (tabButton) {
+                            // Add error indicator to tab
+                            tabButton.classList.add('has-error');
+                            const tab = new bootstrap.Tab(tabButton);
+                            tab.show();
 
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Data Belum Lengkap',
-                        html: '<p class="mb-2">Mohon lengkapi field berikut:</p>' + fieldsList,
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#0d6efd'
-                    });
-
-                    if (firstInvalidField) {
-                        const tabPane = firstInvalidField.closest('.tab-pane');
-                        if (tabPane) {
-                            const tabButton = document.querySelector(`[data-bs-target="#${tabPane.id}"]`);
-                            if (tabButton) {
-                                tabButton.classList.add('has-error');
-                                new bootstrap.Tab(tabButton).show();
-                                setTimeout(() => firstInvalidField.scrollIntoView({
+                            // Scroll to first invalid field
+                            setTimeout(() => {
+                                firstInvalidField.scrollIntoView({
                                     behavior: 'smooth',
                                     block: 'center'
-                                }), 300);
+                                });
+                                firstInvalidField.focus();
+                            }, 300);
+                        }
+                    }
+                }
+
+                return false;
+            } else {
+                // All validations passed, submit the form
+                this.submit();
+            }
+        });
+
+        // ============ REMOVE ERROR CLASS WHEN FIELD IS FILLED ============
+        document.querySelectorAll('[data-required="true"]').forEach(function(field) {
+            field.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+
+                    // Remove error indicator from tab if all fields in tab are valid
+                    const tabPane = this.closest('.tab-pane');
+                    if (tabPane) {
+                        const invalidFieldsInTab = tabPane.querySelectorAll('.is-invalid');
+                        if (invalidFieldsInTab.length === 0) {
+                            const tabId = tabPane.id;
+                            const tabButton = document.querySelector(
+                                `[data-bs-target="#${tabId}"]`);
+                            if (tabButton) {
+                                tabButton.classList.remove('has-error');
                             }
                         }
                     }
-                } else {
-                    this.submit();
                 }
             });
-
-            // Remove error on input
-            document.querySelectorAll('[data-required="true"]').forEach(function(field) {
-                field.addEventListener('input', function() {
-                    if (this.value.trim()) {
-                        this.classList.remove('is-invalid');
-
-                        const tabPane = this.closest('.tab-pane');
-                        if (tabPane && !tabPane.querySelectorAll('.is-invalid').length) {
-                            document.querySelector(`[data-bs-target="#${tabPane.id}"]`)?.classList
-                                .remove('has-error');
-                        }
-                    }
-                });
-            });
-
-            // START LOADING - Wait minimal time for region API init
-            setTimeout(() => {
-                loadExistingAddressData();
-                loadExistingKarirData(); // TAMBAHKAN INI
-            }, 800);
         });
-    </script>
-@endpush
+
+        // ============ START LOADING - Wait minimal time for region API init ============
+        setTimeout(() => {
+            loadExistingAddressData();
+            loadExistingKarirData();
+        }, 800);
+    });
+</script>

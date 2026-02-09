@@ -87,13 +87,13 @@ class DataKaryawanController extends Controller
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
 
         // Get unique wilayah kerja (grouped by wilayah_krj)
-        $wilayahKerjas = WilayahKerja::select('wilayah_krj', 'singkatan_wk')
-            ->groupBy('wilayah_krj',  'singkatan_wk')
+        $wilayahKerjas = WilayahKerja::select('wilayah_krj')
+            ->groupBy('wilayah_krj')
             ->orderBy('wilayah_krj', 'asc')
             ->get();
 
         // Get unique departemen (grouped by nama_dep)
-        $departemens = Departemen::select('nama_dep', 'singkatan_dep',)
+        $departemens = Departemen::select('nama_dep', 'singkatan_dep')
             ->groupBy('nama_dep', 'singkatan_dep')
             ->orderBy('nama_dep', 'asc')
             ->get();
@@ -265,7 +265,7 @@ class DataKaryawanController extends Controller
 
     public function show($id)
     {
-        $dataKaryawan = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation','kontrakRelation', 'creator', 'updater'])
+        $dataKaryawan = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'kontrakRelation', 'creator', 'updater'])
             ->findOrFail($id);
         return view('data.data-karyawan.show', compact('dataKaryawan'));
     }
@@ -279,8 +279,8 @@ class DataKaryawanController extends Controller
         $kontraks = KontrakKerja::orderBy('singkatan_ktr', 'asc')->get();
 
         // Get unique wilayah kerja (grouped by wilayah_krj)
-        $wilayahKerjas = WilayahKerja::select('wilayah_krj', 'singkatan_wk')
-            ->groupBy('wilayah_krj', 'singkatan_wk')
+        $wilayahKerjas = WilayahKerja::select('wilayah_krj')
+            ->groupBy('wilayah_krj')
             ->orderBy('wilayah_krj', 'asc')
             ->get();
 
@@ -289,7 +289,6 @@ class DataKaryawanController extends Controller
             ->groupBy('nama_dep', 'singkatan_dep')
             ->orderBy('nama_dep', 'asc')
             ->get();
-
 
         return view('data.data-karyawan.edit', compact('dataKaryawan', 'perusahaans', 'wilayahKerjas', 'departemens', 'kontraks'));
     }
@@ -516,8 +515,9 @@ class DataKaryawanController extends Controller
     {
         try {
             $jabatans = Departemen::where('nama_dep', $namaDep)
+                ->sortByCode()
                 ->orderBy('nama_jbt', 'asc')
-                ->get(['id', 'nama_jbt', 'singkatan_jbt']);
+                ->get(['id', 'kode_dep', 'nama_jbt', 'singkatan_jbt']);
 
             return response()->json([
                 'success' => true,
@@ -538,8 +538,9 @@ class DataKaryawanController extends Controller
     {
         try {
             $unitKerjas = WilayahKerja::where('wilayah_krj', $wilayahKrj)
+                ->sortByCode()
                 ->orderBy('area_krj', 'asc')
-                ->get(['id', 'area_krj', 'wilayah_krj']);
+                ->get(['id', 'kode_wk', 'area_krj', 'singkatan_wk']);
 
             return response()->json([
                 'success' => true,
@@ -581,9 +582,10 @@ class DataKaryawanController extends Controller
 
             return response()->json([
                 'success' => true,
-                'datawilker' => [
+                'data' => [
                     'wilayah_krj' => $wilker->wilayah_krj,
                     'area_krj' => $wilker->area_krj,
+                    'singkatan_wk' => $wilker->singkatan_wk
                 ]
             ]);
         } catch (\Exception $e) {

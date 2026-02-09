@@ -102,6 +102,23 @@ class Departemen extends Model
         return $query->where('kode_dep', $code);
     }
 
+    public function scopeSortByCode($query)
+    {
+        return $query->orderByRaw('CAST(kode_dep AS UNSIGNED) ASC');
+    }
+
+    /**
+     * Scope a query to sort by position code ascending.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSortByPositionCode($query)
+    {
+        return $query->orderByRaw('CAST(kode_dep AS UNSIGNED) ASC')
+                    ->orderBy('nama_jbt', 'ASC');
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by', 'id_kode');

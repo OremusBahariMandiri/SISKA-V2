@@ -705,7 +705,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <div class="form-group mb-3">
                                                         <label for="jenjang_skl" class="form-label fw-bold">Jenjang
                                                             Pendidikan</label>
@@ -765,20 +765,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- Jurusan --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="jurusan_skl"
-                                                            class="form-label fw-bold">Jurusan</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-book-open"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="jurusan_skl" name="jurusan_skl"
-                                                                value="{{ old('jurusan_skl') }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div class="row">
@@ -796,6 +782,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
                                                 {{-- Kota --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -810,7 +797,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- SKT --}}
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_inst_skl" class="form-label fw-bold">SKT</label>
                                                         <div class="input-group">
@@ -821,7 +808,7 @@
                                                                 value="{{ old('skt_inst_skl') }}">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                                 {{-- Gelar --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -832,6 +819,20 @@
                                                             <input type="text" class="form-control auto-uppercase"
                                                                 id="gelar_skl" name="gelar_skl"
                                                                 value="{{ old('gelar_skl') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- Jurusan --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="jurusan_skl"
+                                                            class="form-label fw-bold">Jurusan</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-book-open"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="jurusan_skl" name="jurusan_skl"
+                                                                value="{{ old('jurusan_skl') }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -889,6 +890,7 @@
                                                                     @foreach ($kontraks as $ktr)
                                                                         <option value="{{ $ktr->id }}"
                                                                             {{ old('singkatan_ktr') == $ktr->id ? 'selected' : '' }}>
+                                                                            {{ $ktr->nama_ktr }} -
                                                                             {{ $ktr->singkatan_ktr }}
                                                                         </option>
                                                                     @endforeach
@@ -898,7 +900,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- SKT KTR --}}
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_sts_ktr" class="form-label fw-bold">SKT Kontrak</label>
                                                         <div class="input-group">
@@ -909,7 +911,7 @@
                                                                 value="{{ old('skt_sts_ktr') }}">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                                 {{-- Perusahaan --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -925,7 +927,8 @@
                                                                     @foreach ($perusahaans as $perusahaan)
                                                                         <option value="{{ $perusahaan->id }}"
                                                                             {{ old('perusahaan') == $perusahaan->id ? 'selected' : '' }}>
-                                                                            {{ $perusahaan->nama_prs1 }}
+                                                                            {{ $perusahaan->nama_prs1 }} -
+                                                                            {{ $perusahaan->nama_prs2 }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -934,7 +937,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- SKT Prs --}}
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_prs" class="form-label fw-bold">SKT Perusahaan</label>
                                                         <div class="input-group">
@@ -945,7 +948,7 @@
                                                                 value="{{ old('skt_prs') }}">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             </div>
 
                                             <div class="row">
@@ -1014,7 +1017,8 @@
                                                                     @foreach ($departemens as $departemen)
                                                                         <option value="{{ $departemen->nama_dep }}"
                                                                             {{ old('departemen') == $departemen->nama_dep ? 'selected' : '' }}>
-                                                                            {{ $departemen->singkatan_dep }} - {{ $departemen->nama_dep }}
+                                                                            {{ $departemen->nama_dep }} -
+                                                                            {{ $departemen->singkatan_dep }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -1039,7 +1043,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- SKT DEP --}}
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_dep" class="form-label fw-bold">SKT
                                                             Departemen</label>
@@ -1051,9 +1055,9 @@
                                                                 value="{{ old('skt_dep') }}">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                                 {{-- SKT Jabatan --}}
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_jbt" class="form-label fw-bold">SKT
                                                             Jabatan</label>
@@ -1065,12 +1069,13 @@
                                                                 value="{{ old('skt_jbt') }}">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             </div>
 
                                             <div class="row">
                                                 {{-- wilker --}}
-                                                <div class="col-md-6">
+                                                {{-- wilker --}}
+                                                <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="wilker" class="form-label fw-bold">Wilayah
                                                             Kerja</label>
@@ -1084,7 +1089,7 @@
                                                                     @foreach ($wilayahKerjas as $wilayah)
                                                                         <option value="{{ $wilayah->wilayah_krj }}"
                                                                             {{ old('wilker') == $wilayah->wilayah_krj ? 'selected' : '' }}>
-                                                                            {{ $wilayah->singkatan_wk }} - {{ $wilayah->wilayah_krj }}
+                                                                            {{ $wilayah->wilayah_krj }}
                                                                         </option>
                                                                     @endforeach
                                                                 </select>
@@ -1093,9 +1098,9 @@
                                                     </div>
                                                 </div>
                                                 {{-- unit krj --}}
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group mb-3">
-                                                        <label for="unit_krj" class="form-label fw-bold">Unit
+                                                        <label for="unit_krj" class="form-label fw-bold">Area
                                                             Kerja</label>
                                                         <div class="input-group">
                                                             <span class="input-group-text"><i
@@ -1110,7 +1115,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- SKT Wilker --}}
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_wil_krj" class="form-label fw-bold">SKT Wilayah
                                                             Kerja</label>
@@ -1119,7 +1124,7 @@
                                                                     class="fas fa-map-marker-alt"></i></span>
                                                             <input type="text" class="form-control auto-uppercase"
                                                                 id="skt_wil_krj" name="skt_wil_krj"
-                                                                value="{{ old('skt_wil_krj') }}">
+                                                                value="{{ old('skt_wil_krj') }}" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1177,7 +1182,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- Status Karyawan --}}
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <div class="form-group mb-3">
                                                         <label for="sts_kry" class="form-label fw-bold">Status Karyawan
                                                             <span class="text-danger">*</span></label>
@@ -1201,7 +1206,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- SKT Status Kry --}}
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_sts_kry" class="form-label fw-bold">SKT
                                                             Status Karyawan</label>
@@ -1213,7 +1218,7 @@
                                                                 value="{{ old('skt_sts_kry') }}">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -1510,14 +1515,17 @@
 
 
             // Handle Wilayah Kerja Change - Load Unit Kerja
+            // Handle Wilayah Kerja Change - Load Unit Kerja
             $('#wilker').on('change', function() {
                 const wilayahKrj = $(this).val();
                 const unitSelect = $('#unit_krj');
+                const sktInput = $('#skt_wil_krj');
 
                 if (wilayahKrj) {
                     // Show loading indicator
                     unitSelect.prop('disabled', true);
                     unitSelect.html('<option value="">Loading...</option>');
+                    sktInput.val(''); // Clear SKT
 
                     // AJAX request
                     $.ajax({
@@ -1530,14 +1538,18 @@
                                 unitSelect.html('<option value="">Pilih Unit Kerja</option>');
 
                                 response.data.forEach(function(unit) {
+                                    const displayText = unit.singkatan_wk ?
+                                        `${unit.area_krj}` :
+                                        unit.area_krj;
+
                                     unitSelect.append(
-                                        `<option value="${unit.area_krj}">${unit.area_krj}</option>`
+                                        `<option value="${unit.id}" data-singkatan="${unit.singkatan_wk || ''}">${displayText}</option>`
                                     );
                                 });
 
                                 unitSelect.prop('disabled', false);
 
-                                // Reinitialize select2 if needed
+                                // Reinitialize select2
                                 if (unitSelect.hasClass('select2-hidden-accessible')) {
                                     unitSelect.select2('destroy');
                                 }
@@ -1545,7 +1557,7 @@
                                     theme: 'bootstrap-5'
                                 });
 
-                                // Optional: Show notification
+                                // Show notification
                                 Swal.fire({
                                     toast: true,
                                     position: 'top-end',
@@ -1578,6 +1590,20 @@
                     // Clear unit kerja if no wilayah selected
                     unitSelect.html('<option value="">Pilih Unit Kerja</option>');
                     unitSelect.prop('disabled', true);
+                    sktInput.val('');
+                }
+            });
+
+            // Handle Unit Kerja Change - Auto-fill SKT
+            $('#unit_krj').on('change', function() {
+                const selectedOption = $(this).find('option:selected');
+                const singkatan = selectedOption.data('singkatan');
+                const sktInput = $('#skt_wil_krj');
+
+                if (singkatan) {
+                    sktInput.val(singkatan);
+                } else {
+                    sktInput.val('');
                 }
             });
 

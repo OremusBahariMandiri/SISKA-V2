@@ -49,27 +49,28 @@
                                 <thead class="table-light">
                                     <tr>
                                         <!-- Kolom Prioritas -->
-                                        <th width="3%">NO</th>
-                                        <th width="6%">NRK</th>
-                                        <th width="12%">NAMA</th>
-                                        <th width="8%">TPT LHR</th>
-                                        <th width="7%">TGL LHR</th>
-                                        <th width="5%">UMUR</th>
-                                        <th width="4%">SEX</th>
+                                        <th width="3%" class="text-center">NO</th>
+                                        <th width="6%" class="text-center">NRK</th>
+                                        <th width="12%" class="text-center">NAMA</th>
+                                        <th width="8%" class="text-center">TPT LHR</th>
+                                        <th width="7%" class="text-center">TGL LHR</th>
+                                        <th width="5%" class="text-center">UMUR</th>
+                                        <th width="4%" class="text-center">SEX</th>
                                         <th width="5%" class="text-center">FOTO</th>
-                                        <th width="7%">TGL MSK</th>
-                                        <th width="8%">PRSH</th>
-                                        <th width="6%">KNT</th>
-                                        <th width="7%">TGL HK</th>
-                                        <th width="8%">DEP</th>
-                                        <th width="8%">JBT</th>
-                                        <th width="8%">WILKER</th>
+                                        <th width="7%" class="text-center">TGL MSK</th>
+                                        <th width="8%" class="text-center">PRSH</th>
+                                        <th width="6%" class="text-center">KNT</th>
+                                        <th width="7%" class="text-center">TGL HK</th>
+                                        <th width="8%" class="text-center">DEP</th>
+                                        <th width="8%" class="text-center">JBT</th>
+                                        <th width="8%" class="text-center">WILKER</th>
                                         <th width="7%" class="text-center">STKAR</th>
-                                        <th width="8%" class="text-center">AKSI</th>
+
                                         <!-- Kolom Tambahan -->
-                                        <th width="7%">TGL NA</th>
-                                        <th width="8%">KET NA</th>
-                                        <th width="10%">MKR</th>
+                                        <th width="7%" class="text-center">TGL NA</th>
+                                        <th width="8%" class="text-center"> KET NA</th>
+                                        <th width="10%" class="text-center">MKR</th>
+                                        <th width="8%" class="text-center">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -211,6 +212,10 @@
                                                 @endif
                                             </td>
                                             <!-- Kolom Tambahan -->
+                                            <td>{{ $karyawan->tgl_phk ? date('d-m-Y', strtotime($karyawan->tgl_phk)) : '-' }}
+                                            </td>
+                                            <td><small>{{ $karyawan->ket_phk ?? '-' }}</small></td>
+                                            <td>{{ $workDuration }}</td>
                                             <td>
                                                 <div class="d-flex gap-1 justify-content-center">
                                                     @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
@@ -240,10 +245,6 @@
                                                     @endif
                                                 </div>
                                             </td>
-                                            <td>{{ $karyawan->tgl_phk ? date('d-m-Y', strtotime($karyawan->tgl_phk)) : '-' }}
-                                            </td>
-                                            <td><small>{{ $karyawan->ket_phk ?? '-' }}</small></td>
-                                            <td>{{ $workDuration }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

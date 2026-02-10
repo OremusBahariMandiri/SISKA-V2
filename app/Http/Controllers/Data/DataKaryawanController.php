@@ -29,17 +29,34 @@ class DataKaryawanController extends Controller
         $this->middleware('check.access:data-karyawan,hapus')->only('destroy');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Sort by nrk ascending (A-Z)
-        $dataKaryawans = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation'])
-            ->orderBy('nama', 'asc')
-            ->get();
+        // Initialize query with relationships
+        $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation']);
+
+        // Apply filters if they exist
+        if ($request->has('filter_status') && !empty($request->filter_status)) {
+            $query->where('sts_kry', $request->filter_status);
+        }
+
+        if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
+            $query->where('perusahaan', $request->filter_perusahaan);
+        }
+
+        // Get filtered data
+        $dataKaryawans = $query->orderBy('nama', 'asc')->get();
 
         // Get master data for filter dropdowns
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
         $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
         $departemens = Departemen::sortByCode()->get();
+
+        // Get status options
+        $statusOptions = [
+            'CALON' => 'CALON',
+            'AKTIF' => 'AKTIF',
+            'NON-AKTIF' => 'NON-AKTIF'
+        ];
 
         // Get user permissions for this menu
         $userPermissions = [];
@@ -69,12 +86,20 @@ class DataKaryawanController extends Controller
             }
         }
 
+        // Store current filters for view
+        $currentFilters = [
+            'status' => $request->filter_status,
+            'perusahaan' => $request->filter_perusahaan
+        ];
+
         return view('data.data-karyawan.index', compact(
             'dataKaryawans',
             'userPermissions',
             'perusahaans',
             'wilayahKerjas',
-            'departemens'
+            'departemens',
+            'statusOptions',
+            'currentFilters'
         ));
     }
 
@@ -84,8 +109,8 @@ class DataKaryawanController extends Controller
         $newId = $this->generateId('201', '201_dm_data_karyawan');
 
         // Get master data for dropdowns
-        $kontraks = KontrakKerja::orderBy('singkatan_ktr', 'asc')->get();
-        $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
+        $kontraks = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
+        $perusahaans = Perusahaan::orderBy('kode_prs', 'asc')->get();
 
         // Get unique wilayah kerja (grouped by wilayah_krj)
         $wilayahKerjas = WilayahKerja::select('wilayah_krj')
@@ -276,8 +301,8 @@ class DataKaryawanController extends Controller
         $dataKaryawan = DataKaryawan::findOrFail($id);
 
         // Get master data for dropdowns
-        $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
-        $kontraks = KontrakKerja::orderBy('singkatan_ktr', 'asc')->get();
+        $perusahaans = Perusahaan::orderBy('kode_prs', 'asc')->get();
+        $kontraks = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
 
         // Get unique wilayah kerja (grouped by wilayah_krj)
         $wilayahKerjas = WilayahKerja::select('wilayah_krj')
@@ -448,60 +473,16 @@ class DataKaryawanController extends Controller
     {
         $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation']);
 
-        // Apply filters
-        if (!empty($filters['nrk'])) {
-            $query->where('nrk', 'like', '%' . $filters['nrk'] . '%');
+        // Apply filters - only status and company
+        if (!empty($filters['filter_status'])) {
+            $query->where('sts_kry', $filters['filter_status']);
         }
 
-        if (!empty($filters['nama'])) {
-            $query->where('nama', 'like', '%' . $filters['nama'] . '%');
+        if (!empty($filters['filter_perusahaan'])) {
+            $query->where('perusahaan', $filters['filter_perusahaan']);
         }
 
-        if (!empty($filters['nik'])) {
-            $query->where('nik', 'like', '%' . $filters['nik'] . '%');
-        }
-
-        if (!empty($filters['sex'])) {
-            $query->where('sex', $filters['sex']);
-        }
-
-        if (!empty($filters['agama'])) {
-            $query->where('agama', $filters['agama']);
-        }
-
-        if (!empty($filters['sts_nikah'])) {
-            $query->where('sts_nikah', $filters['sts_nikah']);
-        }
-
-        if (!empty($filters['perusahaan'])) {
-            $query->where('perusahaan', $filters['perusahaan']);
-        }
-
-        if (!empty($filters['departemen'])) {
-            $query->where('departemen', $filters['departemen']);
-        }
-
-        if (!empty($filters['jabatan'])) {
-            $query->where('jabatan', 'like', '%' . $filters['jabatan'] . '%');
-        }
-
-        if (!empty($filters['wilker'])) {
-            $query->where('wilker', $filters['wilker']);
-        }
-
-        if (!empty($filters['sts_kry'])) {
-            $query->where('sts_kry', $filters['sts_kry']);
-        }
-
-        if (!empty($filters['tgl_masuk_from']) && !empty($filters['tgl_masuk_to'])) {
-            $query->whereBetween('tgl_masuk', [$filters['tgl_masuk_from'], $filters['tgl_masuk_to']]);
-        } elseif (!empty($filters['tgl_masuk_from'])) {
-            $query->where('tgl_masuk', '>=', $filters['tgl_masuk_from']);
-        } elseif (!empty($filters['tgl_masuk_to'])) {
-            $query->where('tgl_masuk', '<=', $filters['tgl_masuk_to']);
-        }
-
-        $dataKaryawans = $query->orderBy('nrk', 'asc')->get();
+        $dataKaryawans = $query->orderBy('nama', 'asc')->get();
 
         return [
             'dataKaryawans' => $dataKaryawans,
@@ -539,7 +520,7 @@ class DataKaryawanController extends Controller
         try {
             $unitKerjas = WilayahKerja::where('wilayah_krj', $wilayahKrj)
                 ->orderByRaw('CAST(kode_wk AS UNSIGNED) ASC')
-          ->orderBy('kode_wk', 'ASC')
+                ->orderBy('kode_wk', 'ASC')
                 ->get(['id', 'kode_wk', 'area_krj', 'singkatan_wk']);
 
             return response()->json([

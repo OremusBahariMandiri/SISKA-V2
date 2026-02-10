@@ -59,7 +59,8 @@
                                                 <div class="d-flex gap-1 justify-content-center">
                                                     @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
                                                         <a href="{{ route('departemen.show', $departemen->id) }}"
-                                                            class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="Detail">
+                                                            class="btn btn-sm btn-info" data-bs-toggle="tooltip"
+                                                            title="Detail">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                     @endif
@@ -241,8 +242,8 @@
     <script>
         $(document).ready(function() {
             // Destroy existing DataTable if exists to prevent conflicts
-            if (!$.fn.DataTable.isDataTable('#usersTable')) {
-                $('#usersTable').DataTable({
+            if (!$.fn.DataTable.isDataTable('#departemenTable')) {
+                $('#departemenTable').DataTable({
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
@@ -257,20 +258,17 @@
             });
 
             // Handle delete confirmation
-            $('.delete-confirm').on('click', function() {
+            // FIXED: Using event delegation for paginated content
+            $(document).on('click', '.delete-confirm', function() {
                 var id = $(this).data('id');
                 var name = $(this).data('name');
 
-                // Set departemen name in modal
-                $('#departemenNameToDelete').text(name);
+                // Using Laravel route helper with placeholder
+                var deleteUrl = "{{ route('departemen.destroy', ':id') }}".replace(':id', id);
+                $('#deleteForm').attr('action', deleteUrl);
 
-                // Set form action URL with explicit URL construction
-                $('#deleteForm').attr('action', "{{ url('departemen') }}/" + id);
-
-                // Show modal
                 $('#deleteConfirmationModal').modal('show');
             });
-
             // Tambahkan efek klik pada baris tabel untuk menuju halaman detail
             $('#departemenTable tbody').on('click', 'tr', function(e) {
                 // Don't follow link if clicking on buttons or links

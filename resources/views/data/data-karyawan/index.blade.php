@@ -50,8 +50,8 @@
                                     <tr>
                                         <!-- Kolom Prioritas -->
                                         <th width="3%" class="text-center">NO</th>
-                                        <th width="6%" class="text-center">NRK</th>
-                                        <th width="12%" class="text-center">NAMA</th>
+                                        <th width="6%" class="text-center">NRK / NIK</th>
+                                        <th width="10%" class="text-center">NAMA</th>
                                         <th width="8%" class="text-center">TPT LHR</th>
                                         <th width="7%" class="text-center">TGL LHR</th>
                                         <th width="5%" class="text-center">UMUR</th>
@@ -137,7 +137,10 @@
                                             data-masa-kerja-bulan="{{ $workMonths }}">
                                             <!-- Kolom Prioritas -->
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $karyawan->nrk ?? '-' }}</td>
+                                            <td>
+                                                {{ $karyawan->nrk ?? '-' }}
+                                                <span class="text-muted"> {{ $karyawan->nik ?? '-' }}</span>
+                                            </td>
                                             <td>{{ $karyawan->nama }}</td>
                                             <td>{{ $karyawan->tpt_lahir ?? '-' }}</td>
                                             <td>{{ $karyawan->tgl_lahir ? date('d-m-Y', strtotime($karyawan->tgl_lahir)) : '-' }}

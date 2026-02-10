@@ -815,33 +815,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- Gelar --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="gelar_skl" class="form-label fw-bold">Gelar</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-medal"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="gelar_skl" name="gelar_skl"
-                                                                value="{{ old('gelar_skl', $dataKaryawan->gelar_skl) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {{-- Jurusan --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="jurusan_skl"
-                                                            class="form-label fw-bold">Jurusan</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-book-open"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="jurusan_skl" name="jurusan_skl"
-                                                                value="{{ old('jurusan_skl', $dataKaryawan->jurusan_skl) }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 {{-- Fakultas --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -856,6 +829,34 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                 {{-- Gelar --}}
+                                                 <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="gelar_skl" class="form-label fw-bold">Gelar</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-medal"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="gelar_skl" name="gelar_skl"
+                                                                value="{{ old('gelar_skl', $dataKaryawan->gelar_skl) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                 {{-- Jurusan --}}
+                                                 <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="jurusan_skl"
+                                                            class="form-label fw-bold">Jurusan</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-book-open"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="jurusan_skl" name="jurusan_skl"
+                                                                value="{{ old('jurusan_skl', $dataKaryawan->jurusan_skl) }}">
+                                                        </div>
+                                                    </div>
+                                                </div>  
+
                                                 {{-- Tgl Lulus --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">

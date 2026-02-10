@@ -32,7 +32,7 @@ class DataKaryawanController extends Controller
     public function index(Request $request)
     {
         // Initialize query with relationships
-        $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation']);
+        $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'creator', 'updater']);
 
         // Apply filters if they exist
         if ($request->has('filter_status') && !empty($request->filter_status)) {
@@ -43,6 +43,38 @@ class DataKaryawanController extends Controller
             $query->where('perusahaan', $request->filter_perusahaan);
         }
 
+        if ($request->has('filter_skt_wilker') && !empty($request->filter_skt_wilker)) {
+            if ($request->filter_skt_wilker === 'null') {
+                // Filter for wilayah kerja with null/empty skt_wilker
+                $wilayahKerjaIds = WilayahKerja::where(function($query) {
+                    $query->whereNull('skt_wilker')
+                          ->orWhere('skt_wilker', '')
+                          ->orWhere('skt_wilker', '-');
+                })->pluck('id')->toArray();
+
+                if (!empty($wilayahKerjaIds)) {
+                    $query->whereIn('wilker', $wilayahKerjaIds);
+                } else {
+                    // If no wilayah kerja with null skt_wilker, also check employees with null wilker
+                    $query->where(function($q) {
+                        $q->whereNull('wilker')
+                          ->orWhereIn('wilker', [0, '']);
+                    });
+                }
+            } else {
+                // Filter wilayah kerja based on singkatan_wk that starts with selected skt_wilker
+                // Example: if skt_wilker = "JTM", find all wilayah with singkatan_wk like "JTM%"
+                // This will match JTM-SBY, JTM-ABC, JTM-BID, etc.
+                $wilayahKerjaIds = WilayahKerja::where('singkatan_wk', 'LIKE', $request->filter_skt_wilker . '%')
+                    ->pluck('id')
+                    ->toArray();
+
+                if (!empty($wilayahKerjaIds)) {
+                    $query->whereIn('wilker', $wilayahKerjaIds);
+                }
+            }
+        }
+
         // Get filtered data
         $dataKaryawans = $query->orderBy('nama', 'asc')->get();
 
@@ -50,6 +82,27 @@ class DataKaryawanController extends Controller
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
         $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
         $departemens = Departemen::sortByCode()->get();
+
+        // Get unique skt_wilker values for filter dropdown
+        $sktWilkerOptions = WilayahKerja::whereNotNull('skt_wilker')
+            ->where('skt_wilker', '!=', '')
+            ->where('skt_wilker', '!=', '-')
+            ->distinct()
+            ->orderBy('skt_wilker', 'asc')
+            ->pluck('skt_wilker')
+            ->toArray();
+
+        // Check if there are any wilayah kerja with null/empty skt_wilker
+        $hasNullSktWilker = WilayahKerja::where(function($query) {
+            $query->whereNull('skt_wilker')
+                  ->orWhere('skt_wilker', '')
+                  ->orWhere('skt_wilker', '-');
+        })->exists();
+
+        // Add null option if there are records with null skt_wilker
+        if ($hasNullSktWilker) {
+            array_unshift($sktWilkerOptions, 'null'); // Add at the beginning
+        }
 
         // Get status options
         $statusOptions = [
@@ -89,7 +142,8 @@ class DataKaryawanController extends Controller
         // Store current filters for view
         $currentFilters = [
             'status' => $request->filter_status,
-            'perusahaan' => $request->filter_perusahaan
+            'perusahaan' => $request->filter_perusahaan,
+            'skt_wilker' => $request->filter_skt_wilker
         ];
 
         return view('data.data-karyawan.index', compact(
@@ -99,6 +153,7 @@ class DataKaryawanController extends Controller
             'wilayahKerjas',
             'departemens',
             'statusOptions',
+            'sktWilkerOptions',
             'currentFilters'
         ));
     }
@@ -473,13 +528,45 @@ class DataKaryawanController extends Controller
     {
         $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation']);
 
-        // Apply filters - only status and company
+        // Apply filters - status, company, and skt_wilker
         if (!empty($filters['filter_status'])) {
             $query->where('sts_kry', $filters['filter_status']);
         }
 
         if (!empty($filters['filter_perusahaan'])) {
             $query->where('perusahaan', $filters['filter_perusahaan']);
+        }
+
+        if (!empty($filters['filter_skt_wilker'])) {
+            if ($filters['filter_skt_wilker'] === 'null') {
+                // Filter for wilayah kerja with null/empty skt_wilker
+                $wilayahKerjaIds = WilayahKerja::where(function($query) {
+                    $query->whereNull('skt_wilker')
+                          ->orWhere('skt_wilker', '')
+                          ->orWhere('skt_wilker', '-');
+                })->pluck('id')->toArray();
+
+                if (!empty($wilayahKerjaIds)) {
+                    $query->whereIn('wilker', $wilayahKerjaIds);
+                } else {
+                    // If no wilayah kerja with null skt_wilker, also check employees with null wilker
+                    $query->where(function($q) {
+                        $q->whereNull('wilker')
+                          ->orWhereIn('wilker', [0, '']);
+                    });
+                }
+            } else {
+                // Filter wilayah kerja based on singkatan_wk that starts with selected skt_wilker
+                // Example: if skt_wilker = "JTM", find all wilayah with singkatan_wk like "JTM%"
+                // This will match JTM-SBY, JTM-ABC, JTM-BID, etc.
+                $wilayahKerjaIds = WilayahKerja::where('singkatan_wk', 'LIKE', $filters['filter_skt_wilker'] . '%')
+                    ->pluck('id')
+                    ->toArray();
+
+                if (!empty($wilayahKerjaIds)) {
+                    $query->whereIn('wilker', $wilayahKerjaIds);
+                }
+            }
         }
 
         $dataKaryawans = $query->orderBy('nama', 'asc')->get();

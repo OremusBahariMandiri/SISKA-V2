@@ -45,25 +45,29 @@
                         @endif
 
                         <!-- Active Filter Display -->
-                        @if(!empty($currentFilters['status']) || !empty($currentFilters['perusahaan']))
+                        @if (!empty($currentFilters['status']) || !empty($currentFilters['perusahaan']))
                             <div class="alert alert-info alert-dismissible fade show" role="alert">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Filter Aktif:</strong>
-                                @if(!empty($currentFilters['status']))
+                                @if (!empty($currentFilters['status']))
                                     Status: <span class="badge bg-primary">{{ $currentFilters['status'] }}</span>
                                 @endif
-                                @if(!empty($currentFilters['perusahaan']))
+                                @if (!empty($currentFilters['perusahaan']))
                                     @php
-                                        $selectedPerusahaan = $perusahaans->where('id', $currentFilters['perusahaan'])->first();
+                                        $selectedPerusahaan = $perusahaans
+                                            ->where('id', $currentFilters['perusahaan'])
+                                            ->first();
                                     @endphp
-                                    @if($selectedPerusahaan)
-                                        Perusahaan: <span class="badge bg-success">{{ $selectedPerusahaan->nama_prs2 }}</span>
+                                    @if ($selectedPerusahaan)
+                                        Perusahaan: <span
+                                            class="badge bg-success">{{ $selectedPerusahaan->nama_prs2 }}</span>
                                     @endif
                                 @endif
                                 <a href="{{ route('data-karyawan.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
                                     <i class="fas fa-times me-1"></i> Reset Filter
                                 </a>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
                         @endif
 
@@ -75,9 +79,9 @@
                                         <th width="3%" class="text-center">NO</th>
                                         <th width="4%" class="text-center">NRK / NIK</th>
                                         <th width="8%" class="text-center">NAMA</th>
-                                        <th  class="text-center">TPT LHR</th>
+                                        <th class="text-center">TPT LHR</th>
                                         <th class="text-center">TGL LHR</th>
-                                        <th  class="text-center">UMUR</th>
+                                        <th class="text-center">UMUR</th>
                                         <th class="text-center">SEX</th>
                                         <th width="6%" class="text-center">FOTO</th>
                                         <th width="7%" class="text-center">TGL MSK</th>
@@ -87,10 +91,12 @@
                                         <th width="8%" class="text-center">DEP</th>
                                         <th width="7%" class="text-center">JBT</th>
                                         <th width="7%" class="text-center">WILKER</th>
+                                        <th width="7%" class="text-center">SKT WILKER</th>
                                         <th width="7%" class="text-center">STKAR</th>
                                         <th width="7%" class="text-center">TGL NA</th>
-                                        <th width="7%" class="text-center"> KET NA</th>
                                         <th width="8%" class="text-center">MKR</th>
+                                        <th width="8%" class="text-center">CREATE</th>
+                                        <th width="8%" class="text-center">UPDATE</th>
                                         <th width="8%" class="text-center">AKSI</th>
                                     </tr>
                                 </thead>
@@ -214,6 +220,7 @@
                                             </td>
                                             <td><small>{{ Str::limit($departemen, 15) }}</small></td>
                                             <td><small>{{ Str::limit($jabatan, 15) }}</small></td>
+                                            <td><small>{{ $karyawan->wilker ?? '-' }}</small></td>
                                             <td><small>{{ $karyawan->skt_wil_krj ?? '-' }}</small></td>
                                             <td class="text-center">
                                                 @if ($karyawan->sts_kry == 'CALON')
@@ -235,8 +242,13 @@
                                             <!-- Kolom Tambahan -->
                                             <td>{{ $karyawan->tgl_phk ? date('d-m-Y', strtotime($karyawan->tgl_phk)) : '-' }}
                                             </td>
-                                            <td><small>{{ $karyawan->ket_phk ?? '-' }}</small></td>
                                             <td>{{ $workDuration }}</td>
+                                            <td> {{ $karyawan->creator ? $karyawan->creator->nama_kry : '-' }}
+                                                <span style="font-size: 11px">{{ $karyawan->created_at ? $karyawan->created_at->format('d F Y H:i') : '-' }}</span>
+                                            </td>
+                                            <td> {{ $karyawan->updater ? $karyawan->updater->nama_kry : '-' }}
+                                                <span style="font-size: 11px">{{ $karyawan->updated_at ? $karyawan->updated_at->format('d F Y H:i') : '-' }}</span>
+                                            </td>
                                             <td>
                                                 <div class="d-flex gap-1 justify-content-center">
                                                     @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
@@ -294,8 +306,9 @@
                                     <label for="filter_status" class="form-label fw-bold">Status Karyawan</label>
                                     <select class="form-select" id="filter_status" name="filter_status">
                                         <option value="">Semua Status</option>
-                                        @foreach($statusOptions as $value => $label)
-                                            <option value="{{ $value }}" {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
+                                        @foreach ($statusOptions as $value => $label)
+                                            <option value="{{ $value }}"
+                                                {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
                                                 {{ $label }}
                                             </option>
                                         @endforeach
@@ -307,8 +320,9 @@
                                     <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
                                     <select class="form-select" id="filter_perusahaan" name="filter_perusahaan">
                                         <option value="">Semua Perusahaan</option>
-                                        @foreach($perusahaans as $perusahaan)
-                                            <option value="{{ $perusahaan->id }}" {{ $currentFilters['perusahaan'] == $perusahaan->id ? 'selected' : '' }}>
+                                        @foreach ($perusahaans as $perusahaan)
+                                            <option value="{{ $perusahaan->id }}"
+                                                {{ $currentFilters['perusahaan'] == $perusahaan->id ? 'selected' : '' }}>
                                                 {{ $perusahaan->nama_prs2 }}
                                             </option>
                                         @endforeach

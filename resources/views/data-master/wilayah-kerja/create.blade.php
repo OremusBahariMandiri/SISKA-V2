@@ -57,6 +57,16 @@
                                             </div>
 
                                             <div class="form-group mb-3">
+                                                <label for="skt_wilker" class="form-label fw-bold">SKT Wilayah Kerja <span
+                                                        class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-map"></i></span>
+                                                    <input type="text" class="form-control auto-uppercase" id="skt_wilker"
+                                                        name="skt_wilker" value="{{ old('skt_wilker') }}" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-3">
                                                 <label for="area_krj" class="form-label fw-bold">Area Kerja <span
                                                         class="text-danger">*</span></label>
                                                 <div class="input-group">

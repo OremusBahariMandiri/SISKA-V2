@@ -251,18 +251,15 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
 
-            // Handle delete confirmation
-            $('.delete-confirm').on('click', function() {
+
+            $(document).on('click', '.delete-confirm', function() {
                 var id = $(this).data('id');
                 var name = $(this).data('name');
 
-                // Set kontrak name in modal
-                $('#kontrakNameToDelete').text(name);
+                // Using Laravel route helper with placeholder
+                var deleteUrl = "{{ route('kontrak-kerja.destroy', ':id') }}".replace(':id', id);
+                $('#deleteForm').attr('action', deleteUrl);
 
-                // Set form action URL with explicit URL construction
-                $('#deleteForm').attr('action', "{{ url('kontrak-kerja') }}/" + id);
-
-                // Show modal
                 $('#deleteConfirmationModal').modal('show');
             });
 

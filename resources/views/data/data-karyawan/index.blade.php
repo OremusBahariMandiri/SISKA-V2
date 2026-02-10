@@ -44,6 +44,29 @@
                             </div>
                         @endif
 
+                        <!-- Active Filter Display -->
+                        @if(!empty($currentFilters['status']) || !empty($currentFilters['perusahaan']))
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Filter Aktif:</strong>
+                                @if(!empty($currentFilters['status']))
+                                    Status: <span class="badge bg-primary">{{ $currentFilters['status'] }}</span>
+                                @endif
+                                @if(!empty($currentFilters['perusahaan']))
+                                    @php
+                                        $selectedPerusahaan = $perusahaans->where('id', $currentFilters['perusahaan'])->first();
+                                    @endphp
+                                    @if($selectedPerusahaan)
+                                        Perusahaan: <span class="badge bg-success">{{ $selectedPerusahaan->nama_prs2 }}</span>
+                                    @endif
+                                @endif
+                                <a href="{{ route('data-karyawan.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
+                                    <i class="fas fa-times me-1"></i> Reset Filter
+                                </a>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         <div class="table-responsive">
                             <table id="dataKaryawanTable" class="table table-bordered table-striped data-table">
                                 <thead class="table-light">
@@ -129,10 +152,7 @@
                                                 ? $karyawan->departemenRelation->singkatan_jbt
                                                 : '-';
                                         @endphp
-                                        <tr data-status="{{ $karyawan->sts_kry }}" data-nama="{{ $karyawan->nama }}"
-                                            data-tempat-lahir="{{ $karyawan->tpt_lahir }}" data-umur="{{ $age }}"
-                                            data-masa-kerja-tahun="{{ $workYears }}"
-                                            data-masa-kerja-bulan="{{ $workMonths }}">
+                                        <tr>
                                             <!-- Kolom Prioritas -->
                                             <td>{{ $loop->iteration }}</td>
                                             <td>
@@ -267,91 +287,32 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="filterForm">
+                    <form id="filterForm" method="GET" action="{{ route('data-karyawan.index') }}">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label for="filter_status" class="form-label fw-bold">Status Karyawan</label>
                                     <select class="form-select" id="filter_status" name="filter_status">
                                         <option value="">Semua Status</option>
-                                        <option value="CALON">Calon</option>
-                                        <option value="AKTIF">Aktif</option>
-                                        <option value="NON-AKTIF">Non-Aktif</option>
+                                        @foreach($statusOptions as $value => $label)
+                                            <option value="{{ $value }}" {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label for="filter_nama" class="form-label fw-bold">Cari Nama</label>
-                                    <input type="text" class="form-control" id="filter_nama" name="filter_nama"
-                                        placeholder="Ketik nama karyawan...">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="filter_tempat_lahir" class="form-label fw-bold">Tempat Lahir</label>
-                                    <input type="text" class="form-control" id="filter_tempat_lahir"
-                                        name="filter_tempat_lahir" placeholder="Ketik tempat lahir...">
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <h6 class="fw-bold">Filter Umur</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="filter_umur_min" class="form-label">Umur Minimal (tahun)</label>
-                                    <input type="number" class="form-control" id="filter_umur_min"
-                                        name="filter_umur_min" min="0" placeholder="Contoh: 20">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="filter_umur_max" class="form-label">Umur Maksimal (tahun)</label>
-                                    <input type="number" class="form-control" id="filter_umur_max"
-                                        name="filter_umur_max" min="0" placeholder="Contoh: 60">
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-                        <h6 class="fw-bold">Filter Masa Kerja</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="filter_masa_kerja_tahun_min" class="form-label">Masa Kerja Minimal
-                                        (tahun)</label>
-                                    <input type="number" class="form-control" id="filter_masa_kerja_tahun_min"
-                                        name="filter_masa_kerja_tahun_min" min="0" placeholder="Contoh: 1">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="filter_masa_kerja_tahun_max" class="form-label">Masa Kerja Maksimal
-                                        (tahun)</label>
-                                    <input type="number" class="form-control" id="filter_masa_kerja_tahun_max"
-                                        name="filter_masa_kerja_tahun_max" min="0" placeholder="Contoh: 10">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="filter_masa_kerja_bulan_min" class="form-label">Masa Kerja Minimal
-                                        (bulan)</label>
-                                    <input type="number" class="form-control" id="filter_masa_kerja_bulan_min"
-                                        name="filter_masa_kerja_bulan_min" min="0" max="11"
-                                        placeholder="Contoh: 6">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="filter_masa_kerja_bulan_max" class="form-label">Masa Kerja Maksimal
-                                        (bulan)</label>
-                                    <input type="number" class="form-control" id="filter_masa_kerja_bulan_max"
-                                        name="filter_masa_kerja_bulan_max" min="0" max="11"
-                                        placeholder="Contoh: 11">
+                                    <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
+                                    <select class="form-select" id="filter_perusahaan" name="filter_perusahaan">
+                                        <option value="">Semua Perusahaan</option>
+                                        @foreach($perusahaans as $perusahaan)
+                                            <option value="{{ $perusahaan->id }}" {{ $currentFilters['perusahaan'] == $perusahaan->id ? 'selected' : '' }}>
+                                                {{ $perusahaan->nama_prs2 }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -771,15 +732,10 @@
 
     <script>
         $(document).ready(function() {
-            // Initialize DataTable with horizontal scroll
-            // Check if table is already initialized
+            // Initialize DataTable
             let table;
             if (!$.fn.DataTable.isDataTable('#dataKaryawanTable')) {
                 table = $('#dataKaryawanTable').DataTable({
-                    columnDefs: [{
-                        targets: [13, 14, 15, 16, 17, 18, 19, 20, 21],
-                        visible: true
-                    }], // Show additional columns
                     pageLength: 25,
                     language: {
                         lengthMenu: "Tampilkan _MENU_ data per halaman",
@@ -803,9 +759,6 @@
             // Initialize tooltips
             $('[data-bs-toggle="tooltip"]').tooltip();
 
-            // Global filter object
-            let activeFilters = {};
-
             // Filter modal
             $('#filterButton').click(function() {
                 $('#filterModal').modal('show');
@@ -813,69 +766,13 @@
 
             // Apply filters
             $('#applyFilter').click(function() {
-                activeFilters = {
-                    status: $('#filter_status').val(),
-                    nama: $('#filter_nama').val().toLowerCase(),
-                    tempat_lahir: $('#filter_tempat_lahir').val().toLowerCase(),
-                    umur_min: $('#filter_umur_min').val(),
-                    umur_max: $('#filter_umur_max').val(),
-                    masa_kerja_tahun_min: $('#filter_masa_kerja_tahun_min').val(),
-                    masa_kerja_tahun_max: $('#filter_masa_kerja_tahun_max').val(),
-                    masa_kerja_bulan_min: $('#filter_masa_kerja_bulan_min').val(),
-                    masa_kerja_bulan_max: $('#filter_masa_kerja_bulan_max').val()
-                };
-
-                // Clear previous custom search filters
-                $.fn.dataTable.ext.search.splice(0);
-
-                // Apply custom search function
-                $.fn.dataTable.ext.search.push(
-                    function(settings, data, dataIndex) {
-                        let row = $('#dataKaryawanTable tbody tr').eq(dataIndex);
-                        let status = row.attr('data-status');
-                        let nama = row.attr('data-nama').toLowerCase();
-                        let tempatLahir = row.attr('data-tempat-lahir').toLowerCase();
-                        let umur = parseInt(row.attr('data-umur'));
-                        let masaKerjaTahun = parseInt(row.attr('data-masa-kerja-tahun'));
-                        let masaKerjaBulan = parseInt(row.attr('data-masa-kerja-bulan'));
-
-                        // Apply filters
-                        if (activeFilters.status && status !== activeFilters.status) return false;
-                        if (activeFilters.nama && !nama.includes(activeFilters.nama)) return false;
-                        if (activeFilters.tempat_lahir && !tempatLahir.includes(activeFilters
-                                .tempat_lahir)) return false;
-
-                        if (activeFilters.umur_min && umur < parseInt(activeFilters.umur_min))
-                            return false;
-                        if (activeFilters.umur_max && umur > parseInt(activeFilters.umur_max))
-                            return false;
-
-                        if (activeFilters.masa_kerja_tahun_min && masaKerjaTahun < parseInt(
-                                activeFilters.masa_kerja_tahun_min)) return false;
-                        if (activeFilters.masa_kerja_tahun_max && masaKerjaTahun > parseInt(
-                                activeFilters.masa_kerja_tahun_max)) return false;
-                        if (activeFilters.masa_kerja_bulan_min && masaKerjaBulan < parseInt(
-                                activeFilters.masa_kerja_bulan_min)) return false;
-                        if (activeFilters.masa_kerja_bulan_max && masaKerjaBulan > parseInt(
-                                activeFilters.masa_kerja_bulan_max)) return false;
-
-                        return true;
-                    }
-                );
-
-                table.draw();
-                $('#filterModal').modal('hide');
+                $('#filterForm').submit();
             });
 
             // Reset filters
             $('#resetFilter').click(function() {
-                $('#filterForm')[0].reset();
-                activeFilters = {};
-
-                // Clear all custom search filters
-                $.fn.dataTable.ext.search.splice(0);
-
-                table.draw();
+                $('#filter_status').val('');
+                $('#filter_perusahaan').val('');
             });
 
             // Summary modal
@@ -890,7 +787,8 @@
 
             // Export Excel
             $('#exportExcel').click(function() {
-                let url = "{{ route('data-karyawan.export-excel') }}?" + $.param(activeFilters);
+                let currentParams = new URLSearchParams(window.location.search);
+                let url = "{{ route('data-karyawan.export-excel') }}?" + currentParams.toString();
                 window.location.href = url;
                 $('#exportModal').modal('hide');
             });

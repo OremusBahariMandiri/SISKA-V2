@@ -242,8 +242,8 @@
 
     <script>
         $(document).ready(function() {
-            if (!$.fn.DataTable.isDataTable('#usersTable')) {
-                $('#usersTable').DataTable({
+            if (!$.fn.DataTable.isDataTable('#wilayahKerjaTable')) {
+                $('#wilayahKerjaTable').DataTable({
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
@@ -257,20 +257,18 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
 
-            // Handle delete confirmation
-            $('.delete-confirm').on('click', function() {
+
+            $(document).on('click', '.delete-confirm', function() {
                 var id = $(this).data('id');
                 var name = $(this).data('name');
 
-                // Set wilayah kerja name in modal
-                $('#wilayahKerjaNameToDelete').text(name);
+                // Using Laravel route helper with placeholder
+                var deleteUrl = "{{ route('wilayah-kerja.destroy', ':id') }}".replace(':id', id);
+                $('#deleteForm').attr('action', deleteUrl);
 
-                // Set form action URL with explicit URL construction
-                $('#deleteForm').attr('action', "{{ url('wilayah-kerja') }}/" + id);
-
-                // Show modal
                 $('#deleteConfirmationModal').modal('show');
             });
+
 
             // Tambahkan efek klik pada baris tabel untuk menuju halaman detail
             $('#wilayahKerjaTable tbody').on('click', 'tr', function(e) {

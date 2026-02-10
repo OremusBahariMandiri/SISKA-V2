@@ -244,8 +244,8 @@
     <script>
         $(document).ready(function() {
             // Destroy existing DataTable if exists to prevent conflicts
-            if (!$.fn.DataTable.isDataTable('#usersTable')) {
-                $('#usersTable').DataTable({
+            if (!$.fn.DataTable.isDataTable('#perusahaanTable')) {
+                $('#perusahaanTable').DataTable({
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
@@ -259,20 +259,18 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
 
-            // Handle delete confirmation
-            $('.delete-confirm').on('click', function() {
+            $(document).on('click', '.delete-confirm', function() {
                 var id = $(this).data('id');
                 var name = $(this).data('name');
 
-                // Set company name in modal
-                $('#perusahaanNameToDelete').text(name);
+                // Using Laravel route helper with placeholder
+                var deleteUrl = "{{ route('perusahaan.destroy', ':id') }}".replace(':id', id);
+                $('#deleteForm').attr('action', deleteUrl);
 
-                // Set form action URL with explicit URL construction
-                $('#deleteForm').attr('action', "{{ url('perusahaan') }}/" + id);
-
-                // Show modal
                 $('#deleteConfirmationModal').modal('show');
             });
+
+
 
             // Tambahkan efek klik pada baris tabel untuk menuju halaman detail
             $('#perusahaanTable tbody').on('click', 'tr', function(e) {

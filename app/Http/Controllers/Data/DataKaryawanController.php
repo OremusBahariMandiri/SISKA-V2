@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Exports\DataKaryawanExport;
 use App\Models\DataMaster\KontrakKerja;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\DB;
 
 class DataKaryawanController extends Controller
 {
@@ -92,10 +93,10 @@ class DataKaryawanController extends Controller
             ->orderBy('wilayah_krj', 'asc')
             ->get();
 
-        // Get unique departemen (grouped by nama_dep) - sorted by kode_dep
-        $departemens = Departemen::select('nama_dep', 'singkatan_dep')
+        // Get unique departemen (grouped by nama_dep) - sorted by minimum kode_dep for MySQL strict mode compatibility
+        $departemens = Departemen::select('nama_dep', 'singkatan_dep', DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode_dep'))
             ->groupBy('nama_dep', 'singkatan_dep')
-            ->sortByCode()
+            ->orderBy('min_kode_dep', 'asc')
             ->get();
 
         return view('data.data-karyawan.create', compact('newId', 'perusahaans', 'wilayahKerjas', 'departemens', 'kontraks'));
@@ -284,10 +285,10 @@ class DataKaryawanController extends Controller
             ->orderBy('wilayah_krj', 'asc')
             ->get();
 
-        // Get unique departemen (grouped by nama_dep) - sorted by kode_dep
-        $departemens = Departemen::select('nama_dep', 'singkatan_dep')
+        // Get unique departemen (grouped by nama_dep) - sorted by minimum kode_dep for MySQL strict mode compatibility
+        $departemens = Departemen::select('nama_dep', 'singkatan_dep', DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode_dep'))
             ->groupBy('nama_dep', 'singkatan_dep')
-            ->sortByCode()
+            ->orderBy('min_kode_dep', 'asc')
             ->get();
 
         return view('data.data-karyawan.edit', compact('dataKaryawan', 'perusahaans', 'wilayahKerjas', 'departemens', 'kontraks'));

@@ -196,7 +196,7 @@
                                             </td>
                                             <td><small>{{ Str::limit($departemen, 15) }}</small></td>
                                             <td><small>{{ Str::limit($jabatan, 15) }}</small></td>
-                                            <td><small>{{ $karyawan->wilker ?? '-' }}</small></td>
+                                            <td><small>{{ $karyawan->skt_wil_krj ?? '-' }}</small></td>
                                             <td class="text-center">
                                                 @if ($karyawan->sts_kry == 'CALON')
                                                     <span class="badge badge-lg bg-warning text-dark">

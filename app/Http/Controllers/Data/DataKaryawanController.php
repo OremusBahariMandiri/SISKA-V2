@@ -38,7 +38,7 @@ class DataKaryawanController extends Controller
         // Get master data for filter dropdowns
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
         $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
-        $departemens = Departemen::orderBy('nama_dep', 'asc')->get();
+        $departemens = Departemen::sortByCode()->get();
 
         // Get user permissions for this menu
         $userPermissions = [];
@@ -92,10 +92,10 @@ class DataKaryawanController extends Controller
             ->orderBy('wilayah_krj', 'asc')
             ->get();
 
-        // Get unique departemen (grouped by nama_dep)
+        // Get unique departemen (grouped by nama_dep) - sorted by kode_dep
         $departemens = Departemen::select('nama_dep', 'singkatan_dep')
             ->groupBy('nama_dep', 'singkatan_dep')
-            ->orderBy('nama_dep', 'asc')
+            ->sortByCode()
             ->get();
 
         return view('data.data-karyawan.create', compact('newId', 'perusahaans', 'wilayahKerjas', 'departemens', 'kontraks'));
@@ -284,10 +284,10 @@ class DataKaryawanController extends Controller
             ->orderBy('wilayah_krj', 'asc')
             ->get();
 
-        // Get unique departemen (grouped by nama_dep)
+        // Get unique departemen (grouped by nama_dep) - sorted by kode_dep
         $departemens = Departemen::select('nama_dep', 'singkatan_dep')
             ->groupBy('nama_dep', 'singkatan_dep')
-            ->orderBy('nama_dep', 'asc')
+            ->sortByCode()
             ->get();
 
         return view('data.data-karyawan.edit', compact('dataKaryawan', 'perusahaans', 'wilayahKerjas', 'departemens', 'kontraks'));
@@ -515,8 +515,7 @@ class DataKaryawanController extends Controller
     {
         try {
             $jabatans = Departemen::where('nama_dep', $namaDep)
-                ->orderByRaw('CAST(kode_dep AS UNSIGNED) ASC')
-                ->orderBy('nama_jbt', 'ASC')
+                ->sortByCode()
                 ->get(['id', 'kode_dep', 'nama_jbt', 'singkatan_jbt']);
 
             return response()->json([

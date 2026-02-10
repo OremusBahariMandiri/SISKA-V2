@@ -50,26 +50,24 @@
                                     <tr>
                                         <!-- Kolom Prioritas -->
                                         <th width="3%" class="text-center">NO</th>
-                                        <th width="6%" class="text-center">NRK / NIK</th>
-                                        <th width="10%" class="text-center">NAMA</th>
-                                        <th width="8%" class="text-center">TPT LHR</th>
-                                        <th width="7%" class="text-center">TGL LHR</th>
-                                        <th width="5%" class="text-center">UMUR</th>
-                                        <th width="4%" class="text-center">SEX</th>
-                                        <th width="5%" class="text-center">FOTO</th>
+                                        <th width="4%" class="text-center">NRK / NIK</th>
+                                        <th width="8%" class="text-center">NAMA</th>
+                                        <th  class="text-center">TPT LHR</th>
+                                        <th class="text-center">TGL LHR</th>
+                                        <th  class="text-center">UMUR</th>
+                                        <th class="text-center">SEX</th>
+                                        <th width="6%" class="text-center">FOTO</th>
                                         <th width="7%" class="text-center">TGL MSK</th>
-                                        <th width="8%" class="text-center">PRSH</th>
+                                        <th width="6%" class="text-center">PRSH</th>
                                         <th width="6%" class="text-center">KNT</th>
                                         <th width="7%" class="text-center">TGL HK</th>
                                         <th width="8%" class="text-center">DEP</th>
-                                        <th width="8%" class="text-center">JBT</th>
-                                        <th width="8%" class="text-center">WILKER</th>
+                                        <th width="7%" class="text-center">JBT</th>
+                                        <th width="7%" class="text-center">WILKER</th>
                                         <th width="7%" class="text-center">STKAR</th>
-
-                                        <!-- Kolom Tambahan -->
                                         <th width="7%" class="text-center">TGL NA</th>
-                                        <th width="8%" class="text-center"> KET NA</th>
-                                        <th width="10%" class="text-center">MKR</th>
+                                        <th width="7%" class="text-center"> KET NA</th>
+                                        <th width="8%" class="text-center">MKR</th>
                                         <th width="8%" class="text-center">AKSI</th>
                                     </tr>
                                 </thead>

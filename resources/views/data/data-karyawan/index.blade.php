@@ -54,23 +54,22 @@
                                         <th width="12%">NAMA</th>
                                         <th width="8%">TPT LHR</th>
                                         <th width="7%">TGL LHR</th>
+                                        <th width="5%">UMUR</th>
                                         <th width="4%">SEX</th>
                                         <th width="5%" class="text-center">FOTO</th>
                                         <th width="7%">TGL MSK</th>
                                         <th width="8%">PRSH</th>
                                         <th width="6%">KNT</th>
                                         <th width="7%">TGL HK</th>
-                                        <th width="7%" class="text-center">STKAR</th>
-                                        <!-- Kolom Tambahan -->
-                                        <th width="8%">SILKER</th>
-                                        <th width="8%">UNKER</th>
                                         <th width="8%">DEP</th>
                                         <th width="8%">JBT</th>
-                                        <th width="10%">MKR</th>
-                                        <th width="5%">UMUR</th>
+                                        <th width="8%">WILKER</th>
+                                        <th width="7%" class="text-center">STKAR</th>
+                                        <th width="8%" class="text-center">AKSI</th>
+                                        <!-- Kolom Tambahan -->
                                         <th width="7%">TGL NA</th>
                                         <th width="8%">KET NA</th>
-                                        <th width="8%" class="text-center">AKSI</th>
+                                        <th width="10%">MKR</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -142,6 +141,7 @@
                                             <td>{{ $karyawan->tpt_lahir ?? '-' }}</td>
                                             <td>{{ $karyawan->tgl_lahir ? date('d-m-Y', strtotime($karyawan->tgl_lahir)) : '-' }}
                                             </td>
+                                            <td>{{ $age }} {{ is_numeric($age) ? 'thn' : '' }}</td>
                                             <td class="text-center">
                                                 @if ($karyawan->sex == 'LAKI-LAKI')
                                                     <i class="fas fa-mars text-primary" title="Laki-laki"></i>
@@ -190,6 +190,9 @@
                                             </td>
                                             <td>{{ $karyawan->tgl_akhir_ktr ? date('d-m-Y', strtotime($karyawan->tgl_akhir_ktr)) : '-' }}
                                             </td>
+                                            <td><small>{{ Str::limit($departemen, 15) }}</small></td>
+                                            <td><small>{{ Str::limit($jabatan, 15) }}</small></td>
+                                            <td><small>{{ $karyawan->wilker ?? '-' }}</small></td>
                                             <td class="text-center">
                                                 @if ($karyawan->sts_kry == 'CALON')
                                                     <span class="badge badge-lg bg-warning text-dark">
@@ -208,15 +211,6 @@
                                                 @endif
                                             </td>
                                             <!-- Kolom Tambahan -->
-                                            <td><small>{{ $karyawan->wilker ?? '-' }}</small></td>
-                                            <td><small>{{ $karyawan->unit_krj ?? '-' }}</small></td>
-                                            <td><small>{{ Str::limit($departemen, 15) }}</small></td>
-                                            <td><small>{{ Str::limit($jabatan, 15) }}</small></td>
-                                            <td>{{ $workDuration }}</td>
-                                            <td>{{ $age }} {{ is_numeric($age) ? 'thn' : '' }}</td>
-                                            <td>{{ $karyawan->tgl_phk ? date('d-m-Y', strtotime($karyawan->tgl_phk)) : '-' }}
-                                            </td>
-                                            <td><small>{{ $karyawan->ket_phk ?? '-' }}</small></td>
                                             <td>
                                                 <div class="d-flex gap-1 justify-content-center">
                                                     @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
@@ -246,6 +240,10 @@
                                                     @endif
                                                 </div>
                                             </td>
+                                            <td>{{ $karyawan->tgl_phk ? date('d-m-Y', strtotime($karyawan->tgl_phk)) : '-' }}
+                                            </td>
+                                            <td><small>{{ $karyawan->ket_phk ?? '-' }}</small></td>
+                                            <td>{{ $workDuration }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -47,6 +47,16 @@
                                         </div>
 
                                         <div class="info-group mb-3">
+                                            <label class="info-label fw-bold">SKT Wilayah Kerja</label>
+                                            <div class="info-value">
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-map"></i></span>
+                                                    <div class="form-control">{{ $wilayahKerja->skt_wilker }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="info-group mb-3">
                                             <label class="info-label fw-bold">Area Kerja</label>
                                             <div class="info-value">
                                                 <div class="input-group">

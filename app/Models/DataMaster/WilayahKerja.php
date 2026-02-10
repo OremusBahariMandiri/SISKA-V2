@@ -26,6 +26,7 @@ class WilayahKerja extends Model
         'id_kode',
         'kode_wk',
         'wilayah_krj',
+        'skt_wilker',
         'area_krj',
         'singkatan_wk',
         'alamat_wk',

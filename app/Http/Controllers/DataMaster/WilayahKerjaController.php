@@ -71,6 +71,7 @@ class WilayahKerjaController extends Controller
     {
         $request->validate([
             'wilayah_krj' => 'required',
+            'skt_wilker' => 'required',
             'area_krj' => 'required',
             'alamat_wk' => 'required',
             'kota_wk' => 'required',
@@ -100,6 +101,7 @@ class WilayahKerjaController extends Controller
             'id_kode' => $id_kode,
             'kode_wk' => $request->kode_wk,
             'wilayah_krj' => $request->wilayah_krj,
+            'skt_wilker' => $request->skt_wilker,
             'area_krj' => $request->area_krj,
             'singkatan_wk' => $request->singkatan_wk,
             'alamat_wk' => $request->alamat_wk,
@@ -141,6 +143,7 @@ class WilayahKerjaController extends Controller
 
         $request->validate([
             'wilayah_krj' => 'required',
+            'skt_wilker' => 'required',
             'area_krj' => 'required',
             'alamat_wk' => 'required',
             'kota_wk' => 'required',
@@ -167,6 +170,7 @@ class WilayahKerjaController extends Controller
 
         $data = [
             'wilayah_krj' => $request->wilayah_krj,
+            'skt_wilker' => $request->skt_wilker,
             'area_krj' => $request->area_krj,
             'singkatan_wk' => $request->singkatan_wk,
             'alamat_wk' => $request->alamat_wk,

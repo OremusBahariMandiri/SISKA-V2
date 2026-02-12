@@ -40,8 +40,8 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pendidikan-tab" data-bs-toggle="tab"
-                                    data-bs-target="#pendidikan" type="button" role="tab"
-                                    aria-controls="pendidikan" aria-selected="false">
+                                    data-bs-target="#pendidikan" type="button" role="tab" aria-controls="pendidikan"
+                                    aria-selected="false">
                                     <i class="fas fa-graduation-cap me-1"></i> Pendidikan
                                 </button>
                             </li>
@@ -61,6 +61,12 @@
                                 <button class="nav-link" id="hubin-tab" data-bs-toggle="tab" data-bs-target="#hubin"
                                     type="button" role="tab" aria-controls="hubin" aria-selected="false">
                                     <i class="fas fa-user-check me-1"></i> Hubungan Industrial
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="sistem-tab" data-bs-toggle="tab" data-bs-target="#sistem"
+                                    type="button" role="tab" aria-controls="sistem" aria-selected="false">
+                                    <i class="fas fa-cog me-1"></i> Informasi Sistem
                                 </button>
                             </li>
                         </ul>
@@ -161,7 +167,8 @@
                                 <!-- Status Keluarga -->
                                 <div class="card border-secondary mb-4">
                                     <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Status Keluarga</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Status Keluarga
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -193,7 +200,8 @@
                                 <!-- Informasi Kontak -->
                                 <div class="card border-secondary mb-4">
                                     <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Informasi Kontak</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Informasi Kontak
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -324,7 +332,8 @@
                                 <!-- Alamat Domisili -->
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-house-user me-2"></i>Alamat Domisili</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-house-user me-2"></i>Alamat Domisili
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -395,7 +404,8 @@
                             <div class="tab-pane fade" id="pendidikan" role="tabpanel" aria-labelledby="pendidikan-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-graduation-cap me-2"></i>Pendidikan Terakhir</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-graduation-cap me-2"></i>Pendidikan
+                                            Terakhir</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -466,7 +476,8 @@
                             <div class="tab-pane fade" id="kontrak" role="tabpanel" aria-labelledby="kontrak-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-file-contract me-2"></i>Informasi Kontrak Kerja</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-file-contract me-2"></i>Informasi
+                                            Kontrak Kerja</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -475,7 +486,10 @@
                                                 <div class="detail-value">
                                                     <i class="fas fa-clipboard-check text-primary me-2"></i>
                                                     {{ $dataKaryawan->kontrakRelation && is_object($dataKaryawan->kontrakRelation) ? $dataKaryawan->kontrakRelation->nama_ktr : '-' }}
-                                                    @if($dataKaryawan->kontrakRelation && is_object($dataKaryawan->kontrakRelation) && $dataKaryawan->kontrakRelation->singkatan_ktr)
+                                                    @if (
+                                                        $dataKaryawan->kontrakRelation &&
+                                                            is_object($dataKaryawan->kontrakRelation) &&
+                                                            $dataKaryawan->kontrakRelation->singkatan_ktr)
                                                         - {{ $dataKaryawan->kontrakRelation->singkatan_ktr }}
                                                     @endif
                                                 </div>
@@ -485,7 +499,10 @@
                                                 <div class="detail-value">
                                                     <i class="fas fa-building text-primary me-2"></i>
                                                     {{ $dataKaryawan->perusahaanRelation && is_object($dataKaryawan->perusahaanRelation) ? $dataKaryawan->perusahaanRelation->nama_prs1 : '-' }}
-                                                    @if($dataKaryawan->perusahaanRelation && is_object($dataKaryawan->perusahaanRelation) && $dataKaryawan->perusahaanRelation->nama_prs2)
+                                                    @if (
+                                                        $dataKaryawan->perusahaanRelation &&
+                                                            is_object($dataKaryawan->perusahaanRelation) &&
+                                                            $dataKaryawan->perusahaanRelation->nama_prs2)
                                                         - {{ $dataKaryawan->perusahaanRelation->nama_prs2 }}
                                                     @endif
                                                 </div>
@@ -523,7 +540,8 @@
                             <div class="tab-pane fade" id="karir" role="tabpanel" aria-labelledby="karir-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Informasi Jenjang Karir</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-briefcase me-2"></i>Informasi Jenjang
+                                            Karir</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -532,7 +550,10 @@
                                                 <div class="detail-value">
                                                     <i class="fas fa-sitemap text-primary me-2"></i>
                                                     {{ $dataKaryawan->departemenRelation && is_object($dataKaryawan->departemenRelation) ? $dataKaryawan->departemenRelation->nama_dep : '-' }}
-                                                    @if($dataKaryawan->departemenRelation && is_object($dataKaryawan->departemenRelation) && $dataKaryawan->departemenRelation->singkatan_dep)
+                                                    @if (
+                                                        $dataKaryawan->departemenRelation &&
+                                                            is_object($dataKaryawan->departemenRelation) &&
+                                                            $dataKaryawan->departemenRelation->singkatan_dep)
                                                         - {{ $dataKaryawan->departemenRelation->singkatan_dep }}
                                                     @endif
                                                 </div>
@@ -588,7 +609,8 @@
                                 <!-- Status Karyawan -->
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-user-check me-2"></i>Status Hubungan Industrial</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-user-check me-2"></i>Status Hubungan
+                                            Industrial</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -655,9 +677,12 @@
                                     </div>
                                 @endif
 
-                                <!-- Informasi Sistem -->
-                                <div class="card border-info mb-4">
-                                    <div class="card-header bg-info bg-opacity-25">
+                            </div>
+
+                            <div class="tab-pane fade" id="sistem" role="tabpanel" aria-labelledby="sistem-tab">
+                                <!-- Status Karyawan -->
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
                                         <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Informasi Sistem</h5>
                                     </div>
                                     <div class="card-body">

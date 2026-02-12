@@ -45,7 +45,16 @@
                         @endif
 
                         <!-- Active Filter Display -->
-                        @if (!empty($currentFilters['status']) || !empty($currentFilters['perusahaan']) || !empty($currentFilters['departemen']) || !empty($currentFilters['jabatan']) || !empty($currentFilters['kontrak']) || !empty($currentFilters['jenis_kelamin']) || !empty($currentFilters['skt_wilker']))
+                        <!-- Active Filter Display -->
+                        @if (
+                            !empty($currentFilters['status']) ||
+                                !empty($currentFilters['perusahaan']) ||
+                                !empty($currentFilters['nama']) ||
+                                !empty($currentFilters['departemen']) ||
+                                !empty($currentFilters['jabatan']) ||
+                                !empty($currentFilters['kontrak']) ||
+                                !empty($currentFilters['jenis_kelamin']) ||
+                                !empty($currentFilters['wilker']))
                             <div class="alert alert-info alert-dismissible fade show" role="alert">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Filter Aktif:</strong>
@@ -61,8 +70,13 @@
                                             ->first();
                                     @endphp
                                     @if ($selectedPerusahaan)
-                                        Perusahaan: <span class="badge bg-success">{{ $selectedPerusahaan->nama_prs2 }}</span>
+                                        Perusahaan: <span
+                                            class="badge bg-success">{{ $selectedPerusahaan->nama_prs2 }}</span>
                                     @endif
+                                @endif
+
+                                @if (!empty($currentFilters['nama']))
+                                    Nama: <span class="badge bg-primary">{{ $currentFilters['nama'] }}</span>
                                 @endif
 
                                 @if (!empty($currentFilters['departemen']))
@@ -99,19 +113,63 @@
                                 @endif
 
                                 @if (!empty($currentFilters['jenis_kelamin']))
-                                    Jenis Kelamin: <span class="badge bg-dark">{{ $jenisKelaminOptions[$currentFilters['jenis_kelamin']] ?? $currentFilters['jenis_kelamin'] }}</span>
+                                    Jenis Kelamin: <span
+                                        class="badge bg-dark">{{ $jenisKelaminOptions[$currentFilters['jenis_kelamin']] ?? $currentFilters['jenis_kelamin'] }}</span>
                                 @endif
 
-                                @if (!empty($currentFilters['skt_wilker']))
-                                    Singkatan Wilker: <span class="badge bg-light text-dark">{{ $currentFilters['skt_wilker'] }}</span>
+                                @if (!empty($currentFilters['wilker']))
+                                    Wilayah Kerja: <span class="badge bg-danger">{{ $currentFilters['wilker'] }}</span>
                                 @endif
 
                                 <a href="{{ route('data-karyawan.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
                                     <i class="fas fa-times me-1"></i> Reset Filter
                                 </a>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+
                             </div>
                         @endif
+
+                        <!-- Quick Search Bar -->
+                        {{-- <div class="row mb-3">
+                            <div class="col-md-6">
+                                <form method="GET" action="{{ route('data-karyawan.index') }}" id="quickSearchForm">
+                                    <!-- Preserve other filters -->
+                                    @foreach ($currentFilters as $key => $value)
+                                        @if ($key !== 'nama' && !empty($value))
+                                            <input type="hidden" name="filter_{{ $key }}" value="{{ $value }}">
+                                        @endif
+                                    @endforeach
+
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light">
+                                            <i class="fas fa-search text-primary"></i>
+                                        </span>
+                                        <input type="text"
+                                               class="form-control"
+                                               name="filter_nama"
+                                               id="quickSearchInput"
+                                               placeholder="Cari nama karyawan..."
+                                               value="{{ $currentFilters['nama'] ?? '' }}"
+                                               autocomplete="off">
+                                        @if (!empty($currentFilters['nama']))
+                                            <button type="button" class="btn btn-outline-secondary" id="clearSearch" title="Hapus pencarian">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        @endif
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-search me-1"></i>Cari
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Menampilkan {{ $dataKaryawans->count() }} dari total karyawan
+                                </small>
+                            </div>
+                        </div> --}}
 
                         <div class="table-responsive">
                             <table id="dataKaryawanTable" class="table table-bordered table-striped data-table">
@@ -207,16 +265,22 @@
                                                 {{ $karyawan->nrk ?? '-' }}
                                                 <span class="text-muted"> {{ $karyawan->nik ?? '-' }}</span>
                                             </td>
-                                            <td>{{ $karyawan->nama }}</td>
+                                            <td>
+                                                @if (!empty($currentFilters['nama']))
+                                                    {!! str_ireplace($currentFilters['nama'], '<mark>' . $currentFilters['nama'] . '</mark>', $karyawan->nama) !!}
+                                                @else
+                                                    {{ $karyawan->nama }}
+                                                @endif
+                                            </td>
                                             <td>{{ $karyawan->tpt_lahir ?? '-' }}</td>
                                             <td>{{ $karyawan->tgl_lahir ? date('d-m-Y', strtotime($karyawan->tgl_lahir)) : '-' }}
                                             </td>
                                             <td>{{ $age }} {{ is_numeric($age) ? 'thn' : '' }}</td>
                                             <td class="text-center">
                                                 @if ($karyawan->sex == 'LAKI-LAKI')
-                                                    <i class="fas fa-mars text-primary" title="Laki-laki"></i>
+                                                    <i class="fas fa-mars text-primary" title="LAKI-LAKI"></i>
                                                 @elseif($karyawan->sex == 'PEREMPUAN')
-                                                    <i class="fas fa-venus text-danger" title="Perempuan"></i>
+                                                    <i class="fas fa-venus text-danger" title="PEREMPUAN"></i>
                                                 @else
                                                     -
                                                 @endif
@@ -286,10 +350,12 @@
                                             </td>
                                             <td>{{ $workDuration }}</td>
                                             <td> {{ $karyawan->creator ? $karyawan->creator->nama_kry : '-' }}
-                                                <span style="font-size: 11px">{{ $karyawan->created_at ? $karyawan->created_at->format('d F Y H:i') : '-' }}</span>
+                                                <span
+                                                    style="font-size: 11px">{{ $karyawan->created_at ? $karyawan->created_at->format('d/m/y H:i') : '-' }}</span>
                                             </td>
                                             <td> {{ $karyawan->updater ? $karyawan->updater->nama_kry : '-' }}
-                                                <span style="font-size: 11px">{{ $karyawan->updated_at ? $karyawan->updated_at->format('d F Y H:i') : '-' }}</span>
+                                                <span
+                                                    style="font-size: 11px">{{ $karyawan->updated_at ? $karyawan->updated_at->format('d/m/y H:i') : '-' }}</span>
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-1 justify-content-center">
@@ -331,7 +397,7 @@
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Filter Modal -->
     <!-- Filter Modal -->
     <div class="modal fade" id="filterModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
@@ -344,124 +410,153 @@
                     <form id="filterForm" method="GET" action="{{ route('data-karyawan.index') }}">
                         <!-- Row 1: Basic Filters -->
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="filter_status" class="form-label fw-bold">Status Karyawan</label>
-                                    <select class="form-select" id="filter_status" name="filter_status">
-                                        <option value="">Semua Status</option>
-                                        @foreach ($statusOptions as $value => $label)
-                                            <option value="{{ $value }}"
-                                                {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="filter_nama" class="form-label fw-bold">Nama Karyawan</label>
+                                    <input type="text" class="form-control" id="filter_nama" name="filter_nama"
+                                        placeholder="Cari nama karyawan..." value="{{ $currentFilters['nama'] ?? '' }}">
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
-                                    <select class="form-select" id="filter_perusahaan" name="filter_perusahaan">
-                                        <option value="">Semua Perusahaan</option>
-                                        @foreach ($perusahaans as $perusahaan)
-                                            <option value="{{ $perusahaan->id }}"
-                                                {{ $currentFilters['perusahaan'] == $perusahaan->id ? 'selected' : '' }}>
-                                                {{ $perusahaan->nama_prs2 }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_jenis_kelamin" class="form-label fw-bold">Jenis Kelamin</label>
-                                    <select class="form-select" id="filter_jenis_kelamin" name="filter_jenis_kelamin">
-                                        <option value="">Semua Jenis Kelamin</option>
-                                        @foreach ($jenisKelaminOptions as $value => $label)
-                                            <option value="{{ $value }}"
-                                                {{ $currentFilters['jenis_kelamin'] == $value ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jenis_kelamin"
+                                            name="filter_jenis_kelamin">
+                                            <option value="">Semua Jenis Kelamin</option>
+                                            @foreach ($jenisKelaminOptions as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ $currentFilters['jenis_kelamin'] == $value ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_status" class="form-label fw-bold">Status Karyawan</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_status" name="filter_status">
+                                            <option value="">Semua Status</option>
+                                            @foreach ($statusOptions as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <!-- Row 2: Department & Position Filters -->
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_perusahaan"
+                                            name="filter_perusahaan">
+                                            <option value="">Semua Perusahaan</option>
+                                            @foreach ($perusahaans as $perusahaan)
+                                                <option value="{{ $perusahaan->id }}"
+                                                    {{ $currentFilters['perusahaan'] == $perusahaan->id ? 'selected' : '' }}>
+                                                    {{ $perusahaan->nama_prs1 }} - {{ $perusahaan->nama_prs2 }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_departemen" class="form-label fw-bold">Departemen</label>
-                                    <select class="form-select" id="filter_departemen" name="filter_departemen">
-                                        <option value="">Semua Departemen</option>
-                                        @foreach ($departemenOptions as $departemen)
-                                            <option value="{{ $departemen->id }}"
-                                                {{ $currentFilters['departemen'] == $departemen->id ? 'selected' : '' }}>
-                                                {{ $departemen->nama_dep }} @if($departemen->singkatan_dep)({{ $departemen->singkatan_dep }})@endif
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="filter_jabatan" class="form-label fw-bold">Jabatan</label>
-                                    <select class="form-select" id="filter_jabatan" name="filter_jabatan">
-                                        <option value="">Semua Jabatan</option>
-                                        @foreach ($jabatanOptions as $jabatan)
-                                            <option value="{{ $jabatan->id }}"
-                                                {{ $currentFilters['jabatan'] == $jabatan->id ? 'selected' : '' }}>
-                                                {{ $jabatan->nama_jbt }} @if($jabatan->singkatan_jbt)({{ $jabatan->singkatan_jbt }})@endif - {{ $jabatan->nama_dep }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="filter_kontrak" class="form-label fw-bold">Jenis Kontrak</label>
-                                    <select class="form-select" id="filter_kontrak" name="filter_kontrak">
-                                        <option value="">Semua Kontrak</option>
-                                        @foreach ($kontrakOptions as $kontrak)
-                                            <option value="{{ $kontrak->id }}"
-                                                {{ $currentFilters['kontrak'] == $kontrak->id ? 'selected' : '' }}>
-                                                {{ $kontrak->nama_ktr }} @if($kontrak->singkatan_ktr)({{ $kontrak->singkatan_ktr }})@endif
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_departemen"
+                                            name="filter_departemen">
+                                            <option value="">Semua Departemen</option>
+                                            @foreach ($departemenOptions as $departemen)
+                                                <option value="{{ $departemen->id }}"
+                                                    {{ $currentFilters['departemen'] == $departemen->id ? 'selected' : '' }}>
+                                                    {{ $departemen->nama_dep }} @if ($departemen->singkatan_dep)
+                                                        ({{ $departemen->singkatan_dep }})
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Row 3: Work Area Filter -->
+                        <!-- Row 2: Additional Filters -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="filter_jabatan" class="form-label fw-bold">Jabatan</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jabatan" name="filter_jabatan">
+                                            <option value="">Semua Jabatan</option>
+                                            @foreach ($jabatanOptions as $jabatan)
+                                                <option value="{{ $jabatan->id }}"
+                                                    {{ $currentFilters['jabatan'] == $jabatan->id ? 'selected' : '' }}>
+                                                    {{ $jabatan->nama_jbt }} @if ($jabatan->singkatan_jbt)
+                                                        ({{ $jabatan->singkatan_jbt }})
+                                                    @endif - {{ $jabatan->nama_dep }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="filter_wilker" class="form-label fw-bold">Wilayah Kerja</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_wilker" name="filter_wilker">
+                                            <option value="">Semua Wilayah Kerja</option>
+                                            @foreach ($wilayahKerjaOptions as $wilker)
+                                                <option value="{{ $wilker->wilayah_krj }}"
+                                                    {{ $currentFilters['wilker'] == $wilker->wilayah_krj ? 'selected' : '' }}>
+                                                    {{ $wilker->wilayah_krj }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Contract Filter -->
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="filter_skt_wilker" class="form-label fw-bold">Singkatan Wilayah Kerja</label>
-                                    <select class="form-select" id="filter_skt_wilker" name="filter_skt_wilker">
-                                        <option value="">Semua Wilayah</option>
-                                        @foreach ($sktWilkerOptions as $sktWilker)
-                                            <option value="{{ $sktWilker }}"
-                                                {{ $currentFilters['skt_wilker'] == $sktWilker ? 'selected' : '' }}>
-                                                @if($sktWilker === 'null')
-                                                    Tanpa Singkatan
-                                                @else
-                                                    {{ $sktWilker }}
-                                                @endif
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="filter_kontrak" class="form-label fw-bold">Jenis Kontrak</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_kontrak" name="filter_kontrak">
+                                            <option value="">Semua Kontrak</option>
+                                            @foreach ($kontrakOptions as $kontrak)
+                                                <option value="{{ $kontrak->id }}"
+                                                    {{ $currentFilters['kontrak'] == $kontrak->id ? 'selected' : '' }}>
+                                                    {{ $kontrak->nama_ktr }} @if ($kontrak->singkatan_ktr)
+                                                        ({{ $kontrak->singkatan_ktr }})
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 d-flex align-items-end">
-                                <div class="form-group w-100">
-                                    <button type="button" class="btn btn-secondary me-2" id="resetFilter">
-                                        <i class="fas fa-redo me-1"></i>Reset Semua Filter
-                                    </button>
-                                    <button type="button" class="btn btn-primary" id="applyFilter">
-                                        <i class="fas fa-search me-1"></i>Terapkan Filter
-                                    </button>
+                            <div class="d-flex">
+                                <div class="col-md-12 mt-3 justify-content-center">
+                                    <div class="form-group w-100 text-end">
+                                        <button type="button" class="btn btn-secondary me-2" id="resetFilter">
+                                            <i class="fas fa-redo me-1"></i>Reset Semua Filter
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="applyFilter">
+                                            <i class="fas fa-search me-1"></i>Terapkan Filter
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -689,7 +784,7 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
                                                     <h6 class="text-muted mb-1 small">
-                                                        @if($gender == 'LAKI-LAKI')
+                                                        @if ($gender == 'LAKI-LAKI')
                                                             <i class="fas fa-mars text-primary"></i>
                                                         @else
                                                             <i class="fas fa-venus text-danger"></i>
@@ -717,7 +812,8 @@
 
                     <!-- By Contract Type -->
                     <div class="mb-4">
-                        <h5 class="fw-bold mb-3"><i class="fas fa-file-contract me-2 text-secondary"></i>Berdasarkan Jenis Kontrak
+                        <h5 class="fw-bold mb-3"><i class="fas fa-file-contract me-2 text-secondary"></i>Berdasarkan Jenis
+                            Kontrak
                         </h5>
                         <div class="row">
                             @foreach ($kontrakOptions as $kontrak)
@@ -799,10 +895,15 @@
 @endsection
 
 @push('styles')
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
     <style>
+        /* ===== CARD STYLING ===== */
         .border-left-primary {
             border-left: 4px solid #0d6efd !important;
         }
@@ -833,6 +934,7 @@
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
 
+        /* ===== TABLE STYLING ===== */
         .table th {
             background-color: #f8f9fa;
             border-color: #dee2e6;
@@ -847,6 +949,7 @@
             font-size: 0.8rem;
         }
 
+        /* ===== EMPLOYEE PHOTO STYLING ===== */
         .employee-photo {
             width: 32px !important;
             height: 32px !important;
@@ -885,6 +988,7 @@
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
         }
 
+        /* ===== BADGE STYLING ===== */
         .badge-lg {
             font-size: 0.75em;
             font-weight: 600;
@@ -914,21 +1018,95 @@
             opacity: 0.7;
         }
 
+        /* ===== ALERT STYLING ===== */
         .alert {
             border: none;
             border-radius: 0.5rem;
         }
 
-        /* Filter badge styling */
         .alert .badge {
             margin: 0.2rem;
         }
 
-        /* Responsive table */
+        /* ===== SELECT2 CUSTOM STYLING ===== */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single {
+            height: 38px;
+            padding: 6px 12px;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #495057;
+            line-height: 26px;
+            padding-left: 0;
+            padding-right: 20px;
+        }
+
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+            right: 10px;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            z-index: 1070 !important;
+            /* PENTING: Lebih tinggi dari modal */
+        }
+
+        .select2-container--bootstrap-5 .select2-results__option--highlighted[aria-selected] {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 6px 12px;
+        }
+
+        /* Select2 in modal specific styling - PENTING */
+        .modal .select2-container {
+            z-index: 1070 !important;
+        }
+
+        .modal .select2-dropdown {
+            z-index: 1071 !important;
+        }
+
+        .select2-container--open .select2-dropdown {
+            z-index: 1071 !important;
+        }
+
+        /* Input group with select2 */
+        .input-group .select2-container {
+            flex: 1 1 auto;
+            width: 1%;
+            min-width: 0;
+        }
+
+        .input-group .select2-container .select2-selection {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: 0;
+        }
+
+        .input-group .select2-container--focus .select2-selection {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        /* ===== RESPONSIVE TABLE ===== */
         .table-responsive {
             overflow-x: auto;
         }
 
+        /* ===== RESPONSIVE DESIGN ===== */
         @media (max-width: 768px) {
             .table-responsive {
                 font-size: 0.75rem;
@@ -936,8 +1114,8 @@
 
             .employee-photo,
             .employee-photo-placeholder {
-                width: 28px;
-                height: 28px;
+                width: 28px !important;
+                height: 28px !important;
                 font-size: 0.8rem;
             }
 
@@ -963,131 +1141,191 @@
 @endpush
 
 @push('scripts')
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
-            // Initialize DataTable
-            let table;
-            if (!$.fn.DataTable.isDataTable('#dataKaryawanTable')) {
-                table = $('#dataKaryawanTable').DataTable({
-                    pageLength: 25,
-                    language: {
-                        lengthMenu: "Tampilkan _MENU_ data per halaman",
-                        zeroRecords: "Data tidak ditemukan",
-                        info: "Menampilkan halaman _PAGE_ dari _PAGES_",
-                        infoEmpty: "Tidak ada data yang tersedia",
-                        infoFiltered: "(difilter dari _MAX_ total data)",
-                        search: "Cari:",
-                        paginate: {
-                            first: "Pertama",
-                            last: "Terakhir",
-                            next: "Selanjutnya",
-                            previous: "Sebelumnya"
-                        }
+            // ===== INISIALISASI SELECT2 UNTUK FILTER MODAL =====
+            function initializeSelect2InModal() {
+                $('#filterModal .select2').each(function() {
+                    // Destroy existing Select2 instance if any
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
                     }
+
+                    // Initialize Select2 with proper configuration
+                    $(this).select2({
+                        theme: 'bootstrap-5',
+                        dropdownParent: $('#filterModal'),
+                        width: '100%',
+                        placeholder: $(this).find('option:first').text() || 'Pilih...',
+                        allowClear: true,
+                        language: {
+                            noResults: function() {
+                                return "Tidak ada hasil ditemukan";
+                            },
+                            searching: function() {
+                                return "Mencari...";
+                            },
+                            inputTooShort: function() {
+                                return "Ketik untuk mencari...";
+                            }
+                        }
+                    });
                 });
-            } else {
-                table = $('#dataKaryawanTable').DataTable();
             }
 
-            // Initialize tooltips
-            $('[data-bs-toggle="tooltip"]').tooltip();
+            // Initialize Select2 when modal is opened
+            $('#filterModal').on('shown.bs.modal', function() {
+                initializeSelect2InModal();
+            });
 
-            // Filter modal
+            // Cleanup when modal is closed
+            $('#filterModal').on('hidden.bs.modal', function() {
+                $('#filterModal .select2').each(function() {
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+                });
+            });
+
+            // ===== FILTER BUTTON =====
             $('#filterButton').click(function() {
                 $('#filterModal').modal('show');
             });
 
-            // Apply filters
+            // ===== APPLY FILTER =====
             $('#applyFilter').click(function() {
                 $('#filterForm').submit();
             });
 
-            // Reset filters
+            // ===== RESET FILTER =====
             $('#resetFilter').click(function() {
-                $('#filter_status').val('');
-                $('#filter_perusahaan').val('');
-                $('#filter_departemen').val('');
-                $('#filter_jabatan').val('');
-                $('#filter_kontrak').val('');
-                $('#filter_jenis_kelamin').val('');
-                $('#filter_skt_wilker').val('');
+                // Reset all form inputs
+                $('#filter_nama').val('');
+                $('#filter_status').val('').trigger('change');
+                $('#filter_perusahaan').val('').trigger('change');
+                $('#filter_departemen').val('').trigger('change');
+                $('#filter_jabatan').val('').trigger('change');
+                $('#filter_kontrak').val('').trigger('change');
+                $('#filter_jenis_kelamin').val('').trigger('change');
+                $('#filter_skt_wilker').val('').trigger('change');
+                $('#filter_wilker').val('').trigger('change');
+
+                // Reinitialize Select2 after reset
+                initializeSelect2InModal();
             });
 
-            // Summary modal
+            // ===== SUMMARY BUTTON =====
             $('#summaryButton').click(function() {
                 $('#summaryModal').modal('show');
             });
 
-            // Export modal
+            // ===== EXPORT BUTTON =====
             $('#exportButton').click(function() {
                 $('#exportModal').modal('show');
             });
 
-            // Export Excel
+            // ===== EXPORT HANDLERS =====
             $('#exportExcel').click(function() {
-                let currentParams = new URLSearchParams(window.location.search);
-                let url = "{{ route('data-karyawan.export-excel') }}?" + currentParams.toString();
-                window.location.href = url;
-                $('#exportModal').modal('hide');
+                let currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('export', 'excel');
+                window.location.href = currentUrl.toString();
             });
 
-            // Delete confirmation
-            $(document).on('click', '.delete-confirm', function() {
-                let id = $(this).data('id');
-                let name = $(this).data('name');
+            $('#exportPDF').click(function() {
+                let currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('export', 'pdf');
+                window.location.href = currentUrl.toString();
+            });
 
-                $('#employeeName').text(name);
-                $('#deleteForm').attr('action', "{{ url('data-karyawan') }}/" + id);
+            $('#exportCSV').click(function() {
+                let currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('export', 'csv');
+                window.location.href = currentUrl.toString();
+            });
+
+            // ===== DELETE CONFIRMATION =====
+            $('.delete-confirm').click(function() {
+                const employeeId = $(this).data('id');
+                const employeeName = $(this).data('name');
+
+                $('#employeeName').text(employeeName);
+                $('#deleteForm').attr('action', `/data-karyawan/${employeeId}`);
                 $('#deleteConfirmationModal').modal('show');
             });
 
-            // Auto-dismiss alerts after 5 seconds
-            setTimeout(function() {
-                $('.alert').fadeOut('slow');
-            }, 5000);
+            // ===== QUICK SEARCH FUNCTIONALITY =====
+            $('#quickSearchInput').on('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    $('#quickSearchForm').submit();
+                }
+            });
 
-            // Click to view larger photo
-            $(document).on('click', '.employee-photo', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
+            // ===== CLEAR SEARCH =====
+            $('#clearSearch').click(function() {
+                $('#quickSearchInput').val('');
+                let form = $('#quickSearchForm');
+                form.find('input[name="filter_nama"]').val('');
+                form.submit();
+            });
 
-                let src = $(this).attr('src');
-                let alt = $(this).attr('alt');
+            // ===== IMAGE PREVIEW ON CLICK =====
+            $(document).on('click', '.employee-photo', function() {
+                const imgSrc = $(this).attr('src');
+                const employeeName = $(this).attr('alt');
 
-                // Remove existing modal if any
-                $('#photoModal').remove();
-
-                let modal = `
-                    <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="photoModalLabel">${alt}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body text-center">
-                                    <img src="${src}" class="img-fluid rounded" alt="${alt}" style="max-height: 70vh; object-fit: contain;">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                $('body').append(modal);
-
-                // Create Bootstrap modal instance and show it
-                let photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
-                photoModal.show();
-
-                // Remove modal from DOM when hidden
-                document.getElementById('photoModal').addEventListener('hidden.bs.modal', function() {
-                    this.remove();
+                Swal.fire({
+                    title: employeeName,
+                    imageUrl: imgSrc,
+                    imageAlt: employeeName,
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    width: '600px',
+                    customClass: {
+                        image: 'img-fluid rounded'
+                    }
                 });
             });
+
+            // ===== LOADING STATE FOR SEARCH =====
+            $('#quickSearchForm').on('submit', function() {
+                let submitBtn = $(this).find('button[type="submit"]');
+                submitBtn.html('<i class="fas fa-spinner fa-spin me-1"></i>Mencari...');
+                submitBtn.prop('disabled', true);
+            });
+
+            // ===== KEYBOARD SHORTCUTS =====
+            $(document).keydown(function(e) {
+                // Ctrl/Cmd + F for quick search
+                if ((e.ctrlKey || e.metaKey) && e.keyCode === 70) {
+                    e.preventDefault();
+                    $('#quickSearchInput').focus();
+                }
+
+                // Ctrl/Cmd + K for filter modal
+                if ((e.ctrlKey || e.metaKey) && e.keyCode === 75) {
+                    e.preventDefault();
+                    $('#filterModal').modal('show');
+                }
+            });
+
+            // ===== TOOLTIP INITIALIZATION =====
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // ===== AUTO DISMISS ALERTS =====
+            setTimeout(function() {
+                $('.alert').fadeOut('slow', function() {
+                    $(this).remove();
+                });
+            }, 5000);
         });
     </script>
 @endpush

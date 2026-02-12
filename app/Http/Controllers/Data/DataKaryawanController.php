@@ -43,11 +43,13 @@ class DataKaryawanController extends Controller
             $query->where('perusahaan', $request->filter_perusahaan);
         }
 
-        // NEW FILTERS START HERE
+        // Filter by Name (search)
+        if ($request->has('filter_nama') && !empty($request->filter_nama)) {
+            $query->where('nama', 'LIKE', '%' . $request->filter_nama . '%');
+        }
 
         // Filter by Department
         if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
-            // Get all department IDs that have the same nama_dep as the selected one
             $selectedDepartemen = Departemen::find($request->filter_departemen);
             if ($selectedDepartemen) {
                 $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
@@ -55,9 +57,9 @@ class DataKaryawanController extends Controller
             }
         }
 
-        // Filter by Position (Jabatan) - specific position
+        // Filter by Position (Jabatan)
         if ($request->has('filter_jabatan') && !empty($request->filter_jabatan)) {
-            $query->where('departemen', $request->filter_jabatan); // jabatan is stored in departemen field
+            $query->where('departemen', $request->filter_jabatan);
         }
 
         // Filter by Contract Type
@@ -70,35 +72,9 @@ class DataKaryawanController extends Controller
             $query->where('sex', $request->filter_jenis_kelamin);
         }
 
-        // Existing skt_wilker filter
-        if ($request->has('filter_skt_wilker') && !empty($request->filter_skt_wilker)) {
-            if ($request->filter_skt_wilker === 'null') {
-                // Filter for wilayah kerja with null/empty skt_wilker
-                $wilayahKerjaIds = WilayahKerja::where(function($query) {
-                    $query->whereNull('skt_wilker')
-                          ->orWhere('skt_wilker', '')
-                          ->orWhere('skt_wilker', '-');
-                })->pluck('id')->toArray();
-
-                if (!empty($wilayahKerjaIds)) {
-                    $query->whereIn('wilker', $wilayahKerjaIds);
-                } else {
-                    // If no wilayah kerja with null skt_wilker, also check employees with null wilker
-                    $query->where(function($q) {
-                        $q->whereNull('wilker')
-                          ->orWhereIn('wilker', [0, '']);
-                    });
-                }
-            } else {
-                // Filter wilayah kerja based on singkatan_wk that starts with selected skt_wilker
-                $wilayahKerjaIds = WilayahKerja::where('singkatan_wk', 'LIKE', $request->filter_skt_wilker . '%')
-                    ->pluck('id')
-                    ->toArray();
-
-                if (!empty($wilayahKerjaIds)) {
-                    $query->whereIn('wilker', $wilayahKerjaIds);
-                }
-            }
+        // Filter by Wilayah Kerja - PERBAIKAN: field wilker menyimpan STRING
+        if ($request->has('filter_wilker') && !empty($request->filter_wilker)) {
+            $query->where('wilker', $request->filter_wilker);
         }
 
         // Get filtered data
@@ -109,38 +85,23 @@ class DataKaryawanController extends Controller
         $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
         $departemens = Departemen::sortByCode()->get();
 
-        // NEW: Get unique departemen names for filter dropdown
+        // Get unique departemen names for filter dropdown
         $departemenOptions = Departemen::select('nama_dep', 'singkatan_dep', DB::raw('MIN(id) as id'), DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode_dep'))
             ->groupBy('nama_dep', 'singkatan_dep')
             ->orderBy('min_kode_dep', 'asc')
             ->get();
 
-        // NEW: Get all jabatan/positions for filter dropdown
+        // Get all jabatan/positions for filter dropdown
         $jabatanOptions = Departemen::sortByCode()->get(['id', 'kode_dep', 'nama_dep', 'nama_jbt', 'singkatan_jbt']);
 
-        // NEW: Get contract types for filter dropdown
+        // Get contract types for filter dropdown
         $kontrakOptions = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
 
-        // Get unique skt_wilker values for filter dropdown
-        $sktWilkerOptions = WilayahKerja::whereNotNull('skt_wilker')
-            ->where('skt_wilker', '!=', '')
-            ->where('skt_wilker', '!=', '-')
-            ->distinct()
-            ->orderBy('skt_wilker', 'asc')
-            ->pluck('skt_wilker')
-            ->toArray();
-
-        // Check if there are any wilayah kerja with null/empty skt_wilker
-        $hasNullSktWilker = WilayahKerja::where(function($query) {
-            $query->whereNull('skt_wilker')
-                  ->orWhere('skt_wilker', '')
-                  ->orWhere('skt_wilker', '-');
-        })->exists();
-
-        // Add null option if there are records with null skt_wilker
-        if ($hasNullSktWilker) {
-            array_unshift($sktWilkerOptions, 'null'); // Add at the beginning
-        }
+        // Get UNIQUE wilayah_krj for filter dropdown
+        $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
+            ->groupBy('wilayah_krj')
+            ->orderBy('wilayah_krj', 'asc')
+            ->get();
 
         // Get status options
         $statusOptions = [
@@ -149,7 +110,7 @@ class DataKaryawanController extends Controller
             'NON-AKTIF' => 'NON-AKTIF'
         ];
 
-        // NEW: Gender options
+        // Gender options
         $jenisKelaminOptions = [
             'LAKI-LAKI' => 'Laki-laki',
             'PEREMPUAN' => 'Perempuan'
@@ -187,11 +148,12 @@ class DataKaryawanController extends Controller
         $currentFilters = [
             'status' => $request->filter_status,
             'perusahaan' => $request->filter_perusahaan,
-            'skt_wilker' => $request->filter_skt_wilker,
+            'nama' => $request->filter_nama,
             'departemen' => $request->filter_departemen,
             'jabatan' => $request->filter_jabatan,
             'kontrak' => $request->filter_kontrak,
             'jenis_kelamin' => $request->filter_jenis_kelamin,
+            'wilker' => $request->filter_wilker,
         ];
 
         return view('data.data-karyawan.index', compact(
@@ -201,11 +163,11 @@ class DataKaryawanController extends Controller
             'wilayahKerjas',
             'departemens',
             'statusOptions',
-            'sktWilkerOptions',
-            'departemenOptions',    // NEW
-            'jabatanOptions',       // NEW
-            'kontrakOptions',       // NEW
-            'jenisKelaminOptions',  // NEW
+            'departemenOptions',
+            'jabatanOptions',
+            'kontrakOptions',
+            'jenisKelaminOptions',
+            'wilayahKerjaOptions',
             'currentFilters'
         ));
     }
@@ -581,7 +543,7 @@ class DataKaryawanController extends Controller
     {
         $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'kontrakRelation']);
 
-        // Apply filters - status, company, and skt_wilker
+        // Apply filters
         if (!empty($filters['filter_status'])) {
             $query->where('sts_kry', $filters['filter_status']);
         }
@@ -590,7 +552,10 @@ class DataKaryawanController extends Controller
             $query->where('perusahaan', $filters['filter_perusahaan']);
         }
 
-        // NEW FILTERS FOR EXPORT
+        if (!empty($filters['filter_nama'])) {
+            $query->where('nama', 'LIKE', '%' . $filters['filter_nama'] . '%');
+        }
+
         if (!empty($filters['filter_departemen'])) {
             $selectedDepartemen = Departemen::find($filters['filter_departemen']);
             if ($selectedDepartemen) {
@@ -611,31 +576,9 @@ class DataKaryawanController extends Controller
             $query->where('sex', $filters['filter_jenis_kelamin']);
         }
 
-        if (!empty($filters['filter_skt_wilker'])) {
-            if ($filters['filter_skt_wilker'] === 'null') {
-                $wilayahKerjaIds = WilayahKerja::where(function($query) {
-                    $query->whereNull('skt_wilker')
-                          ->orWhere('skt_wilker', '')
-                          ->orWhere('skt_wilker', '-');
-                })->pluck('id')->toArray();
-
-                if (!empty($wilayahKerjaIds)) {
-                    $query->whereIn('wilker', $wilayahKerjaIds);
-                } else {
-                    $query->where(function($q) {
-                        $q->whereNull('wilker')
-                          ->orWhereIn('wilker', [0, '']);
-                    });
-                }
-            } else {
-                $wilayahKerjaIds = WilayahKerja::where('singkatan_wk', 'LIKE', $filters['filter_skt_wilker'] . '%')
-                    ->pluck('id')
-                    ->toArray();
-
-                if (!empty($wilayahKerjaIds)) {
-                    $query->whereIn('wilker', $wilayahKerjaIds);
-                }
-            }
+        // Filter by Wilayah Kerja - PERBAIKAN: langsung filter string
+        if (!empty($filters['filter_wilker'])) {
+            $query->where('wilker', $filters['filter_wilker']);
         }
 
         $dataKaryawans = $query->orderBy('nama', 'asc')->get();
@@ -727,10 +670,9 @@ class DataKaryawanController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'success'
-                => false,
+                'success' => false,
                 'message' => 'Wilayah Kerja tidak ditemukan'
             ], 404);
         }
-}
+    }
 }

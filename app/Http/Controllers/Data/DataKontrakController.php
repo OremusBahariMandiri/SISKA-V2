@@ -224,7 +224,7 @@ class DataKontrakController extends Controller
             'tgl_awl_ktr' => 'required|date',
             'tgl_lahir' => 'nullable|date',
             'ktg_ktk' => 'nullable|string|max:50',
-            'tgl_akhir_ktr' => 'required|date|after:tgl_awl_ktr',
+            'tgl_akhir_ktr' => 'nullable|date|after:tgl_awl_ktr',
             'durasi_ktr' => 'nullable|integer|min:1',
             'tgl_pgt_ktr' => 'nullable|date|after:tgl_awl_ktr',
             'durasi_pgt' => 'nullable|integer|min:1',

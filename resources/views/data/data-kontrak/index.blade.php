@@ -169,6 +169,8 @@
                                         <th width="3%" class="text-center">DOK</th>
                                         <th width="4%" class="text-center">STS SR</th>
                                         <th width="5%" class="text-center">TGL SR NA</th>
+                                        <th width="8%" class="text-center">CREATE</th>
+                                        <th width="8%" class="text-center">UPDATE</th>
                                         <th width="6%" class="text-center no-wrap">AKSI</th>
                                     </tr>
                                 </thead>
@@ -416,6 +418,15 @@
                                             <!-- TGL SR NA (Tanggal Surat Non Aktif) -->
                                             <td class="text-center">
                                                 {{ $kontrak->tgl_sr_na ? date('d-m-Y', strtotime($kontrak->tgl_sr_na)) : '-' }}
+                                            </td>
+
+                                            <td> {{ $kontrak->creator ? $kontrak->creator->nama_kry : '-' }}
+                                                <span
+                                                    style="font-size: 11px">{{ $kontrak->created_at ? $kontrak->created_at->format('d/m/y H:i') : '-' }}</span>
+                                            </td>
+                                            <td> {{ $kontrak->updater ? $kontrak->updater->nama_kry : '-' }}
+                                                <span
+                                                    style="font-size: 11px">{{ $kontrak->updated_at ? $kontrak->updated_at->format('d/m/y H:i') : '-' }}</span>
                                             </td>
 
                                             <!-- AKSI -->
@@ -1099,7 +1110,7 @@
             border-left: 3px solid #0d6efd !important;
         }
 
-       
+
 
         /* Responsive table controls visibility */
         table.dataTable.dtr-inline.collapsed tbody tr.parent td.control:before,

@@ -572,7 +572,7 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- SKT Institusi -->
+                                                {{-- <!-- SKT Institusi -->
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_inst_skl" class="form-label fw-bold">SKT
@@ -585,7 +585,7 @@
                                                                 value="{{ old('skt_inst_skl', $dataKontrak->skt_inst_skl) }}">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
                                                 <!-- Jurusan -->
                                                 <div class="col-md-6">

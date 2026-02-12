@@ -126,9 +126,23 @@ class UserController extends Controller
             'departemen_kry' => $request->departemen_kry,
             'jabatan_kry' => $request->jabatan_kry,
             'wilker_kry' => $request->wilker_kry,
-            'is_admin' => $request->has('is_admin') ? 1 : 0,
             'updated_by' => auth()->user()->id_kode ?? null,
         ];
+
+        // PERBAIKAN: Preservasi status admin
+        // Hanya update is_admin jika:
+        // 1. Ada parameter is_admin di request (dari form yang memiliki checkbox admin)
+        // 2. User yang mengedit bukan dirinya sendiri, ATAU
+        // 3. User yang mengedit adalah dirinya sendiri tapi dia super admin atau ada permission khusus
+
+        if ($request->has('is_admin')) {
+            // Jika ada checkbox is_admin di form (biasanya dari halaman admin management)
+            $data['is_admin'] = $request->has('is_admin') ? 1 : 0;
+        } else {
+            // Jika tidak ada checkbox is_admin (dari form edit profile biasa)
+            // Pertahankan status admin yang sudah ada
+            $data['is_admin'] = $user->is_admin;
+        }
 
         // Only update password if provided
         if ($request->filled('password_kry')) {

@@ -254,7 +254,7 @@ class DataKaryawan extends Model
      * @return string|null
      */
     public function getPrimaryPhoneAttribute(): ?string
-    {
+{
         return $this->tlp1 ?: $this->tlp2;
     }
 

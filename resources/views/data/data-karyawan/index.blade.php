@@ -45,13 +45,15 @@
                         @endif
 
                         <!-- Active Filter Display -->
-                        @if (!empty($currentFilters['status']) || !empty($currentFilters['perusahaan']))
+                        @if (!empty($currentFilters['status']) || !empty($currentFilters['perusahaan']) || !empty($currentFilters['departemen']) || !empty($currentFilters['jabatan']) || !empty($currentFilters['kontrak']) || !empty($currentFilters['jenis_kelamin']) || !empty($currentFilters['skt_wilker']))
                             <div class="alert alert-info alert-dismissible fade show" role="alert">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Filter Aktif:</strong>
+
                                 @if (!empty($currentFilters['status']))
                                     Status: <span class="badge bg-primary">{{ $currentFilters['status'] }}</span>
                                 @endif
+
                                 @if (!empty($currentFilters['perusahaan']))
                                     @php
                                         $selectedPerusahaan = $perusahaans
@@ -59,15 +61,55 @@
                                             ->first();
                                     @endphp
                                     @if ($selectedPerusahaan)
-                                        Perusahaan: <span
-                                            class="badge bg-success">{{ $selectedPerusahaan->nama_prs2 }}</span>
+                                        Perusahaan: <span class="badge bg-success">{{ $selectedPerusahaan->nama_prs2 }}</span>
                                     @endif
                                 @endif
+
+                                @if (!empty($currentFilters['departemen']))
+                                    @php
+                                        $selectedDepartemen = $departemenOptions
+                                            ->where('id', $currentFilters['departemen'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedDepartemen)
+                                        Departemen: <span class="badge bg-info">{{ $selectedDepartemen->nama_dep }}</span>
+                                    @endif
+                                @endif
+
+                                @if (!empty($currentFilters['jabatan']))
+                                    @php
+                                        $selectedJabatan = $jabatanOptions
+                                            ->where('id', $currentFilters['jabatan'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedJabatan)
+                                        Jabatan: <span class="badge bg-warning">{{ $selectedJabatan->nama_jbt }}</span>
+                                    @endif
+                                @endif
+
+                                @if (!empty($currentFilters['kontrak']))
+                                    @php
+                                        $selectedKontrak = $kontrakOptions
+                                            ->where('id', $currentFilters['kontrak'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedKontrak)
+                                        Kontrak: <span class="badge bg-secondary">{{ $selectedKontrak->nama_ktr }}</span>
+                                    @endif
+                                @endif
+
+                                @if (!empty($currentFilters['jenis_kelamin']))
+                                    Jenis Kelamin: <span class="badge bg-dark">{{ $jenisKelaminOptions[$currentFilters['jenis_kelamin']] ?? $currentFilters['jenis_kelamin'] }}</span>
+                                @endif
+
+                                @if (!empty($currentFilters['skt_wilker']))
+                                    Singkatan Wilker: <span class="badge bg-light text-dark">{{ $currentFilters['skt_wilker'] }}</span>
+                                @endif
+
                                 <a href="{{ route('data-karyawan.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
                                     <i class="fas fa-times me-1"></i> Reset Filter
                                 </a>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
 
@@ -292,7 +334,7 @@
     <!-- Modals -->
     <!-- Filter Modal -->
     <div class="modal fade" id="filterModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title"><i class="fas fa-filter me-2"></i>Filter Data Karyawan</h5>
@@ -300,9 +342,10 @@
                 </div>
                 <div class="modal-body">
                     <form id="filterForm" method="GET" action="{{ route('data-karyawan.index') }}">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
+                        <!-- Row 1: Basic Filters -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label for="filter_status" class="form-label fw-bold">Status Karyawan</label>
                                     <select class="form-select" id="filter_status" name="filter_status">
                                         <option value="">Semua Status</option>
@@ -315,8 +358,8 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
                                     <select class="form-select" id="filter_perusahaan" name="filter_perusahaan">
                                         <option value="">Semua Perusahaan</option>
@@ -329,12 +372,100 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="filter_jenis_kelamin" class="form-label fw-bold">Jenis Kelamin</label>
+                                    <select class="form-select" id="filter_jenis_kelamin" name="filter_jenis_kelamin">
+                                        <option value="">Semua Jenis Kelamin</option>
+                                        @foreach ($jenisKelaminOptions as $value => $label)
+                                            <option value="{{ $value }}"
+                                                {{ $currentFilters['jenis_kelamin'] == $value ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Department & Position Filters -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="filter_departemen" class="form-label fw-bold">Departemen</label>
+                                    <select class="form-select" id="filter_departemen" name="filter_departemen">
+                                        <option value="">Semua Departemen</option>
+                                        @foreach ($departemenOptions as $departemen)
+                                            <option value="{{ $departemen->id }}"
+                                                {{ $currentFilters['departemen'] == $departemen->id ? 'selected' : '' }}>
+                                                {{ $departemen->nama_dep }} @if($departemen->singkatan_dep)({{ $departemen->singkatan_dep }})@endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="filter_jabatan" class="form-label fw-bold">Jabatan</label>
+                                    <select class="form-select" id="filter_jabatan" name="filter_jabatan">
+                                        <option value="">Semua Jabatan</option>
+                                        @foreach ($jabatanOptions as $jabatan)
+                                            <option value="{{ $jabatan->id }}"
+                                                {{ $currentFilters['jabatan'] == $jabatan->id ? 'selected' : '' }}>
+                                                {{ $jabatan->nama_jbt }} @if($jabatan->singkatan_jbt)({{ $jabatan->singkatan_jbt }})@endif - {{ $jabatan->nama_dep }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="filter_kontrak" class="form-label fw-bold">Jenis Kontrak</label>
+                                    <select class="form-select" id="filter_kontrak" name="filter_kontrak">
+                                        <option value="">Semua Kontrak</option>
+                                        @foreach ($kontrakOptions as $kontrak)
+                                            <option value="{{ $kontrak->id }}"
+                                                {{ $currentFilters['kontrak'] == $kontrak->id ? 'selected' : '' }}>
+                                                {{ $kontrak->nama_ktr }} @if($kontrak->singkatan_ktr)({{ $kontrak->singkatan_ktr }})@endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Work Area Filter -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="filter_skt_wilker" class="form-label fw-bold">Singkatan Wilayah Kerja</label>
+                                    <select class="form-select" id="filter_skt_wilker" name="filter_skt_wilker">
+                                        <option value="">Semua Wilayah</option>
+                                        @foreach ($sktWilkerOptions as $sktWilker)
+                                            <option value="{{ $sktWilker }}"
+                                                {{ $currentFilters['skt_wilker'] == $sktWilker ? 'selected' : '' }}>
+                                                @if($sktWilker === 'null')
+                                                    Tanpa Singkatan
+                                                @else
+                                                    {{ $sktWilker }}
+                                                @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-end">
+                                <div class="form-group w-100">
+                                    <button type="button" class="btn btn-secondary me-2" id="resetFilter">
+                                        <i class="fas fa-redo me-1"></i>Reset Semua Filter
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="applyFilter">
+                                        <i class="fas fa-search me-1"></i>Terapkan Filter
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="resetFilter">Reset</button>
-                    <button type="button" class="btn btn-primary" id="applyFilter">Terapkan Filter</button>
                 </div>
             </div>
         </div>
@@ -543,6 +674,85 @@
 
                     <hr class="my-4">
 
+                    <!-- By Gender -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-users me-2 text-warning"></i>Berdasarkan Jenis Kelamin
+                        </h5>
+                        <div class="row">
+                            @foreach ($jenisKelaminOptions as $gender => $genderLabel)
+                                @php
+                                    $count = $dataKaryawans->where('sex', $gender)->count();
+                                @endphp
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-left-warning shadow-sm h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-muted mb-1 small">
+                                                        @if($gender == 'LAKI-LAKI')
+                                                            <i class="fas fa-mars text-primary"></i>
+                                                        @else
+                                                            <i class="fas fa-venus text-danger"></i>
+                                                        @endif
+                                                    </h6>
+                                                    <p class="mb-0 fw-bold">{{ $genderLabel }}</p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <h3 class="fw-bold text-warning mb-0">{{ $count }}</h3>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-2" style="height: 5px;">
+                                                <div class="progress-bar bg-warning" role="progressbar"
+                                                    style="width: {{ $dataKaryawans->count() > 0 ? ($count / $dataKaryawans->count()) * 100 : 0 }}%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- By Contract Type -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-file-contract me-2 text-secondary"></i>Berdasarkan Jenis Kontrak
+                        </h5>
+                        <div class="row">
+                            @foreach ($kontrakOptions as $kontrak)
+                                @php
+                                    $count = $dataKaryawans->where('sts_ktr', $kontrak->id)->count();
+                                @endphp
+                                <div class="col-md-4 col-lg-3 mb-3">
+                                    <div class="card border-left-secondary shadow-sm h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-muted mb-1 small">{{ $kontrak->kode_ktr }}</h6>
+                                                    <p class="mb-0 fw-bold text-truncate"
+                                                        title="{{ $kontrak->nama_ktr }}" style="max-width: 150px;">
+                                                        {{ Str::limit($kontrak->nama_ktr, 20) }}
+                                                    </p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <h3 class="fw-bold text-secondary mb-0">{{ $count }}</h3>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-2" style="height: 5px;">
+                                                <div class="progress-bar bg-secondary" role="progressbar"
+                                                    style="width: {{ $dataKaryawans->count() > 0 ? ($count / $dataKaryawans->count()) * 100 : 0 }}%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
                     <!-- By Work Area -->
                     <div class="mb-4">
                         <h5 class="fw-bold mb-3"><i class="fas fa-map-marked-alt me-2 text-info"></i>Berdasarkan Wilayah
@@ -603,6 +813,14 @@
 
         .border-left-info {
             border-left: 4px solid #0dcaf0 !important;
+        }
+
+        .border-left-warning {
+            border-left: 4px solid #ffc107 !important;
+        }
+
+        .border-left-secondary {
+            border-left: 4px solid #6c757d !important;
         }
 
         .card:hover {
@@ -701,6 +919,11 @@
             border-radius: 0.5rem;
         }
 
+        /* Filter badge styling */
+        .alert .badge {
+            margin: 0.2rem;
+        }
+
         /* Responsive table */
         .table-responsive {
             overflow-x: auto;
@@ -787,6 +1010,11 @@
             $('#resetFilter').click(function() {
                 $('#filter_status').val('');
                 $('#filter_perusahaan').val('');
+                $('#filter_departemen').val('');
+                $('#filter_jabatan').val('');
+                $('#filter_kontrak').val('');
+                $('#filter_jenis_kelamin').val('');
+                $('#filter_skt_wilker').val('');
             });
 
             // Summary modal

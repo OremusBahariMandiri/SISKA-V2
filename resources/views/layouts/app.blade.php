@@ -261,6 +261,7 @@
                             'wilayah-kerja*',
                             'departemen*',
                             'kontrak-kerja*',
+                            'dokumen-karyawan*',
                         ]);
 
                         $hasDataMasterAccess = hasMenuAccess([
@@ -269,12 +270,13 @@
                             'wilayah-kerja',
                             'departemen',
                             'kontrak-kerja',
+                            'dokumen-karyawan',
                         ]);
 
                         // Dokumen Access Management
-                        $manajemenDataActive = isMenuActive(['data-karyawan*']);
+                        $manajemenDataActive = isMenuActive(['data-karyawan*', 'data-kontrak*']);
 
-                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan']);
+                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan', 'data-kontrak']);
                     @endphp
 
                     <!-- DATA MASTER DROPDOWN MENU -->
@@ -302,7 +304,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('perusahaan*') ? 'active' : '' }}"
                                             href="{{ route('perusahaan.index') }}">
-                                            <i class="fas fa-building"></i>
+                                            <i class="fas fa-industry"></i>
                                             <span class="sidebar-menu-text">Perusahaan</span>
                                         </a>
                                     </li>
@@ -312,7 +314,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('wilayah-kerja*') ? 'active' : '' }}"
                                             href="{{ route('wilayah-kerja.index') }}">
-                                            <i class="fas fa-map-marker-alt"></i>
+                                            <i class="fas fa-map"></i>
                                             <span class="sidebar-menu-text">Wilayah Kerja</span>
                                         </a>
                                     </li>
@@ -322,7 +324,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('departemen*') ? 'active' : '' }}"
                                             href="{{ route('departemen.index') }}">
-                                            <i class="fas fa-building"></i>
+                                            <i class="fas fa-sitemap"></i>
                                             <span class="sidebar-menu-text">Departemen</span>
                                         </a>
                                     </li>
@@ -332,8 +334,18 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('kontrak-kerja*') ? 'active' : '' }}"
                                             href="{{ route('kontrak-kerja.index') }}">
-                                            <i class="fas fa-building"></i>
+                                            <i class="fas fa-file-contract"></i>
                                             <span class="sidebar-menu-text">Kontrak Kerja</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('dokumen-karyawan'))
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('dokumen-karyawan*') ? 'active' : '' }}"
+                                            href="{{ route('dokumen-karyawan.index') }}">
+                                            <i class="fas fa-folder-open"></i>
+                                            <span class="sidebar-menu-text">Dokumen Karyawan</span>
                                         </a>
                                     </li>
                                 @endif
@@ -346,7 +358,7 @@
                         <li class="sidebar-menu-item has-submenu" data-tooltip="Applicant Data">
                             <a class="sidebar-menu-link menu-dropdown {{ $manajemenDataActive ? 'active' : '' }}"
                                 href="#" data-menu="manajemenData">
-                                <i class="fas fa-user-edit"></i>
+                                <i class="fas fa-user-tie"></i>
                                 <span class="sidebar-menu-text">Manajemen Data</span>
                                 <i
                                     class="fas fa-chevron-down submenu-indicator {{ $manajemenDataActive ? 'rotated' : '' }}"></i>
@@ -356,14 +368,25 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('data-karyawan*') ? 'active' : '' }}"
                                             href="{{ route('data-karyawan.index') }}">
-                                            <i class="fas fa-id-card"></i>
+                                            <i class="fas fa-address-card"></i>
                                             <span class="sidebar-menu-text">Data Karyawan</span>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-kontrak'))
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('data-kontrak*') ? 'active' : '' }}"
+                                            href="{{ route('data-kontrak.index') }}">
+                                            <i class="fas fa-scroll"></i>
+                                            <span class="sidebar-menu-text">Data Kontrak</span>
                                         </a>
                                     </li>
                                 @endif
                             </ul>
                         </li>
                     @endif
+
+
 
                     <!-- Settings -->
                     <li class="sidebar-menu-item" data-tooltip="Pengaturan">

@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Data\DataKaryawanController;
+use App\Http\Controllers\Data\DataKontrakController;
 use App\Http\Controllers\DataMaster\DepartemenController;
+use App\Http\Controllers\DataMaster\DokumenKaryawanController;
 use App\Http\Controllers\DataMaster\KontrakKerjaController;
 use App\Http\Controllers\DataMaster\PerusahaanController;
 use App\Http\Controllers\DataMaster\UserAccessController;
@@ -59,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('wilayah-kerja', WilayahKerjaController::class);
     Route::resource('departemen', DepartemenController::class);
     Route::resource('kontrak-kerja', KontrakKerjaController::class);
+    Route::resource('dokumen-karyawan', DokumenKaryawanController::class);
 
     // ================================================ MANAJEMEN DATA ROUTE ======================================== //
     // ============================================================================================================== //
@@ -77,4 +80,30 @@ Route::middleware('auth')->group(function () {
     Route::get('/data-karyawan/unit-kerja/{wilayahKrj}', [DataKaryawanController::class, 'getUnitKerjaByWilayah'])->name('data-karyawan.unit-kerja');
     Route::get('/data-karyawan/unit-kerja/{wilayahKrj}', [DataKaryawanController::class, 'getUnitKerjaByWilayah'])->name('data-karyawan.unit-kerja');
     Route::get('/data-karyawan/wilker-detail/{id}', [DataKaryawanController::class, 'getWilkerUnitKrj'])->name('data-karyawan.wilker-detail');
+
+    Route::get('data-karyawan/get-jabatan-by-departemen/{namaDep}', [DataKaryawanController::class, 'getJabatanByDepartemen']);
+    Route::get('data-karyawan/get-unit-kerja-by-wilayah/{wilayahKrj}', [DataKaryawanController::class, 'getUnitKerjaByWilayah']);
+    Route::get('data-karyawan/get-departemen-jabatan/{id}', [DataKaryawanController::class, 'getDepartemenJabatan']);
+    Route::get('data-karyawan/get-wilker-unit-krj/{id}', [DataKaryawanController::class, 'getWilkerUnitKrj']);
+
+    Route::resource('data-kontrak', DataKontrakController::class);
+    // Route untuk mendapatkan data employee untuk kontrak
+    Route::get('data-kontrak/get-employee-data/{id}', [DataKontrakController::class, 'getEmployeeData'])
+        ->name('data-kontrak.get-employee-data');
+
+    // Route untuk mendapatkan jabatan berdasarkan departemen (sama seperti data-karyawan)
+    Route::get('data-kontrak/get-jabatan-by-departemen/{namaDep}', [DataKontrakController::class, 'getJabatanByDepartemen'])
+        ->name('data-kontrak.get-jabatan-by-departemen');
+
+    // Route untuk mendapatkan unit kerja berdasarkan wilayah (sama seperti data-karyawan)
+    Route::get('data-kontrak/get-unit-kerja-by-wilayah/{wilayahKrj}', [DataKontrakController::class, 'getUnitKerjaByWilayah'])
+        ->name('data-kontrak.get-unit-kerja-by-wilayah');
+
+    // Route untuk mendapatkan departemen jabatan berdasarkan ID
+    Route::get('data-kontrak/get-departemen-jabatan/{id}', [DataKontrakController::class, 'getDepartemenJabatan'])
+        ->name('data-kontrak.get-departemen-jabatan');
+
+    // Route untuk mendapatkan wilker unit kerja berdasarkan ID
+    Route::get('data-kontrak/get-wilker-unit-krj/{id}', [DataKontrakController::class, 'getWilkerUnitKrj'])
+        ->name('data-kontrak.get-wilker-unit-krj');
 });

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Data Kontrak')
+@section('title', 'Data Karyawan')
 
 @section('content')
     <div class="container-fluid dataKontrakPage">
@@ -39,6 +39,7 @@
                                     id="warningContractsCount">0</span>
                             </span>
                         </div>
+
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
@@ -145,71 +146,45 @@
                             <table id="dataKontrakTable" class="table table-bordered table-striped data-table">
                                 <thead class="table-light">
                                     <tr>
-                                        <th width="2%" class="text-center">NO</th>
-                                        <th width="4%" class="text-center">NRK</th>
-                                        <th width="6%" class="text-center">NAMA</th>
-                                        <th width="3%" class="text-center">UMUR</th>
-                                        <th width="3%" class="text-center">SEX</th>
-                                        <th width="3%" class="text-center">FOTO</th>
-                                        <th width="5%" class="text-center">TGL MSK</th>
-                                        <th width="4%" class="text-center">MKR</th>
-                                        <th width="5%" class="text-center">JSKL</th>
-                                        <th width="5%" class="text-center">DEP</th>
-                                        <th width="5%" class="text-center">JBT</th>
-                                        <th width="5%" class="text-center">WILKER</th>
-                                        <th width="5%" class="text-center">PRSH</th>
-                                        <th width="5%" class="text-center">NO SR KTR</th>
-                                        <th width="3%" class="text-center">TGL SR KTR</th>
-                                        <th width="4%" class="text-center">STS KTR</th>
-                                        <th width="5%" class="text-center">TGL AW KTR</th>
-                                        <th width="5%" class="text-center">TGL AK KTR</th>
-                                        <th width="4%" class="text-center">DUR KTR</th>
-                                        <th width="5%" class="text-center">TGL PER</th>
-                                        <th width="5%" class="text-center">PERINGATAN</th>
-                                        <th width="3%" class="text-center">DOK</th>
-                                        <th width="4%" class="text-center">STS SR</th>
-                                        <th width="5%" class="text-center">TGL SR NA</th>
-                                        <th width="8%" class="text-center">CREATE</th>
-                                        <th width="8%" class="text-center">UPDATE</th>
-                                        <th width="6%" class="text-center no-wrap">AKSI</th>
+                                        <th width="1%" class="text-center">NO</th>
+                                        <th width="3%" class="text-center">NRK</th>
+                                        <th width="5%" class="text-center">NAMA</th>
+                                        <th width="2%" class="text-center">JML</th>
+                                        <th width="2%" class="text-center">UMR</th>
+                                        <th width="1%" class="text-center">JK</th>
+                                        <th width="2%" class="text-center">FOTO</th>
+                                        <th width="3%" class="text-center">TGL MSK</th>
+                                        <th width="2%" class="text-center">MKR</th>
+                                        <th width="2%" class="text-center">SKL</th>
+                                        <th width="2%" class="text-center">DEP</th>
+                                        <th width="2%" class="text-center">JBT</th>
+                                        <th width="2%" class="text-center">WLK</th>
+                                        <th width="2%" class="text-center">PRS</th>
+                                        <th width="4%" class="text-center">NO KTR</th>
+                                        <th width="3%" class="text-center">TGL KTR</th>
+                                        <th width="2%" class="text-center">STS</th>
+                                        <th width="3%" class="text-center">TGL AW</th>
+                                        <th width="3%" class="text-center">TGL AK</th>
+                                        <th width="2%" class="text-center">DUR</th>
+                                        <th width="3%" class="text-center">TGL PGT</th>
+                                        <th width="1%" class="text-center">PERINGATAN</th>
+                                        <th width="1%" class="text-center">DOK</th>
+                                        <th width="2%" class="text-center">STS</th>
+                                        <th width="3%" class="text-center">TGL NA</th>
+                                        <th width="4%" class="text-center">CREATE</th>
+                                        <th width="4%" class="text-center">UPDATE</th>
+                                        <th width="3%" class="text-center no-wrap">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($dataKontraks as $kontrak)
                                         @php
-                                            // Calculate contract duration and remaining days
-                                            $remainingDays = null;
-                                            $isActive = false;
-                                            $isExpired = false;
-                                            $isExpiringSoon = false;
-
-                                            if ($kontrak->tgl_akhir_ktr) {
-                                                $endDate = \Carbon\Carbon::parse($kontrak->tgl_akhir_ktr);
-                                                $now = \Carbon\Carbon::now();
-                                                $remainingDays = $now->diffInDays($endDate, false);
-                                                $isExpired = $remainingDays < 0;
-                                                $isExpiringSoon = $remainingDays >= 0 && $remainingDays <= 30;
-
-                                                if ($kontrak->tgl_awl_ktr) {
-                                                    $startDate = \Carbon\Carbon::parse($kontrak->tgl_awl_ktr);
-                                                    $isActive =
-                                                        $now->between($startDate, $endDate) &&
-                                                        $kontrak->sts_srt_ktr == 'AKTIF';
-                                                }
-                                            }
-
                                             // Get related data
                                             $karyawan = $kontrak->karyawan;
                                             $kontrakType = $kontrak->kontrakKerja;
                                             $perusahaan = $kontrak->perusahaan;
                                             $departemen = $kontrak->departemen;
                                             $wilayah = $kontrak->wilayahKerja;
-
-                                            // Format education
-                                            $education = $kontrak->jenjang_skl;
-                                            if ($kontrak->jurusan_skl) {
-                                                $education .= ' - ' . $kontrak->jurusan_skl;
-                                            }
 
                                             // Calculate age
                                             $age = null;
@@ -231,7 +206,10 @@
                                                 }
                                             }
                                         @endphp
-                                        <tr data-tgl-pengingat-kontrak="{{ $kontrak->tgl_pgt_ktr ? \Carbon\Carbon::parse($kontrak->tgl_pgt_ktr)->format('Y-m-d') : '' }}">
+                                        <tr data-employee-id="{{ $kontrak->id_data_kry }}"
+                                            data-contract-status="{{ $kontrak->sts_srt_ktr }}"
+                                            data-tgl-peringatan="{{ $kontrak->tgl_pgt_ktr }}"
+                                            data-tgl-akhir="{{ $kontrak->tgl_akhir_ktr }}">
 
                                             <!-- NO -->
                                             <td class="text-center">{{ $loop->iteration }}</td>
@@ -245,6 +223,38 @@
                                             <!-- NAMA -->
                                             <td>
                                                 <div class="fw-bold">{{ $karyawan->nama ?? '-' }}</div>
+                                            </td>
+                                            <td class="text-center">
+                                                @php
+                                                    $contractCount = $contractCounts[$kontrak->id_data_kry] ?? [
+                                                        'total' => 0,
+                                                        'active' => 0,
+                                                        'non_active' => 0,
+                                                    ];
+                                                @endphp
+                                                <div class="contract-count-display">
+                                                    <!-- Total Contracts -->
+                                                    <span class="badge bg-primary" title="Total Kontrak">
+                                                        <i
+                                                            class="fas fa-file-contract me-1"></i>{{ $contractCount['total'] }}
+                                                    </span>
+
+                                                    <!-- Active Contracts -->
+                                                    @if ($contractCount['active'] > 0)
+                                                        <br><small class="text-success" title="Kontrak Aktif">
+                                                            <i class="fas fa-check-circle"></i>
+                                                            {{ $contractCount['active'] }}
+                                                        </small>
+                                                    @endif
+
+                                                    <!-- Non-Active Contracts -->
+                                                    @if ($contractCount['non_active'] > 0)
+                                                        <small class="text-muted ms-1" title="Kontrak Non-Aktif">
+                                                            <i class="fas fa-pause-circle"></i>
+                                                            {{ $contractCount['non_active'] }}
+                                                        </small>
+                                                    @endif
+                                                </div>
                                             </td>
 
                                             <!-- UMUR -->
@@ -260,8 +270,8 @@
                                             <td class="text-center">
                                                 @if ($karyawan && $karyawan->sex)
                                                     <span
-                                                        class="badge {{ $karyawan->sex == 'L' ? 'bg-primary' : 'bg-pink' }}">
-                                                        {{ $karyawan->sex == 'L' ? 'L' : 'P' }}
+                                                        class="badge {{ $karyawan->sex == 'LAKI-LAKI' ? 'bg-primary' : 'bg-pink' }}">
+                                                        {{ $karyawan->sex == 'LAKI-LAKI' ? 'L' : 'P' }}
                                                     </span>
                                                 @else
                                                     -
@@ -271,13 +281,32 @@
                                             <!-- FOTO -->
                                             <td class="text-center">
                                                 @if ($karyawan && $karyawan->foto_dokumen)
-                                                    <img src="{{ asset('storage/' . $karyawan->foto_dokumen) }}"
-                                                        alt="Foto" class="rounded-circle" width="40"
-                                                        height="40" style="object-fit: cover;">
+                                                    @php
+                                                        $fileExtension = pathinfo(
+                                                            storage_path('app/public/' . $karyawan->foto_dokumen),
+                                                            PATHINFO_EXTENSION,
+                                                        );
+                                                        $isImage = in_array(strtolower($fileExtension), [
+                                                            'jpg',
+                                                            'jpeg',
+                                                            'png',
+                                                            'gif',
+                                                        ]);
+                                                    @endphp
+
+                                                    @if ($isImage)
+                                                        <img src="{{ asset('storage/' . $karyawan->foto_dokumen) }}"
+                                                            class="employee-photo rounded-circle"
+                                                            alt="Foto {{ $karyawan->nama }}"
+                                                            style="width: 40px; height: 40px; object-fit: cover; cursor: pointer;">
+                                                    @else
+                                                        <div class="employee-photo-placeholder">
+                                                            {{ substr($karyawan->nama, 0, 1) }}
+                                                        </div>
+                                                    @endif
                                                 @else
-                                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
-                                                        style="width: 40px; height: 40px;">
-                                                        <i class="fas fa-user text-white"></i>
+                                                    <div class="employee-photo-placeholder">
+                                                        {{ substr($karyawan->nama ?? 'U', 0, 1) }}
                                                     </div>
                                                 @endif
                                             </td>
@@ -298,8 +327,7 @@
 
                                             <!-- PENDIDIKAN -->
                                             <td class="text-center">
-                                                <span class="badge bg-info">{{ $kontrak->jenjang_skl }}</span>
-
+                                                <span class="badge bg-info">{{ $kontrak->jenjang_skl ?? '-' }}</span>
                                             </td>
 
                                             <!-- DEPARTEMEN -->
@@ -316,7 +344,8 @@
 
                                             <!-- JABATAN -->
                                             <td class="text-center">
-                                                <span class="badge bg-secondary">{{ $departemen->singkatan_jbt ?? '-' }}</span>
+                                                <span
+                                                    class="badge bg-secondary">{{ $departemen->singkatan_jbt ?? '-' }}</span>
                                             </td>
 
                                             <!-- WILKER -->
@@ -339,24 +368,21 @@
                                                 {{ $kontrak->tgl_srt_ktr ? date('d-m-Y', strtotime($kontrak->tgl_srt_ktr)) : '-' }}
                                             </td>
 
-                                            <!-- STATUS -->
+                                            <!-- STATUS KONTRAK -->
                                             <td class="text-center">
-                                                @if ($kontrakType->singkatan_ktr == 'PKWTT')
+                                                @if ($kontrakType && $kontrakType->singkatan_ktr == 'PKWTT')
                                                     <span class="badge badge-lg bg-success">
-                                                        <i class="fas fa-times-circle me-1"></i>PKWTT
+                                                        <i class="fas fa-check-circle me-1"></i>PKWTT
                                                     </span>
-                                                @elseif ($kontrakType->singkatan_ktr == 'PKWT')
-                                                    <span class="badge badge-lg bg-secondary">PKWT
-                                                    </span>
-                                                @elseif ($kontrakType->singkatan_ktr == 'SPK')
-                                                    <span class="badge badge-lg bg-danger">SPK
-                                                    </span>
-                                                @elseif ($kontrakType->singkatan_ktr == 'PENDING')
-                                                    <span class="badge badge-lg bg-warning text-dark">PENDING
-                                                    </span>
+                                                @elseif ($kontrakType && $kontrakType->singkatan_ktr == 'PKWT')
+                                                    <span class="badge badge-lg bg-secondary">PKWT</span>
+                                                @elseif ($kontrakType && $kontrakType->singkatan_ktr == 'SPK')
+                                                    <span class="badge badge-lg bg-danger">SPK</span>
+                                                @elseif ($kontrakType && $kontrakType->singkatan_ktr == 'PENDING')
+                                                    <span class="badge badge-lg bg-warning text-dark">PENDING</span>
                                                 @else
                                                     <span
-                                                        class="badge badge-lg bg-dark">{{ $kontrakType->singkatan_ktr }}</span>
+                                                        class="badge badge-lg bg-dark">{{ $kontrakType->singkatan_ktr ?? 'N/A' }}</span>
                                                 @endif
                                             </td>
 
@@ -384,9 +410,9 @@
                                                 {{ $kontrak->tgl_pgt_ktr ? date('d-m-Y', strtotime($kontrak->tgl_pgt_ktr)) : '-' }}
                                             </td>
 
-                                            <!-- PERINGATAN (NEW COLUMN) -->
+                                            <!-- PERINGATAN (Will be calculated by JS) -->
                                             <td class="text-center sisa-peringatan-col">
-                                                -
+                                                <span class="badge bg-secondary">Loading...</span>
                                             </td>
 
                                             <!-- DOKUMEN -->
@@ -411,7 +437,8 @@
                                                 @elseif ($kontrak->sts_srt_ktr == 'EXPIRED')
                                                     <span class="badge bg-danger">{{ $kontrak->sts_srt_ktr }}</span>
                                                 @else
-                                                    <span class="badge bg-warning text-dark">{{ $kontrak->sts_srt_ktr ?? '-' }}</span>
+                                                    <span
+                                                        class="badge bg-warning text-dark">{{ $kontrak->sts_srt_ktr ?? '-' }}</span>
                                                 @endif
                                             </td>
 
@@ -420,11 +447,11 @@
                                                 {{ $kontrak->tgl_sr_na ? date('d-m-Y', strtotime($kontrak->tgl_sr_na)) : '-' }}
                                             </td>
 
-                                            <td> {{ $kontrak->creator ? $kontrak->creator->nama_kry : '-' }}
+                                            <td>{{ $kontrak->creator ? $kontrak->creator->nama_kry : '-' }}
                                                 <span
                                                     style="font-size: 11px">{{ $kontrak->created_at ? $kontrak->created_at->format('d/m/y H:i') : '-' }}</span>
                                             </td>
-                                            <td> {{ $kontrak->updater ? $kontrak->updater->nama_kry : '-' }}
+                                            <td>{{ $kontrak->updater ? $kontrak->updater->nama_kry : '-' }}
                                                 <span
                                                     style="font-size: 11px">{{ $kontrak->updated_at ? $kontrak->updated_at->format('d/m/y H:i') : '-' }}</span>
                                             </td>
@@ -470,148 +497,167 @@
         </div>
     </div>
 
-    <!-- Modals - keeping all existing modals as they are -->
+    <!-- Filter Modal -->
     <!-- Filter Modal -->
     <div class="modal fade" id="filterModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="fas fa-filter me-2"></i>Filter Data Kontrak</h5>
+                    <h5 class="modal-title"><i class="fas fa-filter me-2"></i>Filter Data Karyawan</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="filterForm" method="GET" action="{{ route('data-kontrak.index') }}">
+                    <form id="filterForm" method="GET" action="{{ route('data-karyawan.index') }}">
                         <!-- Row 1: Basic Filters -->
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="filter_status" class="form-label fw-bold">Status Kontrak</label>
-                                    <select class="form-select" id="filter_status" name="filter_status">
-                                        <option value="">Semua Status</option>
-                                        @foreach ($statusOptions as $value => $label)
-                                            <option value="{{ $value }}"
-                                                {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="filter_nama" class="form-label fw-bold">Nama Karyawan</label>
+                                    <input type="text" class="form-control" id="filter_nama" name="filter_nama"
+                                        placeholder="Cari nama karyawan..." value="{{ $currentFilters['nama'] ?? '' }}">
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6 mt-2">
                                 <div class="form-group">
-                                    <label for="filter_contract_status" class="form-label fw-bold">Status Masa
-                                        Kontrak</label>
-                                    <select class="form-select" id="filter_contract_status"
-                                        name="filter_contract_status">
-                                        <option value="">Semua Kondisi</option>
-                                        @foreach ($contractStatusOptions as $value => $label)
-                                            <option value="{{ $value }}"
-                                                {{ $currentFilters['contract_status'] == $value ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="filter_jenis_kelamin" class="form-label fw-bold">Jenis Kelamin</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jenis_kelamin"
+                                            name="filter_jenis_kelamin">
+                                            <option value="">Semua Jenis Kelamin</option>
+                                            @foreach ($jenisKelaminOptions as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ $currentFilters['jenis_kelamin'] == $value ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6 mt-2">
                                 <div class="form-group">
-                                    <label for="filter_kontrak_type" class="form-label fw-bold">Jenis Kontrak</label>
-                                    <select class="form-select" id="filter_kontrak_type" name="filter_kontrak_type">
-                                        <option value="">Semua Jenis</option>
-                                        @foreach ($kontrakTypes as $kontrak)
-                                            <option value="{{ $kontrak->id }}"
-                                                {{ $currentFilters['kontrak_type'] == $kontrak->id ? 'selected' : '' }}>
-                                                {{ $kontrak->nama_ktr }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="filter_status" class="form-label fw-bold">Status Karyawan</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_status" name="filter_status">
+                                            <option value="">Semua Status</option>
+                                            @foreach ($statusOptions as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Row 2: Company & Department Filters -->
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
-                                    <select class="form-select" id="filter_perusahaan" name="filter_perusahaan">
-                                        <option value="">Semua Perusahaan</option>
-                                        @foreach ($perusahaans as $perusahaan)
-                                            <option value="{{ $perusahaan->id }}"
-                                                {{ $currentFilters['perusahaan'] == $perusahaan->id ? 'selected' : '' }}>
-                                                {{ $perusahaan->nama_prs2 }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_perusahaan"
+                                            name="filter_perusahaan">
+                                            <option value="">Semua Perusahaan</option>
+                                            @foreach ($perusahaans as $perusahaan)
+                                                <option value="{{ $perusahaan->id }}"
+                                                    {{ $currentFilters['perusahaan'] == $perusahaan->id ? 'selected' : '' }}>
+                                                    {{ $perusahaan->nama_prs1 }} - {{ $perusahaan->nama_prs2 }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_departemen" class="form-label fw-bold">Departemen</label>
-                                    <select class="form-select" id="filter_departemen" name="filter_departemen">
-                                        <option value="">Semua Departemen</option>
-                                        @foreach ($departemens as $departemen)
-                                            <option value="{{ $departemen->id }}"
-                                                {{ $currentFilters['departemen'] == $departemen->id ? 'selected' : '' }}>
-                                                {{ $departemen->nama_dep }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="filter_wilayah_kerja" class="form-label fw-bold">Wilayah Kerja</label>
-                                    <select class="form-select" id="filter_wilayah_kerja" name="filter_wilayah_kerja">
-                                        <option value="">Semua Wilayah</option>
-                                        @foreach ($wilayahKerjas as $wilayah)
-                                            <option value="{{ $wilayah->id }}"
-                                                {{ $currentFilters['wilayah_kerja'] == $wilayah->id ? 'selected' : '' }}>
-                                                {{ $wilayah->wilayah_krj }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_departemen"
+                                            name="filter_departemen">
+                                            <option value="">Semua Departemen</option>
+                                            @foreach ($departemenOptions as $departemen)
+                                                <option value="{{ $departemen->id }}"
+                                                    {{ $currentFilters['departemen'] == $departemen->id ? 'selected' : '' }}>
+                                                    {{ $departemen->nama_dep }} @if ($departemen->singkatan_dep)
+                                                        ({{ $departemen->singkatan_dep }})
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Row 3: Education & Search -->
+                        <!-- Row 2: Additional Filters -->
                         <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="filter_education_level" class="form-label fw-bold">Jenjang
-                                        Pendidikan</label>
-                                    <select class="form-select" id="filter_education_level"
-                                        name="filter_education_level">
-                                        <option value="">Semua Jenjang</option>
-                                        @foreach ($educationLevelOptions as $value => $label)
-                                            <option value="{{ $value }}"
-                                                {{ $currentFilters['education_level'] == $value ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="filter_jabatan" class="form-label fw-bold">Jabatan</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jabatan" name="filter_jabatan">
+                                            <option value="">Semua Jabatan</option>
+                                            @foreach ($jabatanOptions as $jabatan)
+                                                <option value="{{ $jabatan->id }}"
+                                                    {{ $currentFilters['jabatan'] == $jabatan->id ? 'selected' : '' }}>
+                                                    {{ $jabatan->nama_jbt }} @if ($jabatan->singkatan_jbt)
+                                                        ({{ $jabatan->singkatan_jbt }})
+                                                    @endif - {{ $jabatan->nama_dep }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="search" class="form-label fw-bold">Pencarian</label>
-                                    <input type="text" class="form-control" id="search" name="search"
-                                        value="{{ $currentFilters['search'] }}"
-                                        placeholder="Cari berdasarkan nama karyawan, NRK, NIK, atau nomor kontrak...">
+                                    <label for="filter_wilker" class="form-label fw-bold">Wilayah Kerja</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_wilker" name="filter_wilker">
+                                            <option value="">Semua Wilayah Kerja</option>
+                                            @foreach ($wilayahKerjaOptions as $wilker)
+                                                <option value="{{ $wilker->wilayah_krj }}"
+                                                    {{ $currentFilters['wilker'] == $wilker->wilayah_krj ? 'selected' : '' }}>
+                                                    {{ $wilker->wilayah_krj }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
+                        <!-- Row 3: Contract Filter -->
                         <div class="row">
-                            <div class="col-12 d-flex justify-content-end gap-2">
-                                <button type="button" class="btn btn-secondary" id="resetFilter">
-                                    <i class="fas fa-redo me-1"></i>Reset Filter
-                                </button>
-                                <button type="button" class="btn btn-primary" id="applyFilter">
-                                    <i class="fas fa-search me-1"></i>Terapkan Filter
-                                </button>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="filter_kontrak" class="form-label fw-bold">Jenis Kontrak</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_kontrak" name="filter_kontrak">
+                                            <option value="">Semua Kontrak</option>
+                                            @foreach ($kontrakOptions as $kontrak)
+                                                <option value="{{ $kontrak->id }}"
+                                                    {{ $currentFilters['kontrak'] == $kontrak->id ? 'selected' : '' }}>
+                                                    {{ $kontrak->nama_ktr }} @if ($kontrak->singkatan_ktr)
+                                                        ({{ $kontrak->singkatan_ktr }})
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="col-md-12 mt-3 justify-content-center">
+                                    <div class="form-group w-100 text-end">
+                                        <button type="button" class="btn btn-secondary me-2" id="resetFilter">
+                                            <i class="fas fa-redo me-1"></i>Reset Semua Filter
+                                        </button>
+                                        <button type="button" class="btn btn-primary" id="applyFilter">
+                                            <i class="fas fa-search me-1"></i>Terapkan Filter
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -650,12 +696,48 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModal"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Konfirmasi Hapus Semua Kontrak</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Peringatan!</strong> Tindakan ini akan menghapus <strong>SEMUA</strong> kontrak karyawan.
+                    </div>
+                    <p>Apakah Anda yakin ingin menghapus <strong>semua data kontrak</strong> untuk karyawan <strong
+                            id="employeeName"></strong>?</p>
+                    <p class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Ini akan menghapus seluruh riwayat kontrak, pendidikan, dan karir karyawan tersebut.
+                        Data yang sudah dihapus tidak dapat dikembalikan.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <form id="deleteForm" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Hapus Semua Kontrak
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Summary Modal -->
     <div class="modal fade" id="summaryModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title"><i class="fas fa-chart-pie me-2"></i>Ringkasan Data Kontrak</h5>
+                    <h5 class="modal-title"><i class="fas fa-chart-pie me-2"></i>Ringkasan Data Karyawan</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -664,9 +746,10 @@
                         <div class="col-md-3">
                             <div class="card border-primary shadow-sm h-100">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-file-contract fa-3x text-primary mb-3"></i>
-                                    <h6 class="text-muted mb-2">Total Kontrak</h6>
-                                    <h2 class="fw-bold text-primary">{{ $dataKontraks->count() }}</h2>
+                                    <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                                    <h6 class="text-muted mb-2">Total Karyawan</h6>
+                                    <h2 class="fw-bold text-primary" id="totalKaryawan">{{ $dataKaryawans->count() }}
+                                    </h2>
                                 </div>
                             </div>
                         </div>
@@ -674,32 +757,19 @@
                             <div class="card border-success shadow-sm h-100">
                                 <div class="card-body text-center">
                                     <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                                    <h6 class="text-muted mb-2">Kontrak Aktif</h6>
-                                    <h2 class="fw-bold text-success">
-                                        {{ $dataKontraks->where('sts_srt_ktr', 'AKTIF')->count() }}
-                                    </h2>
+                                    <h6 class="text-muted mb-2">Karyawan Aktif</h6>
+                                    <h2 class="fw-bold text-success" id="totalAktif">
+                                        {{ $dataKaryawans->where('sts_kry', 'AKTIF')->count() }}</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card border-warning shadow-sm h-100">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                                    <h6 class="text-muted mb-2">Akan Berakhir</h6>
-                                    <h2 class="fw-bold text-warning">
-                                        @php
-                                            $expiringSoon = $dataKontraks->filter(function ($kontrak) {
-                                                if (!$kontrak->tgl_akhir_ktr) {
-                                                    return false;
-                                                }
-                                                $endDate = \Carbon\Carbon::parse($kontrak->tgl_akhir_ktr);
-                                                $now = \Carbon\Carbon::now();
-                                                $remainingDays = $now->diffInDays($endDate, false);
-                                                return $remainingDays >= 0 && $remainingDays <= 30;
-                                            });
-                                        @endphp
-                                        {{ $expiringSoon->count() }}
-                                    </h2>
+                                    <i class="fas fa-hourglass-half fa-3x text-warning mb-3"></i>
+                                    <h6 class="text-muted mb-2">Karyawan Calon</h6>
+                                    <h2 class="fw-bold text-warning" id="totalCalon">
+                                        {{ $dataKaryawans->where('sts_kry', 'CALON')->count() }}</h2>
                                 </div>
                             </div>
                         </div>
@@ -707,20 +777,9 @@
                             <div class="card border-danger shadow-sm h-100">
                                 <div class="card-body text-center">
                                     <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
-                                    <h6 class="text-muted mb-2">Sudah Berakhir</h6>
-                                    <h2 class="fw-bold text-danger">
-                                        @php
-                                            $expired = $dataKontraks->filter(function ($kontrak) {
-                                                if (!$kontrak->tgl_akhir_ktr) {
-                                                    return false;
-                                                }
-                                                $endDate = \Carbon\Carbon::parse($kontrak->tgl_akhir_ktr);
-                                                $now = \Carbon\Carbon::now();
-                                                return $now->greaterThan($endDate);
-                                            });
-                                        @endphp
-                                        {{ $expired->count() }}
-                                    </h2>
+                                    <h6 class="text-muted mb-2">Karyawan Non-Aktif</h6>
+                                    <h2 class="fw-bold text-danger" id="totalNonAktif">
+                                        {{ $dataKaryawans->where('sts_kry', 'NON-AKTIF')->count() }}</h2>
                                 </div>
                             </div>
                         </div>
@@ -728,24 +787,24 @@
 
                     <hr class="my-4">
 
-                    <!-- By Contract Type -->
+                    <!-- By Company -->
                     <div class="mb-4">
-                        <h5 class="fw-bold mb-3"><i class="fas fa-clipboard-list me-2 text-primary"></i>Berdasarkan Jenis
-                            Kontrak</h5>
+                        <h5 class="fw-bold mb-3"><i class="fas fa-building me-2 text-primary"></i>Berdasarkan Perusahaan
+                        </h5>
                         <div class="row">
-                            @foreach ($kontrakTypes as $type)
+                            @foreach ($perusahaans as $perusahaan)
                                 @php
-                                    $count = $dataKontraks->where('id_ktr', $type->id)->count();
+                                    $count = $dataKaryawans->where('perusahaan', $perusahaan->id)->count();
                                 @endphp
                                 <div class="col-md-4 col-lg-3 mb-3">
                                     <div class="card border-left-primary shadow-sm h-100">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <h6 class="text-muted mb-1 small">{{ $type->kode_ktr }}</h6>
-                                                    <p class="mb-0 fw-bold text-truncate" title="{{ $type->nama_ktr }}"
-                                                        style="max-width: 150px;">
-                                                        {{ Str::limit($type->nama_ktr, 20) }}
+                                                    <h6 class="text-muted mb-1 small">{{ $perusahaan->kode_prs }}</h6>
+                                                    <p class="mb-0 fw-bold text-truncate"
+                                                        title="{{ $perusahaan->nama_prs2 }}" style="max-width: 150px;">
+                                                        {{ Str::limit($perusahaan->nama_prs2, 20) }}
                                                     </p>
                                                 </div>
                                                 <div class="text-end">
@@ -754,7 +813,7 @@
                                             </div>
                                             <div class="progress mt-2" style="height: 5px;">
                                                 <div class="progress-bar bg-primary" role="progressbar"
-                                                    style="width: {{ $dataKontraks->count() > 0 ? ($count / $dataKontraks->count()) * 100 : 0 }}%">
+                                                    style="width: {{ $dataKaryawans->count() > 0 ? ($count / $dataKaryawans->count()) * 100 : 0 }}%">
                                                 </div>
                                             </div>
                                         </div>
@@ -766,25 +825,42 @@
 
                     <hr class="my-4">
 
-                    <!-- By Company -->
+                    <!-- By Department -->
                     <div class="mb-4">
-                        <h5 class="fw-bold mb-3"><i class="fas fa-building me-2 text-success"></i>Berdasarkan Perusahaan
+                        <h5 class="fw-bold mb-3"><i class="fas fa-sitemap me-2 text-success"></i>Berdasarkan Departemen
                         </h5>
                         <div class="row">
-                            @foreach ($perusahaans as $perusahaan)
+                            @php
+                                // Group departemen by nama_dep
+                                $groupedDepartemen = $departemens->groupBy('nama_dep');
+                            @endphp
+                            @foreach ($groupedDepartemen as $namaDep => $deptGroup)
                                 @php
-                                    $count = $dataKontraks->where('id_prsh', $perusahaan->id)->count();
+                                    // Get all IDs for this department name
+                                    $deptIds = $deptGroup->pluck('id')->toArray();
+                                    // Count karyawan for all departments with this name
+                                    $count = $dataKaryawans->whereIn('departemen', $deptIds)->count();
+                                    // Get first department for display
+                                    $firstDept = $deptGroup->first();
                                 @endphp
                                 <div class="col-md-4 col-lg-3 mb-3">
                                     <div class="card border-left-success shadow-sm h-100">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <h6 class="text-muted mb-1 small">{{ $perusahaan->kode_prs }}</h6>
-                                                    <p class="mb-0 fw-bold text-truncate"
-                                                        title="{{ $perusahaan->nama_prs2 }}" style="max-width: 150px;">
-                                                        {{ Str::limit($perusahaan->nama_prs2, 20) }}
+                                                    <h6 class="text-muted mb-1 small">
+                                                        {{ $deptGroup->pluck('kode_dep')->unique()->implode(', ') }}
+                                                    </h6>
+                                                    <p class="mb-0 fw-bold text-truncate" title="{{ $namaDep }}"
+                                                        style="max-width: 150px;">
+                                                        {{ Str::limit($namaDep, 20) }}
                                                     </p>
+                                                    @if ($deptGroup->count() > 1)
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-layer-group"></i> {{ $deptGroup->count() }}
+                                                            sub
+                                                        </small>
+                                                    @endif
                                                 </div>
                                                 <div class="text-end">
                                                     <h3 class="fw-bold text-success mb-0">{{ $count }}</h3>
@@ -792,7 +868,126 @@
                                             </div>
                                             <div class="progress mt-2" style="height: 5px;">
                                                 <div class="progress-bar bg-success" role="progressbar"
-                                                    style="width: {{ $dataKontraks->count() > 0 ? ($count / $dataKontraks->count()) * 100 : 0 }}%">
+                                                    style="width: {{ $dataKaryawans->count() > 0 ? ($count / $dataKaryawans->count()) * 100 : 0 }}%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- By Gender -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-users me-2 text-warning"></i>Berdasarkan Jenis Kelamin
+                        </h5>
+                        <div class="row">
+                            @foreach ($jenisKelaminOptions as $gender => $genderLabel)
+                                @php
+                                    $count = $dataKaryawans->where('sex', $gender)->count();
+                                @endphp
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-left-warning shadow-sm h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-muted mb-1 small">
+                                                        @if ($gender == 'LAKI-LAKI')
+                                                            <i class="fas fa-mars text-primary"></i>
+                                                        @else
+                                                            <i class="fas fa-venus text-danger"></i>
+                                                        @endif
+                                                    </h6>
+                                                    <p class="mb-0 fw-bold">{{ $genderLabel }}</p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <h3 class="fw-bold text-warning mb-0">{{ $count }}</h3>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-2" style="height: 5px;">
+                                                <div class="progress-bar bg-warning" role="progressbar"
+                                                    style="width: {{ $dataKaryawans->count() > 0 ? ($count / $dataKaryawans->count()) * 100 : 0 }}%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- By Contract Type -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-file-contract me-2 text-secondary"></i>Berdasarkan Jenis
+                            Kontrak
+                        </h5>
+                        <div class="row">
+                            @foreach ($kontrakOptions as $kontrak)
+                                @php
+                                    $count = $dataKaryawans->where('sts_ktr', $kontrak->id)->count();
+                                @endphp
+                                <div class="col-md-4 col-lg-3 mb-3">
+                                    <div class="card border-left-secondary shadow-sm h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-muted mb-1 small">{{ $kontrak->kode_ktr }}</h6>
+                                                    <p class="mb-0 fw-bold text-truncate"
+                                                        title="{{ $kontrak->nama_ktr }}" style="max-width: 150px;">
+                                                        {{ Str::limit($kontrak->nama_ktr, 20) }}
+                                                    </p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <h3 class="fw-bold text-secondary mb-0">{{ $count }}</h3>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-2" style="height: 5px;">
+                                                <div class="progress-bar bg-secondary" role="progressbar"
+                                                    style="width: {{ $dataKaryawans->count() > 0 ? ($count / $dataKaryawans->count()) * 100 : 0 }}%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- By Work Area -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-map-marked-alt me-2 text-info"></i>Berdasarkan Wilayah
+                            Kerja</h5>
+                        <div class="row">
+                            @foreach ($wilayahKerjas as $wilker)
+                                @php
+                                    $count = $dataKaryawans->where('wilker', $wilker->id)->count();
+                                @endphp
+                                <div class="col-md-4 col-lg-3 mb-3">
+                                    <div class="card border-left-info shadow-sm h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="text-muted mb-1 small">{{ $wilker->kode_wk }}</h6>
+                                                    <p class="mb-0 fw-bold text-truncate"
+                                                        title="{{ $wilker->wilayah_krj }}" style="max-width: 150px;">
+                                                        {{ Str::limit($wilker->wilayah_krj, 20) }} -
+                                                        {{ Str::limit($wilker->area_krj, 20) }}
+                                                    </p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <h3 class="fw-bold text-info mb-0">{{ $count }}</h3>
+                                                </div>
+                                            </div>
+                                            <div class="progress mt-2" style="height: 5px;">
+                                                <div class="progress-bar bg-info" role="progressbar"
+                                                    style="width: {{ $dataKaryawans->count() > 0 ? ($count / $dataKaryawans->count()) * 100 : 0 }}%">
                                                 </div>
                                             </div>
                                         </div>
@@ -808,37 +1003,18 @@
             </div>
         </div>
     </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Konfirmasi Hapus</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menghapus kontrak untuk <strong id="contractName"></strong>?</p>
-                    <p class="text-muted">Data yang sudah dihapus tidak dapat dikembalikan.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <form id="deleteForm" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Hapus</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('styles')
-    <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
     <style>
+        /* ===== CARD STYLING ===== */
+        .dataKontrakPage .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
         .border-left-primary {
             border-left: 4px solid #0d6efd !important;
         }
@@ -859,16 +1035,7 @@
             border-left: 4px solid #6c757d !important;
         }
 
-        .card:hover {
-            transform: translateY(-2px);
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .dataKontrakPage .card {
-            border: none;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-
+        /* ===== TABLE STYLING ===== */
         .table th {
             background-color: #f8f9fa;
             border-color: #dee2e6;
@@ -883,17 +1050,51 @@
             font-size: 0.75rem;
         }
 
-        /* Force AKSI column to never wrap or break */
         .no-wrap {
             white-space: nowrap !important;
             min-width: 120px !important;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 2px;
+        /* ===== EMPLOYEE PHOTO STYLING ===== */
+        .employee-photo {
+            width: 40px !important;
+            height: 40px !important;
+            object-fit: cover;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
         }
 
+        .employee-photo:hover {
+            transform: scale(1.15);
+            border-color: #0d6efd;
+            box-shadow: 0 3px 6px rgba(13, 110, 253, 0.3);
+            z-index: 10;
+        }
+
+        .employee-photo-placeholder {
+            width: 40px !important;
+            height: 40px !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin: 0 auto;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .employee-photo-placeholder:hover {
+            transform: scale(1.15);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ===== BADGE STYLING ===== */
         .badge-lg {
             font-size: 0.75em;
             font-weight: 600;
@@ -905,24 +1106,12 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .badge.bg-success {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
-        }
-
-        .badge.bg-warning {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-        }
-
-        .badge.bg-danger {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%) !important;
-        }
-
         .badge.bg-pink {
             background-color: #e91e63 !important;
             color: white !important;
         }
 
-        /* ===== HIGHLIGHT ROWS STYLING - Same as dokumen legal ===== */
+        /* ===== HIGHLIGHT ROWS STYLING ===== */
         .dataKontrakPage table#dataKontrakTable tbody tr.highlight-red {
             background-color: #fc0000 !important;
             color: rgb(0, 0, 0) !important;
@@ -961,7 +1150,7 @@
         }
 
         .dataKontrakPage table#dataKontrakTable tbody tr.highlight-orange:hover {
-            background-color: #00e013 !important;
+            background-color: #33ff33 !important;
         }
 
         .dataKontrakPage table#dataKontrakTable tbody tr.highlight-gray:hover {
@@ -997,56 +1186,6 @@
             background-color: inherit !important;
         }
 
-        .text-muted.small {
-            font-size: 0.7rem;
-            color: #6c757d !important;
-            opacity: 0.7;
-        }
-
-        .alert {
-            border: none;
-            border-radius: 0.5rem;
-        }
-
-        /* Filter badge styling */
-        .alert .badge {
-            margin: 0.2rem;
-        }
-
-        /* Responsive table */
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        @media (max-width: 768px) {
-            .table-responsive {
-                font-size: 0.7rem;
-            }
-
-            .badge-lg {
-                font-size: 0.6em;
-                padding: 0.25em 0.5em;
-            }
-
-            .btn {
-                font-size: 0.65rem;
-                padding: 0.2rem 0.4rem;
-            }
-
-            .table th {
-                font-size: 0.7rem;
-            }
-
-            .table td {
-                font-size: 0.7rem;
-            }
-        }
-
-        /* Photo styling */
-        .rounded-circle {
-            border: 2px solid #dee2e6;
-        }
-
         /* Contract status summary badges */
         .contract-status-summary {
             margin-bottom: 1rem;
@@ -1061,15 +1200,6 @@
             padding: 0.5em 0.75em;
             margin-right: 0.5rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Add hover effect to action buttons */
-        .dataKontrakPage .btn-sm {
-            transition: transform 0.2s;
-        }
-
-        .dataKontrakPage .btn-sm:hover {
-            transform: scale(1.1);
         }
 
         /* Hover effect for table rows */
@@ -1104,72 +1234,51 @@
             animation: flashBorder 1s ease infinite;
         }
 
-        /* Highlight filter active state */
-        .filter-active {
-            background-color: #e8f4ff !important;
-            border-left: 3px solid #0d6efd !important;
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.7rem;
+            }
+
+            .badge-lg {
+                font-size: 0.6em;
+                padding: 0.25em 0.5em;
+            }
+
+            .btn {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            .table th {
+                font-size: 0.7rem;
+            }
+
+            .table td {
+                font-size: 0.7rem;
+            }
+
+            .employee-photo,
+            .employee-photo-placeholder {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 0.8rem;
+            }
         }
-
-
-
-        /* Responsive table controls visibility */
-        table.dataTable.dtr-inline.collapsed tbody tr.parent td.control:before,
-        table.dataTable.dtr-inline.collapsed tbody tr.parent td.dtr-control:before {
-            transform: translate(-50%, -50%) rotate(90deg) !important;
-        }
-
-        table.dataTable.dtr-inline.collapsed tbody td.control,
-        table.dataTable.dtr-inline.collapsed tbody td.dtr-control {
-            position: relative;
-        }
-
-        table.dataTable.dtr-inline.collapsed tbody td.control:before,
-        table.dataTable.dtr-inline.collapsed tbody td.dtr-control:before {
-            content: "▷";
-            font-size: 12px;
-            color: #337ab7;
-            cursor: pointer;
-            position: absolute;
-            left: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-
-
-        /* Style the child row details */
-
-        table.dataTable tbody tr.child td {
-            border-top: 1px solid #dee2e6;
-        }
-
-        table.dataTable tbody tr.child ul.dtr-details {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
-
-        table.dataTable tbody tr.child ul.dtr-details li {
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        table.dataTable tbody tr.child ul.dtr-details li:last-child {
-            border-bottom: none;
-        }
-
-
     </style>
 @endpush
 
 @push('scripts')
-    <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
+            console.log('Contract system initializing...');
+
             // Destroy existing DataTable if it exists
             if ($.fn.DataTable.isDataTable('#dataKontrakTable')) {
                 $('#dataKontrakTable').DataTable().destroy();
@@ -1181,228 +1290,167 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
-            // Function to calculate contract stats based on reminder dates (same logic as dokumen legal)
-            function calculateContractStats() {
+            // ===== IMAGE PREVIEW ON CLICK (COPIED FROM EMPLOYEE PAGE) =====
+            $(document).on('click', '.employee-photo', function() {
+                const imgSrc = $(this).attr('src');
+                const employeeName = $(this).attr('alt');
+
+                Swal.fire({
+                    title: employeeName,
+                    imageUrl: imgSrc,
+                    imageAlt: employeeName,
+                    showCloseButton: true,
+                    showConfirmButton: false,
+                    width: '600px',
+                    customClass: {
+                        image: 'img-fluid rounded'
+                    }
+                });
+            });
+
+            // Function to calculate warning text and priority from row data directly
+            function calculateRowWarning(row) {
+                const tglPeringatan = row.data('tgl-peringatan');
+                const contractStatus = row.data('contract-status');
+                const tglAkhir = row.data('tgl-akhir');
+
+                console.log('Calculating for row:', {
+                    'tgl-peringatan': tglPeringatan,
+                    'contract-status': contractStatus,
+                    'tgl-akhir': tglAkhir
+                });
+
+                // Skip non-active contracts
+                if (contractStatus !== 'AKTIF') {
+                    return {
+                        text: 'Kontrak Tidak Aktif',
+                        badgeClass: 'bg-secondary',
+                        priority: 5,
+                        status: 'inactive'
+                    };
+                }
+
+                // If no reminder date, skip
+                if (!tglPeringatan || tglPeringatan === '') {
+                    return {
+                        text: 'Tidak Ada Tanggal Peringatan',
+                        badgeClass: 'bg-secondary',
+                        priority: 5,
+                        status: 'no_reminder'
+                    };
+                }
+
+                // Calculate days difference using moment
+                const today = moment().startOf('day');
+                const reminderDate = moment(tglPeringatan);
+                const diffDays = reminderDate.diff(today, 'days');
+
+                console.log('Date calculation:', {
+                    today: today.format('YYYY-MM-DD'),
+                    reminderDate: reminderDate.format('YYYY-MM-DD'),
+                    diffDays: diffDays
+                });
+
+                let result = {
+                    text: '',
+                    badgeClass: '',
+                    priority: 4,
+                    status: 'normal'
+                };
+
+                if (diffDays < 0) {
+                    // Expired - reminder date has passed
+                    result.text = 'Terlambat ' + Math.abs(diffDays) + ' hari';
+                    result.badgeClass = 'bg-danger';
+                    result.priority = 1;
+                    result.status = 'expired';
+                } else if (diffDays === 0) {
+                    // Today
+                    result.text = 'Hari Ini';
+                    result.badgeClass = 'bg-danger';
+                    result.priority = 1;
+                    result.status = 'expired';
+                } else if (diffDays <= 7) {
+                    // Urgent - within 7 days
+                    result.text = diffDays + ' hari lagi';
+                    result.badgeClass = 'bg-warning text-dark';
+                    result.priority = 2;
+                    result.status = 'urgent';
+                } else if (diffDays <= 30) {
+                    // Warning - within 30 days
+                    result.text = diffDays + ' hari lagi';
+                    result.badgeClass = 'bg-info';
+                    result.priority = 3;
+                    result.status = 'warning';
+                } else {
+                    // Safe - more than 30 days
+                    result.text = diffDays + ' hari lagi';
+                    result.badgeClass = 'bg-success';
+                    result.priority = 4;
+                    result.status = 'safe';
+                }
+
+                console.log('Warning result:', result);
+                return result;
+            }
+
+            // Function to apply row highlighting and update warning text
+            function applyRowProcessing() {
+                console.log('Applying row processing...');
+
                 let expiredCount = 0;
                 let warningCount = 0;
 
+                // Reset all highlighting
+                $('#dataKontrakTable tbody tr').removeClass(
+                    'highlight-red highlight-yellow highlight-orange highlight-gray');
+
                 $('#dataKontrakTable tbody tr').each(function() {
                     const row = $(this);
+                    const warningData = calculateRowWarning(row);
 
-                    // 1. Check contract status first - STS SR column (index 22, 0-based)
-                    const statusText = row.find('td:eq(22)').text().trim();
+                    // Update warning text in PERINGATAN column
+                    const peringatanCol = row.find('.sisa-peringatan-col');
+                    peringatanCol.html('<span class="badge ' + warningData.badgeClass + '">' + warningData
+                        .text + '</span>');
 
-                    // Skip non-active contracts
-                    if (statusText.includes("NON-AKTIF") || statusText.includes("EXPIRED") || statusText.includes("PENDING")) {
-                        return true; // continue to next iteration
-                    }
-
-                    // 2. Check if contract is expired based on TglAkhirKtr (index 17, 0-based)
-                    const tglAkhir = row.find('td:eq(17)').text().trim();
-                    if (tglAkhir !== '-') {
-                        const akhirDate = moment(tglAkhir, 'DD-MM-YYYY');
-                        const today = moment().startOf('day');
-
-                        if (akhirDate.isBefore(today)) {
+                    // Apply row highlighting
+                    switch (warningData.status) {
+                        case 'expired':
+                            row.addClass('highlight-red');
                             expiredCount++;
-                            return true; // Already counted as expired, continue to next row
-                        }
-                    }
-
-                    // 3. Check TglPengingat for expired/warning (main logic like dokumen legal)
-                    const tglPengingatStr = row.data('tgl-pengingat-kontrak');
-                    if (tglPengingatStr) {
-                        const tglPengingat = moment(tglPengingatStr);
-                        const today = moment().startOf('day');
-                        const diffDays = tglPengingat.diff(today, 'days');
-
-                        if (diffDays <= 0) {
-                            // Reminder date has passed or is today
-                            expiredCount++;
-                            return true; // continue
-                        } else if (diffDays <= 30) {
-                            // Warning: within 30 days
+                            break;
+                        case 'urgent':
+                            row.addClass('highlight-yellow');
                             warningCount++;
-                            return true; // continue
-                        }
-                    }
-
-                    // 4. Check TglAkhirKtr for warning (30 days) - fallback if no reminder date
-                    if (tglAkhir !== '-' && !tglPengingatStr) {
-                        const akhirDate = moment(tglAkhir, 'DD-MM-YYYY');
-                        const today = moment().startOf('day');
-
-                        if (akhirDate.isAfter(today) && akhirDate.diff(today, 'days') <= 30) {
+                            break;
+                        case 'warning':
+                            row.addClass('highlight-orange');
                             warningCount++;
-                        }
+                            break;
+                        case 'safe':
+                            // No highlighting for safe status
+                            break;
+                        default:
+                            // Inactive or no reminder
+                            row.addClass('highlight-gray');
+                            break;
                     }
+
+                    // Store priority for sorting
+                    row.data('priority', warningData.priority);
                 });
 
                 // Update counter badges
                 $('#expiredContractsCount').text(expiredCount);
                 $('#warningContractsCount').text(warningCount);
+
+                console.log('Statistics updated - Expired:', expiredCount, 'Warning:', warningCount);
             }
 
-            // Function to apply row highlighting (same priority system as dokumen legal)
-            function applyRowHighlighting() {
-                // Reset all highlighting
-                $('#dataKontrakTable tbody tr').removeClass('highlight-red highlight-yellow highlight-orange highlight-gray');
-
-                $('#dataKontrakTable tbody tr').each(function() {
-                    const row = $(this);
-
-                    // 1. Check contract status first (highest priority) - STS SR column (index 22)
-                    const statusText = row.find('td:eq(22)').text().trim();
-                    if (statusText.includes("NON-AKTIF") || statusText.includes("EXPIRED") || statusText.includes("PENDING")) {
-                        row.addClass('highlight-gray');
-                        return true; // continue to next iteration
-                    }
-
-                    // 2. Check if expired based on TglAkhirKtr (index 17)
-                    const tglAkhir = row.find('td:eq(17)').text().trim();
-                    if (tglAkhir !== '-') {
-                        const akhirDate = moment(tglAkhir, 'DD-MM-YYYY');
-                        const today = moment().startOf('day');
-
-                        if (akhirDate.isBefore(today)) {
-                            row.addClass('highlight-red');
-                            return true; // Stop processing this row
-                        }
-                    }
-
-                    // 3. Check TglPengingat for warning/expired status (main logic)
-                    const tglPengingatStr = row.data('tgl-pengingat-kontrak');
-                    if (tglPengingatStr) {
-                        const tglPengingat = moment(tglPengingatStr);
-                        const today = moment().startOf('day');
-                        const diffDays = tglPengingat.diff(today, 'days');
-
-                        if (diffDays <= 0) {
-                            // Already expired or today
-                            row.addClass('highlight-red');
-                            return true;
-                        } else if (diffDays <= 7) {
-                            // Urgent warning: within 7 days
-                            row.addClass('highlight-yellow');
-                            return true;
-                        } else if (diffDays <= 30) {
-                            // Warning: within 30 days
-                            row.addClass('highlight-orange');
-                            return true;
-                        }
-                    }
-
-                    // 4. Check TglAkhirKtr for warning (within 30 days) - fallback
-                    if (tglAkhir !== '-') {
-                        const akhirDate = moment(tglAkhir, 'DD-MM-YYYY');
-                        const today = moment().startOf('day');
-                        const diffDays = akhirDate.diff(today, 'days');
-
-                        if (diffDays > 0 && diffDays <= 30) {
-                            row.addClass('highlight-yellow');
-                        }
-                    }
-                });
-            }
-
-            // Function to update warning text in PERINGATAN column
-            function updatePeringatanText() {
-                const today = moment().startOf('day');
-
-                $('#dataKontrakTable tbody tr').each(function() {
-                    const tglPengingatStr = $(this).data('tgl-pengingat-kontrak');
-                    const $peringatanCol = $(this).find('.sisa-peringatan-col');
-
-                    // If no reminder date, skip this row
-                    if (!tglPengingatStr) {
-                        return true;
-                    }
-
-                    // Parse reminder date
-                    const tglPengingat = moment(tglPengingatStr);
-
-                    // Calculate difference in days
-                    const diffDays = tglPengingat.diff(today, 'days');
-
-                    // Determine text and badge class to display in warning column
-                    let peringatanText = '';
-                    let badgeClass = 'bg-secondary';
-
-                    if (diffDays < 0) {
-                        // Reminder date has passed
-                        peringatanText = 'Terlambat ' + Math.abs(diffDays) + ' hari';
-                        badgeClass = 'bg-danger';
-                    } else if (diffDays === 0) {
-                        // Reminder date is today
-                        peringatanText = 'Hari ini';
-                        badgeClass = 'bg-danger';
-                    } else if (diffDays <= 7) {
-                        // Urgent: within 7 days
-                        peringatanText = diffDays + ' hari lagi';
-                        badgeClass = 'bg-warning text-dark';
-                    } else if (diffDays <= 30) {
-                        // Warning: within 30 days
-                        peringatanText = diffDays + ' hari lagi';
-                        badgeClass = 'bg-info';
-                    } else {
-                        // Safe: more than 30 days
-                        peringatanText = diffDays + ' hari lagi';
-                        badgeClass = 'bg-success';
-                    }
-
-                    // Update warning text with proper badge
-                    $peringatanCol.html('<span class="badge ' + badgeClass + '">' + peringatanText + '</span>');
-                });
-            }
-
-            // Function to get row priority for sorting (same as dokumen legal)
+            // Function to get row priority for sorting
             function getRowPriority(row) {
-                const statusText = $(row).find('td:eq(22)').text().trim(); // STS SR column at index 22
-                const tglAkhir = $(row).find('td:eq(17)').text().trim();
-                const tglPengingatStr = $(row).data('tgl-pengingat-kontrak');
-
-                // Priority 5 (lowest): Inactive contracts (gray)
-                if (statusText.includes("NON-AKTIF") || statusText.includes("EXPIRED") || statusText.includes("PENDING")) {
-                    return 5;
-                }
-
-                // Check if contract is expired based on TglAkhirKtr
-                if (tglAkhir !== '-') {
-                    const akhirDate = moment(tglAkhir, 'DD-MM-YYYY');
-                    const today = moment().startOf('day');
-
-                    if (akhirDate.isBefore(today)) {
-                        return 1; // Priority 1: Expired contracts (red)
-                    }
-                }
-
-                // Check TglPengingat for warning/expired status
-                if (tglPengingatStr) {
-                    const tglPengingat = moment(tglPengingatStr);
-                    const today = moment().startOf('day');
-                    const diffDays = tglPengingat.diff(today, 'days');
-
-                    if (diffDays <= 0) {
-                        return 1; // Priority 1: Already expired or today (red)
-                    } else if (diffDays <= 7) {
-                        return 2; // Priority 2: Urgent warning within 7 days (yellow)
-                    } else if (diffDays <= 30) {
-                        return 3; // Priority 3: Warning within 30 days (orange)
-                    }
-                }
-
-                // Check TglAkhirKtr for warning (within 30 days)
-                if (tglAkhir !== '-') {
-                    const akhirDate = moment(tglAkhir, 'DD-MM-YYYY');
-                    const today = moment().startOf('day');
-                    const diffDays = akhirDate.diff(today, 'days');
-
-                    if (diffDays > 0 && diffDays <= 30) {
-                        return 2; // Priority 2: Warning within 30 days (yellow)
-                    }
-                }
-
-                return 4; // Priority 4: Normal contracts (no highlight)
+                return $(row).data('priority') || 5;
             }
 
             // ADD CUSTOM SORTING PLUGIN TO DATATABLES
@@ -1417,7 +1465,7 @@
             // Initialize DataTable with priority-based sorting
             var table = $('#dataKontrakTable').DataTable({
                 responsive: true,
-                destroy: true, // Add destroy option
+                destroy: true,
                 language: {
                     "emptyTable": "Tidak ada data yang tersedia pada tabel ini",
                     "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
@@ -1442,11 +1490,11 @@
                 }, {
                     // Non-sortable columns
                     orderable: false,
-                    targets: [24] // Aksi column (index 24, 0-based counting: 0-24 = 25 columns total)
+                    targets: [27] // AKSI column
                 }, {
                     // Make AKSI column never collapse/hide (highest responsive priority)
                     responsivePriority: 1,
-                    targets: [24] // AKSI column must always be visible
+                    targets: [27]
                 }, {
                     // Important columns that should stay visible as much as possible
                     responsivePriority: 2,
@@ -1454,18 +1502,11 @@
                 }, {
                     // Status columns - important to see
                     responsivePriority: 3,
-                    targets: [22, 15, 20] // STS SR, STS KTR, PERINGATAN
-                }, {
-                    // Date columns - medium priority
-                    responsivePriority: 4,
-                    targets: [16, 17, 19, 23] // TGL AW KTR, TGL AK KTR, TGL PER, TGL SR NA
-                }, {
-                    // Other columns can be hidden first
-                    responsivePriority: 5,
-                    targets: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 21] // UMUR, SEX, FOTO, etc.
+                    targets: [23, 16, 21] // STS SR, STS KTR, PERINGATAN
                 }],
-                // Change default ordering to use our custom priority
-                order: [[0, 'asc']], // Sort by priority first
+                order: [
+                    [0, 'asc']
+                ], // Sort by priority first
                 drawCallback: function() {
                     // Update row numbers on each redraw
                     this.api().column(0, {
@@ -1474,23 +1515,18 @@
                         cell.innerHTML = i + 1;
                     });
 
-                    // Apply highlighting and update text for visible rows
-                    applyRowHighlighting();
-                    updatePeringatanText();
+                    // Apply processing
+                    applyRowProcessing();
                 },
                 initComplete: function() {
-                    // Apply initial highlighting and text updates
-                    applyRowHighlighting();
-                    updatePeringatanText();
+                    console.log('DataTable initialized, applying initial processing...');
 
-                    // Calculate stats from ALL data
-                    setTimeout(function() {
-                        calculateContractStats();
-                    }, 500);
+                    // Apply initial processing
+                    applyRowProcessing();
                 }
             });
 
-            // Filter functionality
+            // Event handlers for modals and other functionality
             $('#filterButton').on('click', function() {
                 $('#filterModal').modal('show');
             });
@@ -1504,31 +1540,29 @@
                 window.location.href = "{{ route('data-kontrak.index') }}";
             });
 
-            // Export functionality
             $('#exportButton').on('click', function() {
                 $('#exportModal').modal('show');
             });
 
-            // Summary functionality
             $('#summaryButton').on('click', function() {
                 $('#summaryModal').modal('show');
             });
 
-            // Delete functionality
-            $('.delete-confirm').on('click', function() {
+            $(document).on('click', '.delete-confirm', function() {
                 var id = $(this).data('id');
                 var name = $(this).data('name');
 
-                $('#contractName').text(name);
-                $('#deleteForm').attr('action', '{{ route('data-kontrak.destroy', ':id') }}'.replace(':id', id));
+                // Using Laravel route helper with placeholder
+                var deleteUrl = "{{ route('data-kontrak.destroy', ':id') }}".replace(':id', id);
+                $('#deleteForm').attr('action', deleteUrl);
+                $('#employeeName').text(name);
+
                 $('#deleteConfirmationModal').modal('show');
             });
 
             // Event listener for DataTables events to update row styling
             table.on('draw.dt', function() {
-                applyRowHighlighting();
-                updatePeringatanText();
-                calculateContractStats();
+                applyRowProcessing();
             });
 
             // Add flash effect when row hovered
@@ -1543,16 +1577,13 @@
                 $(".alert").fadeOut("slow");
             }, 5000);
 
-            // Debug function to check data attributes
-            console.log('Debugging contract data attributes:');
-            $('#dataKontrakTable tbody tr').each(function(index) {
-                const tglPengingatStr = $(this).data('tgl-pengingat-kontrak');
-                const statusText = $(this).find('td:eq(22)').text().trim();
-                console.log('Row ' + index + ':', {
-                    'tgl-pengingat': tglPengingatStr,
-                    'status': statusText
-                });
-            });
+            // Force initial calculation after everything is loaded
+            setTimeout(function() {
+                console.log('Force applying initial processing...');
+                applyRowProcessing();
+            }, 1000);
+
+            console.log('Contract system initialization complete!');
         });
     </script>
 @endpush

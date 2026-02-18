@@ -35,6 +35,7 @@
                                 <button class="nav-link" id="kontrak-tab" data-bs-toggle="tab" data-bs-target="#kontrak"
                                     type="button" role="tab" aria-controls="kontrak" aria-selected="false">
                                     <i class="fas fa-file-contract me-1"></i> Data Kontrak
+                                    <span class="badge bg-primary ms-1">{{ $allContracts->count() }}</span>
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
@@ -81,55 +82,55 @@
                                                 <div class="col-md-12">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">Nama Lengkap</label>
-                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->karyawan->nama ?? '' }}" disabled>
+                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->karyawan->nama ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">NIK</label>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->nik ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->nik ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">NRK</label>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->nrk ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->nrk ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Tempat Lahir</label>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->tpt_lahir ?? '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Tanggal Lahir</label>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->tgl_lahir ? $dataKontrak->karyawan->tgl_lahir->format('d-m-Y') : '' }}" disabled>
+                                                        <label class="form-label fw-bold">Tempat, Tanggal Lahir</label>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->tpt_lahir ?? '' }}{{ $dataKontrak->karyawan->tgl_lahir ? ', ' . $dataKontrak->karyawan->tgl_lahir->format('d-m-Y') : '' }}" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">Jenis Kelamin</label>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->sex ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->sex ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">Telepon</label>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->tlp1 ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->tlp1 ?? '' }}" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label fw-bold">Email</label>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->email1 ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">Status Kawin</label>
-                                                        <input type="sts_nikah" class="form-control" value="{{ $dataKontrak->karyawan->sts_nikah ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->sts_nikah ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">Jumlah Anak</label>
-                                                        <input type="jml_anak" class="form-control" value="{{ $dataKontrak->karyawan->jml_anak ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->karyawan->jml_anak ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -143,211 +144,92 @@
                                 </div>
                             </div>
 
-                            <!-- Tab 2: Data Kontrak -->
+                            <!-- Tab 2: Data Kontrak (Display All Contracts) -->
                             <div class="tab-pane fade" id="kontrak" role="tabpanel" aria-labelledby="kontrak-tab">
-
-                                <!-- Informasi Umum Kontrak -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white">
-                                            <i class="fas fa-file-contract me-2"></i>Informasi Umum Kontrak
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">No. Surat Kontrak</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->no_srt_ktr ?? '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Tanggal Surat Kontrak</label>
-                                                    <input type="text" class="form-control" value="{{ $dataKontrak->tgl_srt_ktr ? \Carbon\Carbon::parse($dataKontrak->tgl_srt_ktr)->format('d-m-Y') : '' }}" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Status Kontrak</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
-                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->kontrakKerja->nama_ktr ?? '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Singkatan</label>
-                                                    <input type="text" class="form-control" value="{{ $dataKontrak->kontrakKerja->singkatan_ktr ?? '' }}" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Perusahaan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-building"></i></span>
-                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->perusahaan->nama_prs1 ?? '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Singkatan</label>
-                                                    <input type="text" class="form-control" value="{{ $dataKontrak->perusahaan->nama_prs2 ?? '' }}" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Keterangan Kontrak</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
-                                                        <input type="text" class="form-control
-                                                            @if($dataKontrak->ktg_ktk == 'TETAP') text-success fw-bold
-                                                            @elseif($dataKontrak->ktg_ktk == 'TIDAK TETAP') text-warning fw-bold
-                                                            @endif"
-                                                            value="{{ $dataKontrak->ktg_ktk ?? '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Periode Kontrak -->
                                 <div class="card border-primary mb-4">
-                                    <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white">
-                                            <i class="fas fa-calendar-alt me-2"></i>Periode Kontrak
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-file-contract me-2"></i>Riwayat Kontrak Karyawan
                                         </h5>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Tanggal Mulai Kontrak</label>
-                                                    <input type="text" class="form-control fw-bold text-success" value="{{ $dataKontrak->tgl_awl_ktr ? \Carbon\Carbon::parse($dataKontrak->tgl_awl_ktr)->format('d-m-Y') : '' }}" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Tanggal Akhir Kontrak</label>
-                                                    <input type="text" class="form-control fw-bold text-danger" value="{{ $dataKontrak->tgl_akhir_ktr ? \Carbon\Carbon::parse($dataKontrak->tgl_akhir_ktr)->format('d-m-Y') : '' }}" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Durasi Kontrak (Bulan)</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-clock"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->durasi_ktr ?? '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Tanggal Pengingat</label>
-                                                    <input type="text" class="form-control" value="{{ $dataKontrak->tgl_pgt_ktr ? \Carbon\Carbon::parse($dataKontrak->tgl_pgt_ktr)->format('d-m-Y') : '' }}" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Durasi Pengingat (Hari)</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-clock"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->durasi_pgt ?? '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Status Kontrak Current -->
-                                        @if($dataKontrak->tgl_awl_ktr && $dataKontrak->tgl_akhir_ktr)
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="alert
-                                                        @if(\Carbon\Carbon::parse($dataKontrak->tgl_akhir_ktr)->isPast()) alert-danger
-                                                        @elseif(\Carbon\Carbon::parse($dataKontrak->tgl_akhir_ktr)->diffInDays() <= 30) alert-warning
-                                                        @else alert-success @endif
-                                                    ">
-                                                        <i class="fas fa-info-circle me-2"></i>
-                                                        <strong>Status Kontrak Saat Ini:</strong>
-                                                        @if(\Carbon\Carbon::parse($dataKontrak->tgl_akhir_ktr)->isPast())
-                                                            Kontrak telah berakhir pada {{ \Carbon\Carbon::parse($dataKontrak->tgl_akhir_ktr)->format('d-m-Y') }}
-                                                        @elseif(\Carbon\Carbon::parse($dataKontrak->tgl_akhir_ktr)->diffInDays() <= 30)
-                                                            Kontrak akan berakhir dalam {{ \Carbon\Carbon::parse($dataKontrak->tgl_akhir_ktr)->diffInDays() }} hari
-                                                        @else
-                                                            Kontrak masih aktif, berakhir pada {{ \Carbon\Carbon::parse($dataKontrak->tgl_akhir_ktr)->format('d-m-Y') }}
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- Status dan Dokumen -->
-                                <div class="card border-success mb-4">
-                                    <div class="card-header bg-success bg-opacity-25">
-                                        <h5 class="mb-0 text-white">
-                                            <i class="fas fa-file-alt me-2"></i>Status dan Dokumen
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">Status Surat Kontrak</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
-                                                        <input type="text" class="form-control
-                                                            @if($dataKontrak->sts_srt_ktr == 'AKTIF') text-success fw-bold
-                                                            @elseif($dataKontrak->sts_srt_ktr == 'NON-AKTIF') text-danger fw-bold
-                                                            @endif"
-                                                            value="{{ $dataKontrak->sts_srt_ktr ?? '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">File Dokumen Kontrak</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
-                                                        @if($dataKontrak->file_doc_ktr)
-                                                            <input type="text" class="form-control text-primary" value="Dokumen tersedia" disabled>
-                                                            <a href="{{ asset('storage/' . $dataKontrak->file_doc_ktr) }}" target="_blank" class="btn btn-outline-primary">
-                                                                <i class="fas fa-download"></i>
-                                                            </a>
-                                                        @else
-                                                            <input type="text" class="form-control text-muted" value="Tidak ada dokumen" disabled>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @if($dataKontrak->sts_srt_ktr == 'NON-AKTIF')
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Tanggal Status Non Aktif</label>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->tgl_sr_na ? \Carbon\Carbon::parse($dataKontrak->tgl_sr_na)->format('d-m-Y') : '' }}" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Keterangan Non Aktif</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i class="fas fa-comment-alt"></i></span>
-                                                            <textarea class="form-control" rows="3" disabled>{{ $dataKontrak->ket_sr_na ?? '' }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endif
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped" id="contractsTable">
+                                                <thead class="table-info">
+                                                    <tr>
+                                                        <th width="4%">No</th>
+                                                        <th width="14%">No. Surat</th>
+                                                        <th width="10%">Tgl Surat</th>
+                                                        <th width="13%">Jenis Kontrak</th>
+                                                        <th width="10%">Tgl Mulai</th>
+                                                        <th width="10%">Tgl Akhir</th>
+                                                        <th width="8%">Durasi</th>
+                                                        <th width="9%">Status</th>
+                                                        <th width="9%">Create</th>
+                                                        <th width="9%">Update</th>
+                                                        <th width="4%">Aksi</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="contractsTableBody">
+                                                    @forelse ($allContracts as $index => $contract)
+                                                        <tr data-contract-id="{{ $contract->id }}">
+                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ $contract->no_srt_ktr ?: '-' }}</td>
+                                                            <td>{{ $contract->tgl_srt_ktr ? \Carbon\Carbon::parse($contract->tgl_srt_ktr)->format('d-m-Y') : '-' }}
+                                                            </td>
+                                                            <td>
+                                                                @if ($contract->kontrakKerja)
+                                                                    <span class="badge bg-info">{{ $contract->kontrakKerja->singkatan_ktr }}</span>
+                                                                @else
+                                                                    <span class="badge bg-secondary">-</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>{{ $contract->tgl_awl_ktr ? \Carbon\Carbon::parse($contract->tgl_awl_ktr)->format('d-m-Y') : '-' }}
+                                                            </td>
+                                                            <td>{{ $contract->tgl_akhir_ktr ? \Carbon\Carbon::parse($contract->tgl_akhir_ktr)->format('d-m-Y') : '-' }}
+                                                            </td>
+                                                            <td>{{ $contract->durasi_ktr ? $contract->durasi_ktr . ' bulan' : '-' }}
+                                                            </td>
+                                                            <td>
+                                                                @if ($contract->sts_srt_ktr == 'AKTIF')
+                                                                    <span class="badge bg-success">{{ $contract->sts_srt_ktr }}</span>
+                                                                @elseif($contract->sts_srt_ktr == 'NON-AKTIF')
+                                                                    <span class="badge bg-secondary">{{ $contract->sts_srt_ktr }}</span>
+                                                                @elseif($contract->sts_srt_ktr == 'EXPIRED')
+                                                                    <span class="badge bg-danger">{{ $contract->sts_srt_ktr }}</span>
+                                                                @else
+                                                                    <span class="badge bg-warning text-dark">{{ $contract->sts_srt_ktr }}</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                <small class="d-block">{{ $contract->creator ? $contract->creator->nama_kry : '-' }}</small>
+                                                                <small class="text-muted">{{ $contract->created_at ? $contract->created_at->format('d/m/y H:i') : '-' }}</small>
+                                                            </td>
+                                                            <td>
+                                                                <small class="d-block">{{ $contract->updater ? $contract->updater->nama_kry : '-' }}</small>
+                                                                <small class="text-muted">{{ $contract->updated_at ? $contract->updated_at->format('d/m/y H:i') : '-' }}</small>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-sm btn-info view-contract-btn"
+                                                                    data-contract-id="{{ $contract->id }}"
+                                                                    data-bs-toggle="tooltip" title="Lihat Detail">
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr>
+                                                            <td colspan="11" class="text-center text-muted">
+                                                                <i class="fas fa-inbox fa-2x mb-2"></i>
+                                                                <br>Tidak ada data kontrak
+                                                            </td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
                             <!-- Tab 3: Pendidikan -->
@@ -365,14 +247,14 @@
                                                     <label class="form-label fw-bold">Jenjang Pendidikan</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-level-up-alt"></i></span>
-                                                        <input type="text" class="form-control fw-bold text-primary" value="{{ $dataKontrak->jenjang_skl ?? '' }}" disabled>
+                                                        <input type="text" class="form-control fw-bold text-primary" value="{{ $dataKontrak->jenjang_skl ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group mb-3">
                                                     <label class="form-label fw-bold">Tanggal Lulus</label>
-                                                    <input type="text" class="form-control" value="{{ $dataKontrak->tgl_lulus_skl ? \Carbon\Carbon::parse($dataKontrak->tgl_lulus_skl)->format('d-m-Y') : '' }}" disabled>
+                                                    <input type="text" class="form-control" value="{{ $dataKontrak->tgl_lulus_skl ? \Carbon\Carbon::parse($dataKontrak->tgl_lulus_skl)->format('d-m-Y') : '' }}" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -380,7 +262,7 @@
                                                     <label class="form-label fw-bold">Nama Institusi</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-university"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->institusi_skl ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->institusi_skl ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -389,7 +271,7 @@
                                                     <label class="form-label fw-bold">SKT Institusi</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-certificate"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->skt_inst_skl ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->skt_inst_skl ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -398,7 +280,7 @@
                                                     <label class="form-label fw-bold">Fakultas</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-building-columns"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->fakultas_skl ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->fakultas_skl ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -407,7 +289,7 @@
                                                     <label class="form-label fw-bold">Jurusan</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-book-open"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->jurusan_skl ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->jurusan_skl ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -416,7 +298,7 @@
                                                     <label class="form-label fw-bold">Kota</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->kota_skl ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->kota_skl ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -425,7 +307,7 @@
                                                     <label class="form-label fw-bold">Gelar</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-medal"></i></span>
-                                                        <input type="text" class="form-control" value="{{ $dataKontrak->gelar_skl ?? '' }}" disabled>
+                                                        <input type="text" class="form-control" value="{{ $dataKontrak->gelar_skl ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -449,14 +331,14 @@
                                                     <label class="form-label fw-bold">Departemen</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-sitemap"></i></span>
-                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->departemen->nama_dep ?? '' }}" disabled>
+                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->departemen->nama_dep ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group mb-3">
                                                     <label class="form-label fw-bold">Singkatan Dep.</label>
-                                                    <input type="text" class="form-control" value="{{ $dataKontrak->departemen->singkatan_dep ?? '' }}" disabled>
+                                                    <input type="text" class="form-control" value="{{ $dataKontrak->departemen->singkatan_dep ?? '' }}" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -464,14 +346,14 @@
                                                     <label class="form-label fw-bold">Jabatan</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
-                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->departemen->nama_jbt ?? '' }}" disabled>
+                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->departemen->nama_jbt ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group mb-3">
                                                     <label class="form-label fw-bold">Singkatan Jbt.</label>
-                                                    <input type="text" class="form-control" value="{{ $dataKontrak->departemen->singkatan_jbt ?? '' }}" disabled>
+                                                    <input type="text" class="form-control" value="{{ $dataKontrak->departemen->singkatan_jbt ?? '' }}" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -479,7 +361,7 @@
                                                     <label class="form-label fw-bold">Wilayah Kerja</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-map"></i></span>
-                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->wilayahKerja->wilayah_krj ?? '' }}" disabled>
+                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->wilayahKerja->wilayah_krj ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -488,14 +370,14 @@
                                                     <label class="form-label fw-bold">Area Kerja</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-users-cog"></i></span>
-                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->wilayahKerja->area_krj ?? '' }}" disabled>
+                                                        <input type="text" class="form-control fw-bold" value="{{ $dataKontrak->wilayahKerja->area_krj ?? '' }}" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group mb-3">
                                                     <label class="form-label fw-bold">SKT Wilayah Kerja</label>
-                                                    <input type="text" class="form-control" value="{{ $dataKontrak->wilayahKerja->singkatan_wk ?? '' }}" disabled>
+                                                    <input type="text" class="form-control" value="{{ $dataKontrak->wilayahKerja->singkatan_wk ?? '' }}" readonly>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -503,7 +385,7 @@
                                                     <label class="form-label fw-bold">Tugas & Tanggung Jawab</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-tasks"></i></span>
-                                                        <textarea class="form-control" rows="4" disabled>{{ $dataKontrak->tugas ?? '' }}</textarea>
+                                                        <textarea class="form-control" rows="4" readonly>{{ $dataKontrak->tugas ?? '' }}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -665,6 +547,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Contract Detail View Modal -->
+    <div class="modal fade" id="contractDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="contractDetailModalTitle">
+                        <i class="fas fa-file-contract me-2"></i>Detail Kontrak
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="contractDetailContent">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Memuat detail kontrak...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
@@ -743,6 +652,41 @@
             border-radius: 0.25rem;
         }
 
+        /* Table styling */
+        .table th {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            font-weight: 600;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+            border-color: #dee2e6;
+            font-size: 0.875rem;
+        }
+
+        /* Action button styling */
+        .btn-group {
+            display: flex;
+            gap: 2px;
+        }
+
+        /* Modal styling */
+        .modal-xl {
+            max-width: 1200px;
+        }
+
+        #contractDetailModal .card {
+            margin-bottom: 1rem;
+        }
+
+        #contractDetailModal .card-header h6 {
+            margin: 0;
+            font-weight: 600;
+        }
+
         /* Print-friendly styles */
         @media print {
             .btn, .nav-tabs {
@@ -763,9 +707,299 @@
 @endpush
 
 @push('scripts')
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ Data Kontrak Show page loaded');
+
+            // View Contract Detail Modal Handler
+            $(document).on('click', '.view-contract-btn', function() {
+                const contractId = $(this).data('contract-id');
+                console.log('View contract button clicked, ID:', contractId);
+
+                // Show modal and loading state
+                $('#contractDetailModal').modal('show');
+                $('#contractDetailContent').html(`
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Memuat detail kontrak...</p>
+                    </div>
+                `);
+
+                // Load contract details via AJAX
+                $.ajax({
+                    url: `/data-kontrak/contracts/${contractId}`,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            displayContractDetail(response.data);
+                        } else {
+                            showError('Gagal memuat detail kontrak: ' + response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error loading contract details:', xhr);
+                        showError('Terjadi kesalahan saat memuat detail kontrak.');
+                    }
+                });
+            });
+
+            function displayContractDetail(contract) {
+                const contractHtml = `
+                    <!-- Informasi Umum Kontrak -->
+                    <div class="card border-secondary mb-4">
+                        <div class="card-header bg-secondary text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-file-contract me-2"></i>Informasi Umum Kontrak
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">No. Surat Kontrak</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                                            <input type="text" class="form-control" value="${contract.no_srt_ktr || '-'}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Tanggal Surat Kontrak</label>
+                                        <input type="text" class="form-control" value="${contract.tgl_srt_ktr ? formatDate(contract.tgl_srt_ktr) : '-'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Status Kontrak</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-file-signature"></i></span>
+                                            <input type="text" class="form-control fw-bold" value="${contract.kontrak_kerja?.nama_ktr || '-'}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Singkatan</label>
+                                        <input type="text" class="form-control" value="${contract.kontrak_kerja?.singkatan_ktr || '-'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Perusahaan</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                            <input type="text" class="form-control fw-bold" value="${contract.perusahaan?.nama_prs1 || '-'}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Singkatan</label>
+                                        <input type="text" class="form-control" value="${contract.perusahaan?.nama_prs2 || '-'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Keterangan Kontrak</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                                            <input type="text" class="form-control ${getKtgKtkClass(contract.ktg_ktk)}" value="${contract.ktg_ktk || '-'}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Periode Kontrak -->
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-calendar-alt me-2"></i>Periode Kontrak
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Tanggal Mulai Kontrak</label>
+                                        <input type="text" class="form-control fw-bold text-success" value="${contract.tgl_awl_ktr ? formatDate(contract.tgl_awl_ktr) : '-'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Tanggal Akhir Kontrak</label>
+                                        <input type="text" class="form-control fw-bold text-danger" value="${contract.tgl_akhir_ktr ? formatDate(contract.tgl_akhir_ktr) : '-'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Durasi Kontrak (Bulan)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                            <input type="text" class="form-control" value="${contract.durasi_ktr || '-'}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Tanggal Pengingat</label>
+                                        <input type="text" class="form-control" value="${contract.tgl_pgt_ktr ? formatDate(contract.tgl_pgt_ktr) : '-'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Durasi Pengingat (Hari)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                            <input type="text" class="form-control" value="${contract.durasi_pgt || '-'}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            ${generateContractStatusAlert(contract)}
+                        </div>
+                    </div>
+
+                    <!-- Status dan Dokumen -->
+                    <div class="card border-success mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-file-alt me-2"></i>Status dan Dokumen
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Status Surat Kontrak</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
+                                            <input type="text" class="form-control ${getStatusClass(contract.sts_srt_ktr)}" value="${contract.sts_srt_ktr || '-'}" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">File Dokumen Kontrak</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
+                                            ${contract.file_doc_ktr ?
+                                                `<input type="text" class="form-control text-primary" value="Dokumen tersedia" readonly>
+                                                 <a href="/storage/${contract.file_doc_ktr}" target="_blank" class="btn btn-outline-primary">
+                                                     <i class="fas fa-download"></i>
+                                                 </a>` :
+                                                `<input type="text" class="form-control text-muted" value="Tidak ada dokumen" readonly>`
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                ${contract.sts_srt_ktr === 'NON-AKTIF' ? `
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Tanggal Status Non Aktif</label>
+                                        <input type="text" class="form-control" value="${contract.tgl_sr_na ? formatDate(contract.tgl_sr_na) : '-'}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label fw-bold">Keterangan Non Aktif</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-comment-alt"></i></span>
+                                            <textarea class="form-control" rows="3" readonly>${contract.ket_sr_na || '-'}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                $('#contractDetailContent').html(contractHtml);
+                $('#contractDetailModalTitle').html(`
+                    <i class="fas fa-file-contract me-2"></i>Detail Kontrak
+                `);
+            }
+
+            function showError(message) {
+                $('#contractDetailContent').html(`
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        ${message}
+                    </div>
+                `);
+            }
+
+            function formatDate(dateString) {
+                if (!dateString) return '-';
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+                } catch (e) {
+                    return dateString;
+                }
+            }
+
+            function getKtgKtkClass(ktgKtk) {
+                if (ktgKtk === 'TETAP') return 'text-success fw-bold';
+                if (ktgKtk === 'TIDAK TETAP') return 'text-warning fw-bold';
+                return '';
+            }
+
+            function getStatusClass(status) {
+                if (status === 'AKTIF') return 'text-success fw-bold';
+                if (status === 'NON-AKTIF') return 'text-danger fw-bold';
+                return '';
+            }
+
+            function generateContractStatusAlert(contract) {
+                if (!contract.tgl_awl_ktr || !contract.tgl_akhir_ktr) return '';
+
+                const today = new Date();
+                const startDate = new Date(contract.tgl_awl_ktr);
+                const endDate = new Date(contract.tgl_akhir_ktr);
+                const timeDiff = endDate.getTime() - today.getTime();
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                let alertClass = 'alert-success';
+                let statusText = `Kontrak masih aktif, berakhir pada ${formatDate(contract.tgl_akhir_ktr)}`;
+
+                if (daysDiff < 0) {
+                    alertClass = 'alert-danger';
+                    statusText = `Kontrak telah berakhir pada ${formatDate(contract.tgl_akhir_ktr)}`;
+                } else if (daysDiff <= 30) {
+                    alertClass = 'alert-warning';
+                    statusText = `Kontrak akan berakhir dalam ${daysDiff} hari`;
+                }
+
+                return `
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert ${alertClass}">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>Status Kontrak Saat Ini:</strong> ${statusText}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
 
             // Auto print functionality if needed
             const urlParams = new URLSearchParams(window.location.search);

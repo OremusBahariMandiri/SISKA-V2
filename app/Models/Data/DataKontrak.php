@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Collection;
 
 class DataKontrak extends Model
 {
@@ -146,6 +147,65 @@ class DataKontrak extends Model
     }
 
     /**
+     * Get all contracts for the same employee
+     */
+    public function allEmployeeContracts(): Collection
+    {
+        return self::where('id_data_kry', $this->id_data_kry)
+            ->with(['kontrakKerja', 'perusahaan'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    /**
+     * Get all education records for the same employee
+     */
+    public function allEmployeeEducation(): Collection
+    {
+        return self::where('id_data_kry', $this->id_data_kry)
+            ->whereNotNull('jenjang_skl')
+            ->select('id', 'id_data_kry', 'id_pendidikan', 'jenjang_skl', 'institusi_skl', 'skt_inst_skl', 'kota_skl', 'fakultas_skl', 'jurusan_skl', 'gelar_skl', 'tgl_lulus_skl', 'created_at', 'updated_at')
+            ->orderBy('tgl_lulus_skl', 'desc')
+            ->get();
+    }
+
+    /**
+     * Get all career records for the same employee
+     */
+    public function allEmployeeCareers(): Collection
+    {
+        return self::where('id_data_kry', $this->id_data_kry)
+            ->whereNotNull('id_departemen')
+            ->with(['departemen', 'wilayahKerja'])
+            ->select('id', 'id_data_kry', 'id_karir', 'id_departemen', 'id_wilker', 'tugas', 'created_at', 'updated_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    /**
+     * Get latest contract for employee (for main display)
+     */
+    public function getLatestContractAttribute()
+    {
+        return self::where('id_data_kry', $this->id_data_kry)
+            ->with(['kontrakKerja', 'perusahaan'])
+            ->orderBy('tgl_awl_ktr', 'desc')
+            ->first();
+    }
+
+    /**
+     * Get active contract for employee
+     */
+    public function getActiveContractAttribute()
+    {
+        return self::where('id_data_kry', $this->id_data_kry)
+            ->where('sts_srt_ktr', 'AKTIF')
+            ->with(['kontrakKerja', 'perusahaan'])
+            ->orderBy('tgl_awl_ktr', 'desc')
+            ->first();
+    }
+
+    /**
      * Get contract duration in months.
      *
      * @return int|null
@@ -247,6 +307,33 @@ class DataKontrak extends Model
         }
 
         return $display;
+    }
+
+    /**
+     * Scope to get unique employees (group by id_data_kry)
+     * This will return only one record per employee (latest by created_at)
+     */
+    public function scopeUniqueEmployees($query)
+    {
+        return $query->select('*')
+            ->whereIn('id', function($subquery) {
+                $subquery->select(\DB::raw('MAX(id)'))
+                    ->from('202_dm_data_kontrak')
+                    ->groupBy('id_data_kry');
+            });
+    }
+
+    /**
+     * Scope to get employee's latest contract data for display
+     */
+    public function scopeEmployeeLatestData($query)
+    {
+        return $query->select('*')
+            ->whereIn('id', function($subquery) {
+                $subquery->select(\DB::raw('MAX(id)'))
+                    ->from('202_dm_data_kontrak')
+                    ->groupBy('id_data_kry');
+            });
     }
 
     /**
@@ -389,6 +476,7 @@ class DataKontrak extends Model
     {
         return $query->orderBy('tgl_akhir_ktr', $direction);
     }
+
     public function getContractReminderStatusAttribute()
     {
         if (!$this->tgl_pgt_ktr) {
@@ -616,9 +704,9 @@ class DataKontrak extends Model
         $now = \Carbon\Carbon::now();
 
         return [
-            'total' => self::count(),
-            'active' => self::where('sts_srt_ktr', 'AKTIF')->count(),
-            'expired' => self::where(function ($query) use ($now) {
+            'total' => self::uniqueEmployees()->count(),
+            'active' => self::uniqueEmployees()->where('sts_srt_ktr', 'AKTIF')->count(),
+            'expired' => self::uniqueEmployees()->where(function ($query) use ($now) {
                 $query->whereNotNull('tgl_pgt_ktr')
                     ->where('tgl_pgt_ktr', '<', $now->format('Y-m-d'))
                     ->orWhere(function ($q) use ($now) {
@@ -626,7 +714,7 @@ class DataKontrak extends Model
                             ->where('tgl_akhir_ktr', '<', $now->format('Y-m-d'));
                     });
             })->count(),
-            'warning' => self::where(function ($query) use ($now) {
+            'warning' => self::uniqueEmployees()->where(function ($query) use ($now) {
                 $query->whereNotNull('tgl_pgt_ktr')
                     ->whereBetween('tgl_pgt_ktr', [
                         $now->format('Y-m-d'),

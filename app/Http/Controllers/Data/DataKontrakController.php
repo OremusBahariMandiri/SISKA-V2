@@ -32,8 +32,84 @@ class DataKontrakController extends Controller
 
     public function index(Request $request)
     {
-        // Initialize query with relationships
-        $query = DataKontrak::with([
+        // Get latest contract per employee using raw query for better performance
+        $latestContractsQuery = DB::table('202_dm_data_kontrak as dk')
+            ->select('dk.*')
+            ->whereIn('dk.id', function ($query) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('202_dm_data_kontrak')
+                    ->groupBy('id_data_kry');
+            });
+
+        // Apply filters to the subquery
+        if ($request->has('filter_status') && !empty($request->filter_status)) {
+            $latestContractsQuery->where('dk.sts_srt_ktr', $request->filter_status);
+        }
+
+        if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
+            $latestContractsQuery->where('dk.id_prsh', $request->filter_perusahaan);
+        }
+
+        if ($request->has('filter_kontrak_type') && !empty($request->filter_kontrak_type)) {
+            $latestContractsQuery->where('dk.id_ktr', $request->filter_kontrak_type);
+        }
+
+        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
+            $latestContractsQuery->where('dk.id_departemen', $request->filter_departemen);
+        }
+
+        if ($request->has('filter_wilayah_kerja') && !empty($request->filter_wilayah_kerja)) {
+            $latestContractsQuery->where('dk.id_wilker', $request->filter_wilayah_kerja);
+        }
+
+        // Filter by contract status (active/expired/expiring soon)
+        if ($request->has('filter_contract_status') && !empty($request->filter_contract_status)) {
+            switch ($request->filter_contract_status) {
+                case 'active':
+                    $latestContractsQuery->where('dk.sts_srt_ktr', 'AKTIF')
+                        ->whereNotNull('dk.tgl_awl_ktr')
+                        ->whereNotNull('dk.tgl_akhir_ktr')
+                        ->whereRaw('STR_TO_DATE(dk.tgl_awl_ktr, "%Y-%m-%d") <= CURDATE()')
+                        ->whereRaw('STR_TO_DATE(dk.tgl_akhir_ktr, "%Y-%m-%d") >= CURDATE()');
+                    break;
+                case 'expired':
+                    $latestContractsQuery->whereNotNull('dk.tgl_akhir_ktr')
+                        ->whereRaw('STR_TO_DATE(dk.tgl_akhir_ktr, "%Y-%m-%d") < CURDATE()');
+                    break;
+                case 'expiring_soon':
+                    $latestContractsQuery->whereNotNull('dk.tgl_akhir_ktr')
+                        ->whereRaw('STR_TO_DATE(dk.tgl_akhir_ktr, "%Y-%m-%d") BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)');
+                    break;
+            }
+        }
+
+        // Education level filter
+        if ($request->has('filter_education_level') && !empty($request->filter_education_level)) {
+            $latestContractsQuery->where('dk.jenjang_skl', $request->filter_education_level);
+        }
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $latestContractsQuery->where(function ($query) use ($request) {
+                $search = $request->search;
+                $query->where('dk.no_srt_ktr', 'like', '%' . $search . '%')
+                    ->orWhereExists(function ($subQuery) use ($search) {
+                        $subQuery->select(DB::raw(1))
+                            ->from('201_dm_data_karyawan as k')
+                            ->whereColumn('k.id', 'dk.id_data_kry')
+                            ->where(function ($kQuery) use ($search) {
+                                $kQuery->where('k.nama', 'like', '%' . $search . '%')
+                                    ->orWhere('k.nrk', 'like', '%' . $search . '%')
+                                    ->orWhere('k.nik', 'like', '%' . $search . '%');
+                            });
+                    });
+            });
+        }
+
+        // Get the latest contracts with relationships
+        $dataKontraks = DataKontrak::whereIn('id', function ($query) use ($latestContractsQuery) {
+            $query->select('id')->fromSub($latestContractsQuery, 'latest_contracts');
+        })->with([
             'karyawan',
             'kontrakKerja',
             'perusahaan',
@@ -41,60 +117,134 @@ class DataKontrakController extends Controller
             'wilayahKerja',
             'creator',
             'updater'
-        ]);
+        ])->orderBy('created_at', 'desc')->get();
 
-        // Apply filters if they exist
-        if ($request->has('filter_status') && !empty($request->filter_status)) {
-            $query->where('sts_srt_ktr', $request->filter_status);
-        }
+        $contractCounts = [];
+        foreach ($dataKontraks as $kontrak) {
+            $employeeId = $kontrak->id_data_kry;
 
-        if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
-            $query->where('id_prsh', $request->filter_perusahaan);
-        }
+            if (!isset($contractCounts[$employeeId])) {
+                // Count total contracts for this employee
+                $totalContracts = DataKontrak::where('id_data_kry', $employeeId)->count();
 
-        if ($request->has('filter_kontrak_type') && !empty($request->filter_kontrak_type)) {
-            $query->where('id_ktr', $request->filter_kontrak_type);
-        }
+                // Count active contracts
+                $activeContracts = DataKontrak::where('id_data_kry', $employeeId)
+                    ->where('sts_srt_ktr', 'AKTIF')
+                    ->count();
 
-        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
-            $query->where('id_departemen', $request->filter_departemen);
-        }
+                // Count non-active contracts
+                $nonActiveContracts = DataKontrak::where('id_data_kry', $employeeId)
+                    ->where('sts_srt_ktr', '!=', 'AKTIF')
+                    ->count();
 
-        if ($request->has('filter_wilayah_kerja') && !empty($request->filter_wilayah_kerja)) {
-            $query->where('id_wilker', $request->filter_wilayah_kerja);
-        }
-
-        // Filter by contract status (active/expired/expiring soon)
-        if ($request->has('filter_contract_status') && !empty($request->filter_contract_status)) {
-            switch ($request->filter_contract_status) {
-                case 'active':
-                    $query->where('sts_srt_ktr', 'AKTIF')
-                        ->whereNotNull('tgl_awl_ktr')
-                        ->whereNotNull('tgl_akhir_ktr')
-                        ->whereRaw('STR_TO_DATE(tgl_awl_ktr, "%Y-%m-%d") <= CURDATE()')
-                        ->whereRaw('STR_TO_DATE(tgl_akhir_ktr, "%Y-%m-%d") >= CURDATE()');
-                    break;
-                case 'expired':
-                    $query->expired();
-                    break;
-                case 'expiring_soon':
-                    $query->expiringSoon(30);
-                    break;
+                $contractCounts[$employeeId] = [
+                    'total' => $totalContracts,
+                    'active' => $activeContracts,
+                    'non_active' => $nonActiveContracts
+                ];
             }
         }
 
-        // Education level filter
-        if ($request->has('filter_education_level') && !empty($request->filter_education_level)) {
-            $query->where('jenjang_skl', $request->filter_education_level);
+        // ========== ACTIVE CONTRACTS DATA CALCULATION ==========
+        $activeContractsData = [];
+        foreach ($dataKontraks as $kontrak) {
+            $employeeId = $kontrak->id_data_kry;
+
+            // For the latest contract display, we'll use the current contract data
+            if ($kontrak->sts_srt_ktr === 'AKTIF' && $kontrak->tgl_akhir_ktr) {
+
+                $endDate = \Carbon\Carbon::parse($kontrak->tgl_akhir_ktr);
+                $reminderDate = $kontrak->tgl_pgt_ktr ? \Carbon\Carbon::parse($kontrak->tgl_pgt_ktr) : null;
+                $today = \Carbon\Carbon::now()->startOf('day');
+
+                $daysUntilExpiry = $today->diffInDays($endDate, false);
+                $daysUntilReminder = $reminderDate ? $today->diffInDays($reminderDate, false) : null;
+
+                // Determine priority and status based on reminder date first, then end date
+                $priority = 4; // default normal
+                $status = 'normal';
+                $badgeClass = 'bg-success';
+                $warningText = 'Aman';
+
+                if ($reminderDate && $daysUntilReminder <= 0) {
+                    // Reminder date has passed or is today
+                    $priority = 1;
+                    $status = 'expired';
+                    $badgeClass = 'bg-danger';
+                    $warningText = $daysUntilReminder == 0 ? 'Hari ini' : 'Terlambat ' . abs($daysUntilReminder) . ' hari';
+                } elseif ($daysUntilExpiry < 0) {
+                    // Contract expired
+                    $priority = 1;
+                    $status = 'expired';
+                    $badgeClass = 'bg-danger';
+                    $warningText = 'Terlambat ' . abs($daysUntilExpiry) . ' hari';
+                } elseif ($reminderDate && $daysUntilReminder <= 7) {
+                    // Urgent - reminder within 7 days
+                    $priority = 2;
+                    $status = 'urgent';
+                    $badgeClass = 'bg-warning text-dark';
+                    $warningText = $daysUntilReminder . ' hari lagi';
+                } elseif ($daysUntilExpiry <= 7) {
+                    // Urgent - expires within 7 days
+                    $priority = 2;
+                    $status = 'urgent';
+                    $badgeClass = 'bg-warning text-dark';
+                    $warningText = $daysUntilExpiry . ' hari lagi';
+                } elseif ($reminderDate && $daysUntilReminder <= 30) {
+                    // Warning - reminder within 30 days
+                    $priority = 3;
+                    $status = 'warning';
+                    $badgeClass = 'bg-info';
+                    $warningText = $daysUntilReminder . ' hari lagi';
+                } elseif ($daysUntilExpiry <= 30) {
+                    // Warning - expires within 30 days
+                    $priority = 3;
+                    $status = 'warning';
+                    $badgeClass = 'bg-info';
+                    $warningText = $daysUntilExpiry . ' hari lagi';
+                } else {
+                    // Safe
+                    $warningText = $reminderDate ? $daysUntilReminder . ' hari lagi' : $daysUntilExpiry . ' hari lagi';
+                }
+
+                $activeContractsData[$employeeId] = [
+                    'contract_id' => $kontrak->id,
+                    'end_date' => $kontrak->tgl_akhir_ktr,
+                    'end_date_formatted' => $endDate->format('d-m-Y'),
+                    'reminder_date' => $kontrak->tgl_pgt_ktr,
+                    'reminder_date_formatted' => $reminderDate ? $reminderDate->format('d-m-Y') : null,
+                    'days_until_expiry' => $daysUntilExpiry,
+                    'days_until_reminder' => $daysUntilReminder,
+                    'is_expired' => $daysUntilExpiry < 0,
+                    'is_expiring_soon' => $daysUntilExpiry >= 0 && $daysUntilExpiry <= 30,
+                    'is_urgent' => $daysUntilExpiry >= 0 && $daysUntilExpiry <= 7,
+                    'contract_number' => $kontrak->no_srt_ktr,
+                    'contract_type' => optional($kontrak->kontrakKerja)->nama_ktr ?? 'N/A',
+                    'priority' => $priority,
+                    'status' => $status,
+                    'badge_class' => $badgeClass,
+                    'warning_text' => $warningText,
+                    'has_active_contract' => true
+                ];
+            } else {
+                // No active contract or contract is not active
+                $activeContractsData[$employeeId] = [
+                    'has_active_contract' => false,
+                    'priority' => 5, // lowest priority
+                    'status' => 'no_active',
+                    'badge_class' => 'bg-secondary',
+                    'warning_text' => 'Tidak ada kontrak aktif'
+                ];
+            }
         }
 
-        // Search functionality
-        if ($request->has('search') && !empty($request->search)) {
-            $query->search($request->search);
-        }
+        // Sort contracts by priority (expired first, then by priority level)
+        $dataKontraks = $dataKontraks->sort(function ($a, $b) use ($activeContractsData) {
+            $priorityA = $activeContractsData[$a->id_data_kry]['priority'] ?? 5;
+            $priorityB = $activeContractsData[$b->id_data_kry]['priority'] ?? 5;
 
-        // Get filtered data
-        $dataKontraks = $query->orderBy('created_at', 'desc')->get();
+            return $priorityA <=> $priorityB;
+        })->values();
 
         // Get master data for filter dropdowns
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
@@ -132,7 +282,33 @@ class DataKontrakController extends Controller
             'S3' => 'S3'
         ];
 
-        // Get user permissions for this menu
+        // Gender options
+        $jenisKelaminOptions = [
+            'LAKI-LAKI' => 'LAKI-LAKI',
+            'PEREMPUAN' => 'PEREMPUAN'
+        ];
+
+        // Department options (for filter)
+        $departemenOptions = $departemens->unique('nama_dep')->values();
+
+        // Jabatan options (same as departemen for filter)
+        $jabatanOptions = $departemens;
+
+        // Wilayah Kerja options
+        $wilayahKerjaOptions = $wilayahKerjas->unique('wilayah_krj')->values();
+
+        // Kontrak options
+        $kontrakOptions = $kontrakTypes;
+
+        // FIXED: Get DataKaryawan collection for summary statistics
+        $dataKaryawans = collect();
+        foreach ($dataKontraks as $kontrak) {
+            if ($kontrak->karyawan) {
+                $dataKaryawans->push($kontrak->karyawan);
+            }
+        }
+
+        // Get user permissions
         $userPermissions = [];
         if (auth()->check()) {
             $user = auth()->user();
@@ -160,20 +336,28 @@ class DataKontrakController extends Controller
             }
         }
 
-        // Store current filters for view
+        // FIXED: Store current filters for view - include ALL possible filter keys
         $currentFilters = [
-            'status' => $request->filter_status,
-            'perusahaan' => $request->filter_perusahaan,
-            'kontrak_type' => $request->filter_kontrak_type,
-            'departemen' => $request->filter_departemen,
-            'wilayah_kerja' => $request->filter_wilayah_kerja,
-            'contract_status' => $request->filter_contract_status,
-            'education_level' => $request->filter_education_level,
-            'search' => $request->search,
+            'status' => $request->filter_status ?? '',
+            'perusahaan' => $request->filter_perusahaan ?? '',
+            'kontrak_type' => $request->filter_kontrak_type ?? '',
+            'departemen' => $request->filter_departemen ?? '',
+            'wilayah_kerja' => $request->filter_wilayah_kerja ?? '',
+            'contract_status' => $request->filter_contract_status ?? '',
+            'education_level' => $request->filter_education_level ?? '',
+            'search' => $request->search ?? '',
+            // ADD missing filter keys to prevent undefined array key errors
+            'nama' => $request->filter_nama ?? '',
+            'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
+            'jabatan' => $request->filter_jabatan ?? '',
+            'wilker' => $request->filter_wilker ?? '',
+            'kontrak' => $request->filter_kontrak ?? '',
         ];
 
         return view('data.data-kontrak.index', compact(
             'dataKontraks',
+            'activeContractsData',
+            'contractCounts',
             'userPermissions',
             'perusahaans',
             'kontrakTypes',
@@ -182,10 +366,17 @@ class DataKontrakController extends Controller
             'statusOptions',
             'contractStatusOptions',
             'educationLevelOptions',
-            'currentFilters'
+            'jenisKelaminOptions',
+            'departemenOptions',
+            'jabatanOptions',
+            'wilayahKerjaOptions',
+            'kontrakOptions',
+            'currentFilters',
+            'dataKaryawans' // Add this for summary statistics
         ));
     }
 
+    // ... Rest of the methods remain the same ...
     public function create()
     {
         // Generate automatic ID for main record
@@ -219,7 +410,7 @@ class DataKontrakController extends Controller
             'id_prsh' => 'required|exists:101_dm_perusahaan,id',
 
             // Contract details
-            'no_srt_ktr' => 'nullable|string|max:100',
+            'no_srt_ktr' => 'nullable|string|max:100|unique:202_dm_data_kontrak,no_srt_ktr',
             'tgl_srt_ktr' => 'nullable|date',
             'tgl_awl_ktr' => 'required|date',
             'tgl_lahir' => 'nullable|date',
@@ -272,6 +463,18 @@ class DataKontrakController extends Controller
             $startDate = \Carbon\Carbon::parse($request->tgl_awl_ktr);
             $endDate = \Carbon\Carbon::parse($request->tgl_akhir_ktr);
             $durasi_ktr = $startDate->diffInMonths($endDate);
+        }
+
+        if ($request->sts_srt_ktr === 'AKTIF') {
+            $existingActiveContract = DataKontrak::where('id_data_kry', $request->id_data_kry)
+                ->where('sts_srt_ktr', 'AKTIF')
+                ->first();
+
+            if ($existingActiveContract) {
+                return redirect()->back()
+                    ->withErrors(['sts_srt_ktr' => 'Karyawan sudah memiliki kontrak aktif. Hanya diperbolehkan 1 kontrak aktif per karyawan.'])
+                    ->withInput();
+            }
         }
 
         $dataKontrak = DataKontrak::create([
@@ -332,12 +535,27 @@ class DataKontrakController extends Controller
             'updater'
         ])->findOrFail($id);
 
-        return view('data.data-kontrak.show', compact('dataKontrak'));
+        // Get all related data for this employee
+        $allContracts = $dataKontrak->allEmployeeContracts();
+        $allEducation = $dataKontrak->allEmployeeEducation();
+        $allCareers = $dataKontrak->allEmployeeCareers();
+
+        return view('data.data-kontrak.show', compact(
+            'dataKontrak',
+            'allContracts',
+            'allEducation',
+            'allCareers'
+        ));
     }
 
     public function edit($id)
     {
         $dataKontrak = DataKontrak::findOrFail($id);
+
+        // Get all related data for this employee to show in tabs
+        $allContracts = $dataKontrak->allEmployeeContracts();
+        $allEducation = $dataKontrak->allEmployeeEducation();
+        $allCareers = $dataKontrak->allEmployeeCareers();
 
         // Get master data for dropdowns
         $karyawans = DataKaryawan::where('sts_kry', 'AKTIF')
@@ -350,6 +568,9 @@ class DataKontrakController extends Controller
 
         return view('data.data-kontrak.edit', compact(
             'dataKontrak',
+            'allContracts',
+            'allEducation',
+            'allCareers',
             'karyawans',
             'kontrakTypes',
             'perusahaans',
@@ -362,57 +583,50 @@ class DataKontrakController extends Controller
     {
         $dataKontrak = DataKontrak::findOrFail($id);
 
+        // Determine which data we're updating based on form submission
+        $updateType = $request->input('update_type', 'main');
+
+        switch ($updateType) {
+            case 'education':
+                return $this->updateEducation($request, $dataKontrak);
+            case 'career':
+                return $this->updateCareer($request, $dataKontrak);
+            default:
+                return $this->updateMainData($request, $dataKontrak);
+        }
+    }
+
+    private function updateMainData(Request $request, $dataKontrak)
+    {
         $request->validate([
-            // Same validation rules as store
             'id_data_kry' => 'required|exists:201_dm_data_karyawan,id',
             'id_ktr' => 'required|exists:104_dm_kontrak,id',
             'id_prsh' => 'required|exists:101_dm_perusahaan,id',
-            'tgl_awl_ktr' => 'required|date',
-            'tgl_akhir_ktr' => 'required|date|after:tgl_awl_ktr',
-            'sts_srt_ktr' => 'required|in:AKTIF,NON-AKTIF,EXPIRED,PENDING',
-            'file_doc_ktr' => 'nullable|file|mimes:pdf,doc,docx,jpg,png|max:5120',
+            'ktg_ktk' => 'required|in:TETAP,TIDAK TETAP',
         ]);
 
-        // Handle file upload
-        $fileDocKtr = $dataKontrak->file_doc_ktr; // Keep existing file by default
-        if ($request->hasFile('file_doc_ktr')) {
-            // Delete old file if exists
-            if ($dataKontrak->file_doc_ktr && Storage::exists('public/' . $dataKontrak->file_doc_ktr)) {
-                Storage::delete('public/' . $dataKontrak->file_doc_ktr);
-            }
-
-            // Upload new file
-            $file = $request->file('file_doc_ktr');
-            $fileName = time() . '_' . $dataKontrak->id . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/kontrak/dokumen', $fileName);
-            $fileDocKtr = 'kontrak/dokumen/' . $fileName;
-        }
-
-        // Calculate contract duration if not provided
-        $durasi_ktr = $request->durasi_ktr;
-        if (!$durasi_ktr && $request->tgl_awl_ktr && $request->tgl_akhir_ktr) {
-            $startDate = \Carbon\Carbon::parse($request->tgl_awl_ktr);
-            $endDate = \Carbon\Carbon::parse($request->tgl_akhir_ktr);
-            $durasi_ktr = $startDate->diffInMonths($endDate);
-        }
-
-        $data = [
+        $dataKontrak->update([
             'id_data_kry' => $request->id_data_kry,
             'id_ktr' => $request->id_ktr,
             'id_prsh' => $request->id_prsh,
-            'no_srt_ktr' => $request->no_srt_ktr,
-            'tgl_srt_ktr' => $request->tgl_srt_ktr,
-            'tgl_awl_ktr' => $request->tgl_awl_ktr,
-            'tgl_lahir' => $request->tgl_lahir,
             'ktg_ktk' => $request->ktg_ktk,
-            'tgl_akhir_ktr' => $request->tgl_akhir_ktr,
-            'durasi_ktr' => $durasi_ktr,
-            'tgl_pgt_ktr' => $request->tgl_pgt_ktr,
-            'durasi_pgt' => $request->durasi_pgt,
-            'file_doc_ktr' => $fileDocKtr,
-            'sts_srt_ktr' => $request->sts_srt_ktr,
-            'tgl_sr_na' => $request->tgl_sr_na,
-            'ket_sr_na' => $request->ket_sr_na,
+            'updated_by' => auth()->user()->id_kode ?? null,
+        ]);
+
+        return redirect()->route('data-kontrak.edit', $dataKontrak->id)
+            ->with('success', 'Data utama kontrak berhasil diperbarui.');
+    }
+
+    private function updateEducation(Request $request, $dataKontrak)
+    {
+        $request->validate([
+            'jenjang_skl' => 'nullable|string|max:50',
+            'institusi_skl' => 'nullable|string|max:255',
+            'jurusan_skl' => 'nullable|string|max:255',
+            'tgl_lulus_skl' => 'nullable|date',
+        ]);
+
+        $dataKontrak->update([
             'jenjang_skl' => $request->jenjang_skl,
             'institusi_skl' => $request->institusi_skl,
             'skt_inst_skl' => $request->skt_inst_skl,
@@ -421,31 +635,454 @@ class DataKontrakController extends Controller
             'jurusan_skl' => $request->jurusan_skl,
             'gelar_skl' => $request->gelar_skl,
             'tgl_lulus_skl' => $request->tgl_lulus_skl,
+            'updated_by' => auth()->user()->id_kode ?? null,
+        ]);
+
+        return redirect()->route('data-kontrak.edit', $dataKontrak->id)
+            ->with('success', 'Data pendidikan berhasil diperbarui.');
+    }
+
+    private function updateCareer(Request $request, $dataKontrak)
+    {
+        $request->validate([
+            'id_departemen' => 'nullable|exists:103_dm_departemen,id',
+            'id_wilker' => 'nullable|exists:102_dm_wilker,id',
+            'tugas' => 'nullable|string',
+        ]);
+
+        $dataKontrak->update([
             'id_departemen' => $request->id_departemen,
             'id_wilker' => $request->id_wilker,
             'tugas' => $request->tugas,
             'updated_by' => auth()->user()->id_kode ?? null,
-        ];
+        ]);
 
-        $dataKontrak->update($data);
-
-        return redirect()->route('data-kontrak.index')
-            ->with('success', 'Data kontrak berhasil diperbarui.');
+        return redirect()->route('data-kontrak.edit', $dataKontrak->id)
+            ->with('success', 'Data karir berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $dataKontrak = DataKontrak::findOrFail($id);
+        try {
+            DB::beginTransaction();
 
-        // Delete associated file if exists
-        if ($dataKontrak->file_doc_ktr && Storage::exists('public/' . $dataKontrak->file_doc_ktr)) {
-            Storage::delete('public/' . $dataKontrak->file_doc_ktr);
+            $dataKontrak = DataKontrak::findOrFail($id);
+            $employeeId = $dataKontrak->id_data_kry;
+            $employeeName = $dataKontrak->karyawan->nama ?? 'Unknown';
+
+            // Get all contracts for this employee
+            $allEmployeeContracts = DataKontrak::where('id_data_kry', $employeeId)->get();
+
+            // Delete all associated files for this employee's contracts
+            foreach ($allEmployeeContracts as $contract) {
+                if ($contract->file_doc_ktr && Storage::exists('public/' . $contract->file_doc_ktr)) {
+                    Storage::delete('public/' . $contract->file_doc_ktr);
+                }
+            }
+
+            // Delete all contracts for this employee
+            $deletedCount = DataKontrak::where('id_data_kry', $employeeId)->delete();
+
+            DB::commit();
+
+            return redirect()->route('data-kontrak.index')
+                ->with('success', "Semua data kontrak karyawan {$employeeName} berhasil dihapus. Total {$deletedCount} record dihapus.");
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return redirect()->route('data-kontrak.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus data kontrak: ' . $e->getMessage());
+        }
+    }
+
+    // ================================================ CONTRACT MANAGEMENT METHODS ===================================== //
+    // ========================================================================================================== //
+
+    /**
+     * Store a new contract for an employee
+     */
+    public function storeContract(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required|exists:201_dm_data_karyawan,id',
+            'id_ktr' => 'required|exists:104_dm_kontrak,id',
+            'id_prsh' => 'required|exists:101_dm_perusahaan,id',
+            'no_srt_ktr' => 'nullable|string|max:100|unique:202_dm_data_kontrak,no_srt_ktr',
+            'tgl_srt_ktr' => 'nullable|date',
+            'tgl_awl_ktr' => 'required|date',
+            'tgl_akhir_ktr' => 'nullable|date|after:tgl_awl_ktr',
+            'tgl_pgt_ktr' => 'nullable|date',
+            'sts_srt_ktr' => 'required|in:AKTIF,NON-AKTIF,EXPIRED,PENDING',
+            'ktg_ktk' => 'required|in:TETAP,TIDAK TETAP', // DIPERBAIKI
+            'tgl_sr_na' => 'nullable|date',
+            'ket_sr_na' => 'nullable|string|max:255',
+        ]);
+
+        // VALIDASI: hanya boleh ada 1 kontrak aktif per karyawan
+        if ($request->sts_srt_ktr === 'AKTIF') {
+            $existingActiveContract = DataKontrak::where('id_data_kry', $request->employee_id)
+                ->where('sts_srt_ktr', 'AKTIF')
+                ->first();
+
+            if ($existingActiveContract) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Karyawan sudah memiliki kontrak aktif. Hanya diperbolehkan 1 kontrak aktif per karyawan.',
+                    'existing_contract' => [
+                        'no_srt_ktr' => $existingActiveContract->no_srt_ktr,
+                        'tgl_awl_ktr' => $existingActiveContract->tgl_awl_ktr,
+                        'tgl_akhir_ktr' => $existingActiveContract->tgl_akhir_ktr
+                    ]
+                ], 400);
+            }
         }
 
-        $dataKontrak->delete();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('data-kontrak.index')
-            ->with('success', 'Data kontrak berhasil dihapus.');
+            // Calculate duration if dates provided
+            $durasi_ktr = null;
+            if ($request->tgl_awl_ktr && $request->tgl_akhir_ktr) {
+                $startDate = \Carbon\Carbon::parse($request->tgl_awl_ktr);
+                $endDate = \Carbon\Carbon::parse($request->tgl_akhir_ktr);
+                $durasi_ktr = $startDate->diffInMonths($endDate);
+            }
+
+            // Calculate reminder duration if dates provided
+            $durasi_pgt = null;
+            if ($request->tgl_pgt_ktr && $request->tgl_akhir_ktr) {
+                $reminderDate = \Carbon\Carbon::parse($request->tgl_pgt_ktr);
+                $endDate = \Carbon\Carbon::parse($request->tgl_akhir_ktr);
+                $durasi_pgt = $reminderDate->diffInDays($endDate);
+            }
+
+            // Handle file upload if exists
+            $fileDocKtr = null;
+            if ($request->hasFile('file_doc_ktr')) {
+                $file = $request->file('file_doc_ktr');
+                $fileName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/kontrak/dokumen', $fileName);
+                $fileDocKtr = 'kontrak/dokumen/' . $fileName;
+            }
+
+            $contract = DataKontrak::create([
+                'id_data_ktr' => $this->generateAutoIncrement(),
+                'id_data_kry' => $request->employee_id,
+                'id_ktr' => $request->id_ktr,
+                'id_prsh' => $request->id_prsh,
+                'no_srt_ktr' => $request->no_srt_ktr,
+                'tgl_srt_ktr' => $request->tgl_srt_ktr,
+                'tgl_awl_ktr' => $request->tgl_awl_ktr,
+                'tgl_akhir_ktr' => $request->tgl_akhir_ktr,
+                'durasi_ktr' => $durasi_ktr,
+                'tgl_pgt_ktr' => $request->tgl_pgt_ktr,
+                'durasi_pgt' => $durasi_pgt,
+                'sts_srt_ktr' => $request->sts_srt_ktr,
+                'ktg_ktk' => $request->ktg_ktk, // DIPERBAIKI
+                'file_doc_ktr' => $fileDocKtr,
+                'tgl_sr_na' => $request->tgl_sr_na,
+                'ket_sr_na' => $request->ket_sr_na,
+                'created_by' => auth()->user()->id_kode ?? null,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kontrak berhasil ditambahkan.',
+                'data' => $contract
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan kontrak: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get contract details
+     */
+    public function getContract($id)
+    {
+        try {
+            $contract = DataKontrak::with(['kontrakKerja', 'perusahaan'])
+                ->findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'data' => $contract
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kontrak tidak ditemukan: ' . $e->getMessage()
+            ], 404);
+        }
+    }
+
+    /**
+     * Update contract
+     */
+    public function updateContract(Request $request, $id)
+    {
+        $request->validate([
+            'id_ktr' => 'required|exists:104_dm_kontrak,id',
+            'id_prsh' => 'required|exists:101_dm_perusahaan,id',
+            'no_srt_ktr' => 'nullable|string|max:100',
+            'tgl_srt_ktr' => 'nullable|date',
+            'tgl_awl_ktr' => 'required|date',
+            'tgl_akhir_ktr' => 'nullable|date|after:tgl_awl_ktr',
+            'tgl_pgt_ktr' => 'nullable|date',
+            'sts_srt_ktr' => 'required|in:AKTIF,NON-AKTIF,EXPIRED,PENDING',
+            'ktg_ktk' => 'required|in:TETAP,TIDAK TETAP', // DIPERBAIKI
+            'tgl_sr_na' => 'nullable|date',
+            'ket_sr_na' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $contract = DataKontrak::findOrFail($id);
+
+            // VALIDASI: jika status diubah menjadi AKTIF, pastikan tidak ada kontrak aktif lain
+            if ($request->sts_srt_ktr === 'AKTIF' && $contract->sts_srt_ktr !== 'AKTIF') {
+                $existingActiveContract = DataKontrak::where('id_data_kry', $contract->id_data_kry)
+                    ->where('sts_srt_ktr', 'AKTIF')
+                    ->where('id', '!=', $id)
+                    ->first();
+
+                if ($existingActiveContract) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Karyawan sudah memiliki kontrak aktif lain. Hanya diperbolehkan 1 kontrak aktif per karyawan.',
+                        'existing_contract' => [
+                            'no_srt_ktr' => $existingActiveContract->no_srt_ktr,
+                            'tgl_awl_ktr' => $existingActiveContract->tgl_awl_ktr,
+                            'tgl_akhir_ktr' => $existingActiveContract->tgl_akhir_ktr
+                        ]
+                    ], 400);
+                }
+            }
+
+            // Calculate duration if dates provided
+            $durasi_ktr = $contract->durasi_ktr; // Keep existing if not recalculated
+            if ($request->tgl_awl_ktr && $request->tgl_akhir_ktr) {
+                $startDate = \Carbon\Carbon::parse($request->tgl_awl_ktr);
+                $endDate = \Carbon\Carbon::parse($request->tgl_akhir_ktr);
+                $durasi_ktr = $startDate->diffInMonths($endDate);
+            }
+
+            // Calculate reminder duration if dates provided
+            $durasi_pgt = $contract->durasi_pgt; // Keep existing if not recalculated
+            if ($request->tgl_pgt_ktr && $request->tgl_akhir_ktr) {
+                $reminderDate = \Carbon\Carbon::parse($request->tgl_pgt_ktr);
+                $endDate = \Carbon\Carbon::parse($request->tgl_akhir_ktr);
+                $durasi_pgt = $reminderDate->diffInDays($endDate);
+            }
+
+            // Handle file upload if exists
+            $fileDocKtr = $contract->file_doc_ktr; // Keep existing file
+            if ($request->hasFile('file_doc_ktr')) {
+                // Delete old file if exists
+                if ($contract->file_doc_ktr && Storage::exists('public/' . $contract->file_doc_ktr)) {
+                    Storage::delete('public/' . $contract->file_doc_ktr);
+                }
+
+                $file = $request->file('file_doc_ktr');
+                $fileName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public/kontrak/dokumen', $fileName);
+                $fileDocKtr = 'kontrak/dokumen/' . $fileName;
+            }
+
+            // UPDATE SEMUA FIELD - DIPERBAIKI LENGKAP
+            $contract->update([
+                'id_ktr' => $request->id_ktr,
+                'id_prsh' => $request->id_prsh,
+                'no_srt_ktr' => $request->no_srt_ktr,
+                'tgl_srt_ktr' => $request->tgl_srt_ktr,
+                'tgl_awl_ktr' => $request->tgl_awl_ktr,
+                'tgl_akhir_ktr' => $request->tgl_akhir_ktr,
+                'durasi_ktr' => $durasi_ktr,
+                'tgl_pgt_ktr' => $request->tgl_pgt_ktr,
+                'durasi_pgt' => $durasi_pgt,
+                'sts_srt_ktr' => $request->sts_srt_ktr,
+                'ktg_ktk' => $request->ktg_ktk, // DIPERBAIKI - FIELD INI YANG HILANG
+                'file_doc_ktr' => $fileDocKtr,
+                'tgl_sr_na' => $request->tgl_sr_na, // DIPERBAIKI
+                'ket_sr_na' => $request->ket_sr_na, // DIPERBAIKI
+                'updated_by' => auth()->user()->id_kode ?? null,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kontrak berhasil diperbarui.',
+                'data' => $contract->fresh() // Refresh data
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengupdate kontrak: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete contract
+     */
+    public function deleteContract($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $contract = DataKontrak::findOrFail($id);
+            $employeeName = $contract->karyawan->nama ?? 'N/A';
+
+            // Check if this is the only contract for the employee
+            $employeeContractsCount = DataKontrak::where('id_data_kry', $contract->id_data_kry)->count();
+
+            if ($employeeContractsCount <= 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Tidak dapat menghapus kontrak terakhir karyawan {$employeeName}. Setiap karyawan harus memiliki minimal 1 kontrak dalam sistem."
+                ], 400);
+            }
+
+            // Delete associated file if exists
+            if ($contract->file_doc_ktr && Storage::exists('public/' . $contract->file_doc_ktr)) {
+                Storage::delete('public/' . $contract->file_doc_ktr);
+            }
+
+            $contract->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Kontrak berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus kontrak: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // ================================================ LEGACY METHODS ============================================== //
+    // ========================================================================================================== //
+
+    /**
+     * Add new contract for employee
+     */
+    public function addContract(Request $request)
+    {
+        $request->validate([
+            'id_data_kry' => 'required|exists:201_dm_data_karyawan,id',
+            'id_ktr' => 'required|exists:104_dm_kontrak,id',
+            'id_prsh' => 'required|exists:101_dm_perusahaan,id',
+            'no_srt_ktr' => 'nullable|string|max:100',
+            'tgl_srt_ktr' => 'nullable|date',
+            'tgl_awl_ktr' => 'required|date',
+            'tgl_akhir_ktr' => 'nullable|date|after:tgl_awl_ktr',
+            'sts_srt_ktr' => 'required|in:AKTIF,NON-AKTIF,EXPIRED,PENDING',
+        ]);
+
+        // Calculate duration
+        $durasi_ktr = null;
+        if ($request->tgl_awl_ktr && $request->tgl_akhir_ktr) {
+            $startDate = \Carbon\Carbon::parse($request->tgl_awl_ktr);
+            $endDate = \Carbon\Carbon::parse($request->tgl_akhir_ktr);
+            $durasi_ktr = $startDate->diffInMonths($endDate);
+        }
+
+        DataKontrak::create([
+            'id_data_ktr' => $this->generateAutoIncrement(),
+            'id_data_kry' => $request->id_data_kry,
+            'id_ktr' => $request->id_ktr,
+            'id_prsh' => $request->id_prsh,
+            'no_srt_ktr' => $request->no_srt_ktr,
+            'tgl_srt_ktr' => $request->tgl_srt_ktr,
+            'tgl_awl_ktr' => $request->tgl_awl_ktr,
+            'tgl_akhir_ktr' => $request->tgl_akhir_ktr,
+            'durasi_ktr' => $durasi_ktr,
+            'tgl_pgt_ktr' => $request->tgl_pgt_ktr,
+            'sts_srt_ktr' => $request->sts_srt_ktr,
+            'created_by' => auth()->user()->id_kode ?? null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kontrak baru berhasil ditambahkan.'
+        ]);
+    }
+
+    /**
+     * Add new education record for employee
+     */
+    public function addEducation(Request $request)
+    {
+        $request->validate([
+            'id_data_kry' => 'required|exists:201_dm_data_karyawan,id',
+            'jenjang_skl' => 'required|string|max:50',
+            'institusi_skl' => 'required|string|max:255',
+            'jurusan_skl' => 'nullable|string|max:255',
+            'tgl_lulus_skl' => 'nullable|date',
+        ]);
+
+        DataKontrak::create([
+            'id_data_kry' => $request->id_data_kry,
+            'id_pendidikan' => $this->generateAutoIncrement(),
+            'jenjang_skl' => $request->jenjang_skl,
+            'institusi_skl' => $request->institusi_skl,
+            'skt_inst_skl' => $request->skt_inst_skl,
+            'kota_skl' => $request->kota_skl,
+            'fakultas_skl' => $request->fakultas_skl,
+            'jurusan_skl' => $request->jurusan_skl,
+            'gelar_skl' => $request->gelar_skl,
+            'tgl_lulus_skl' => $request->tgl_lulus_skl,
+            'created_by' => auth()->user()->id_kode ?? null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data pendidikan baru berhasil ditambahkan.'
+        ]);
+    }
+
+    /**
+     * Add new career record for employee
+     */
+    public function addCareer(Request $request)
+    {
+        $request->validate([
+            'id_data_kry' => 'required|exists:201_dm_data_karyawan,id',
+            'id_departemen' => 'required|exists:103_dm_departemen,id',
+            'id_wilker' => 'nullable|exists:102_dm_wilker,id',
+            'tugas' => 'nullable|string',
+        ]);
+
+        DataKontrak::create([
+            'id_data_kry' => $request->id_data_kry,
+            'id_karir' => $this->generateAutoIncrement(),
+            'id_departemen' => $request->id_departemen,
+            'id_wilker' => $request->id_wilker,
+            'tugas' => $request->tugas,
+            'created_by' => auth()->user()->id_kode ?? null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data karir baru berhasil ditambahkan.'
+        ]);
     }
 
     /**
@@ -477,9 +1114,9 @@ class DataKontrakController extends Controller
             'perusahaan',
             'departemen',
             'wilayahKerja'
-        ]);
+        ])->uniqueEmployees(); // Apply unique employees scope
 
-        // Apply filters
+        // Apply filters (same as index method)
         if (!empty($filters['filter_status'])) {
             $query->where('sts_srt_ktr', $filters['filter_status']);
         }
@@ -677,6 +1314,7 @@ class DataKontrakController extends Controller
             ], 500);
         }
     }
+
     /**
      * Get departemen jabatan by ID (sama seperti data-karyawan)
      */
@@ -705,36 +1343,33 @@ class DataKontrakController extends Controller
     }
 
     /**
-     * Get wilker unit kerja by ID (sama seperti data-karyawan)
+     * Get wilker unit kerja by ID (diperbaiki untuk konsistensi)
      */
-   /**
- * Get wilker unit kerja by ID (diperbaiki untuk konsistensi)
- */
-public function getWilkerUnitKrj($id)
-{
-    try {
-        $wilker = WilayahKerja::findOrFail($id);
+    public function getWilkerUnitKrj($id)
+    {
+        try {
+            $wilker = WilayahKerja::findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => $wilker->id,
-                'kode_wk' => $wilker->kode_wk,
-                'wilayah_krj' => $wilker->wilayah_krj,
-                'area_krj' => $wilker->area_krj,
-                'singkatan_wk' => $wilker->singkatan_wk,
-                'alamat_wk' => $wilker->alamat_wk,
-                'kota_wk' => $wilker->kota_wk,
-                'prov_wk' => $wilker->prov_wk,
-            ]
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Data wilayah kerja tidak ditemukan: ' . $e->getMessage()
-        ], 404);
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $wilker->id,
+                    'kode_wk' => $wilker->kode_wk,
+                    'wilayah_krj' => $wilker->wilayah_krj,
+                    'area_krj' => $wilker->area_krj,
+                    'singkatan_wk' => $wilker->singkatan_wk,
+                    'alamat_wk' => $wilker->alamat_wk,
+                    'kota_wk' => $wilker->kota_wk,
+                    'prov_wk' => $wilker->prov_wk,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data wilayah kerja tidak ditemukan: ' . $e->getMessage()
+            ], 404);
+        }
     }
-}
 
     /**
      * Get contracts expiring soon for dashboard/notifications
@@ -744,6 +1379,7 @@ public function getWilkerUnitKrj($id)
         $days = $request->get('days', 30);
 
         $expiring = DataKontrak::with(['karyawan', 'kontrakKerja', 'perusahaan'])
+            ->uniqueEmployees() // Only unique employees
             ->expiringSoon($days)
             ->where('sts_srt_ktr', 'AKTIF')
             ->orderBy('tgl_akhir_ktr', 'asc')
@@ -772,5 +1408,114 @@ public function getWilkerUnitKrj($id)
     private function generateRandom(): int
     {
         return random_int(1, 9999);
+    }
+
+    public function getActiveContractsData()
+    {
+        try {
+            // Get all employees with their active contracts
+            $activeContracts = DataKontrak::select('id_data_kry')
+                ->distinct()
+                ->get()
+                ->mapWithKeys(function ($item) {
+                    $employeeId = $item->id_data_kry;
+
+                    $activeContract = DataKontrak::where('id_data_kry', $employeeId)
+                        ->where('sts_srt_ktr', 'AKTIF')
+                        ->whereNotNull('tgl_akhir_ktr')
+                        ->orderBy('tgl_akhir_ktr', 'desc')
+                        ->first();
+
+                    if (!$activeContract) {
+                        return [$employeeId => null];
+                    }
+
+                    $endDate = \Carbon\Carbon::parse($activeContract->tgl_akhir_ktr);
+                    $reminderDate = $activeContract->tgl_pgt_ktr ? \Carbon\Carbon::parse($activeContract->tgl_pgt_ktr) : null;
+                    $today = \Carbon\Carbon::now()->startOf('day');
+
+                    $daysUntilExpiry = $today->diffInDays($endDate, false);
+                    $daysUntilReminder = $reminderDate ? $today->diffInDays($reminderDate, false) : null;
+
+                    return [$employeeId => [
+                        'contract_id' => $activeContract->id,
+                        'end_date' => $activeContract->tgl_akhir_ktr,
+                        'reminder_date' => $activeContract->tgl_pgt_ktr,
+                        'days_until_expiry' => $daysUntilExpiry,
+                        'days_until_reminder' => $daysUntilReminder,
+                        'is_expired' => $daysUntilExpiry < 0,
+                        'is_urgent' => $daysUntilExpiry >= 0 && $daysUntilExpiry <= 7,
+                        'is_warning' => $daysUntilExpiry >= 0 && $daysUntilExpiry <= 30,
+                    ]];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $activeContracts
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching active contracts: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function checkEmployeeExists($id)
+    {
+        try {
+            $employee = DataKaryawan::findOrFail($id);
+
+            // Check if employee already has contract records
+            $existingContracts = DataKontrak::where('id_data_kry', $id)->count();
+
+            if ($existingContracts > 0) {
+                // Get latest contract info for better error message
+                $latestContract = DataKontrak::where('id_data_kry', $id)
+                    ->with(['kontrakKerja', 'perusahaan'])
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                return response()->json([
+                    'success' => false,
+                    'exists' => true,
+                    'message' => 'Karyawan sudah memiliki data kontrak sebelumnya',
+                    'employee_name' => $employee->nama,
+                    'employee_nrk' => $employee->nrk,
+                    'existing_contracts_count' => $existingContracts,
+                    'latest_contract' => [
+                        'contract_type' => optional($latestContract->kontrakKerja)->nama_ktr ?? 'N/A',
+                        'company' => optional($latestContract->perusahaan)->nama_prs1 ?? 'N/A',
+                        'status' => $latestContract->sts_srt_ktr ?? 'N/A',
+                        'created_at' => $latestContract->created_at->format('d-m-Y') ?? 'N/A',
+                        'contract_number' => $latestContract->no_srt_ktr ?? 'N/A'
+                    ]
+                ], 409); // 409 Conflict
+            }
+
+            return response()->json([
+                'success' => true,
+                'exists' => false,
+                'message' => 'Karyawan belum memiliki data kontrak, dapat dilanjutkan',
+                'employee_name' => $employee->nama,
+                'employee_nrk' => $employee->nrk
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Karyawan tidak ditemukan: ' . $e->getMessage()
+            ], 404);
+        }
+    }
+
+    private function hasActiveContract($employeeId, $excludeContractId = null)
+    {
+        $query = DataKontrak::where('id_data_kry', $employeeId)
+            ->where('sts_srt_ktr', 'AKTIF');
+
+        if ($excludeContractId) {
+            $query->where('id', '!=', $excludeContractId);
+        }
+
+        return $query->exists();
     }
 }

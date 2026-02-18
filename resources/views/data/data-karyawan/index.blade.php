@@ -1249,15 +1249,26 @@
                 window.location.href = currentUrl.toString();
             });
 
-            // ===== DELETE CONFIRMATION =====
-            $('.delete-confirm').click(function() {
-                const employeeId = $(this).data('id');
-                const employeeName = $(this).data('name');
+            $(document).on('click', '.delete-confirm', function() {
+                var id = $(this).data('id');
+                var name = $(this).data('name');
 
-                $('#employeeName').text(employeeName);
-                $('#deleteForm').attr('action', `/data-karyawan/${employeeId}`);
+                // Using Laravel route helper with placeholder
+                var deleteUrl = "{{ route('data-karyawan.destroy', ':id') }}".replace(':id', id);
+                $('#deleteForm').attr('action', deleteUrl);
+
                 $('#deleteConfirmationModal').modal('show');
             });
+
+            // ===== DELETE CONFIRMATION =====
+            // $('.delete-confirm').click(function() {
+            //     const employeeId = $(this).data('id');
+            //     const employeeName = $(this).data('name');
+
+            //     $('#employeeName').text(employeeName);
+            //     $('#deleteForm').attr('action', `/data-karyawan/${employeeId}`);
+            //     $('#deleteConfirmationModal').modal('show');
+            // });
 
             // ===== QUICK SEARCH FUNCTIONALITY =====
             $('#quickSearchInput').on('keyup', function(e) {

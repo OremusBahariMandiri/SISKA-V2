@@ -86,7 +86,17 @@ Route::middleware('auth')->group(function () {
     Route::get('data-karyawan/get-departemen-jabatan/{id}', [DataKaryawanController::class, 'getDepartemenJabatan']);
     Route::get('data-karyawan/get-wilker-unit-krj/{id}', [DataKaryawanController::class, 'getWilkerUnitKrj']);
 
+    // ================================================ DATA KONTRAK ROUTES ========================================= //
+    // ============================================================================================================== //
+    Route::get('/data-kontrak/check-employee/{id}', [DataKontrakController::class, 'checkEmployeeExists'])
+    ->name('data-kontrak.check-employee');
+
     Route::resource('data-kontrak', DataKontrakController::class);
+
+    // NEW: Route untuk mendapatkan data kontrak aktif (untuk pewarnaan row)
+    Route::get('data-kontrak/active-contracts-data', [DataKontrakController::class, 'getActiveContractsData'])
+        ->name('data-kontrak.active-contracts-data');
+
     // Route untuk mendapatkan data employee untuk kontrak
     Route::get('data-kontrak/get-employee-data/{id}', [DataKontrakController::class, 'getEmployeeData'])
         ->name('data-kontrak.get-employee-data');
@@ -106,4 +116,45 @@ Route::middleware('auth')->group(function () {
     // Route untuk mendapatkan wilker unit kerja berdasarkan ID
     Route::get('data-kontrak/get-wilker-unit-krj/{id}', [DataKontrakController::class, 'getWilkerUnitKrj'])
         ->name('data-kontrak.get-wilker-unit-krj');
+
+    // ================================================ CONTRACT MANAGEMENT ROUTES ================================= //
+    // ============================================================================================================= //
+
+    // Contract CRUD operations for specific employee
+    Route::prefix('data-kontrak')->name('data-kontrak.')->group(function () {
+        // Store new contract
+        Route::post('contracts', [DataKontrakController::class, 'storeContract'])
+            ->name('contracts.store');
+
+        // Get contract details
+        Route::get('contracts/{id}', [DataKontrakController::class, 'getContract'])
+            ->name('contracts.show');
+
+        // Update contract
+        Route::put('contracts/{id}', [DataKontrakController::class, 'updateContract'])
+            ->name('contracts.update');
+
+        // Delete contract
+        Route::delete('contracts/{id}', [DataKontrakController::class, 'deleteContract'])
+            ->name('contracts.destroy');
+
+        // NEW: Additional endpoints for active contracts management
+        Route::get('expiring-contracts', [DataKontrakController::class, 'getExpiringContracts'])
+            ->name('expiring-contracts');
+
+        // Legacy contract management routes (keep for backwards compatibility)
+        Route::post('add-contract', [DataKontrakController::class, 'addContract'])
+            ->name('add-contract');
+
+        Route::post('add-education', [DataKontrakController::class, 'addEducation'])
+            ->name('add-education');
+
+        Route::post('add-career', [DataKontrakController::class, 'addCareer'])
+            ->name('add-career');
+    });
+
+
+    // Export routes
+    Route::post('data-kontrak/export-excel', [DataKontrakController::class, 'exportExcel'])
+        ->name('data-kontrak.export-excel');
 });

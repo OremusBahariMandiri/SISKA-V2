@@ -111,7 +111,7 @@
                                             <div id="employeeInfo" class="row" style="display: none;">
                                                 <div class="col-md-12">
                                                     <div class="card bg-light border-0">
-                                                        <div class="card-header bg-secondary text-white">
+                                                        <div class="card-header bg-primary text-white">
                                                             <h6 class="mb-0"><i
                                                                     class="fas fa-info-circle me-2"></i>Informasi Karyawan
                                                             </h6>
@@ -165,14 +165,16 @@
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">Status Kawin</label>
+                                                                        <label class="form-label fw-bold">Status
+                                                                            Kawin</label>
                                                                         <input type="text" class="form-control"
                                                                             id="emp_sts_nikah" readonly>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">Jumlah Anak</label>
+                                                                        <label class="form-label fw-bold">Jumlah
+                                                                            Anak</label>
                                                                         <input type="text" class="form-control"
                                                                             id="emp_jml_anak" readonly>
                                                                     </div>
@@ -190,8 +192,8 @@
                                 <div class="tab-pane fade" id="kontrak" role="tabpanel" aria-labelledby="kontrak-tab">
 
                                     <!-- Card 1: Informasi Umum Kontrak -->
-                                    <div class="card border-secondary mb-4">
-                                        <div class="card-header bg-secondary bg-opacity-25">
+                                    <div class="card border-primary mb-4">
+                                        <div class="card-header bg-primary bg-opacity-25">
                                             <h5 class="mb-0 text-white">
                                                 <i class="fas fa-file-contract me-2"></i>Informasi Umum Kontrak
                                             </h5>
@@ -840,10 +842,12 @@
 @push('styles')
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
-        rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <!-- Animate.css for SweetAlert animations -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
     <style>
+        /* ===== BASIC FORM STYLING ===== */
         .card-header {
             font-weight: 600;
         }
@@ -854,11 +858,12 @@
 
         .card {
             margin-bottom: 1rem;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
         }
 
         .text-danger {
@@ -866,25 +871,16 @@
         }
 
         .bg-light {
-            background-color: #f8f9fa;
+            background-color: #f8f9fa !important;
         }
 
-        .form-check-input:checked {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-        }
-
-        .form-switch .form-check-input {
-            width: 2.5em;
-            height: 1.25em;
-        }
-
-        /* Select2 custom styling */
+        /* ===== SELECT2 CUSTOM STYLING ===== */
         .select2-container--default .select2-selection--single {
             height: 38px;
             border: 1px solid #ced4da;
             border-radius: 0.375rem;
             padding: 6px 12px;
+            transition: all 0.15s ease-in-out;
         }
 
         .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -908,6 +904,7 @@
         .select2-dropdown {
             border: 1px solid #ced4da;
             border-radius: 0.375rem;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
         }
 
         .select2-container--default .select2-results__option--highlighted[aria-selected] {
@@ -918,6 +915,7 @@
         .select2-container--default .select2-search--dropdown .select2-search__field {
             border: 1px solid #ced4da;
             border-radius: 0.25rem;
+            padding: 4px 8px;
         }
 
         /* Input group with select2 */
@@ -938,14 +936,306 @@
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
 
-        /* Error styling */
+        /* ===== EMPLOYEE VALIDATION STYLING ===== */
+        .employee-validation-error {
+            border: 2px solid #dc3545 !important;
+            border-radius: 0.375rem !important;
+            background-color: rgba(248, 215, 218, 0.3);
+            animation: shake 0.8s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 20%, 40%, 60%, 80% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-10px);
+            }
+        }
+
+        .employee-validation-success {
+            border: 2px solid #198754 !important;
+            border-radius: 0.375rem !important;
+            background-color: rgba(25, 135, 84, 0.1);
+            animation: successPulse 1s ease-in-out;
+        }
+
+        @keyframes successPulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
+            }
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 10px rgba(25, 135, 84, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+            }
+        }
+
+        /* Loading state untuk employee selection */
+        .employee-loading {
+            position: relative;
+        }
+
+        .employee-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 35px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 10;
+        }
+
+        @keyframes spin {
+            0% { transform: translateY(-50%) rotate(0deg); }
+            100% { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        /* ===== FORM VALIDATION STYLING ===== */
         .is-invalid {
             border-color: #dc3545 !important;
+            background-color: rgba(220, 53, 69, 0.05);
         }
 
         .nav-link.has-error {
             color: #dc3545 !important;
             border-color: #dc3545 !important;
+            background-color: rgba(220, 53, 69, 0.1);
+            animation: tabError 0.5s ease-in-out;
+        }
+
+        @keyframes tabError {
+            0%, 50%, 100% {
+                transform: translateX(0);
+            }
+            25%, 75% {
+                transform: translateX(-5px);
+            }
+        }
+
+        /* ===== ENHANCED INPUT STYLING ===== */
+        .input-group .input-group-text {
+            background-color: #e9ecef;
+            border-color: #ced4da;
+            color: #495057;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .input-group:focus-within .input-group-text {
+            border-color: #86b7fe;
+            background-color: #cfe2ff;
+            color: #0d6efd;
+        }
+
+        .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        /* ===== CARD ENHANCEMENTS ===== */
+        .card-header i {
+            margin-right: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .bg-primary.bg-opacity-25 {
+            background-color: rgba(13, 110, 253, 0.25) !important;
+        }
+
+        .bg-primary.bg-opacity-25 {
+            background-color: rgba(108, 117, 125, 0.25) !important;
+        }
+
+        .bg-warning.bg-opacity-25 {
+            background-color: rgba(255, 193, 7, 0.25) !important;
+        }
+
+        .bg-info.bg-opacity-25 {
+            background-color: rgba(13, 202, 240, 0.25) !important;
+        }
+
+        /* ===== SWEETALERT2 CUSTOM STYLING ===== */
+        .swal2-html-container {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .swal2-html-container ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+
+        .swal2-html-container .alert {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .swal2-html-container .alert-success {
+            color: #0a3622;
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+        }
+
+        .swal2-html-container .alert-warning {
+            color: #664d03;
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+        }
+
+        .swal2-html-container .alert-danger {
+            color: #58151c;
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+        }
+
+        /* Toast notifications */
+        .swal2-toast {
+            border-radius: 0.5rem !important;
+            font-size: 14px;
+        }
+
+        .swal2-toast.swal2-show {
+            animation: slideInRight 0.4s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE IMPROVEMENTS ===== */
+        @media (max-width: 768px) {
+            .card-header {
+                font-size: 0.9rem;
+                padding: 0.75rem;
+            }
+
+            .employee-loading::after {
+                right: 25px;
+                width: 16px;
+                height: 16px;
+            }
+
+            .btn {
+                font-size: 0.875rem;
+            }
+
+            .input-group .input-group-text {
+                padding: 0.375rem 0.5rem;
+            }
+
+            .form-control {
+                font-size: 14px;
+            }
+        }
+
+        /* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.25rem rgba(var(--bs-btn-focus-shadow-rgb));
+        }
+
+        /* ===== PROGRESS INDICATOR ===== */
+        .validation-progress {
+            height: 3px;
+            background: linear-gradient(90deg, #0d6efd 0%, #0d6efd 50%, #e9ecef 50%, #e9ecef 100%);
+            border-radius: 1.5px;
+            margin-bottom: 1rem;
+            animation: progressSlide 2s ease-in-out infinite;
+        }
+
+        @keyframes progressSlide {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 0%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* ===== FORM SECTION STYLING ===== */
+        .tab-content {
+            padding-top: 1rem;
+        }
+
+        .nav-tabs .nav-link {
+            border-radius: 0.375rem 0.375rem 0 0;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-color: #e9ecef #e9ecef #dee2e6;
+            background-color: #f8f9fa;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #495057;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+        }
+
+        /* ===== BUTTON ENHANCEMENTS ===== */
+        .btn {
+            transition: all 0.15s ease-in-out;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #198754, #20c997);
+            border: none;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(45deg, #157347, #1aa179);
+        }
+
+        /* ===== LOADING OVERLAY ===== */
+        .form-loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            border-radius: 0.375rem;
+        }
+
+        .form-loading-spinner {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 0.3em solid rgba(13, 110, 253, 0.2);
+            border-right-color: #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
     </style>
 @endpush
@@ -955,12 +1245,18 @@
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // Auto-uppercase functionality (dengan fix untuk checkbox)
+            // ===== INITIAL TESTS =====
+            console.log('🚀 Data Kontrak Form Script Loading...');
+            console.log('✅ jQuery loaded:', typeof $ !== 'undefined');
+            console.log('✅ Select2 loaded:', typeof $.fn.select2 !== 'undefined');
+            console.log('✅ SweetAlert2 loaded:', typeof Swal !== 'undefined');
+
+            // Auto-uppercase functionality
             document.querySelectorAll('input[type="text"].auto-uppercase, textarea.auto-uppercase').forEach(
                 function(element) {
                     element.addEventListener('input', function() {
@@ -969,7 +1265,6 @@
                 });
 
             // ===== CONDITIONAL FIELD VISIBILITY FUNCTIONS =====
-
             function handleKeteranganKontrakChange() {
                 const ktgKtr = $('#ktg_ktk').val();
                 console.log('🔄 Keterangan Kontrak changed to:', ktgKtr);
@@ -1014,7 +1309,6 @@
                     $('label[for="durasi_ktr"]').html('Durasi Kontrak (Bulan)');
 
                     fieldsTanggalAkhir.attr('data-required', 'true');
-
                     console.log('✅ TIDAK TETAP mode: semua field periode aktif');
 
                 } else {
@@ -1042,16 +1336,13 @@
                 if (stsSrtKtr === 'AKTIF') {
                     fieldTglNonAktif.hide();
                     fieldKetNonAktif.hide();
-
                     $('#tgl_sr_na').val('').removeClass('is-invalid').removeAttr('data-required');
                     $('#ket_sr_na').val('').removeClass('is-invalid');
-
                     console.log('✅ AKTIF mode: field non aktif tersembunyi');
 
                 } else if (stsSrtKtr === 'NON-AKTIF') {
                     fieldTglNonAktif.show();
                     fieldKetNonAktif.show();
-
                     console.log('✅ NON-AKTIF mode: field non aktif ditampilkan');
 
                 } else {
@@ -1059,26 +1350,21 @@
                     fieldKetNonAktif.hide();
                     $('#tgl_sr_na').val('').removeClass('is-invalid').removeAttr('data-required');
                     $('#ket_sr_na').val('').removeClass('is-invalid');
-
                     console.log('✅ Default mode: field non aktif tersembunyi');
                 }
             }
 
             // ===== AUTO-POPULATE FUNCTIONS FROM EMPLOYEE DATA =====
-
             function populateEducationData(employeeData) {
                 console.log('📚 Populating education data:', employeeData);
 
-                // Populate pendidikan fields
                 $('#jenjang_skl').val(employeeData.jenjang_skl || '').trigger('change.select2');
                 $('#institusi_skl').val(employeeData.institusi_skl || '');
-                $('#skt_inst_skl').val(employeeData.skt_inst_skl || '');
                 $('#kota_skl').val(employeeData.kota_skl || '');
                 $('#fakultas_skl').val(employeeData.fakultas_skl || '');
                 $('#jurusan_skl').val(employeeData.jurusan_skl || '');
                 $('#gelar_skl').val(employeeData.gelar_skl || '');
 
-                // Handle tanggal lulus dengan format yang benar
                 if (employeeData.tgl_lulus_skl) {
                     $('#tgl_lulus_skl').val(employeeData.tgl_lulus_skl);
                 }
@@ -1090,12 +1376,10 @@
                 console.log('💼 Populating career data:', employeeData);
 
                 try {
-                    // Populate departemen first (from jabatan field in employee data)
                     if (employeeData.jabatan) {
                         console.log('🔧 Setting departemen to:', employeeData.jabatan);
                         $('#departemen_nama').val(employeeData.jabatan).trigger('change.select2');
 
-                        // Set singkatan departemen
                         setTimeout(() => {
                             const selectedOption = $('#departemen_nama').find('option:selected');
                             const singkatanFromAttr = selectedOption.data('singkatan');
@@ -1105,44 +1389,32 @@
                             console.log('✅ Final Singkatan Dep set:', finalSingkatan);
                         }, 200);
 
-                        // Wait then load jabatan based on departemen
                         setTimeout(async () => {
                             if (employeeData.departemen) {
-                                console.log('🔧 Loading jabatan for departemen ID:', employeeData
-                                    .departemen);
-                                await loadJabatanForEmployee(employeeData.jabatan, employeeData
-                                    .departemen);
+                                console.log('🔧 Loading jabatan for departemen ID:', employeeData.departemen);
+                                await loadJabatanForEmployee(employeeData.jabatan, employeeData.departemen);
                             }
                         }, 600);
                     }
 
-                    // Populate wilayah kerja
                     if (employeeData.wilker) {
                         console.log('🔧 Setting wilayah kerja to:', employeeData.wilker);
                         $('#wilayah_kerja_nama').val(employeeData.wilker).trigger('change.select2');
 
-                        // Wait then load unit kerja - FIX: gunakan unit_krj_id yang benar
                         setTimeout(async () => {
-                            // Cek beberapa kemungkinan nama field dari employee data
-                            const unitKrjId = employeeData.unit_krj_id || employeeData.unit_krj ||
-                                employeeData.id_unit_krj;
+                            const unitKrjId = employeeData.unit_krj_id || employeeData.unit_krj || employeeData.id_unit_krj;
 
                             if (unitKrjId) {
                                 console.log('🔧 Loading unit kerja for ID:', unitKrjId);
                                 await loadUnitKerjaForEmployee(employeeData.wilker, unitKrjId);
                             } else {
-                                console.log(
-                                    '⚠️ No unit_krj_id found in employee data, trying unit_krj name:',
-                                    employeeData.unit_krj);
-                                // Jika tidak ada ID, coba cari berdasarkan nama
+                                console.log('⚠️ No unit_krj_id found in employee data');
                                 await loadUnitKerjaForEmployee(employeeData.wilker, null);
                             }
                         }, 600);
                     }
 
-                    // Populate tugas
                     $('#tugas').val(employeeData.tugas || '');
-
                     console.log('✅ Career data populated successfully');
 
                 } catch (error) {
@@ -1176,25 +1448,17 @@
 
                             const selected = jabatan.id == selectedJabatanId ? 'selected' : '';
                             jabatanSelect.append(
-                                `<option value="${jabatan.id}"
-                    data-nama-jbt="${jabatan.nama_jbt || ''}"
-                    data-singkatan-jbt="${jabatan.singkatan_jbt || ''}"
-                    ${selected}
-                >${displayText}</option>`
+                                `<option value="${jabatan.id}" data-nama-jbt="${jabatan.nama_jbt || ''}" data-singkatan-jbt="${jabatan.singkatan_jbt || ''}" ${selected}>${displayText}</option>`
                             );
                         });
 
                         jabatanSelect.prop('disabled', false);
 
-                        // Reinitialize Select2
                         if (jabatanSelect.hasClass('select2-hidden-accessible')) {
                             jabatanSelect.select2('destroy');
                         }
-                        jabatanSelect.select2({
-                            theme: 'bootstrap-5'
-                        });
+                        jabatanSelect.select2({ theme: 'bootstrap-5' });
 
-                        // Set singkatan jabatan if selected
                         if (selectedJabatanId) {
                             setTimeout(() => {
                                 const selectedOption = jabatanSelect.find('option:selected');
@@ -1208,8 +1472,7 @@
                     }
                 } catch (error) {
                     console.error('❌ Error loading jabatan for employee:', error);
-                    jabatanSelect.html('<option value="">Error loading jabatan</option>').prop('disabled',
-                        false);
+                    jabatanSelect.html('<option value="">Error loading jabatan</option>').prop('disabled', false);
                 }
             }
 
@@ -1235,26 +1498,17 @@
                         response.data.forEach(function(area) {
                             const selected = area.id == selectedUnitKrj ? 'selected' : '';
                             areaSelect.append(
-                                `<option value="${area.id}"
-                        data-area-krj="${area.area_krj || ''}"
-                        data-singkatan-wk="${area.singkatan_wk || ''}"
-                        data-wilayah-krj="${area.wilayah_krj || ''}"
-                        ${selected}
-                    >${area.area_krj}</option>`
+                                `<option value="${area.id}" data-area-krj="${area.area_krj || ''}" data-singkatan-wk="${area.singkatan_wk || ''}" data-wilayah-krj="${area.wilayah_krj || ''}" ${selected}>${area.area_krj}</option>`
                             );
                         });
 
                         areaSelect.prop('disabled', false);
 
-                        // Reinitialize Select2
                         if (areaSelect.hasClass('select2-hidden-accessible')) {
                             areaSelect.select2('destroy');
                         }
-                        areaSelect.select2({
-                            theme: 'bootstrap-5'
-                        });
+                        areaSelect.select2({ theme: 'bootstrap-5' });
 
-                        // Set singkatan wilker if selected
                         if (selectedUnitKrj) {
                             setTimeout(() => {
                                 const selectedOption = areaSelect.find('option:selected');
@@ -1268,185 +1522,343 @@
                     }
                 } catch (error) {
                     console.error('❌ Error loading unit kerja for employee:', error);
-                    areaSelect.html('<option value="">Error loading area kerja</option>').prop('disabled',
-                        false);
+                    areaSelect.html('<option value="">Error loading area kerja</option>').prop('disabled', false);
                 }
             }
 
-            // ===== EVENT HANDLERS UNTUK CONDITIONAL FIELDS =====
+            // ===== EMPLOYEE VALIDATION SUCCESS ALERT =====
+            function showSuccessValidation(response) {
+                console.log('✅ Showing success validation alert for:', response.employee_name);
 
-            $('#ktg_ktk').on('change', function() {
-                handleKeteranganKontrakChange();
-
-                const ktgValue = $(this).val();
-                if (ktgValue) {
+                // Try SweetAlert2 first
+                if (typeof Swal !== 'undefined') {
                     Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'info',
-                        title: `Mode ${ktgValue}: Field periode disesuaikan`,
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
-                    });
-                }
-            });
-
-            $('#sts_srt_ktr').on('change', function() {
-                handleStatusSuratKontrakChange();
-
-                const stsValue = $(this).val();
-                if (stsValue) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'info',
-                        title: `Status ${stsValue}: Field disesuaikan`,
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
-                    });
-                }
-            });
-
-            // Initialize conditional fields on page load
-            setTimeout(function() {
-                handleKeteranganKontrakChange();
-                handleStatusSuratKontrakChange();
-            }, 100);
-
-            // ===== ENHANCED EMPLOYEE SELECTION WITH AUTO-POPULATE =====
-            $('#id_data_kry').on('change', function() {
-                const karyawanId = $(this).val();
-                console.log('🔍 Selected employee ID:', karyawanId);
-
-                if (karyawanId) {
-                    $('#employeeInfo').show();
-
-                    // Show loading indicators for all tabs
-                    const loadingText = 'Loading...';
-
-                    // Tab 1: Employee basic info
-                    $('#emp_nik, #emp_nrk, #emp_tpt_lahir, #emp_tgl_lahir, #emp_sex, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak')
-                        .val(loadingText);
-
-                    // Tab 5: Hubin data
-                    $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk')
-                        .val(loadingText);
-
-                    // AJAX request dengan enhanced data
-                    $.ajax({
-                        url: `/data-kontrak/get-employee-data/${karyawanId}`,
-                        type: 'GET',
-                        dataType: 'json',
-                        timeout: 15000, // Increased timeout untuk data yang lebih banyak
-                        success: function(response) {
-                            console.log('✅ Employee data response:', response);
-
-                            if (response.success && response.data) {
-                                const emp = response.data;
-
-                                // Tab 1: Fill employee basic info
-                                $('#emp_nik').val(emp.nik || '-');
-                                $('#emp_nrk').val(emp.nrk || '-');
-                                $('#emp_tpt_lahir').val(emp.tpt_lahir || '-');
-                                $('#emp_tgl_lahir').val(emp.tgl_lahir_formatted || '-');
-                                $('#emp_sex').val(emp.sex || '-');
-                                $('#emp_tlp1').val(emp.tlp1 || '-');
-                                $('#emp_sts_nikah').val(emp.sts_nikah || '-');
-                                $('#emp_jml_anak').val(emp.jml_anak || '-');
-
-                                // Tab 3: Auto-populate pendidikan
-                                populateEducationData(emp);
-
-                                // Tab 4: Auto-populate career data
-                                populateCareerData(emp);
-
-                                // Tab 5: Fill hubungan industrial (hubin) data
-                                $('#hubin_tgl_masuk').val(emp.tgl_masuk_formatted || '-');
-                                $('#hubin_sts_kry').val(emp.sts_kry || '-');
-                                $('#hubin_tgl_phk').val(emp.tgl_phk_formatted || '-');
-                                $('#hubin_ket_phk').val(emp.ket_phk || '-');
-
-                                console.log('✅ All employee data populated successfully');
-
-                                // Enhanced success notification
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Data karyawan berhasil dimuat lengkap',
-                                    text: 'Termasuk pendidikan, departemen, jabatan & wilker',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true
-                                });
-                            } else {
-                                throw new Error(response.message || 'Data tidak valid');
-                            }
+                        icon: 'success',
+                        title: 'Validasi Berhasil!',
+                        html: `
+                            <div class="text-center">
+                                <h5 class="text-success mb-3">${response.employee_name}</h5>
+                                <p class="mb-2"><strong>NRK:</strong> ${response.employee_nrk || 'Belum ada'}</p>
+                                <div class="alert alert-success mt-3">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Karyawan belum memiliki data kontrak.<br>
+                                    <strong>Proses dapat dilanjutkan.</strong>
+                                </div>
+                            </div>
+                        `,
+                        confirmButtonText: 'Lanjutkan',
+                        confirmButtonColor: '#198754',
+                        timer: 4000,
+                        timerProgressBar: true,
+                        showClass: {
+                            popup: 'animate__animated animate__bounceIn'
                         },
-                        error: function(xhr, status, error) {
-                            console.error('❌ Employee AJAX Error:', {
-                                url: `/data-kontrak/get-employee-data/${karyawanId}`,
-                                status: xhr.status,
-                                statusText: xhr.statusText,
-                                responseText: xhr.responseText,
-                                error: error
-                            });
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOut'
+                        }
+                    }).then(() => {
+                        console.log('✅ Success validation alert closed');
+                    });
+                } else {
+                    // Fallback to regular alert
+                    alert(`✅ VALIDASI BERHASIL!\n\nKaryawan: ${response.employee_name}\nNRK: ${response.employee_nrk || 'Belum ada'}\n\nKaryawan belum memiliki data kontrak.\nProses dapat dilanjutkan.`);
+                }
+            }
 
-                            // Clear all loading indicators
-                            $('#emp_nik, #emp_nrk, #emp_tpt_lahir, #emp_tgl_lahir, #emp_sex, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak')
-                                .val('Error');
-                            $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk')
-                                .val('Error');
+            function showErrorValidation(response) {
+                console.log('❌ Showing error validation alert for:', response.employee_name);
 
-                            let errorMessage = 'Gagal memuat data karyawan';
-                            if (xhr.status === 404) {
-                                errorMessage =
-                                    'Endpoint tidak ditemukan. Route mungkin belum didefinisikan.';
-                            } else if (xhr.status === 500) {
-                                errorMessage = 'Server error. Cek log server untuk detail.';
-                                console.error('Server Response:', xhr.responseText);
-                            } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                                errorMessage = xhr.responseJSON.message;
-                            }
+                if (typeof Swal !== 'undefined') {
+                    const latestContract = response.latest_contract;
 
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                icon: 'error',
-                                title: errorMessage,
-                                showConfirmButton: false,
-                                timer: 5000,
-                                timerProgressBar: true
-                            });
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Karyawan Sudah Terdaftar!',
+                        html: `
+                            <div class="text-start">
+                                <p><strong>Nama:</strong> ${response.employee_name}</p>
+                                <p><strong>NRK:</strong> ${response.employee_nrk || 'N/A'}</p>
+                                <p><strong>Total Kontrak:</strong> ${response.existing_contracts_count} record</p>
+                                <hr>
+                                <p class="mb-2"><strong>Kontrak Terakhir:</strong></p>
+                                <ul class="list-unstyled ms-3">
+                                    <li>• <strong>No. Kontrak:</strong> ${latestContract.contract_number}</li>
+                                    <li>• <strong>Jenis:</strong> ${latestContract.contract_type}</li>
+                                    <li>• <strong>Perusahaan:</strong> ${latestContract.company}</li>
+                                    <li>• <strong>Status:</strong> <span class="badge bg-${latestContract.status === 'AKTIF' ? 'success' : 'secondary'}">${latestContract.status}</span></li>
+                                    <li>• <strong>Dibuat:</strong> ${latestContract.created_at}</li>
+                                </ul>
+                                <div class="alert alert-warning mt-3">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Tidak dapat membuat kontrak baru!</strong><br>
+                                    Gunakan fitur <strong>"Tambah Kontrak"</strong> pada data yang sudah ada.
+                                </div>
+                            </div>
+                        `,
+                        confirmButtonText: 'Pilih Karyawan Lain',
+                        confirmButtonColor: '#dc3545',
+                        showCancelButton: true,
+                        cancelButtonText: 'Lihat Data Kontrak',
+                        cancelButtonColor: '#0d6efd',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        width: '600px',
+                        showClass: {
+                            popup: 'animate__animated animate__shakeX'
+                        }
+                    }).then((result) => {
+                        if (result.isDismissed && result.dismiss === Swal.DismissReason.cancel) {
+                            window.location.href = `/data-kontrak?search=${encodeURIComponent(response.employee_name)}`;
                         }
                     });
                 } else {
-                    // Clear all fields when no employee selected
-                    $('#employeeInfo').hide();
-                    $('#employeeInfo input').val('');
-                    $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val('');
+                    // Fallback to regular alert
+                    const latestContract = response.latest_contract;
+                    const alertMessage = `❌ KARYAWAN SUDAH TERDAFTAR!\n\n` +
+                        `Nama: ${response.employee_name}\n` +
+                        `NRK: ${response.employee_nrk || 'N/A'}\n` +
+                        `Total Kontrak: ${response.existing_contracts_count} record\n\n` +
+                        `KONTRAK TERAKHIR:\n` +
+                        `• No. Kontrak: ${latestContract.contract_number}\n` +
+                        `• Jenis: ${latestContract.contract_type}\n` +
+                        `• Perusahaan: ${latestContract.company}\n` +
+                        `• Status: ${latestContract.status}\n` +
+                        `• Dibuat: ${latestContract.created_at}`;
 
-                    // Clear pendidikan fields
-                    $('#jenjang_skl').val('').trigger('change.select2');
-                    $('#institusi_skl, #skt_inst_skl, #kota_skl, #fakultas_skl, #jurusan_skl, #gelar_skl')
-                        .val('');
-                    $('#tgl_lulus_skl').val('');
+                    alert(alertMessage);
+                }
+            }
 
-                    // Clear career fields
-                    $('#departemen_nama').val('').trigger('change.select2');
-                    $('#id_departemen').html('<option value="">Pilih Jabatan</option>').prop('disabled',
-                        true);
-                    $('#wilayah_kerja_nama').val('').trigger('change.select2');
-                    $('#id_wilker').html('<option value="">Pilih Area Kerja</option>').prop('disabled',
-                        true);
-                    $('#info_singkatan_dep, #info_singkatan_jbt, #info_skt_wilker').val('');
-                    $('#tugas').val('');
+            // ===== EMPLOYEE EXISTS VALIDATION =====
+            async function checkEmployeeExists(karyawanId) {
+                try {
+                    console.log('🔍 Checking employee existence for ID:', karyawanId);
+
+                    // Add loading indicator
+                    $('#id_data_kry').closest('.input-group').addClass('employee-loading');
+
+                    const response = await $.ajax({
+                        url: `/data-kontrak/check-employee/${karyawanId}`,
+                        type: 'GET',
+                        dataType: 'json',
+                        timeout: 10000
+                    });
+
+                    // Remove loading indicator
+                    $('#id_data_kry').closest('.input-group').removeClass('employee-loading');
+
+                    console.log('📥 Server response:', response);
+
+                    // SUCCESS CASE: Karyawan belum ada
+                    if (response.success === true && response.exists === false) {
+                        console.log('✅ SUCCESS: Employee tidak ada di database kontrak');
+
+                        // Show success validation
+                        showSuccessValidation(response);
+
+                        // Add visual feedback
+                        $('#id_data_kry').closest('.input-group').find('.form-select').addClass('employee-validation-success');
+                        setTimeout(() => {
+                            $('#id_data_kry').closest('.input-group').find('.form-select').removeClass('employee-validation-success');
+                        }, 4000);
+
+                        return true; // Can proceed
+
+                    }
+                    // ERROR CASE: Karyawan sudah ada
+                    else if (response.success === false && response.exists === true) {
+                        console.log('❌ CONFLICT: Employee sudah ada di database kontrak');
+
+                        // Show error validation
+                        showErrorValidation(response);
+
+                        // Add error visual feedback
+                        $('#id_data_kry').closest('.input-group').find('.form-select').addClass('employee-validation-error');
+                        setTimeout(() => {
+                            $('#id_data_kry').closest('.input-group').find('.form-select').removeClass('employee-validation-error');
+                        }, 3000);
+
+                        // Reset selection
+                        $('#id_data_kry').val('').trigger('change.select2');
+                        clearAllEmployeeFields();
+
+                        return false;
+                    }
+                    // UNEXPECTED CASE
+                    else {
+                        console.log('⚠️ UNEXPECTED: Response format tidak sesuai:', response);
+                        alert(`⚠️ Response tidak sesuai ekspektasi.\nSuccess: ${response.success}\nExists: ${response.exists}`);
+                        return false;
+                    }
+
+                } catch (error) {
+                    console.error('❌ AJAX Error:', error);
+
+                    // Remove loading indicator
+                    $('#id_data_kry').closest('.input-group').removeClass('employee-loading');
+
+                    let errorMsg = `❌ Error ${error.status}: `;
+                    if (error.status === 404) {
+                        errorMsg += 'Route tidak ditemukan';
+                    } else if (error.status === 500) {
+                        errorMsg += 'Server error';
+                    } else {
+                        errorMsg += error.statusText || 'Unknown error';
+                    }
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Data Sudah Terdaftar Dalam Sistem',
+                            text: 'Silahkan cari pada halaman utama dan lakukan edit untuk melakukan perubahan data kontrak',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        alert(errorMsg);
+                    }
+
+                    // Reset selection
+                    $('#id_data_kry').val('').trigger('change.select2');
+                    clearAllEmployeeFields();
+
+                    return false;
+                }
+            }
+
+            // ===== LOAD EMPLOYEE DATA =====
+            async function loadEmployeeData(karyawanId) {
+                console.log('📋 Loading employee data for ID:', karyawanId);
+
+                $('#employeeInfo').show();
+
+                const loadingText = 'Loading...';
+                $('#emp_nik, #emp_nrk, #emp_tpt_lahir, #emp_tgl_lahir, #emp_sex, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak').val(loadingText);
+                $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val(loadingText);
+
+                try {
+                    const response = await $.ajax({
+                        url: `/data-kontrak/get-employee-data/${karyawanId}`,
+                        type: 'GET',
+                        dataType: 'json',
+                        timeout: 15000
+                    });
+
+                    console.log('✅ Employee data response:', response);
+
+                    if (response.success && response.data) {
+                        const emp = response.data;
+
+                        // Tab 1: Fill employee basic info
+                        $('#emp_nik').val(emp.nik || '-');
+                        $('#emp_nrk').val(emp.nrk || '-');
+                        $('#emp_tpt_lahir').val(emp.tpt_lahir || '-');
+                        $('#emp_tgl_lahir').val(emp.tgl_lahir_formatted || '-');
+                        $('#emp_sex').val(emp.sex || '-');
+                        $('#emp_tlp1').val(emp.tlp1 || '-');
+                        $('#emp_sts_nikah').val(emp.sts_nikah || '-');
+                        $('#emp_jml_anak').val(emp.jml_anak || '-');
+
+                        // Tab 3: Auto-populate pendidikan
+                        populateEducationData(emp);
+
+                        // Tab 4: Auto-populate career data
+                        populateCareerData(emp);
+
+                        // Tab 5: Fill hubungan industrial data
+                        $('#hubin_tgl_masuk').val(emp.tgl_masuk_formatted || '-');
+                        $('#hubin_sts_kry').val(emp.sts_kry || '-');
+                        $('#hubin_tgl_phk').val(emp.tgl_phk_formatted || '-');
+                        $('#hubin_ket_phk').val(emp.ket_phk || '-');
+
+                        console.log('✅ All employee data populated successfully');
+
+                        // Show success toast
+                        if (typeof Swal !== 'undefined') {
+
+                        }
+                    } else {
+                        throw new Error(response.message || 'Data tidak valid');
+                    }
+                } catch (error) {
+                    console.error('❌ Employee data loading error:', error);
+
+                    $('#emp_nik, #emp_nrk, #emp_tpt_lahir, #emp_tgl_lahir, #emp_sex, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak').val('Error');
+                    $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val('Error');
+
+                    let errorMessage = 'Gagal memuat data karyawan';
+                    if (error.status === 404) {
+                        errorMessage = 'Data karyawan tidak ditemukan';
+                    } else if (error.status === 500) {
+                        errorMessage = 'Server error';
+                    }
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: errorMessage,
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true
+                        });
+                    } else {
+                        alert(errorMessage);
+                    }
+                }
+            }
+
+            // ===== CLEAR ALL EMPLOYEE FIELDS =====
+            function clearAllEmployeeFields() {
+                console.log('🧹 Clearing all employee fields...');
+
+                $('#employeeInfo').hide();
+                $('#employeeInfo input').val('');
+                $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val('');
+
+                $('#jenjang_skl').val('').trigger('change.select2');
+                $('#institusi_skl, #kota_skl, #fakultas_skl, #jurusan_skl, #gelar_skl').val('');
+                $('#tgl_lulus_skl').val('');
+
+                $('#departemen_nama').val('').trigger('change.select2');
+                $('#id_departemen').html('<option value="">Pilih Jabatan</option>').prop('disabled', true);
+                $('#wilayah_kerja_nama').val('').trigger('change.select2');
+                $('#id_wilker').html('<option value="">Pilih Area Kerja</option>').prop('disabled', true);
+                $('#info_singkatan_dep, #info_singkatan_jbt, #info_skt_wilker').val('');
+                $('#tugas').val('');
+
+                console.log('✅ All employee fields cleared');
+            }
+
+            // ===== ENHANCED EMPLOYEE SELECTION =====
+            $('#id_data_kry').on('change', function() {
+                const karyawanId = $(this).val();
+                console.log('👤 Employee selection changed:', karyawanId);
+
+                if (karyawanId) {
+                    console.log('🚀 Starting validation process...');
+
+                    checkEmployeeExists(karyawanId).then(canProceed => {
+                        console.log('📊 Validation result:', canProceed);
+
+                        if (canProceed) {
+                            console.log('✅ Proceeding to load employee data...');
+                            setTimeout(() => {
+                                loadEmployeeData(karyawanId);
+                            }, 1000); // Delay to let success alert show
+                        } else {
+                            console.log('❌ Cannot proceed - validation failed');
+                        }
+                    }).catch(error => {
+                        console.error('💥 Validation process failed:', error);
+                    });
+                } else {
+                    console.log('🧹 No employee selected - clearing fields');
+                    clearAllEmployeeFields();
                 }
             });
 
-            // ===== EXISTING HANDLERS (CONTRACT TYPE, COMPANY, etc) =====
+            // ===== OTHER FORM HANDLERS =====
             $('#id_ktr').on('change', function() {
                 const selectedOption = $(this).find('option:selected');
                 const singkatanKtr = selectedOption.data('singkatan-ktr') || '';
@@ -1459,7 +1871,7 @@
                 $('#info_nama_prs2').val(namaPrs2);
             });
 
-            // ===== MANUAL DEPARTMENT SELECTION (when user changes manually) =====
+            // Department selection handler
             $('#departemen_nama').on('change', function() {
                 const namaDep = $(this).val();
                 const jabatanSelect = $('#id_departemen');
@@ -1468,7 +1880,6 @@
                     const selectedOption = $(this).find('option:selected');
                     const singkatanDep = selectedOption.data('singkatan') || '';
                     $('#info_singkatan_dep').val(singkatanDep);
-                    console.log('🔧 Manual departemen change, singkatan set:', singkatanDep);
 
                     jabatanSelect.prop('disabled', true).html('<option value="">Loading...</option>');
 
@@ -1483,10 +1894,7 @@
 
                                 response.data.forEach(function(jabatan) {
                                     jabatanSelect.append(
-                                        `<option value="${jabatan.id}"
-                            data-nama-jbt="${jabatan.nama_jbt || ''}"
-                            data-singkatan-jbt="${jabatan.singkatan_jbt || ''}"
-                        >${jabatan.nama_jbt}</option>`
+                                        `<option value="${jabatan.id}" data-nama-jbt="${jabatan.nama_jbt || ''}" data-singkatan-jbt="${jabatan.singkatan_jbt || ''}">${jabatan.nama_jbt}</option>`
                                     );
                                 });
 
@@ -1495,25 +1903,11 @@
                                 if (jabatanSelect.hasClass('select2-hidden-accessible')) {
                                     jabatanSelect.select2('destroy');
                                 }
-                                jabatanSelect.select2({
-                                    theme: 'bootstrap-5'
-                                });
-
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Data jabatan berhasil dimuat',
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                    timerProgressBar: true
-                                });
+                                jabatanSelect.select2({ theme: 'bootstrap-5' });
                             }
                         },
                         error: function(xhr) {
-                            jabatanSelect.html('<option value="">Error loading</option>').prop(
-                                'disabled', false);
-                            console.error('Jabatan error:', xhr);
+                            jabatanSelect.html('<option value="">Error loading</option>').prop('disabled', false);
                         }
                     });
                 } else {
@@ -1528,7 +1922,7 @@
                 $('#info_singkatan_jbt').val(singkatanJbt);
             });
 
-            // ===== MANUAL WILAYAH KERJA SELECTION =====
+            // Wilayah kerja selection handler
             $('#wilayah_kerja_nama').on('change', function() {
                 const wilayahKrj = $(this).val();
                 const areaSelect = $('#id_wilker');
@@ -1547,10 +1941,7 @@
 
                                 response.data.forEach(function(area) {
                                     areaSelect.append(
-                                        `<option value="${area.id}"
-                            data-area-krj="${area.area_krj || ''}"
-                            data-singkatan-wk="${area.singkatan_wk || ''}"
-                        >${area.area_krj}</option>`
+                                        `<option value="${area.id}" data-area-krj="${area.area_krj || ''}" data-singkatan-wk="${area.singkatan_wk || ''}">${area.area_krj}</option>`
                                     );
                                 });
 
@@ -1559,25 +1950,11 @@
                                 if (areaSelect.hasClass('select2-hidden-accessible')) {
                                     areaSelect.select2('destroy');
                                 }
-                                areaSelect.select2({
-                                    theme: 'bootstrap-5'
-                                });
-
-                                Swal.fire({
-                                    toast: true,
-                                    position: 'top-end',
-                                    icon: 'success',
-                                    title: 'Data area kerja berhasil dimuat',
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                    timerProgressBar: true
-                                });
+                                areaSelect.select2({ theme: 'bootstrap-5' });
                             }
                         },
                         error: function(xhr) {
-                            areaSelect.html('<option value="">Error loading</option>').prop(
-                                'disabled', false);
-                            console.error('Unit kerja error:', xhr);
+                            areaSelect.html('<option value="">Error loading</option>').prop('disabled', false);
                         }
                     });
                 } else {
@@ -1592,11 +1969,18 @@
                 $('#info_skt_wilker').val(singkatanWk);
             });
 
+            // ===== CONDITIONAL FIELD HANDLERS =====
+            $('#ktg_ktk').on('change', function() {
+                handleKeteranganKontrakChange();
+            });
+
+            $('#sts_srt_ktr').on('change', function() {
+                handleStatusSuratKontrakChange();
+            });
+
             // ===== CONTRACT DURATION CALCULATION =====
             function calculateContractDuration() {
-                if ($('#ktg_ktk').val() === 'TETAP') {
-                    return;
-                }
+                if ($('#ktg_ktk').val() === 'TETAP') return;
 
                 const startDate = document.getElementById('tgl_awl_ktr').value;
                 const endDate = document.getElementById('tgl_akhir_ktr').value;
@@ -1606,25 +1990,14 @@
                     const end = new Date(endDate);
 
                     if (end > start) {
-                        const months = (end.getFullYear() - start.getFullYear()) * 12 +
-                            (end.getMonth() - start.getMonth());
+                        const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
                         document.getElementById('durasi_ktr').value = months > 0 ? months : '';
                     } else {
                         document.getElementById('durasi_ktr').value = '';
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'warning',
-                            title: 'Tanggal akhir harus setelah tanggal mulai',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true
-                        });
                     }
                 }
             }
 
-            // ===== CALCULATE REMINDER DURATION =====
             function calculateReminderDuration() {
                 const reminderDate = document.getElementById('tgl_pgt_ktr').value;
                 const endDate = document.getElementById('tgl_akhir_ktr').value;
@@ -1634,36 +2007,20 @@
                     const end = new Date(endDate);
 
                     if (reminder < end) {
-                        // Calculate difference in days
                         const timeDiff = end.getTime() - reminder.getTime();
                         const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
                         document.getElementById('durasi_pgt').value = daysDiff > 0 ? daysDiff : '';
-
-                        console.log(`✅ Reminder duration calculated: ${daysDiff} days`);
-                    } else if (reminderDate && endDate) {
+                    } else {
                         document.getElementById('durasi_pgt').value = '';
-                        if (reminder >= end) {
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                icon: 'warning',
-                                title: 'Tanggal pengingat harus sebelum tanggal akhir kontrak',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
-                        }
                     }
                 } else {
                     document.getElementById('durasi_pgt').value = '';
                 }
             }
 
-            // ===== EVENT LISTENERS FOR CALCULATIONS =====
+            // Date change listeners
             document.getElementById('tgl_awl_ktr').addEventListener('change', function() {
                 calculateContractDuration();
-                // Recalculate reminder if dates exist
                 if (document.getElementById('tgl_pgt_ktr').value) {
                     calculateReminderDuration();
                 }
@@ -1674,7 +2031,6 @@
                 calculateReminderDuration();
             });
 
-            // Add new event listener for reminder date
             document.getElementById('tgl_pgt_ktr').addEventListener('change', function() {
                 const reminderDate = this.value;
                 const endDate = document.getElementById('tgl_akhir_ktr').value;
@@ -1684,17 +2040,22 @@
                     const end = new Date(endDate);
 
                     if (reminder >= end) {
-                        this.value = ''; // Clear invalid date
+                        this.value = '';
                         document.getElementById('durasi_pgt').value = '';
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'error',
-                            title: 'Tanggal pengingat harus sebelum tanggal akhir kontrak',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true
-                        });
+
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Tanggal pengingat harus sebelum tanggal akhir kontrak',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        } else {
+                            alert('Tanggal pengingat harus sebelum tanggal akhir kontrak');
+                        }
                     } else {
                         calculateReminderDuration();
                     }
@@ -1722,9 +2083,7 @@
                 requiredFields.forEach(function(field) {
                     if (!field.value.trim()) {
                         field.classList.add('is-invalid');
-                        const label = field.closest('.form-group')?.querySelector('label')
-                            ?.textContent?.replace('*', '').replace(/\([^)]*\)/g, '').trim() ||
-                            field.name;
+                        const label = field.closest('.form-group')?.querySelector('label')?.textContent?.replace('*', '').replace(/\([^)]*\)/g, '').trim() || field.name;
                         missingFields.push(label);
 
                         if (!firstInvalidField) {
@@ -1740,14 +2099,17 @@
                     });
                     fieldsList += '</ul>';
 
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Data Belum Lengkap',
-                        html: '<p class="mb-2">Mohon lengkapi field berikut yang wajib diisi:</p>' +
-                            fieldsList,
-                        confirmButtonText: 'OK, Saya Mengerti',
-                        confirmButtonColor: '#0d6efd',
-                    });
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Data Belum Lengkap',
+                            html: '<p class="mb-2">Mohon lengkapi field berikut yang wajib diisi:</p>' + fieldsList,
+                            confirmButtonText: 'OK, Saya Mengerti',
+                            confirmButtonColor: '#0d6efd',
+                        });
+                    } else {
+                        alert('Data belum lengkap: ' + missingFields.join(', '));
+                    }
 
                     if (firstInvalidField) {
                         const tabPane = firstInvalidField.closest('.tab-pane');
@@ -1779,6 +2141,7 @@
                 }
             });
 
+            // Remove invalid class when field is filled
             document.querySelectorAll('[data-required="true"]').forEach(function(field) {
                 field.addEventListener('change', function() {
                     if (this.value.trim()) {
@@ -1787,7 +2150,19 @@
                 });
             });
 
-            console.log('✅ Data Kontrak JavaScript initialized with reminder duration calculation');
+            // ===== INITIALIZE =====
+            // Initialize Select2
+            $('.select2').select2({
+                theme: 'bootstrap-5'
+            });
+
+            // Initialize conditional fields
+            setTimeout(function() {
+                handleKeteranganKontrakChange();
+                handleStatusSuratKontrakChange();
+            }, 100);
+
+            console.log('✅ Data Kontrak Form Script Loaded Successfully');
         });
     </script>
 @endpush

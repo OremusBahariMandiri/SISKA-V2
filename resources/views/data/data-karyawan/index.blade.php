@@ -278,9 +278,9 @@
                                             <td>{{ $age }} {{ is_numeric($age) ? 'thn' : '' }}</td>
                                             <td class="text-center">
                                                 @if ($karyawan->sex == 'LAKI-LAKI')
-                                                    <i class="fas fa-mars text-primary" title="LAKI-LAKI"></i>
+                                                <span class="badge bg-primary">L</span>
                                                 @elseif($karyawan->sex == 'PEREMPUAN')
-                                                    <i class="fas fa-venus text-danger" title="PEREMPUAN"></i>
+                                                <span class="badge" style="background-color: rgb(254, 154, 171)">P</span>
                                                 @else
                                                     -
                                                 @endif

@@ -677,7 +677,7 @@
     <div class="modal fade" id="summaryModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header bg-info text-white">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title"><i class="fas fa-chart-pie me-2"></i>Ringkasan Data Karyawan</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -742,9 +742,8 @@
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <h6 class="text-muted mb-1 small">{{ $perusahaan->kode_prs }}</h6>
                                                     <p class="mb-0 fw-bold text-truncate"
-                                                        title="{{ $perusahaan->nama_prs2 }}" style="max-width: 150px;">
+                                                        title="{{ $perusahaan->nama_prs2 }}" style="max-width: 150px;">PT.
                                                         {{ Str::limit($perusahaan->nama_prs2, 20) }}
                                                     </p>
                                                 </div>
@@ -773,7 +772,7 @@
                         <div class="row">
                             @php
                                 // Group departemen by nama_dep
-                                $groupedDepartemen = $departemens->groupBy('nama_dep');
+                                $groupedDepartemen = $departemens->groupBy('singkatan_dep');
                             @endphp
                             @foreach ($groupedDepartemen as $namaDep => $deptGroup)
                                 @php
@@ -789,9 +788,6 @@
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <h6 class="text-muted mb-1 small">
-                                                        {{ $deptGroup->pluck('kode_dep')->unique()->implode(', ') }}
-                                                    </h6>
                                                     <p class="mb-0 fw-bold text-truncate" title="{{ $namaDep }}"
                                                         style="max-width: 150px;">
                                                         {{ Str::limit($namaDep, 20) }}
@@ -877,10 +873,9 @@
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <h6 class="text-muted mb-1 small">{{ $kontrak->kode_ktr }}</h6>
                                                     <p class="mb-0 fw-bold text-truncate"
                                                         title="{{ $kontrak->nama_ktr }}" style="max-width: 150px;">
-                                                        {{ Str::limit($kontrak->nama_ktr, 20) }}
+                                                        {{ Str::limit($kontrak->singkatan_ktr, 20) }}
                                                     </p>
                                                 </div>
                                                 <div class="text-end">
@@ -902,7 +897,7 @@
                     <hr class="my-4">
 
                     <!-- By Work Area -->
-                    <div class="mb-4">
+                    {{-- <div class="mb-4">
                         <h5 class="fw-bold mb-3"><i class="fas fa-map-marked-alt me-2 text-info"></i>Berdasarkan Wilayah
                             Kerja</h5>
                         <div class="row">
@@ -936,7 +931,7 @@
                                 </div>
                             @endforeach
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

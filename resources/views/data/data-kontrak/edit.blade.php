@@ -169,20 +169,6 @@
                                         </button>
                                     </div>
                                     <div class="card-body">
-                                        <!-- Contract Status Summary -->
-                                        <div class="mb-3 contract-status-summary">
-                                            <span id="expiredContractsBadge" class="badge bg-danger me-2"
-                                                style="font-size: 0.9rem;">
-                                                <i class="fas fa-exclamation-circle me-1"></i> Kontrak Expired : <span
-                                                    id="expiredContractsCount">0</span>
-                                            </span>
-                                            <span id="warningContractsBadge" class="badge text-dark me-2"
-                                                style="font-size: 0.9rem; background-color:#ffff66">
-                                                <i class="fas fa-exclamation-triangle me-1"></i>Kontrak Akan Expired :
-                                                <span id="warningContractsCount">0</span>
-                                            </span>
-                                        </div>
-
                                         <div class="table-responsive">
                                             <table id="contractsTable"
                                                 class="table table-bordered table-striped data-table">
@@ -802,16 +788,18 @@
                                             <div class="input-group">
                                                 <span class="input-group-text"><i
                                                         class="fas fa-file-signature"></i></span>
-                                                <select class="form-select" id="modal_id_ktr" name="id_ktr">
-                                                    <option value="">Pilih Status Kontrak</option>
-                                                    @foreach ($kontrakTypes as $kontrak)
-                                                        <option value="{{ $kontrak->id }}"
-                                                            data-nama-ktr="{{ $kontrak->nama_ktr }}"
-                                                            data-singkatan-ktr="{{ $kontrak->singkatan_ktr }}">
-                                                            {{ $kontrak->nama_ktr }} - {{ $kontrak->singkatan_ktr }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                                <div style="flex: 1">
+                                                    <select class="form-select select2" id="modal_id_ktr" name="id_ktr">
+                                                        <option value="">Pilih Status Kontrak</option>
+                                                        @foreach ($kontrakTypes as $kontrak)
+                                                            <option value="{{ $kontrak->id }}"
+                                                                data-nama-ktr="{{ $kontrak->nama_ktr }}"
+                                                                data-singkatan-ktr="{{ $kontrak->singkatan_ktr }}">
+                                                                {{ $kontrak->nama_ktr }} - {{ $kontrak->singkatan_ktr }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -823,16 +811,20 @@
                                                     class="text-danger" id="required_id_prsh">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-building"></i></span>
-                                                <select class="form-select" id="modal_id_prsh" name="id_prsh">
-                                                    <option value="">Pilih Perusahaan</option>
-                                                    @foreach ($perusahaans as $perusahaan)
-                                                        <option value="{{ $perusahaan->id }}"
-                                                            data-nama-prs1="{{ $perusahaan->nama_prs1 }}"
-                                                            data-nama-prs2="{{ $perusahaan->nama_prs2 }}">
-                                                            {{ $perusahaan->nama_prs1 }} - {{ $perusahaan->nama_prs2 }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                                <div style="flex: 1">
+                                                    <select class="form-select select2" id="modal_id_prsh"
+                                                        name="id_prsh">
+                                                        <option value="">Pilih Perusahaan</option>
+                                                        @foreach ($perusahaans as $perusahaan)
+                                                            <option value="{{ $perusahaan->id }}"
+                                                                data-nama-prs1="{{ $perusahaan->nama_prs1 }}"
+                                                                data-nama-prs2="{{ $perusahaan->nama_prs2 }}">
+                                                                {{ $perusahaan->nama_prs1 }} -
+                                                                {{ $perusahaan->nama_prs2 }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -844,11 +836,14 @@
                                                     class="text-danger" id="required_ktg_ktk">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
-                                                <select class="form-select" id="modal_ktg_ktk" name="ktg_ktk">
-                                                    <option value="">Pilih Status</option>
-                                                    <option value="TETAP">TETAP</option>
-                                                    <option value="TIDAK TETAP">TIDAK TETAP</option>
-                                                </select>
+                                                <div style="flex: 1">
+                                                    <select class="form-select select2" id="modal_ktg_ktk"
+                                                        name="ktg_ktk">
+                                                        <option value="">Pilih Status</option>
+                                                        <option value="TETAP">TETAP</option>
+                                                        <option value="TIDAK TETAP">TIDAK TETAP</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -942,11 +937,14 @@
                                                 <span class="text-danger" id="required_sts_srt">*</span></label>
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
-                                                <select class="form-select" id="modal_sts_srt_ktr" name="sts_srt_ktr">
-                                                    <option value="">Pilih Status</option>
-                                                    <option value="AKTIF">AKTIF</option>
-                                                    <option value="NON-AKTIF">NON-AKTIF</option>
-                                                </select>
+                                                <div style="flex: 1">
+                                                    <select class="form-select select2" id="modal_sts_srt_ktr"
+                                                        name="sts_srt_ktr">
+                                                        <option value="">Pilih Status</option>
+                                                        <option value="AKTIF">AKTIF</option>
+                                                        <option value="NON-AKTIF">NON-AKTIF</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1598,6 +1596,50 @@
                         break;
                 }
             }
+
+            // Function to initialize Select2 in contract modal
+            function initializeSelect2InContractModal() {
+                $('#contractModal .select2').each(function() {
+                    // Destroy existing Select2 instance if any
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+
+                    // Initialize Select2 with proper configuration
+                    $(this).select2({
+                        theme: 'bootstrap-5',
+                        dropdownParent: $('#contractModal'),
+                        width: '100%',
+                        placeholder: $(this).find('option:first').text() || 'Pilih...',
+                        allowClear: true,
+                        language: {
+                            noResults: function() {
+                                return "Tidak ada hasil ditemukan";
+                            },
+                            searching: function() {
+                                return "Mencari...";
+                            },
+                            inputTooShort: function() {
+                                return "Ketik untuk mencari...";
+                            }
+                        }
+                    });
+                });
+            }
+
+            // Initialize Select2 when modal is opened
+            $('#contractModal').on('shown.bs.modal', function() {
+                initializeSelect2InContractModal();
+            });
+
+            // Cleanup when modal is closed
+            $('#contractModal').on('hidden.bs.modal', function() {
+                $('#contractModal .select2').each(function() {
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+                });
+            });
 
             // ===== EVENT HANDLERS =====
 

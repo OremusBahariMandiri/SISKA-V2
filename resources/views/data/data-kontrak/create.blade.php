@@ -1047,22 +1047,6 @@
             opacity: 0.8;
         }
 
-        .bg-primary.bg-opacity-25 {
-            background-color: rgba(13, 110, 253, 0.25) !important;
-        }
-
-        .bg-primary.bg-opacity-25 {
-            background-color: rgba(108, 117, 125, 0.25) !important;
-        }
-
-        .bg-warning.bg-opacity-25 {
-            background-color: rgba(255, 193, 7, 0.25) !important;
-        }
-
-        .bg-info.bg-opacity-25 {
-            background-color: rgba(13, 202, 240, 0.25) !important;
-        }
-
         /* ===== SWEETALERT2 CUSTOM STYLING ===== */
         .swal2-html-container {
             font-size: 14px;

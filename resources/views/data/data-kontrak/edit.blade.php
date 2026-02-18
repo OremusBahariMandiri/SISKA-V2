@@ -198,7 +198,7 @@
                                                             data-tgl-akhir="{{ $contract->tgl_akhir_ktr }}"
                                                             data-ktg-ktk="{{ $contract->ktg_ktk }}">
                                                             <td class="text-center">{{ $index + 1 }}</td>
-                                                            <td>
+                                                            <td class="text-center">
                                                                 <small
                                                                     class="fw-bold">{{ $contract->no_srt_ktr ?: '-' }}</small>
                                                             </td>
@@ -206,14 +206,7 @@
                                                                 {{ $contract->tgl_srt_ktr ? \Carbon\Carbon::parse($contract->tgl_srt_ktr)->format('d-m-Y') : '-' }}
                                                             </td>
                                                             <td class="text-center">
-                                                                @if ($contract->kontrakKerja)
-                                                                    <span
-                                                                        class="badge bg-info">{{ $contract->kontrakKerja->singkatan_ktr }}</span>
-                                                                    <br><small
-                                                                        class="text-muted">{{ $contract->kontrakKerja->nama_ktr }}</small>
-                                                                @else
-                                                                    <span class="badge bg-secondary">-</span>
-                                                                @endif
+                                                                <span>{{ $contract->kontrakKerja->singkatan_ktr }}</span>
                                                             </td>
                                                             <td class="text-center">
                                                                 {{ $contract->tgl_awl_ktr ? \Carbon\Carbon::parse($contract->tgl_awl_ktr)->format('d-m-Y') : '-' }}
@@ -222,13 +215,7 @@
                                                                 {{ $contract->tgl_akhir_ktr ? \Carbon\Carbon::parse($contract->tgl_akhir_ktr)->format('d-m-Y') : '-' }}
                                                             </td>
                                                             <td class="text-center">
-                                                                @if ($contract->durasi_ktr)
-                                                                    <span
-                                                                        class="badge bg-info">{{ $contract->durasi_ktr }}
-                                                                        bln</span>
-                                                                @else
-                                                                    -
-                                                                @endif
+                                                                <span>{{ $contract->durasi_ktr }} bln</span>
                                                             </td>
                                                             <td class="text-center">
                                                                 {{ $contract->tgl_pgt_ktr ? \Carbon\Carbon::parse($contract->tgl_pgt_ktr)->format('d-m-Y') : '-' }}
@@ -238,31 +225,10 @@
                                                                 <span class="badge bg-secondary">Loading...</span>
                                                             </td>
                                                             <td class="text-center">
-                                                                @if ($contract->ktg_ktk === 'TETAP')
-                                                                    <span
-                                                                        class="badge bg-primary">{{ $contract->ktg_ktk }}</span>
-                                                                @elseif ($contract->ktg_ktk === 'TIDAK TETAP')
-                                                                    <span
-                                                                        class="badge bg-warning text-dark">{{ $contract->ktg_ktk }}</span>
-                                                                @else
-                                                                    <span
-                                                                        class="badge bg-secondary">{{ $contract->ktg_ktk ?: '-' }}</span>
-                                                                @endif
+                                                                <span>{{ $contract->ktg_ktk }}</span>
                                                             </td>
                                                             <td class="text-center">
-                                                                @if ($contract->sts_srt_ktr == 'AKTIF')
-                                                                    <span
-                                                                        class="badge bg-success">{{ $contract->sts_srt_ktr }}</span>
-                                                                @elseif($contract->sts_srt_ktr == 'NON-AKTIF')
-                                                                    <span
-                                                                        class="badge bg-secondary">{{ $contract->sts_srt_ktr }}</span>
-                                                                @elseif($contract->sts_srt_ktr == 'EXPIRED')
-                                                                    <span
-                                                                        class="badge bg-danger">{{ $contract->sts_srt_ktr }}</span>
-                                                                @else
-                                                                    <span
-                                                                        class="badge bg-warning text-dark">{{ $contract->sts_srt_ktr }}</span>
-                                                                @endif
+                                                                <span>{{ $contract->sts_srt_ktr }}</span>
                                                             </td>
                                                             <td class="text-center">
                                                                 <small>{{ $contract->creator ? $contract->creator->nama_kry : '-' }}</small>
@@ -1335,7 +1301,7 @@
                 // Skip NON-AKTIF contracts - Abu-abu
                 if (contractStatus === 'NON-AKTIF') {
                     return {
-                        text: 'Kontrak Non-Aktif',
+                        text: 'NON-AKTIF',
                         badgeClass: 'bg-secondary',
                         priority: 6,
                         status: 'non_active'
@@ -1399,25 +1365,25 @@
                     result.status = 'expired';
                 } else if (diffDays === 0) {
                     // Today
-                    result.text = 'Hari Ini';
+                    result.text = 'HARI INI';
                     result.badgeClass = 'bg-danger';
                     result.priority = 1;
                     result.status = 'expired';
                 } else if (diffDays <= 7) {
                     // Urgent - within 7 days
-                    result.text = diffDays + ' hari lagi';
+                    result.text = diffDays + ' Hr lg';
                     result.badgeClass = 'bg-warning text-dark';
                     result.priority = 2;
                     result.status = 'urgent';
                 } else if (diffDays <= 30) {
                     // Warning - within 30 days
-                    result.text = diffDays + ' hari lagi';
+                    result.text = diffDays + ' Hr lg';
                     result.badgeClass = 'bg-info';
                     result.priority = 3;
                     result.status = 'warning';
                 } else {
                     // Safe - more than 30 days
-                    result.text = diffDays + ' hari lagi';
+                    result.text = diffDays + ' Hr lg';
                     result.badgeClass = 'bg-success';
                     result.priority = 4;
                     result.status = 'safe';
@@ -1438,7 +1404,7 @@
                     const row = $(this);
                     const warningData = calculateRowWarning(row);
                     const peringatanCol = row.find('.sisa-peringatan-col');
-                    peringatanCol.html('<span class="badge ' + warningData.badgeClass + '">' + warningData
+                    peringatanCol.html('<span>' + warningData
                         .text + '</span>');
 
                     // Apply row highlighting

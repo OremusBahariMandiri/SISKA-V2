@@ -50,11 +50,13 @@
                             !empty($currentFilters['status']) ||
                                 !empty($currentFilters['perusahaan']) ||
                                 !empty($currentFilters['nama']) ||
+                                !empty($currentFilters['nrk']) ||
                                 !empty($currentFilters['departemen']) ||
                                 !empty($currentFilters['jabatan']) ||
                                 !empty($currentFilters['kontrak']) ||
                                 !empty($currentFilters['jenis_kelamin']) ||
-                                !empty($currentFilters['wilker']))
+                                !empty($currentFilters['wilker']) ||
+                                !empty($currentFilters['unit_kerja']))
                             <div class="alert alert-info alert-dismissible fade show" role="alert">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Filter Aktif:</strong>
@@ -77,6 +79,10 @@
 
                                 @if (!empty($currentFilters['nama']))
                                     Nama: <span class="badge bg-primary">{{ $currentFilters['nama'] }}</span>
+                                @endif
+
+                                @if (!empty($currentFilters['nrk']))
+                                    NRK: <span class="badge bg-primary">{{ $currentFilters['nrk'] }}</span>
                                 @endif
 
                                 @if (!empty($currentFilters['departemen']))
@@ -109,6 +115,17 @@
                                     @endphp
                                     @if ($selectedKontrak)
                                         Kontrak: <span class="badge bg-secondary">{{ $selectedKontrak->nama_ktr }}</span>
+                                    @endif
+                                @endif
+
+                                @if (!empty($currentFilters['unit_kerja']))
+                                    @php
+                                        $selectedUnitKerja = $unitKerjaOptions
+                                            ->where('id', $currentFilters['unit_kerja'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedUnitKerja)
+                                        Unit Kerja: <span class="badge bg-danger">{{ $selectedUnitKerja->area_krj }}</span>
                                     @endif
                                 @endif
 
@@ -278,9 +295,10 @@
                                             <td>{{ $age }} {{ is_numeric($age) ? 'thn' : '' }}</td>
                                             <td class="text-center">
                                                 @if ($karyawan->sex == 'LAKI-LAKI')
-                                                <span class="badge bg-primary">L</span>
+                                                    <span class="badge bg-primary">L</span>
                                                 @elseif($karyawan->sex == 'PEREMPUAN')
-                                                <span class="badge" style="background-color: rgb(254, 154, 171)">P</span>
+                                                    <span class="badge"
+                                                        style="background-color: rgb(254, 154, 171)">P</span>
                                                 @else
                                                     -
                                                 @endif
@@ -319,8 +337,7 @@
                                             <td>{{ $karyawan->tgl_masuk ? date('d-m-Y', strtotime($karyawan->tgl_masuk)) : '-' }}
                                             </td>
                                             <td><small>{{ Str::limit($perusahaan, 15) }}</small></td>
-                                            <td class="text-center">
-                                                <span class="badge bg-secondary">{{ $kontrak }}</span>
+                                            <td class="text-center">{{ $kontrak }}
                                             </td>
                                             <td>{{ $karyawan->tgl_akhir_ktr ? date('d-m-Y', strtotime($karyawan->tgl_akhir_ktr)) : '-' }}
                                             </td>
@@ -330,19 +347,15 @@
                                             <td><small>{{ $karyawan->skt_wil_krj ?? '-' }}</small></td>
                                             <td class="text-center">
                                                 @if ($karyawan->sts_kry == 'CALON')
-                                                    <span class="badge badge-lg bg-warning text-dark">
-                                                        <i class="fas fa-hourglass-half me-1"></i>CALON
-                                                    </span>
+                                                    <span>CALON</span>
                                                 @elseif ($karyawan->sts_kry == 'AKTIF')
-                                                    <span class="badge badge-lg bg-success">
-                                                        <i class="fas fa-check-circle me-1"></i>AK
+                                                    <span>AK
                                                     </span>
                                                 @elseif ($karyawan->sts_kry == 'NON-AKTIF')
-                                                    <span class="badge badge-lg bg-danger">
-                                                        <i class="fas fa-times-circle me-1"></i>NA
+                                                    <span>NA
                                                     </span>
                                                 @else
-                                                    <span class="badge badge-lg bg-dark">{{ $karyawan->sts_kry }}</span>
+                                                    <span>{{ $karyawan->sts_kry }}</span>
                                                 @endif
                                             </td>
                                             <!-- Kolom Tambahan -->
@@ -410,31 +423,9 @@
                     <form id="filterForm" method="GET" action="{{ route('data-karyawan.index') }}">
                         <!-- Row 1: Basic Filters -->
                         <div class="row mb-3">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="filter_nama" class="form-label fw-bold">Nama Karyawan</label>
-                                    <input type="text" class="form-control" id="filter_nama" name="filter_nama"
-                                        placeholder="Cari nama karyawan..." value="{{ $currentFilters['nama'] ?? '' }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6 mt-2">
-                                <div class="form-group">
-                                    <label for="filter_jenis_kelamin" class="form-label fw-bold">Jenis Kelamin</label>
-                                    <div style="flex: 1">
-                                        <select class="form-select select2" id="filter_jenis_kelamin"
-                                            name="filter_jenis_kelamin">
-                                            <option value="">Semua Jenis Kelamin</option>
-                                            @foreach ($jenisKelaminOptions as $value => $label)
-                                                <option value="{{ $value }}"
-                                                    {{ $currentFilters['jenis_kelamin'] == $value ? 'selected' : '' }}>
-                                                    {{ $label }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mt-2">
+                            {{-- 1 --}}
+                            {{-- Status Karyawan --}}
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="filter_status" class="form-label fw-bold">Status Karyawan</label>
                                     <div style="flex: 1">
@@ -450,7 +441,29 @@
                                     </div>
                                 </div>
                             </div>
+                            {{-- 6 --}}
+                            {{-- Jabatan --}}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="filter_jabatan" class="form-label fw-bold">Jabatan</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jabatan" name="filter_jabatan">
+                                            <option value="">Semua Jabatan</option>
+                                            @foreach ($jabatanOptions as $jabatan)
+                                                <option value="{{ $jabatan->id }}"
+                                                    {{ $currentFilters['jabatan'] == $jabatan->id ? 'selected' : '' }}>
+                                                    {{ $jabatan->nama_jbt }} @if ($jabatan->singkatan_jbt)
+                                                        ({{ $jabatan->singkatan_jbt }})
+                                                    @endif - {{ $jabatan->nama_dep }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
 
+                            {{-- 2 --}}
+                            {{-- {Perusahaan} --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
@@ -468,6 +481,96 @@
                                     </div>
                                 </div>
                             </div>
+                            {{-- 7 --}}
+                            {{-- Jenis Kontrak --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_kontrak" class="form-label fw-bold">Jenis Kontrak</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_kontrak" name="filter_kontrak">
+                                            <option value="">Semua Kontrak</option>
+                                            @foreach ($kontrakOptions as $kontrak)
+                                                <option value="{{ $kontrak->id }}"
+                                                    {{ $currentFilters['kontrak'] == $kontrak->id ? 'selected' : '' }}>
+                                                    {{ $kontrak->nama_ktr }} @if ($kontrak->singkatan_ktr)
+                                                        ({{ $kontrak->singkatan_ktr }})
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- 3 --}}
+                            {{-- Wilker --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_wilker" class="form-label fw-bold">Wilayah Kerja</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_wilker" name="filter_wilker">
+                                            <option value="">Semua Wilayah Kerja</option>
+                                            @foreach ($wilayahKerjaOptions as $wilker)
+                                                <option value="{{ $wilker->wilayah_krj }}"
+                                                    {{ $currentFilters['wilker'] == $wilker->wilayah_krj ? 'selected' : '' }}>
+                                                    {{ $wilker->wilayah_krj }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- 8 --}}
+                            {{-- Jenis Kelamin --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_jenis_kelamin" class="form-label fw-bold">Jenis Kelamin</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jenis_kelamin"
+                                            name="filter_jenis_kelamin">
+                                            <option value="">Semua Jenis Kelamin</option>
+                                            @foreach ($jenisKelaminOptions as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ $currentFilters['jenis_kelamin'] == $value ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- 4 --}}
+                            {{-- Unit Kerja --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_unit_kerja" class="form-label fw-bold">Unit Kerja</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_unit_kerja"
+                                            name="filter_unit_kerja">
+                                            <option value="">Semua Unit Kerja</option>
+                                            @foreach ($unitKerjaOptions as $unitKerja)
+                                                <option value="{{ $unitKerja->id }}"
+                                                    {{ $currentFilters['unit_kerja'] == $unitKerja->id ? 'selected' : '' }}>
+                                                    {{ $unitKerja->area_krj }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- 9 --}}
+                            {{-- Nama Karyawan --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_nama" class="form-label fw-bold">Nama Karyawan</label>
+                                    <input type="text" class="form-control" id="filter_nama" name="filter_nama"
+                                        placeholder="Cari nama karyawan..." value="{{ $currentFilters['nama'] ?? '' }}">
+                                </div>
+                            </div>
+
+                            {{-- 5 --}}
+                            {{-- Departemen --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_departemen" class="form-label fw-bold">Departemen</label>
@@ -487,66 +590,15 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            {{-- 10 --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_nrk" class="form-label fw-bold">NRK</label>
+                                    <input type="text" class="form-control" id="filter_nrk" name="filter_nrk"
+                                        placeholder="Cari NRK karyawan..." value="{{ $currentFilters['nrk'] ?? '' }}">
+                                </div>
+                            </div>
 
-                        <!-- Row 2: Additional Filters -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="filter_jabatan" class="form-label fw-bold">Jabatan</label>
-                                    <div style="flex: 1">
-                                        <select class="form-select select2" id="filter_jabatan" name="filter_jabatan">
-                                            <option value="">Semua Jabatan</option>
-                                            @foreach ($jabatanOptions as $jabatan)
-                                                <option value="{{ $jabatan->id }}"
-                                                    {{ $currentFilters['jabatan'] == $jabatan->id ? 'selected' : '' }}>
-                                                    {{ $jabatan->nama_jbt }} @if ($jabatan->singkatan_jbt)
-                                                        ({{ $jabatan->singkatan_jbt }})
-                                                    @endif - {{ $jabatan->nama_dep }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="filter_wilker" class="form-label fw-bold">Wilayah Kerja</label>
-                                    <div style="flex: 1">
-                                        <select class="form-select select2" id="filter_wilker" name="filter_wilker">
-                                            <option value="">Semua Wilayah Kerja</option>
-                                            @foreach ($wilayahKerjaOptions as $wilker)
-                                                <option value="{{ $wilker->wilayah_krj }}"
-                                                    {{ $currentFilters['wilker'] == $wilker->wilayah_krj ? 'selected' : '' }}>
-                                                    {{ $wilker->wilayah_krj }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Row 3: Contract Filter -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="filter_kontrak" class="form-label fw-bold">Jenis Kontrak</label>
-                                    <div style="flex: 1">
-                                        <select class="form-select select2" id="filter_kontrak" name="filter_kontrak">
-                                            <option value="">Semua Kontrak</option>
-                                            @foreach ($kontrakOptions as $kontrak)
-                                                <option value="{{ $kontrak->id }}"
-                                                    {{ $currentFilters['kontrak'] == $kontrak->id ? 'selected' : '' }}>
-                                                    {{ $kontrak->nama_ktr }} @if ($kontrak->singkatan_ktr)
-                                                        ({{ $kontrak->singkatan_ktr }})
-                                                    @endif
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="d-flex">
                                 <div class="col-md-12 mt-3 justify-content-center">
                                     <div class="form-group w-100 text-end">
@@ -1215,6 +1267,8 @@
                 $('#filter_jenis_kelamin').val('').trigger('change');
                 $('#filter_skt_wilker').val('').trigger('change');
                 $('#filter_wilker').val('').trigger('change');
+                $('#filter_unit_kerja').val('').trigger('change');
+                $('#filter_nrk').val('');
 
                 // Reinitialize Select2 after reset
                 initializeSelect2InModal();

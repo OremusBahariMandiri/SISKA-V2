@@ -215,9 +215,9 @@
                                             <td class="text-center">{{ $loop->iteration }}</td>
 
                                             <!-- NRK -->
-                                            <td class="text-center">
-                                                <span class="badge bg-primary">{{ $karyawan->nrk ?? '-' }}</span>
-                                                <span class="badge bg-danger">{{ $karyawan->nik ?? '-' }}</span>
+                                            <td>
+                                                <span class="fw-bold">{{ $karyawan->nrk ?? '-' }}</span>
+                                                <span class="text-muted">{{ $karyawan->nik ?? '-' }}</span>
                                             </td>
 
                                             <!-- NAMA -->
@@ -239,7 +239,7 @@
                                                             class="fas fa-file-contract me-1"></i>{{ $contractCount['total'] }}
                                                     </span>
 
-                                                    <!-- Active Contracts -->
+                                                    {{-- <!-- Active Contracts -->
                                                     @if ($contractCount['active'] > 0)
                                                         <br><small class="text-success" title="Kontrak Aktif">
                                                             <i class="fas fa-check-circle"></i>
@@ -253,14 +253,14 @@
                                                             <i class="fas fa-pause-circle"></i>
                                                             {{ $contractCount['non_active'] }}
                                                         </small>
-                                                    @endif
+                                                    @endif --}}
                                                 </div>
                                             </td>
 
                                             <!-- UMUR -->
                                             <td class="text-center">
                                                 @if ($age)
-                                                    <span class="badge bg-info">{{ $age }} th</span>
+                                                    <span><small>{{ $age }} th</small></span>
                                                 @else
                                                     -
                                                 @endif
@@ -319,7 +319,7 @@
                                             <!-- MASA KERJA -->
                                             <td class="text-center">
                                                 @if ($workDuration)
-                                                    <span class="badge bg-success">{{ $workDuration }}</span>
+                                                    <span>{{ $workDuration }}</span>
                                                 @else
                                                     -
                                                 @endif
@@ -327,16 +327,15 @@
 
                                             <!-- PENDIDIKAN -->
                                             <td class="text-center">
-                                                <span class="badge bg-info">{{ $kontrak->jenjang_skl ?? '-' }}</span>
+                                                <span>{{ $kontrak->jenjang_skl ?? '-' }}</span>
                                             </td>
 
                                             <!-- DEPARTEMEN -->
                                             <td class="text-center">
                                                 @if ($departemen)
-                                                    <span class="badge bg-warning">{{ $departemen->singkatan_dep }}</span>
+                                                    <span>{{ $departemen->singkatan_dep }}</span>
                                                 @elseif($karyawan && $karyawan->departemenRelation)
-                                                    <span
-                                                        class="badge bg-warning">{{ $karyawan->departemenRelation->singkatan_dep }}</span>
+                                                    <span>{{ $karyawan->departemenRelation->singkatan_dep }}</span>
                                                 @else
                                                     -
                                                 @endif
@@ -344,18 +343,17 @@
 
                                             <!-- JABATAN -->
                                             <td class="text-center">
-                                                <span
-                                                    class="badge bg-secondary">{{ $departemen->singkatan_jbt ?? '-' }}</span>
+                                                <span>{{ $departemen->singkatan_jbt ?? '-' }}</span>
                                             </td>
 
                                             <!-- WILKER -->
                                             <td class="text-center">
-                                                <span class="badge bg-info">{{ $wilayah->singkatan_wk ?? '-' }}</span>
+                                                <span>{{ $wilayah->singkatan_wk ?? '-' }}</span>
                                             </td>
 
                                             <!-- PERUSAHAAN -->
                                             <td class="text-center">
-                                                <span class="badge bg-success">{{ $perusahaan->nama_prs2 ?? '-' }}</span>
+                                                <span>{{ $perusahaan->nama_prs2 ?? '-' }}</span>
                                             </td>
 
                                             <!-- NO KONTRAK -->
@@ -370,20 +368,7 @@
 
                                             <!-- STATUS KONTRAK -->
                                             <td class="text-center">
-                                                @if ($kontrakType && $kontrakType->singkatan_ktr == 'PKWTT')
-                                                    <span class="badge badge-lg bg-success">
-                                                        <i class="fas fa-check-circle me-1"></i>PKWTT
-                                                    </span>
-                                                @elseif ($kontrakType && $kontrakType->singkatan_ktr == 'PKWT')
-                                                    <span class="badge badge-lg bg-secondary">PKWT</span>
-                                                @elseif ($kontrakType && $kontrakType->singkatan_ktr == 'SPK')
-                                                    <span class="badge badge-lg bg-danger">SPK</span>
-                                                @elseif ($kontrakType && $kontrakType->singkatan_ktr == 'PENDING')
-                                                    <span class="badge badge-lg bg-warning text-dark">PENDING</span>
-                                                @else
-                                                    <span
-                                                        class="badge badge-lg bg-dark">{{ $kontrakType->singkatan_ktr ?? 'N/A' }}</span>
-                                                @endif
+                                                {{ $kontrakType->singkatan_ktr ?? '-' }}
                                             </td>
 
                                             <!-- TGL MULAI -->
@@ -399,7 +384,7 @@
                                             <!-- DURASI -->
                                             <td class="text-center">
                                                 @if ($kontrak->durasi_ktr)
-                                                    <span class="badge bg-info">{{ $kontrak->durasi_ktr }} bln</span>
+                                                    <span>{{ $kontrak->durasi_ktr }} bln</span>
                                                 @else
                                                     -
                                                 @endif
@@ -412,7 +397,7 @@
 
                                             <!-- PERINGATAN (Will be calculated by JS) -->
                                             <td class="text-center sisa-peringatan-col">
-                                                <span class="badge bg-secondary">Loading...</span>
+                                                <span>Loading...</span>
                                             </td>
 
                                             <!-- DOKUMEN -->
@@ -430,16 +415,7 @@
 
                                             <!-- STS SR (Status Surat) -->
                                             <td class="text-center">
-                                                @if ($kontrak->sts_srt_ktr == 'AKTIF')
-                                                    <span class="badge bg-success">{{ $kontrak->sts_srt_ktr }}</span>
-                                                @elseif ($kontrak->sts_srt_ktr == 'NON-AKTIF')
-                                                    <span class="badge bg-secondary">{{ $kontrak->sts_srt_ktr }}</span>
-                                                @elseif ($kontrak->sts_srt_ktr == 'EXPIRED')
-                                                    <span class="badge bg-danger">{{ $kontrak->sts_srt_ktr }}</span>
-                                                @else
-                                                    <span
-                                                        class="badge bg-warning text-dark">{{ $kontrak->sts_srt_ktr ?? '-' }}</span>
-                                                @endif
+                                                {{ $kontrak->sts_srt_ktr }}
                                             </td>
 
                                             <!-- TGL SR NA (Tanggal Surat Non Aktif) -->
@@ -1411,7 +1387,7 @@
 
                     // Update warning text in PERINGATAN column
                     const peringatanCol = row.find('.sisa-peringatan-col');
-                    peringatanCol.html('<span class="badge ' + warningData.badgeClass + '">' + warningData
+                    peringatanCol.html('<span>' + warningData
                         .text + '</span>');
 
                     // Apply row highlighting

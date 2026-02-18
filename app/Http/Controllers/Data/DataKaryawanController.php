@@ -48,6 +48,11 @@ class DataKaryawanController extends Controller
             $query->where('nama', 'LIKE', '%' . $request->filter_nama . '%');
         }
 
+        // Filter NRK
+        if ($request->has('filter_nrk') && !empty($request->filter_nrk)) {
+            $query->where('nrk', 'LIKE', '%' . $request->filter_nrk . '%');
+        }
+
         // Filter by Department
         if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
             $selectedDepartemen = Departemen::find($request->filter_departemen);
@@ -77,6 +82,11 @@ class DataKaryawanController extends Controller
             $query->where('wilker', $request->filter_wilker);
         }
 
+        // Replace existing unit kerja filter with this more precise version
+        if ($request->has('filter_unit_kerja') && !empty($request->filter_unit_kerja)) {
+            $query->where('unit_krj', $request->filter_unit_kerja);
+        }
+
         // Get filtered data
         $dataKaryawans = $query->orderBy('nama', 'asc')->get();
 
@@ -101,6 +111,10 @@ class DataKaryawanController extends Controller
         $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
             ->groupBy('wilayah_krj')
             ->orderBy('wilayah_krj', 'asc')
+            ->get();
+
+        $unitKerjaOptions = WilayahKerja::select('id', 'area_krj', 'kode_wk')
+            ->orderBy('area_krj')
             ->get();
 
         // Get status options
@@ -154,6 +168,8 @@ class DataKaryawanController extends Controller
             'kontrak' => $request->filter_kontrak,
             'jenis_kelamin' => $request->filter_jenis_kelamin,
             'wilker' => $request->filter_wilker,
+            'unit_kerja' => $request->filter_unit_kerja,
+            'nrk' => $request->filter_nrk,
         ];
 
         return view('data.data-karyawan.index', compact(
@@ -161,6 +177,7 @@ class DataKaryawanController extends Controller
             'userPermissions',
             'perusahaans',
             'wilayahKerjas',
+            'unitKerjaOptions',
             'departemens',
             'statusOptions',
             'departemenOptions',

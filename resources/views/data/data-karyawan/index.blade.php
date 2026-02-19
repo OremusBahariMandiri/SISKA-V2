@@ -295,10 +295,9 @@
                                             <td>{{ $age }} {{ is_numeric($age) ? 'thn' : '' }}</td>
                                             <td class="text-center">
                                                 @if ($karyawan->sex == 'LAKI-LAKI')
-                                                    <span class="badge bg-primary">L</span>
+                                                    <span>L</span>
                                                 @elseif($karyawan->sex == 'PEREMPUAN')
-                                                    <span class="badge"
-                                                        style="background-color: rgb(254, 154, 171)">P</span>
+                                                    <span>P</span>
                                                 @else
                                                     -
                                                 @endif
@@ -635,12 +634,6 @@
                     <div class="d-grid gap-2">
                         <button type="button" class="btn btn-outline-success" id="exportExcel">
                             <i class="fas fa-file-excel me-2"></i>Export ke Excel (.xlsx)
-                        </button>
-                        <button type="button" class="btn btn-outline-danger" id="exportPDF">
-                            <i class="fas fa-file-pdf me-2"></i>Export ke PDF
-                        </button>
-                        <button type="button" class="btn btn-outline-info" id="exportCSV">
-                            <i class="fas fa-file-csv me-2"></i>Export ke CSV
                         </button>
                     </div>
                 </div>

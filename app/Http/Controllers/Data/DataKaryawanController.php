@@ -172,6 +172,22 @@ class DataKaryawanController extends Controller
             'nrk' => $request->filter_nrk,
         ];
 
+        if ($request->has('export')) {
+            $exportType = $request->export;
+
+            // Get filtered data first
+            $filteredData = $this->getFilteredData($request->all());
+
+            switch ($exportType) {
+                case 'excel':
+                    return $this->exportExcel($filteredData);
+                case 'pdf':
+                    return $this->exportPDF($filteredData);
+                case 'csv':
+                    return $this->exportCSV($filteredData);
+            }
+        }
+
         return view('data.data-karyawan.index', compact(
             'dataKaryawans',
             'userPermissions',
@@ -543,15 +559,16 @@ class DataKaryawanController extends Controller
     }
 
 
-    public function exportExcel(Request $request)
+    private function exportExcel($data)
     {
-        $data = $this->getFilteredData($request->all());
+        $dataKaryawans = $data['dataKaryawans'];
+        $filters = $data['filters'];
 
         $currentDate = now()->format('d-m-Y_H-i-s');
         $fileName = 'Data_Karyawan_' . $currentDate . '.xlsx';
 
         return Excel::download(
-            new DataKaryawanExport($data['dataKaryawans'], $data['filters']),
+            new DataKaryawanExport($dataKaryawans, $filters),
             $fileName
         );
     }

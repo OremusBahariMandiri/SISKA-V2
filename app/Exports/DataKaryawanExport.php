@@ -2,17 +2,14 @@
 
 namespace App\Exports;
 
-use App\Models\Data\DataKaryawan;
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Carbon\Carbon;
 
-class DataKaryawanExport implements FromView, WithTitle, WithStyles, ShouldAutoSize, WithEvents
+class DataKaryawanExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
 {
     protected $dataKaryawans;
     protected $filter;
@@ -23,125 +20,108 @@ class DataKaryawanExport implements FromView, WithTitle, WithStyles, ShouldAutoS
         $this->filter = $filter;
     }
 
-    public function view(): View
+    public function collection()
     {
-        return view('data.data-karyawan.export-data-karyawan', [
-            'dataKaryawans' => $this->dataKaryawans,
-            'filter' => $this->filter
-        ]);
+        return $this->dataKaryawans->map(function ($karyawan, $index) {
+            return [
+                'No' => $index + 1,
+                'Tanggal Masuk' => $karyawan->tgl_masuk ? Carbon::parse($karyawan->tgl_masuk)->format('d/m/Y') : '-',
+                'NRK' => $karyawan->nrk ?? '-',
+                'NIK' => $karyawan->nik,
+                'Nama' => $karyawan->nama,
+                'Tempat Lahir' => $karyawan->tpt_lahir,
+                'Tanggal Lahir' => $karyawan->tgl_lahir ? Carbon::parse($karyawan->tgl_lahir)->format('d/m/Y') : '-',
+                'Jenis Kelamin' => $karyawan->sex,
+                'Agama' => $karyawan->agama,
+                'Kewarganegaraan' => $karyawan->kewarganegaraan ?? 'INDONESIA',
+                'Status Nikah' => $karyawan->sts_nikah,
+                'Status Keluarga' => $karyawan->sts_keluarga ?? '-',
+                'Jumlah Anak' => $karyawan->jml_anak ?? 0,
+                'Telepon 1' => $karyawan->tlp1,
+                'Telepon 2' => $karyawan->tlp2 ?? '-',
+                'Email 1' => $karyawan->email1 ?? '-',
+                'Email 2' => $karyawan->email2 ?? '-',
+                'Instagram' => $karyawan->instagram ?? '-',
+                'Facebook' => $karyawan->facebook ?? '-',
+
+                // KTP Address
+                'Provinsi KTP' => $karyawan->prov_ktp,
+                'Kota KTP' => $karyawan->kota_ktp,
+                'Kecamatan KTP' => $karyawan->kec_ktp,
+                'Kelurahan KTP' => $karyawan->kel_ktp,
+                'RT/RW KTP' => $karyawan->rt_rw_ktp,
+                'Kode Pos KTP' => $karyawan->kd_pos_ktp,
+                'Alamat KTP' => $karyawan->alamat_ktp,
+
+                // Domisili Address
+                'Provinsi DOM' => $karyawan->prov_dom,
+                'Kota DOM' => $karyawan->kota_dom,
+                'Kecamatan DOM' => $karyawan->kec_dom,
+                'Kelurahan DOM' => $karyawan->kel_dom,
+                'RT/RW DOM' => $karyawan->rt_rw_dom,
+                'Kode Pos DOM' => $karyawan->kd_pos_dom,
+                'Alamat DOM' => $karyawan->alamat_dom,
+
+                // Education
+                'Jenjang' => $karyawan->jenjang_skl ?? '-',
+                'Institusi' => $karyawan->institusi_skl ?? '-',
+                'Kota' => $karyawan->kota_skl ?? '-',
+                'Fakultas' => $karyawan->fakultas_skl ?? '-',
+                'Jurusan' => $karyawan->jurusan_skl ?? '-',
+                'Gelar' => $karyawan->gelar_skl ?? '-',
+                'Tanggal Lulus' => $karyawan->tgl_lulus_skl ? Carbon::parse($karyawan->tgl_lulus_skl)->format('d/m/Y') : '-',
+
+                // Work Contract
+                'Perusahaan' => $karyawan->perusahaanRelation->nama_prs1 ?? '-',
+                'Status Kontrak' => $karyawan->sts_ktr ?? '-',
+                'Tanggal Awal Kontrak' => $karyawan->tgl_awal_ktr ? Carbon::parse($karyawan->tgl_awal_ktr)->format('d/m/Y') : '-',
+                'Tanggal Akhir Kontrak' => $karyawan->tgl_akhir_ktr ? Carbon::parse($karyawan->tgl_akhir_ktr)->format('d/m/Y') : '-',
+                'Durasi Kontrak' => $karyawan->durasi_ktr,
+
+                // Career
+                'Departemen' => $karyawan->departemenRelation->nama_dep ?? '-',
+                'Jabatan' => $karyawan->jabatan ?? '-',
+                'Wilayah Kerja' => $karyawan->wilayahKerjaRelation->wilayah_krj ?? '-',
+                'Unit Kerja' => $karyawan->unit_krj,
+                'Tugas' => $karyawan->tugas,
+
+                // Employment Status
+                'Status Karyawan' => $karyawan->sts_kry,
+                'Tanggal PHK' => $karyawan->tgl_phk ? Carbon::parse($karyawan->tgl_phk)->format('d/m/Y') : '-',
+                'Keterangan PHK' => $karyawan->ket_phk,
+            ];
+        });
     }
 
-    public function title(): string
+    public function headings(): array
     {
-        return 'Data Karyawan';
+        // This corresponds to the keys in the collection method
+        return [
+            'No', 'Tanggal Masuk', 'NRK', 'NIK', 'Nama',
+            'Tempat Lahir', 'Tanggal Lahir', 'Jenis Kelamin',
+            'Agama', 'Kewarganegaraan', 'Status Nikah',
+            'Status Keluarga', 'Jumlah Anak', 'Telepon 1',
+            'Telepon 2', 'Email 1', 'Email 2', 'Instagram',
+            'Facebook', 'Provinsi KTP', 'Kota KTP',
+            'Kecamatan KTP', 'Kelurahan KTP', 'RT/RW KTP',
+            'Kode Pos KTP', 'Alamat KTP', 'Provinsi DOM',
+            'Kota DOM', 'Kecamatan DOM', 'Kelurahan DOM',
+            'RT/RW DOM', 'Kode Pos DOM', 'Alamat DOM',
+            'Jenjang', 'Institusi', 'Kota', 'Fakultas',
+            'Jurusan', 'Gelar', 'Tanggal Lulus', 'Perusahaan',
+            'Status Kontrak', 'Tanggal Awal Kontrak',
+            'Tanggal Akhir Kontrak', 'Durasi Kontrak',
+            'Departemen', 'Jabatan', 'Wilayah Kerja',
+            'Unit Kerja', 'Tugas', 'Status Karyawan',
+            'Tanggal PHK', 'Keterangan PHK'
+        ];
     }
 
     public function styles(Worksheet $sheet)
     {
         return [
             // Style the first row as headers
-            1 => ['font' => ['bold' => true, 'size' => 12]],
-
-            // Add borders to all cells
-            'A1:BA' . (count($this->dataKaryawans) + 1) => [
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    public function registerEvents(): array
-    {
-        return [
-            AfterSheet::class => function(AfterSheet $event) {
-                // Set background color for header row
-                $event->sheet->getStyle('A1:BA1')->getFill()
-                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                    ->getStartColor()->setRGB('4a6fdc');
-
-                // Set text color for header row
-                $event->sheet->getStyle('A1:BA1')->getFont()->getColor()
-                    ->setRGB('FFFFFF');
-
-                // Add filter buttons to headers
-                $event->sheet->setAutoFilter('A1:BA1');
-
-                // Freeze the first row
-                $event->sheet->freezePane('A2');
-
-                // Apply row color highlighting based on employee status
-                $rowIndex = 2; // Start from row 2 (after header)
-
-                foreach ($this->dataKaryawans as $karyawan) {
-                    $rowColor = null;
-
-                    // Color based on employee status
-                    if ($karyawan->sts_kry == 'AKTIF') {
-                        $rowColor = 'D4EDDA'; // Light green for active
-                    } elseif ($karyawan->sts_kry == 'CALON') {
-                        $rowColor = 'FFF3CD'; // Light yellow for candidate
-                    } elseif ($karyawan->sts_kry == 'NON-AKTIF') {
-                        $rowColor = 'F8D7DA'; // Light red for inactive
-                    }
-
-                    // Apply color to row if available
-                    if ($rowColor) {
-                        $event->sheet->getStyle('A' . $rowIndex . ':BA' . $rowIndex)->getFill()
-                            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                            ->getStartColor()->setRGB($rowColor);
-                    }
-
-                    $rowIndex++;
-                }
-
-                // Add filter information section if available
-                if ($this->filter) {
-                    $filterRowStart = count($this->dataKaryawans) + 3;
-
-                    // Set title for filter info
-                    $event->sheet->setCellValue('A' . $filterRowStart, 'Informasi Filter yang Diterapkan:');
-                    $event->sheet->mergeCells('A' . $filterRowStart . ':B' . $filterRowStart);
-                    $event->sheet->getStyle('A' . $filterRowStart . ':B' . $filterRowStart)->getFont()->setBold(true);
-
-                    $currentRow = $filterRowStart + 1;
-
-                    // Add filter details
-                    $filterItems = [
-                        'nrk' => 'NRK',
-                        'nama' => 'Nama',
-                        'nik' => 'NIK',
-                        'sex' => 'Jenis Kelamin',
-                        'agama' => 'Agama',
-                        'sts_nikah' => 'Status Nikah',
-                        'perusahaan' => 'Perusahaan',
-                        'departemen' => 'Departemen',
-                        'jabatan' => 'Jabatan',
-                        'wilker' => 'Wilayah Kerja',
-                        'sts_kry' => 'Status Karyawan',
-                        'tgl_masuk_from' => 'Tanggal Masuk (Dari)',
-                        'tgl_masuk_to' => 'Tanggal Masuk (Sampai)',
-                    ];
-
-                    foreach ($filterItems as $key => $label) {
-                        if (isset($this->filter[$key]) && $this->filter[$key]) {
-                            $event->sheet->setCellValue('A' . $currentRow, $label);
-                            $event->sheet->setCellValue('B' . $currentRow, $this->filter[$key]);
-                            $currentRow++;
-                        }
-                    }
-
-                    // Add export date
-                    $event->sheet->setCellValue('A' . $currentRow, 'Tanggal Export');
-                    $event->sheet->setCellValue('B' . $currentRow, now()->format('d/m/Y H:i:s'));
-
-                    // Add borders to filter info section
-                    $event->sheet->getStyle('A' . $filterRowStart . ':B' . $currentRow)->getBorders()
-                        ->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-                }
-            },
+            1 => ['font' => ['bold' => true]],
         ];
     }
 }

@@ -151,7 +151,7 @@
                                         <th width="5%" class="text-center">NAMA</th>
                                         <th width="2%" class="text-center">JML</th>
                                         <th width="2%" class="text-center">UMR</th>
-                                        <th width="1%" class="text-center">JK</th>
+                                        <th width="1%" class="text-center">SEX</th>
                                         <th width="2%" class="text-center">FOTO</th>
                                         <th width="3%" class="text-center">TGL MSK</th>
                                         <th width="2%" class="text-center">MKR</th>
@@ -162,7 +162,7 @@
                                         <th width="2%" class="text-center">PRS</th>
                                         <th width="4%" class="text-center">NO KTR</th>
                                         <th width="3%" class="text-center">TGL KTR</th>
-                                        <th width="2%" class="text-center">STS</th>
+                                        <th width="2%" class="text-center">KTG KTR</th>
                                         <th width="3%" class="text-center">TGL AW</th>
                                         <th width="3%" class="text-center">TGL AK</th>
                                         <th width="2%" class="text-center">DUR</th>
@@ -451,7 +451,7 @@
                                                         </a>
                                                     @endif
 
-                                                    @if (auth()->user()->is_admin || ($userPermissions['hapus'] ?? false))
+                                                    {{-- @if (auth()->user()->is_admin || ($userPermissions['hapus'] ?? false))
                                                         <button type="button"
                                                             class="btn btn-sm btn-danger delete-confirm"
                                                             data-bs-toggle="tooltip" title="Hapus"
@@ -459,7 +459,7 @@
                                                             data-name="{{ $karyawan->nama ?? 'Kontrak' }}">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
-                                                    @endif
+                                                    @endif --}}
                                                 </div>
                                             </td>
                                         </tr>

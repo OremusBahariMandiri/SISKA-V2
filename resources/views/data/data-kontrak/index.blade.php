@@ -30,13 +30,13 @@
                     <div class="card-body">
                         <div class="mb-3 contract-status-summary">
                             <span id="expiredContractsBadge" class="badge bg-danger me-2" style="font-size: 0.9rem;">
-                                <i class="fas fa-exclamation-circle me-1"></i> Kontrak Expired : <span
-                                    id="expiredContractsCount">0</span>
+                                <i class="fas fa-exclamation-circle me-1"></i> Kontrak Expired :
+                                <span id="expiredContractsCount">{{ $expiredContractsCount }}</span>
                             </span>
                             <span id="warningContractsBadge" class="badge text-dark me-2"
                                 style="font-size: 0.9rem; background-color:#ffff66">
-                                <i class="fas fa-exclamation-triangle me-1"></i>Kontrak Akan Expired : <span
-                                    id="warningContractsCount">0</span>
+                                <i class="fas fa-exclamation-triangle me-1"></i>Kontrak Akan Expired :
+                                <span id="warningContractsCount">{{ $expiringContractsCount }}</span>
                             </span>
                         </div>
 
@@ -209,7 +209,8 @@
                                         <tr data-employee-id="{{ $kontrak->id_data_kry }}"
                                             data-contract-status="{{ $kontrak->sts_srt_ktr }}"
                                             data-tgl-peringatan="{{ $kontrak->tgl_pgt_ktr }}"
-                                            data-tgl-akhir="{{ $kontrak->tgl_akhir_ktr }}">
+                                            data-tgl-akhir="{{ $kontrak->tgl_akhir_ktr }}"
+                                            data-ktg-ktk="{{ $kontrak->ktg_ktk ?? '' }}">
 
                                             <!-- NO -->
                                             <td class="text-center">{{ $loop->iteration }}</td>
@@ -269,8 +270,7 @@
                                             <!-- JK (Jenis Kelamin) -->
                                             <td class="text-center">
                                                 @if ($karyawan && $karyawan->sex)
-                                                    <span
-                                                        class="badge {{ $karyawan->sex == 'LAKI-LAKI' ? 'bg-primary' : 'bg-pink' }}">
+                                                    <span>
                                                         {{ $karyawan->sex == 'LAKI-LAKI' ? 'L' : 'P' }}
                                                     </span>
                                                 @else
@@ -1284,27 +1284,40 @@
                 const tglPeringatan = row.data('tgl-peringatan');
                 const contractStatus = row.data('contract-status');
                 const tglAkhir = row.data('tgl-akhir');
+                const ktgKtk = row.data('ktg-ktk');
 
                 console.log('Calculating for row:', {
                     'tgl-peringatan': tglPeringatan,
                     'contract-status': contractStatus,
-                    'tgl-akhir': tglAkhir
+                    'tgl-akhir': tglAkhir,
+                    'ktg-ktk': ktgKtk
                 });
 
                 // Skip non-active contracts
-                if (contractStatus !== 'AKTIF') {
+                if (contractStatus === 'NON-AKTIF') {
                     return {
-                        text: 'Kontrak Tidak Aktif',
+                        text: 'NON-AKTIF',
                         badgeClass: 'bg-secondary',
-                        priority: 5,
-                        status: 'inactive'
+                        priority: 10, // ← ubah dari 6 ke 10 agar selalu paling bawah
+                        status: 'non_active'
                     };
                 }
 
-                // If no reminder date, skip
+                // If contract is AKTIF but has no reminder and no end date (typically TETAP)
+                if (contractStatus === 'AKTIF' && (!tglPeringatan || tglPeringatan === '') && (!tglAkhir ||
+                        tglAkhir === '')) {
+                    return {
+                        text: 'Kontrak Tetap',
+                        badgeClass: 'bg-secondary',
+                        priority: 4,
+                        status: 'tetap_aktif' // sudah benar, tidak ada highlight
+                    };
+                }
+
+                // If no reminder date for TIDAK TETAP contracts, colored gray
                 if (!tglPeringatan || tglPeringatan === '') {
                     return {
-                        text: 'Tidak Ada Tanggal Peringatan',
+                        text: 'Tidak Ada Pengingat',
                         badgeClass: 'bg-secondary',
                         priority: 5,
                         status: 'no_reminder'
@@ -1380,10 +1393,8 @@
                     const row = $(this);
                     const warningData = calculateRowWarning(row);
 
-                    // Update warning text in PERINGATAN column
                     const peringatanCol = row.find('.sisa-peringatan-col');
-                    peringatanCol.html('<span>' + warningData
-                        .text + '</span>');
+                    peringatanCol.html('<span>' + warningData.text + '</span>');
 
                     // Apply row highlighting
                     switch (warningData.status) {
@@ -1402,8 +1413,21 @@
                         case 'safe':
                             // No highlighting for safe status
                             break;
+                        case 'tetap_aktif':
+                            // No highlighting for TETAP AKTIF contracts
+                            break;
+                        case 'non_active':
+                            row.addClass('highlight-gray');
+                            break;
+                        case 'no_reminder':
+                            const ktgKtk = row.data('ktg-ktk');
+                            if (ktgKtk !== 'TETAP') {
+                                row.addClass('highlight-gray');
+                            }
+                            // Jika TETAP, biarkan putih (tidak tambahkan class apapun)
+                            break;
                         default:
-                            // Inactive or no reminder
+                            // Inactive contracts - gray
                             row.addClass('highlight-gray');
                             break;
                     }
@@ -1412,9 +1436,7 @@
                     row.data('priority', warningData.priority);
                 });
 
-                // Update counter badges
-                $('#expiredContractsCount').text(expiredCount);
-                $('#warningContractsCount').text(warningCount);
+
 
                 console.log('Statistics updated - Expired:', expiredCount, 'Warning:', warningCount);
             }
@@ -1432,6 +1454,13 @@
                     return getRowPriority($(td).closest('tr'));
                 });
             };
+
+            // Pre-calculate priority SEBELUM DataTable init
+            $('#dataKontrakTable tbody tr').each(function() {
+                const row = $(this);
+                const warningData = calculateRowWarning(row);
+                row.data('priority', warningData.priority);
+            });
 
             // Initialize DataTable with priority-based sorting
             var table = $('#dataKontrakTable').DataTable({
@@ -1479,14 +1508,16 @@
                     [0, 'asc']
                 ], // Sort by priority first
                 drawCallback: function() {
-                    // Update row numbers on each redraw
-                    this.api().column(0, {
+                    // Update row numbers dengan offset halaman
+                    var api = this.api();
+                    var startIndex = api.page.info().start; // ← ambil offset halaman saat ini
+
+                    api.column(0, {
                         page: 'current'
                     }).nodes().each(function(cell, i) {
-                        cell.innerHTML = i + 1;
+                        cell.innerHTML = startIndex + i + 1; // ← tambahkan offset
                     });
 
-                    // Apply processing
                     applyRowProcessing();
                 },
                 initComplete: function() {
@@ -1513,6 +1544,17 @@
 
             $('#exportButton').on('click', function() {
                 $('#exportModal').modal('show');
+            });
+
+            $('#exportExcel').click(function() {
+                // Get current filter values from form
+                var formData = $('#filterForm').serialize();
+
+                // Construct URL with export parameter and current filters
+                var exportUrl = "{{ route('data-kontrak.index') }}?export=excel&" + formData;
+
+                // Redirect to the URL
+                window.location.href = exportUrl;
             });
 
             $('#summaryButton').on('click', function() {

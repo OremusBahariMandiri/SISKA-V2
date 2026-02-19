@@ -106,6 +106,22 @@ class DataKontrakController extends Controller
             });
         }
 
+        if ($request->has('export')) {
+            $exportType = $request->export;
+
+            // Get filtered data first
+            $data = $this->getFilteredData($request->all());
+
+            switch ($exportType) {
+                case 'excel':
+                    return $this->exportExcel($request);
+                case 'pdf':
+                    return $this->exportPDF($request);
+                case 'csv':
+                    return $this->exportCSV($request);
+            }
+        }
+
         // Get the latest contracts with relationships
         $dataKontraks = DataKontrak::whereIn('id', function ($query) use ($latestContractsQuery) {
             $query->select('id')->fromSub($latestContractsQuery, 'latest_contracts');
@@ -246,6 +262,21 @@ class DataKontrakController extends Controller
             return $priorityA <=> $priorityB;
         })->values();
 
+        $today = \Carbon\Carbon::now()->startOf('day')->format('Y-m-d');
+
+        $expiredContractsCount = DataKontrak::uniqueEmployees()
+            ->where('sts_srt_ktr', 'AKTIF')
+            ->whereNotNull('tgl_pgt_ktr')
+            ->whereRaw("STR_TO_DATE(tgl_pgt_ktr, '%Y-%m-%d') <= ?", [$today])
+            ->count();
+
+        $expiringContractsCount = DataKontrak::uniqueEmployees()
+            ->where('sts_srt_ktr', 'AKTIF')
+            ->whereNotNull('tgl_pgt_ktr')
+            ->whereRaw("STR_TO_DATE(tgl_pgt_ktr, '%Y-%m-%d') > ?", [$today])
+            ->whereRaw("STR_TO_DATE(tgl_pgt_ktr, '%Y-%m-%d') <= DATE_ADD(?, INTERVAL 30 DAY)", [$today])
+            ->count();
+
         // Get master data for filter dropdowns
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
         $kontrakTypes = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
@@ -366,6 +397,8 @@ class DataKontrakController extends Controller
             'statusOptions',
             'contractStatusOptions',
             'educationLevelOptions',
+            'expiredContractsCount',
+            'expiringContractsCount',
             'jenisKelaminOptions',
             'departemenOptions',
             'jabatanOptions',
@@ -1108,13 +1141,14 @@ class DataKontrakController extends Controller
 
     private function getFilteredData($filters)
     {
+        // Instead of using uniqueEmployees() scope, get all contracts
         $query = DataKontrak::with([
             'karyawan',
             'kontrakKerja',
             'perusahaan',
             'departemen',
             'wilayahKerja'
-        ])->uniqueEmployees(); // Apply unique employees scope
+        ]); // Apply unique employees scope
 
         // Apply filters (same as index method)
         if (!empty($filters['filter_status'])) {

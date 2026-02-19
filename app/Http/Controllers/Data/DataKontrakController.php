@@ -718,11 +718,29 @@ class DataKontrakController extends Controller
 
             DB::commit();
 
+            // Untuk AJAX request
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Semua data kontrak karyawan {$employeeName} berhasil dihapus. Total {$deletedCount} record dihapus."
+                ]);
+            }
+
+            // Untuk non-AJAX request
             return redirect()->route('data-kontrak.index')
                 ->with('success', "Semua data kontrak karyawan {$employeeName} berhasil dihapus. Total {$deletedCount} record dihapus.");
         } catch (\Exception $e) {
             DB::rollback();
 
+            // Untuk AJAX request
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan saat menghapus data kontrak: ' . $e->getMessage()
+                ], 500);
+            }
+
+            // Untuk non-AJAX request
             return redirect()->route('data-kontrak.index')
                 ->with('error', 'Terjadi kesalahan saat menghapus data kontrak: ' . $e->getMessage());
         }

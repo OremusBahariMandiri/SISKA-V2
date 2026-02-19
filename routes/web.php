@@ -92,6 +92,7 @@ Route::middleware('auth')->group(function () {
     ->name('data-kontrak.check-employee');
 
     Route::resource('data-kontrak', DataKontrakController::class);
+    Route::delete('data-kontrak/{id}', [DataKontrakController::class, 'destroy'])->name('data-kontrak.destroy');
 
     // NEW: Route untuk mendapatkan data kontrak aktif (untuk pewarnaan row)
     Route::get('data-kontrak/active-contracts-data', [DataKontrakController::class, 'getActiveContractsData'])

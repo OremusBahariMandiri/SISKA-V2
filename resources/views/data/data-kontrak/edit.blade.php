@@ -154,6 +154,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
 
                             <!-- Tab 2: Data Kontrak (CRUD Table) -->
@@ -681,12 +682,17 @@
 
                         <!-- Global action buttons -->
                         <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                            <a href="{{ route('data-kontrak.index') }}" class="btn btn-secondary btn-lg">
-                                <i class="fas fa-times me-2"></i> Kembali ke Daftar
+                            <a href="{{ route('data-kontrak.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i> Kembali
                             </a>
-                            <div class="text-muted">
-                                <small><i class="fas fa-info-circle me-1"></i>Gunakan tab yang sesuai untuk mengedit data
-                                    spesifik</small>
+                            <div class="row">
+                                <div class="col-12 text-end">
+                                    <button type="button" class="btn btn-danger" id="deleteAllContractsBtn"
+                                        data-employee-id="{{ $dataKontrak->id }}"
+                                        data-employee-name="{{ $dataKontrak->karyawan->nama ?? 'N/A' }}">
+                                        <i class="fas fa-trash me-1"></i> Hapus Semua Kontrak
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -989,6 +995,41 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="button" class="btn btn-danger" id="confirmDeleteContract">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteAllContractsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Konfirmasi Hapus Semua Kontrak</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Peringatan!</strong> Tindakan ini akan menghapus <strong>SEMUA</strong> kontrak karyawan.
+                    </div>
+                    <p>Apakah Anda yakin ingin menghapus <strong>semua data kontrak</strong> untuk karyawan
+                        <strong>{{ $dataKontrak->karyawan->nama ?? 'N/A' }}</strong>?
+                    </p>
+                    <p class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Ini akan menghapus seluruh riwayat kontrak, pendidikan, dan karir karyawan tersebut.
+                        Data yang sudah dihapus tidak dapat dikembalikan.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <form id="deleteAllContractsForm" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger" id="confirmDeleteAllBtn">
+                            <i class="fas fa-trash me-1"></i>Hapus Semua Kontrak
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -1649,6 +1690,8 @@
                 $('#deleteContractModal').modal('show');
             });
 
+
+
             // ===== MODAL FIELD CONDITIONAL LOGIC (sama seperti sebelumnya) =====
             $('#modal_ktg_ktk').on('change', function() {
                 // Skip if in view mode
@@ -1971,6 +2014,69 @@
                                 icon: 'error'
                             });
                         }
+                    }
+                });
+            });
+
+            $('#deleteAllContractsBtn').on('click', function() {
+                const employeeId = $(this).data('employee-id');
+                const employeeName = $(this).data('employee-name');
+
+                // Set form action URL
+                const deleteUrl = `/data-kontrak/${employeeId}`;
+                $('#deleteAllContractsForm').attr('action', deleteUrl);
+
+                // Update employee name in modal
+                $('#deleteAllContractsModal .modal-body strong:last').text(employeeName);
+
+                // Show modal
+                $('#deleteAllContractsModal').modal('show');
+            });
+
+            $('#deleteAllContractsForm').on('submit', function(e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const actionUrl = form.attr('action');
+
+                Swal.fire({
+                    title: 'Konfirmasi Hapus',
+                    text: 'Apakah Anda benar-benar yakin? Semua data kontrak akan dihapus permanen!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus Semua!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: actionUrl,
+                            type: 'POST',
+                            data: form.serialize(),
+                            success: function(response) {
+                                $('#deleteAllContractsModal').modal('hide');
+                                Swal.fire({
+                                    title: 'Berhasil Dihapus!',
+                                    text: 'Semua data kontrak karyawan telah dihapus.',
+                                    icon: 'success',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.href =
+                                        "{{ route('data-kontrak.index') }}";
+                                });
+                            },
+                            error: function(xhr) {
+                                $('#deleteAllContractsModal').modal('hide');
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan saat menghapus data.',
+                                    icon: 'error'
+                                });
+                            }
+                        });
                     }
                 });
             });

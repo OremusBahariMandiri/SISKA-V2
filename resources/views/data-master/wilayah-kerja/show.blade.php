@@ -47,7 +47,7 @@
                                         </div>
 
                                         <div class="info-group mb-3">
-                                            <label class="info-label fw-bold">SKT Wilayah Kerja</label>
+                                            <label class="info-label fw-bold">SKTWK</label>
                                             <div class="info-value">
                                                 <div class="input-group">
                                                     <span class="input-group-text"><i class="fas fa-map"></i></span>
@@ -68,7 +68,7 @@
 
                                         @if ($wilayahKerja->singkatan_wk)
                                             <div class="info-group mb-3">
-                                                <label class="info-label fw-bold">Singkatan</label>
+                                                <label class="info-label fw-bold">SKTAK</label>
                                                 <div class="info-value">
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-tag"></i></span>

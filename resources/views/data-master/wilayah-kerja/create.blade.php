@@ -57,7 +57,7 @@
                                             </div>
 
                                             <div class="form-group mb-3">
-                                                <label for="skt_wilker" class="form-label fw-bold">SKT Wilayah Kerja <span
+                                                <label for="skt_wilker" class="form-label fw-bold">SKTWK <span
                                                         class="text-danger">*</span></label>
                                                 <div class="input-group">
                                                     <span class="input-group-text"><i class="fas fa-map"></i></span>
@@ -77,7 +77,7 @@
                                             </div>
 
                                             <div class="form-group mb-3">
-                                                <label for="singkatan_wk" class="form-label fw-bold">Singkatan</label>
+                                                <label for="singkatan_wk" class="form-label fw-bold">SKTAK</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                                     <input type="text" class="form-control auto-uppercase"

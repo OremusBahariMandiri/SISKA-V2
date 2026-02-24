@@ -37,13 +37,14 @@
                             <table id="wilayahKerjaTable" class="table table-bordered table-striped data-table">
                                 <thead class="table-light">
                                     <tr>
-                                        <th width="5%">No</th>
-                                        <th width="12%">Kode</th>
-                                        <th>Wilayah Kerja</th>
-                                        <th>Area Kerja</th>
-                                        <th>Singkatan</th>
-                                        <th>Kota</th>
-                                        <th>Telepon</th>
+                                        <th width="5%" class="text-center">No</th>
+                                        <th class="text-center" width="12%">Kode</th>
+                                        <th class="text-center">Wilayah Kerja</th>
+                                        <th class="text-center">SKTWK</th>
+                                        <th class="text-center">Area Kerja</th>
+                                        <th class="text-center">SKTAK</th>
+                                        <th class="text-center">Alamat</th>
+                                        <th class="text-center">Telepon</th>
                                         <th class="text-center" width="20%">Aksi</th>
                                     </tr>
                                 </thead>
@@ -53,9 +54,10 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $wilayahKerja->kode_wk }}</td>
                                             <td>{{ $wilayahKerja->wilayah_krj }}</td>
+                                            <td>{{ $wilayahKerja->skt_wilker }}</td>
                                             <td>{{ $wilayahKerja->area_krj }}</td>
                                             <td>{{ $wilayahKerja->singkatan_wk }}</td>
-                                            <td>{{ $wilayahKerja->kota_wk }}</td>
+                                            <td>{{ $wilayahKerja->alamat_wk }}</td>
                                             <td>{{ $wilayahKerja->tlp1 }}</td>
                                             <td>
                                                 <div class="d-flex gap-1 justify-content-center">

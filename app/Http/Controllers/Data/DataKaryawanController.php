@@ -119,7 +119,6 @@ class DataKaryawanController extends Controller
 
         // Get status options
         $statusOptions = [
-            'CALON' => 'CALON',
             'AKTIF' => 'AKTIF',
             'NON-AKTIF' => 'NON-AKTIF'
         ];

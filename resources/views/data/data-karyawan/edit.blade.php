@@ -90,171 +90,210 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                {{-- NIK --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="nik" class="form-label fw-bold">NIK KTP <span
-                                                                class="text-danger">*</span></label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-id-card-alt"></i></span>
-                                                            <input type="text" class="form-control no-uppercase"
-                                                                id="nik" name="nik"
-                                                                value="{{ old('nik', $dataKaryawan->nik) }}"
-                                                                minlength="16" maxlength="16" data-required="true">
+                                                <!-- Foto Karyawan - Kiri -->
+                                                <div class="col-md-3 text-center mb-4">
+                                                    <div class="employee-photo-container">
+                                                        <div class="photo-upload-box">
+                                                            @if ($dataKaryawan->foto_dokumen)
+                                                                <img id="photo_preview"
+                                                                    src="{{ Storage::url($dataKaryawan->foto_dokumen) }}"
+                                                                    alt="Preview Foto"
+                                                                    class="img-fluid rounded shadow employee-photo loaded">
+                                                                <div id="photo_placeholder"
+                                                                    class="default-avatar rounded shadow"
+                                                                    style="display: none;">
+                                                                    <i class="fas fa-user-circle fa-8x text-secondary"></i>
+                                                                    <p class="mt-3 mb-0 text-muted">
+                                                                        <small>Unggah Foto</small>
+                                                                    </p>
+                                                                </div>
+                                                            @else
+                                                                <img id="photo_preview" src="" alt="Preview Foto"
+                                                                    class="img-fluid rounded shadow employee-photo"
+                                                                    style="display: none;">
+                                                                <div id="photo_placeholder"
+                                                                    class="default-avatar rounded shadow">
+                                                                    <i class="fas fa-user-circle fa-8x text-secondary"></i>
+                                                                    <p class="mt-3 mb-0 text-muted">
+                                                                        <small>Unggah Foto</small>
+                                                                    </p>
+                                                                </div>
+                                                            @endif
                                                         </div>
-                                                        <div class="form-text text-muted">16 digit angka NIK KTP</div>
-                                                    </div>
-                                                </div>
-                                                {{-- Tempat Lahir --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="tpt_lahir" class="form-label fw-bold">Tempat Lahir
-                                                            <span class="text-danger">*</span></label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-map-marker-alt"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="tpt_lahir" name="tpt_lahir"
-                                                                value="{{ old('tpt_lahir', $dataKaryawan->tpt_lahir) }}"
-                                                                data-required="true">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                {{-- Nama Lengkap --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="nama" class="form-label fw-bold">Nama Lengkap
-                                                            <span class="text-danger">*</span></label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-user"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="nama" name="nama"
-                                                                value="{{ old('nama', $dataKaryawan->nama) }}"
-                                                                data-required="true">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {{-- Tgl Lahir --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="tgl_lahir" class="form-label fw-bold">
-                                                            <i class="fas fa-calendar-alt me-1"></i>Tanggal Lahir
-                                                            <span class="text-danger">*</span>
-                                                        </label>
-                                                        <input type="date" class="form-control" id="tgl_lahir"
-                                                            name="tgl_lahir"
-                                                            value="{{ old('tgl_lahir', $dataKaryawan->tgl_lahir ? \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->format('Y-m-d') : '') }}"
-                                                            data-required="true">
-                                                        <div id="usiaInfo" class="form-text text-muted mt-1"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                {{-- Sex --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="sex" class="form-label fw-bold">Jenis Kelamin
-                                                            <span class="text-danger">*</span></label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-venus-mars"></i></span>
-                                                            <div style="flex: 1">
-                                                                <select class="form-select select2" id="sex"
-                                                                    name="sex" data-required="true">
-                                                                    <option value="">Pilih Jenis Kelamin</option>
-                                                                    <option value="LAKI-LAKI"
-                                                                        {{ old('sex', $dataKaryawan->sex) == 'LAKI-LAKI' ? 'selected' : '' }}>
-                                                                        LAKI-LAKI</option>
-                                                                    <option value="PEREMPUAN"
-                                                                        {{ old('sex', $dataKaryawan->sex) == 'PEREMPUAN' ? 'selected' : '' }}>
-                                                                        PEREMPUAN</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {{-- Agama --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="agama" class="form-label fw-bold">Agama <span
-                                                                class="text-danger">*</span></label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-pray"></i></span>
-                                                            <div style="flex: 1">
-                                                                <select class="form-select select2" id="agama"
-                                                                    name="agama" data-required="true">
-                                                                    <option value="">Pilih Agama</option>
-                                                                    <option value="ISLAM"
-                                                                        {{ old('agama', $dataKaryawan->agama) == 'ISLAM' ? 'selected' : '' }}>
-                                                                        ISLAM</option>
-                                                                    <option value="KRISTEN"
-                                                                        {{ old('agama', $dataKaryawan->agama) == 'KRISTEN' ? 'selected' : '' }}>
-                                                                        KRISTEN</option>
-                                                                    <option value="KATOLIK"
-                                                                        {{ old('agama', $dataKaryawan->agama) == 'KATOLIK' ? 'selected' : '' }}>
-                                                                        KATOLIK</option>
-                                                                    <option value="HINDU"
-                                                                        {{ old('agama', $dataKaryawan->agama) == 'HINDU' ? 'selected' : '' }}>
-                                                                        HINDU</option>
-                                                                    <option value="BUDDHA"
-                                                                        {{ old('agama', $dataKaryawan->agama) == 'BUDDHA' ? 'selected' : '' }}>
-                                                                        BUDDHA</option>
-                                                                    <option value="KONGHUCU"
-                                                                        {{ old('agama', $dataKaryawan->agama) == 'KONGHUCU' ? 'selected' : '' }}>
-                                                                        KONGHUCU</option>
-                                                                    <option value="LAINNYA"
-                                                                        {{ old('agama', $dataKaryawan->agama) == 'LAINNYA' ? 'selected' : '' }}>
-                                                                        LAINNYA</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {{-- KWN --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="kewarganegaraan"
-                                                            class="form-label fw-bold">Kewarganegaraan</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-flag"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="kewarganegaraan" name="kewarganegaraan"
-                                                                value="{{ old('kewarganegaraan', $dataKaryawan->kewarganegaraan ?? 'INDONESIA') }}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {{-- FOTO --}}
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="foto_dokumen" class="form-label fw-bold">Unggah
-                                                            Dokumen</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-file-pdf"></i></span>
+                                                        <div class="form-group mb-3 mt-3">
+                                                            <label for="foto_dokumen" class="form-label fw-bold">
+                                                                <i class="fas fa-camera me-1"></i>Foto Karyawan
+                                                            </label>
                                                             <input type="file" class="form-control" id="foto_dokumen"
-                                                                name="foto_dokumen">
-                                                        </div>
-                                                        <div class="form-text text-muted">
-                                                            <i class="fas fa-info-circle me-1"></i>Format file: PDF, JPG,
-                                                            PNG, DOC, DOCX
-                                                        </div>
-                                                        @if ($dataKaryawan->foto_dokumen)
-                                                            <div class="mt-2">
-                                                                <small class="text-success">
-                                                                    <i class="fas fa-file-check me-1"></i>File saat ini:
-                                                                    <a href="{{ Storage::url($dataKaryawan->foto_dokumen) }}"
-                                                                        target="_blank">{{ basename($dataKaryawan->foto_dokumen) }}</a>
-                                                                </small>
+                                                                name="foto_dokumen"
+                                                                accept="image/jpeg,image/png,image/jpg">
+                                                            <div class="form-text text-muted">
+                                                                <i class="fas fa-info-circle me-1"></i>JPG, PNG (Max 2MB)
                                                             </div>
-                                                        @endif
+                                                            @if ($dataKaryawan->foto_dokumen)
+                                                                <div class="mt-2">
+                                                                    <small class="text-success">
+                                                                        <i class="fas fa-check-circle me-1"></i>Foto saat
+                                                                        ini tersimpan
+                                                                    </small>
+                                                                </div>
+                                                            @endif
+                                                            {{-- <button type="button"
+                                                                class="btn btn-sm btn-outline-danger mt-2 w-100"
+                                                                id="removePhotoBtn"
+                                                                style="display: {{ $dataKaryawan->foto_dokumen ? 'block' : 'none' }};">
+                                                                <i class="fas fa-trash me-1"></i>Hapus Foto
+                                                            </button> --}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Form Data Pribadi - Kanan -->
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        {{-- NIK --}}
+                                                        <div class="col-md-6">
+                                                            <div class="form-group mb-3">
+                                                                <label for="nik" class="form-label fw-bold">NIK KTP
+                                                                    <span class="text-danger">*</span></label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i
+                                                                            class="fas fa-id-card-alt"></i></span>
+                                                                    <input type="text"
+                                                                        class="form-control no-uppercase" id="nik"
+                                                                        name="nik"
+                                                                        value="{{ old('nik', $dataKaryawan->nik) }}"
+                                                                        minlength="16" maxlength="16"
+                                                                        data-required="true">
+                                                                </div>
+                                                                <div class="form-text text-muted">16 digit angka NIK KTP
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {{-- Nama Lengkap --}}
+                                                        <div class="col-md-6">
+                                                            <div class="form-group mb-3">
+                                                                <label for="nama" class="form-label fw-bold">Nama
+                                                                    Lengkap <span class="text-danger">*</span></label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i
+                                                                            class="fas fa-user"></i></span>
+                                                                    <input type="text"
+                                                                        class="form-control auto-uppercase" id="nama"
+                                                                        name="nama"
+                                                                        value="{{ old('nama', $dataKaryawan->nama) }}"
+                                                                        data-required="true">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {{-- Tempat Lahir --}}
+                                                        <div class="col-md-6">
+                                                            <div class="form-group mb-3">
+                                                                <label for="tpt_lahir" class="form-label fw-bold">Tempat
+                                                                    Lahir <span class="text-danger">*</span></label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i
+                                                                            class="fas fa-map-marker-alt"></i></span>
+                                                                    <input type="text"
+                                                                        class="form-control auto-uppercase" id="tpt_lahir"
+                                                                        name="tpt_lahir"
+                                                                        value="{{ old('tpt_lahir', $dataKaryawan->tpt_lahir) }}"
+                                                                        data-required="true">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {{-- Tgl Lahir --}}
+                                                        <div class="col-md-6">
+                                                            <div class="form-group mb-3">
+                                                                <label for="tgl_lahir" class="form-label fw-bold">
+                                                                    <i class="fas fa-calendar-alt me-1"></i>Tanggal Lahir
+                                                                    <span class="text-danger">*</span>
+                                                                </label>
+                                                                <input type="date" class="form-control" id="tgl_lahir"
+                                                                    name="tgl_lahir"
+                                                                    value="{{ old('tgl_lahir', $dataKaryawan->tgl_lahir ? \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->format('Y-m-d') : '') }}"
+                                                                    data-required="true">
+                                                                <div id="usiaInfo" class="form-text text-muted mt-1">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {{-- Sex --}}
+                                                        <div class="col-md-6">
+                                                            <div class="form-group mb-3">
+                                                                <label for="sex" class="form-label fw-bold">Jenis
+                                                                    Kelamin <span class="text-danger">*</span></label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i
+                                                                            class="fas fa-venus-mars"></i></span>
+                                                                    <div style="flex: 1">
+                                                                        <select class="form-select select2" id="sex"
+                                                                            name="sex" data-required="true">
+                                                                            <option value="">Pilih Jenis Kelamin
+                                                                            </option>
+                                                                            <option value="LAKI-LAKI"
+                                                                                {{ old('sex', $dataKaryawan->sex) == 'LAKI-LAKI' ? 'selected' : '' }}>
+                                                                                LAKI-LAKI</option>
+                                                                            <option value="PEREMPUAN"
+                                                                                {{ old('sex', $dataKaryawan->sex) == 'PEREMPUAN' ? 'selected' : '' }}>
+                                                                                PEREMPUAN</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {{-- Agama --}}
+                                                        <div class="col-md-6">
+                                                            <div class="form-group mb-3">
+                                                                <label for="agama" class="form-label fw-bold">Agama
+                                                                    <span class="text-danger">*</span></label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i
+                                                                            class="fas fa-pray"></i></span>
+                                                                    <div style="flex: 1">
+                                                                        <select class="form-select select2" id="agama"
+                                                                            name="agama" data-required="true">
+                                                                            <option value="">Pilih Agama</option>
+                                                                            <option value="ISLAM"
+                                                                                {{ old('agama', $dataKaryawan->agama) == 'ISLAM' ? 'selected' : '' }}>
+                                                                                ISLAM</option>
+                                                                            <option value="KRISTEN"
+                                                                                {{ old('agama', $dataKaryawan->agama) == 'KRISTEN' ? 'selected' : '' }}>
+                                                                                KRISTEN</option>
+                                                                            <option value="KATOLIK"
+                                                                                {{ old('agama', $dataKaryawan->agama) == 'KATOLIK' ? 'selected' : '' }}>
+                                                                                KATOLIK</option>
+                                                                            <option value="HINDU"
+                                                                                {{ old('agama', $dataKaryawan->agama) == 'HINDU' ? 'selected' : '' }}>
+                                                                                HINDU</option>
+                                                                            <option value="BUDDHA"
+                                                                                {{ old('agama', $dataKaryawan->agama) == 'BUDDHA' ? 'selected' : '' }}>
+                                                                                BUDDHA</option>
+                                                                            <option value="KONGHUCU"
+                                                                                {{ old('agama', $dataKaryawan->agama) == 'KONGHUCU' ? 'selected' : '' }}>
+                                                                                KONGHUCU</option>
+                                                                            <option value="LAINNYA"
+                                                                                {{ old('agama', $dataKaryawan->agama) == 'LAINNYA' ? 'selected' : '' }}>
+                                                                                LAINNYA</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {{-- KWN --}}
+                                                        <div class="col-md-12">
+                                                            <div class="form-group mb-3">
+                                                                <label for="kewarganegaraan"
+                                                                    class="form-label fw-bold">Kewarganegaraan</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text"><i
+                                                                            class="fas fa-flag"></i></span>
+                                                                    <input type="text"
+                                                                        class="form-control auto-uppercase"
+                                                                        id="kewarganegaraan" name="kewarganegaraan"
+                                                                        value="{{ old('kewarganegaraan', $dataKaryawan->kewarganegaraan ?? 'INDONESIA') }}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -829,8 +868,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                 {{-- Gelar --}}
-                                                 <div class="col-md-6">
+                                                {{-- Gelar --}}
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="gelar_skl" class="form-label fw-bold">Gelar</label>
                                                         <div class="input-group">
@@ -842,8 +881,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                 {{-- Jurusan --}}
-                                                 <div class="col-md-6">
+                                                {{-- Jurusan --}}
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="jurusan_skl"
                                                             class="form-label fw-bold">Jurusan</label>
@@ -1072,9 +1111,8 @@
                                                 </div>
 
                                                 <input type="text" class="form-control auto-uppercase"
-                                                id="skt_wil_krj" name="skt_wil_krj"
-                                                value="{{ old('skt_wil_krj', $dataKaryawan->skt_wil_krj) }}"
-                                                hidden>
+                                                    id="skt_wil_krj" name="skt_wil_krj"
+                                                    value="{{ old('skt_wil_krj', $dataKaryawan->skt_wil_krj) }}" hidden>
                                             </div>
 
                                             <div class="row">
@@ -1322,6 +1360,47 @@
         .nav-link.has-error {
             color: #dc3545 !important;
             border-color: #dc3545 !important;
+        }
+
+        /* Employee Photo Styling */
+        .employee-photo-container {
+            position: relative;
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        .employee-photo {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: cover;
+            border: 3px solid #0d6efd;
+        }
+
+        .default-avatar {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+            .employee-photo-container {
+                max-width: 200px;
+            }
+
+            .default-avatar {
+                height: 200px;
+            }
+
+            .default-avatar i {
+                font-size: 6rem !important;
+            }
         }
     </style>
 @endpush
@@ -1618,7 +1697,8 @@
 
                                         setTimeout(() => {
                                             if (ktpKel) {
-                                                $('#kel_dom').val(ktpKel).trigger('change');
+                                                $('#kel_dom').val(ktpKel).trigger(
+                                                    'change');
                                             }
                                         }, 500);
                                     }
@@ -1709,233 +1789,318 @@
                     unitSelect.prop('disabled', true);
                     unitSelect.html('<option value="">Loading...</option>');
                     $.ajax({
-                    url: `/data-karyawan/unit-kerja/${encodeURIComponent(wilayahKrj)}`,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.success) {
-                            unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+                        url: `/data-karyawan/unit-kerja/${encodeURIComponent(wilayahKrj)}`,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                unitSelect.html('<option value="">Pilih Unit Kerja</option>');
 
-                            response.data.forEach(function(unit) {
-                                const displayText = unit.singkatan_wk ?
-                                    `${unit.area_krj}` :
-                                    unit.area_krj;
+                                response.data.forEach(function(unit) {
+                                    const displayText = unit.singkatan_wk ?
+                                        `${unit.area_krj}` :
+                                        unit.area_krj;
 
-                                unitSelect.append(
-                                    `<option value="${unit.id}" data-singkatan="${unit.singkatan_wk || ''}">${displayText}</option>`
-                                );
-                            });
+                                    unitSelect.append(
+                                        `<option value="${unit.id}" data-singkatan="${unit.singkatan_wk || ''}">${displayText}</option>`
+                                    );
+                                });
 
-                            unitSelect.prop('disabled', false);
+                                unitSelect.prop('disabled', false);
 
-                            if (unitSelect.hasClass('select2-hidden-accessible')) {
-                                unitSelect.select2('destroy');
+                                if (unitSelect.hasClass('select2-hidden-accessible')) {
+                                    unitSelect.select2('destroy');
+                                }
+                                unitSelect.select2({
+                                    theme: 'bootstrap-5'
+                                });
+
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Data unit kerja berhasil dimuat',
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
                             }
-                            unitSelect.select2({
-                                theme: 'bootstrap-5'
-                            });
+                        },
+                        error: function(xhr, status, error) {
+                            unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+                            unitSelect.prop('disabled', false);
 
                             Swal.fire({
                                 toast: true,
                                 position: 'top-end',
-                                icon: 'success',
-                                title: 'Data unit kerja berhasil dimuat',
+                                icon: 'error',
+                                title: 'Gagal memuat data unit kerja',
                                 showConfirmButton: false,
-                                timer: 2000,
+                                timer: 3000,
                                 timerProgressBar: true
                             });
+
+                            console.error('Error:', error);
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        unitSelect.html('<option value="">Pilih Unit Kerja</option>');
-                        unitSelect.prop('disabled', false);
+                    });
+                } else {
+                    unitSelect.html('<option value="">Pilih Unit Kerja</option>');
+                    unitSelect.prop('disabled', true);
+                    sktInput.val('');
+                }
+            });
+
+            // ============ UNIT KERJA CHANGE HANDLER - AUTO-FILL SKT ============
+            $('#unit_krj').on('change', function() {
+                const selectedOption = $(this).find('option:selected');
+                const singkatan = selectedOption.data('singkatan');
+                const sktInput = $('#skt_wil_krj');
+
+                if (singkatan) {
+                    sktInput.val(singkatan);
+                } else {
+                    sktInput.val('');
+                }
+            });
+
+            // ============ SHOW/HIDE PHK CARD ============
+            document.getElementById('sts_kry').addEventListener('change', function() {
+                const phkCard = document.getElementById('phkCard');
+                if (this.value === 'NON-AKTIF') {
+                    phkCard.style.display = 'block';
+                } else {
+                    phkCard.style.display = 'none';
+                    document.getElementById('tgl_phk').value = '';
+                    document.getElementById('ket_phk').value = '';
+                }
+            });
+
+            // ============ CALCULATE CONTRACT DURATION ============
+            function calculateContractDuration() {
+                const startDate = document.getElementById('tgl_awal_ktr').value;
+                const endDate = document.getElementById('tgl_akhir_ktr').value;
+
+                if (startDate && endDate) {
+                    const start = new Date(startDate);
+                    const end = new Date(endDate);
+                    const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start
+                        .getMonth());
+                    document.getElementById('durasi_ktr').value = months > 0 ? months : '';
+                }
+            }
+
+            document.getElementById('tgl_awal_ktr').addEventListener('change', calculateContractDuration);
+            document.getElementById('tgl_akhir_ktr').addEventListener('change', calculateContractDuration);
+
+            // Trigger on page load if dates exist
+            if (document.getElementById('tgl_awal_ktr').value && document.getElementById('tgl_akhir_ktr').value) {
+                calculateContractDuration();
+            }
+
+            // ============ NIK VALIDATION ============
+            document.getElementById('nik').addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, ''); // Only numbers
+                if (this.value.length > 16) {
+                    this.value = this.value.slice(0, 16);
+                }
+            });
+
+            // ============ PHONE NUMBER VALIDATION ============
+            document.querySelectorAll('#tlp1, #tlp2').forEach(function(element) {
+                element.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9+\-\s]/g, '');
+                });
+            });
+
+            // ============ FORM VALIDATION BEFORE SUBMIT ============
+            document.getElementById('karyawanForm').addEventListener('submit', function(e) {
+                e.preventDefault(); // Always prevent default to check validation first
+
+                const requiredFields = this.querySelectorAll('[data-required="true"]');
+                let missingFields = [];
+                let firstInvalidField = null;
+
+                // Clear previous error states
+                requiredFields.forEach(function(field) {
+                    field.classList.remove('is-invalid');
+                });
+
+                // Check all required fields
+                requiredFields.forEach(function(field) {
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        missingFields.push(field.previousElementSibling?.textContent?.replace('*',
+                            '').trim() || field.name);
+                        if (!firstInvalidField) {
+                            firstInvalidField = field;
+                        }
+                    }
+                });
+
+                if (missingFields.length > 0) {
+                    // Create list of missing fields
+                    let fieldsList = '<ul class="text-start mb-0">';
+                    missingFields.forEach(function(fieldName) {
+                        fieldsList += '<li>' + fieldName + '</li>';
+                    });
+                    fieldsList += '</ul>';
+
+                    // Show SweetAlert2 warning
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Data Belum Lengkap',
+                        html: '<p class="mb-2">Mohon lengkapi field berikut yang wajib diisi:</p>' +
+                            fieldsList,
+                        confirmButtonText: 'OK, Saya Mengerti',
+                        confirmButtonColor: '#0d6efd',
+                        customClass: {
+                            confirmButton: 'btn btn-primary'
+                        }
+                    });
+
+                    // Find and activate the first tab with error
+                    if (firstInvalidField) {
+                        const tabPane = firstInvalidField.closest('.tab-pane');
+                        if (tabPane) {
+                            const tabId = tabPane.id;
+                            const tabButton = document.querySelector(`[data-bs-target="#${tabId}"]`);
+                            if (tabButton) {
+                                // Add error indicator to tab
+                                tabButton.classList.add('has-error');
+                                const tab = new bootstrap.Tab(tabButton);
+                                tab.show();
+
+                                // Scroll to first invalid field
+                                setTimeout(() => {
+                                    firstInvalidField.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'center'
+                                    });
+                                    firstInvalidField.focus();
+                                }, 300);
+                            }
+                        }
+                    }
+
+                    return false;
+                } else {
+                    // All validations passed, submit the form
+                    this.submit();
+                }
+            });
+
+            // ============ REMOVE ERROR CLASS WHEN FIELD IS FILLED ============
+            document.querySelectorAll('[data-required="true"]').forEach(function(field) {
+                field.addEventListener('input', function() {
+                    if (this.value.trim()) {
+                        this.classList.remove('is-invalid');
+
+                        // Remove error indicator from tab if all fields in tab are valid
+                        const tabPane = this.closest('.tab-pane');
+                        if (tabPane) {
+                            const invalidFieldsInTab = tabPane.querySelectorAll('.is-invalid');
+                            if (invalidFieldsInTab.length === 0) {
+                                const tabId = tabPane.id;
+                                const tabButton = document.querySelector(
+                                    `[data-bs-target="#${tabId}"]`);
+                                if (tabButton) {
+                                    tabButton.classList.remove('has-error');
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+            document.getElementById('foto_dokumen').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+
+                if (file) {
+                    // Validate file type
+                    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    if (!validTypes.includes(file.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Format File Salah',
+                            text: 'Hanya file JPG, JPEG, atau PNG yang diperbolehkan',
+                            confirmButtonColor: '#dc3545'
+                        });
+                        this.value = '';
+                        return;
+                    }
+
+                    // Validate file size (max 2MB)
+                    const maxSize = 2 * 1024 * 1024;
+                    if (file.size > maxSize) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'File Terlalu Besar',
+                            text: 'Ukuran file maksimal 2MB',
+                            confirmButtonColor: '#dc3545'
+                        });
+                        this.value = '';
+                        return;
+                    }
+
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const photoPreview = document.getElementById('photo_preview');
+                        const photoPlaceholder = document.getElementById('photo_placeholder');
+                        const removeBtn = document.getElementById('removePhotoBtn');
+
+                        photoPreview.src = event.target.result;
+                        photoPreview.style.display = 'block';
+                        photoPreview.classList.add('loaded');
+                        photoPlaceholder.style.display = 'none';
+                        removeBtn.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Remove photo button handler
+            document.getElementById('removePhotoBtn').addEventListener('click', function() {
+                const photoInput = document.getElementById('foto_dokumen');
+                const photoPreview = document.getElementById('photo_preview');
+                const photoPlaceholder = document.getElementById('photo_placeholder');
+                const removeBtn = document.getElementById('removePhotoBtn');
+
+                Swal.fire({
+                    title: 'Hapus Foto?',
+                    text: 'Anda yakin ingin menghapus foto yang sudah dipilih?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        photoInput.value = '';
+                        photoPreview.src = '';
+                        photoPreview.style.display = 'none';
+                        photoPreview.classList.remove('loaded');
+                        photoPlaceholder.style.display = 'flex';
+                        removeBtn.style.display = 'none';
 
                         Swal.fire({
                             toast: true,
                             position: 'top-end',
-                            icon: 'error',
-                            title: 'Gagal memuat data unit kerja',
+                            icon: 'success',
+                            title: 'Foto berhasil dihapus',
                             showConfirmButton: false,
-                            timer: 3000,
+                            timer: 2000,
                             timerProgressBar: true
                         });
-
-                        console.error('Error:', error);
                     }
                 });
-            } else {
-                unitSelect.html('<option value="">Pilih Unit Kerja</option>');
-                unitSelect.prop('disabled', true);
-                sktInput.val('');
-            }
-        });
-
-        // ============ UNIT KERJA CHANGE HANDLER - AUTO-FILL SKT ============
-        $('#unit_krj').on('change', function() {
-            const selectedOption = $(this).find('option:selected');
-            const singkatan = selectedOption.data('singkatan');
-            const sktInput = $('#skt_wil_krj');
-
-            if (singkatan) {
-                sktInput.val(singkatan);
-            } else {
-                sktInput.val('');
-            }
-        });
-
-        // ============ SHOW/HIDE PHK CARD ============
-        document.getElementById('sts_kry').addEventListener('change', function() {
-            const phkCard = document.getElementById('phkCard');
-            if (this.value === 'NON-AKTIF') {
-                phkCard.style.display = 'block';
-            } else {
-                phkCard.style.display = 'none';
-                document.getElementById('tgl_phk').value = '';
-                document.getElementById('ket_phk').value = '';
-            }
-        });
-
-        // ============ CALCULATE CONTRACT DURATION ============
-        function calculateContractDuration() {
-            const startDate = document.getElementById('tgl_awal_ktr').value;
-            const endDate = document.getElementById('tgl_akhir_ktr').value;
-
-            if (startDate && endDate) {
-                const start = new Date(startDate);
-                const end = new Date(endDate);
-                const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start
-                    .getMonth());
-                document.getElementById('durasi_ktr').value = months > 0 ? months : '';
-            }
-        }
-
-        document.getElementById('tgl_awal_ktr').addEventListener('change', calculateContractDuration);
-        document.getElementById('tgl_akhir_ktr').addEventListener('change', calculateContractDuration);
-
-        // Trigger on page load if dates exist
-        if (document.getElementById('tgl_awal_ktr').value && document.getElementById('tgl_akhir_ktr').value) {
-            calculateContractDuration();
-        }
-
-        // ============ NIK VALIDATION ============
-        document.getElementById('nik').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, ''); // Only numbers
-            if (this.value.length > 16) {
-                this.value = this.value.slice(0, 16);
-            }
-        });
-
-        // ============ PHONE NUMBER VALIDATION ============
-        document.querySelectorAll('#tlp1, #tlp2').forEach(function(element) {
-            element.addEventListener('input', function() {
-                this.value = this.value.replace(/[^0-9+\-\s]/g, '');
-            });
-        });
-
-        // ============ FORM VALIDATION BEFORE SUBMIT ============
-        document.getElementById('karyawanForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Always prevent default to check validation first
-
-            const requiredFields = this.querySelectorAll('[data-required="true"]');
-            let missingFields = [];
-            let firstInvalidField = null;
-
-            // Clear previous error states
-            requiredFields.forEach(function(field) {
-                field.classList.remove('is-invalid');
             });
 
-            // Check all required fields
-            requiredFields.forEach(function(field) {
-                if (!field.value.trim()) {
-                    field.classList.add('is-invalid');
-                    missingFields.push(field.previousElementSibling?.textContent?.replace('*',
-                        '').trim() || field.name);
-                    if (!firstInvalidField) {
-                        firstInvalidField = field;
-                    }
-                }
-            });
-
-            if (missingFields.length > 0) {
-                // Create list of missing fields
-                let fieldsList = '<ul class="text-start mb-0">';
-                missingFields.forEach(function(fieldName) {
-                    fieldsList += '<li>' + fieldName + '</li>';
-                });
-                fieldsList += '</ul>';
-
-                // Show SweetAlert2 warning
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Data Belum Lengkap',
-                    html: '<p class="mb-2">Mohon lengkapi field berikut yang wajib diisi:</p>' +
-                        fieldsList,
-                    confirmButtonText: 'OK, Saya Mengerti',
-                    confirmButtonColor: '#0d6efd',
-                    customClass: {
-                        confirmButton: 'btn btn-primary'
-                    }
-                });
-
-                // Find and activate the first tab with error
-                if (firstInvalidField) {
-                    const tabPane = firstInvalidField.closest('.tab-pane');
-                    if (tabPane) {
-                        const tabId = tabPane.id;
-                        const tabButton = document.querySelector(`[data-bs-target="#${tabId}"]`);
-                        if (tabButton) {
-                            // Add error indicator to tab
-                            tabButton.classList.add('has-error');
-                            const tab = new bootstrap.Tab(tabButton);
-                            tab.show();
-
-                            // Scroll to first invalid field
-                            setTimeout(() => {
-                                firstInvalidField.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'center'
-                                });
-                                firstInvalidField.focus();
-                            }, 300);
-                        }
-                    }
-                }
-
-                return false;
-            } else {
-                // All validations passed, submit the form
-                this.submit();
-            }
+            // ============ START LOADING - Wait minimal time for region API init ============
+            setTimeout(() => {
+                loadExistingAddressData();
+                loadExistingKarirData();
+            }, 800);
         });
-
-        // ============ REMOVE ERROR CLASS WHEN FIELD IS FILLED ============
-        document.querySelectorAll('[data-required="true"]').forEach(function(field) {
-            field.addEventListener('input', function() {
-                if (this.value.trim()) {
-                    this.classList.remove('is-invalid');
-
-                    // Remove error indicator from tab if all fields in tab are valid
-                    const tabPane = this.closest('.tab-pane');
-                    if (tabPane) {
-                        const invalidFieldsInTab = tabPane.querySelectorAll('.is-invalid');
-                        if (invalidFieldsInTab.length === 0) {
-                            const tabId = tabPane.id;
-                            const tabButton = document.querySelector(
-                                `[data-bs-target="#${tabId}"]`);
-                            if (tabButton) {
-                                tabButton.classList.remove('has-error');
-                            }
-                        }
-                    }
-                }
-            });
-        });
-
-        // ============ START LOADING - Wait minimal time for region API init ============
-        setTimeout(() => {
-            loadExistingAddressData();
-            loadExistingKarirData();
-        }, 800);
-    });
-</script>
+    </script>

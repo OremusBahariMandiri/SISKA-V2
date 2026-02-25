@@ -191,6 +191,13 @@
                                                                                     id="emp_jml_anak" readonly>
                                                                             </div>
                                                                         </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">Email</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_email" readonly>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1775,7 +1782,7 @@
                 $('#employeeInfo').show();
 
                 const loadingText = 'Loading...';
-                $('#emp_nik, #emp_nrk, #emp_tpt_lahir, #emp_tgl_lahir, #emp_sex, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak').val(loadingText);
+                $('#emp_nik, #emp_nrk, #emp_tpt_lahir, #emp_tgl_lahir, #emp_sex, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak, #emp_email' ).val(loadingText);
                 $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val(loadingText);
 
                 try {
@@ -1800,6 +1807,7 @@
                         $('#emp_tlp1').val(emp.tlp1 || '-');
                         $('#emp_sts_nikah').val(emp.sts_nikah || '-');
                         $('#emp_jml_anak').val(emp.jml_anak || '-');
+                        $('#emp_email').val(emp.email1 || '-');
 
                         // Handle employee photo
                         if (emp.foto_dokumen) {
@@ -1840,7 +1848,7 @@
                 } catch (error) {
                     console.error('❌ Employee data loading error:', error);
 
-                    $('#emp_nik, #emp_nrk, #emp_tpt_lahir, #emp_tgl_lahir, #emp_sex, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak').val('Error');
+                    $('#emp_nik, #emp_nrk, #emp_tpt_lahir, #emp_tgl_lahir, #emp_sex, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak, #emp_email').val('Error');
                     $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val('Error');
 
                     let errorMessage = 'Gagal memuat data karyawan';

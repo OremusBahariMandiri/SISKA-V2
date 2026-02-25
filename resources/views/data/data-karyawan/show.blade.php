@@ -74,183 +74,87 @@
                         <!-- Tab panes -->
                         <div class="tab-content">
                             <!-- Data Pribadi -->
-                            <div class="tab-pane fade show active" id="biodata" role="tabpanel"
-                                aria-labelledby="biodata-tab">
-                                <!-- Data Pribadi -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Data Pribadi</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">NIK KTP</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-id-card-alt text-primary me-2"></i>
-                                                    {{ $dataKaryawan->nik ?? '-' }}
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Tempat Lahir</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                                                    {{ $dataKaryawan->tpt_lahir ?? '-' }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Nama Lengkap</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-user text-primary me-2"></i>
-                                                    {{ $dataKaryawan->nama ?? '-' }}
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Tanggal Lahir</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-calendar-alt text-primary me-2"></i>
-                                                    {{ $dataKaryawan->tgl_lahir ? \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->format('d F Y') : '-' }}
-                                                    @if ($dataKaryawan->tgl_lahir)
-                                                        <span class="badge bg-info ms-2">
-                                                            {{ \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->age }} tahun
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Jenis Kelamin</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-venus-mars text-primary me-2"></i>
-                                                    {{ $dataKaryawan->sex ?? '-' }}
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Agama</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-pray text-primary me-2"></i>
-                                                    {{ $dataKaryawan->agama ?? '-' }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Kewarganegaraan</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-flag text-primary me-2"></i>
-                                                    {{ $dataKaryawan->kewarganegaraan ?? '-' }}
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Dokumen</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-file-pdf text-primary me-2"></i>
-                                                    @if ($dataKaryawan->foto_dokumen)
-                                                        <a href="{{ Storage::url($dataKaryawan->foto_dokumen) }}"
-                                                            target="_blank" class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-download me-1"></i>Unduh Dokumen
-                                                        </a>
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="card border-secondary mb-4">
+                                <div class="card-header bg-secondary bg-opacity-25">
+                                    <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Data Pribadi</h5>
                                 </div>
-
-                                <!-- Status Keluarga -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Status Keluarga
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold text-muted">Status Pernikahan</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-heart text-primary me-2"></i>
-                                                    {{ $dataKaryawan->sts_nikah ?? '-' }}
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold text-muted">Status dalam Keluarga</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-user-friends text-primary me-2"></i>
-                                                    {{ $dataKaryawan->sts_keluarga ?? '-' }}
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold text-muted">Jumlah Anak</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-baby text-primary me-2"></i>
-                                                    {{ $dataKaryawan->jml_anak ?? '0' }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Informasi Kontak -->
-                                <div class="card border-secondary mb-4">
-                                    <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-id-card me-2"></i>Informasi Kontak
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">No. Telepon Utama</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-phone text-primary me-2"></i>
-                                                    {{ $dataKaryawan->tlp1 ?? '-' }}
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">No. Telepon Alternatif</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-mobile-alt text-primary me-2"></i>
-                                                    {{ $dataKaryawan->tlp2 ?? '-' }}
-                                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Foto Karyawan - Kiri -->
+                                        <div class="col-md-3 text-center mb-4">
+                                            <div class="employee-photo-container">
+                                                @if ($dataKaryawan->foto_dokumen)
+                                                    <img src="{{ Storage::url($dataKaryawan->foto_dokumen) }}"
+                                                        alt="Foto {{ $dataKaryawan->nama }}"
+                                                        class="img-fluid rounded shadow employee-photo">
+                                                @else
+                                                    <div class="default-avatar rounded shadow">
+                                                        <i class="fas fa-user-circle fa-8x text-secondary"></i>
+                                                        <p class="mt-3 mb-0 text-muted">
+                                                            <small>Tidak ada foto</small>
+                                                        </p>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Email Utama</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-envelope text-primary me-2"></i>
-                                                    {{ $dataKaryawan->email1 ?? '-' }}
+                                        <!-- Data Pribadi - Kanan -->
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold text-muted">NIK KTP</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-id-card-alt text-primary me-2"></i>
+                                                        {{ $dataKaryawan->nik ?? '-' }}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Email Alternatif</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-envelope text-primary me-2"></i>
-                                                    {{ $dataKaryawan->email2 ?? '-' }}
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Nama Lengkap</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-user text-primary me-2"></i>
+                                                        {{ $dataKaryawan->nama ?? '-' }}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Instagram</label>
-                                                <div class="detail-value">
-                                                    <i class="fab fa-instagram text-primary me-2"></i>
-                                                    {{ $dataKaryawan->instagram ?? '-' }}
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Tempat Lahir</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                        {{ $dataKaryawan->tpt_lahir ?? '-' }}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Facebook</label>
-                                                <div class="detail-value">
-                                                    <i class="fab fa-facebook text-primary me-2"></i>
-                                                    {{ $dataKaryawan->facebook ?? '-' }}
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Tanggal Lahir</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-calendar-alt text-primary me-2"></i>
+                                                        {{ $dataKaryawan->tgl_lahir ? \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->format('d F Y') : '-' }}
+                                                        @if ($dataKaryawan->tgl_lahir)
+                                                            <span class="badge bg-info ms-2">
+                                                                {{ \Carbon\Carbon::parse($dataKaryawan->tgl_lahir)->age }}
+                                                                tahun
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Jenis Kelamin</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-venus-mars text-primary me-2"></i>
+                                                        {{ $dataKaryawan->sex ?? '-' }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Agama</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-pray text-primary me-2"></i>
+                                                        {{ $dataKaryawan->agama ?? '-' }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Kewarganegaraan</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-flag text-primary me-2"></i>
+                                                        {{ $dataKaryawan->kewarganegaraan ?? '-' }}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -768,6 +672,46 @@
 
         .bg-light {
             background-color: #f8f9fa;
+        }
+
+        .employee-photo-container {
+            position: relative;
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        .employee-photo {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: cover;
+            border: 3px solid #0d6efd;
+        }
+
+        .default-avatar {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+        }
+
+        @media (max-width: 768px) {
+            .employee-photo-container {
+                max-width: 200px;
+            }
+
+            .default-avatar {
+                height: 200px;
+            }
+
+            .default-avatar i {
+                font-size: 6rem !important;
+            }
         }
     </style>
 @endpush

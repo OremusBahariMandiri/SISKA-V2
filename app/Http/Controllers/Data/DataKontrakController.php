@@ -1215,6 +1215,7 @@ class DataKontrakController extends Controller
                     'nik' => $employee->nik,
                     'nrk' => $employee->nrk,
                     'nama' => $employee->nama,
+                    'foto_dokumen' => $employee->foto_dokumen,
                     'tpt_lahir' => $employee->tpt_lahir,
                     'tgl_lahir' => $employee->tgl_lahir ? $employee->tgl_lahir->format('Y-m-d') : null,
                     'tgl_lahir_formatted' => $employee->tgl_lahir ? $employee->tgl_lahir->format('d-m-Y') : null,

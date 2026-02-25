@@ -552,11 +552,11 @@
                             {{-- Unit Kerja --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
-                                    <label for="filter_unit_kerja" class="form-label fw-bold">Unit Kerja</label>
+                                    <label for="filter_unit_kerja" class="form-label fw-bold">Area Kerja</label>
                                     <div style="flex: 1">
                                         <select class="form-select select2" id="filter_unit_kerja"
                                             name="filter_unit_kerja">
-                                            <option value="">Semua Unit Kerja</option>
+                                            <option value="">Semua Area Kerja</option>
                                             @foreach ($unitKerjaOptions as $unitKerja)
                                                 <option value="{{ $unitKerja->id }}"
                                                     {{ $currentFilters['unit_kerja'] == $unitKerja->id ? 'selected' : '' }}>

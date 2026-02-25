@@ -204,8 +204,8 @@
                                         <th width="7%" class="text-center">TGL HK</th>
                                         <th width="8%" class="text-center">DEP</th>
                                         <th width="7%" class="text-center">JBT</th>
-                                        <th width="7%" class="text-center">SKTWK</th>
-                                        <th width="7%" class="text-center">SKTAK</th>
+                                        <th width="7%" class="text-center">WILKER</th>
+                                        <th width="7%" class="text-center">AREA</th>
                                         <th width="7%" class="text-center">STKAR</th>
                                         <th width="7%" class="text-center">TGL NA</th>
                                         <th width="8%" class="text-center">MKR</th>

@@ -32,100 +32,8 @@ class DataKontrakController extends Controller
 
     public function index(Request $request)
     {
-        // Get latest contract per employee using raw query for better performance
-        $latestContractsQuery = DB::table('202_dm_data_kontrak as dk')
-            ->select('dk.*')
-            ->whereIn('dk.id', function ($query) {
-                $query->select(DB::raw('MAX(id)'))
-                    ->from('202_dm_data_kontrak')
-                    ->groupBy('id_data_kry');
-            });
-
-        // Apply filters to the subquery
-        if ($request->has('filter_status') && !empty($request->filter_status)) {
-            $latestContractsQuery->where('dk.sts_srt_ktr', $request->filter_status);
-        }
-
-        if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
-            $latestContractsQuery->where('dk.id_prsh', $request->filter_perusahaan);
-        }
-
-        if ($request->has('filter_kontrak_type') && !empty($request->filter_kontrak_type)) {
-            $latestContractsQuery->where('dk.id_ktr', $request->filter_kontrak_type);
-        }
-
-        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
-            $latestContractsQuery->where('dk.id_departemen', $request->filter_departemen);
-        }
-
-        if ($request->has('filter_wilayah_kerja') && !empty($request->filter_wilayah_kerja)) {
-            $latestContractsQuery->where('dk.id_wilker', $request->filter_wilayah_kerja);
-        }
-
-        // Filter by contract status (active/expired/expiring soon)
-        if ($request->has('filter_contract_status') && !empty($request->filter_contract_status)) {
-            switch ($request->filter_contract_status) {
-                case 'active':
-                    $latestContractsQuery->where('dk.sts_srt_ktr', 'AKTIF')
-                        ->whereNotNull('dk.tgl_awl_ktr')
-                        ->whereNotNull('dk.tgl_akhir_ktr')
-                        ->whereRaw('STR_TO_DATE(dk.tgl_awl_ktr, "%Y-%m-%d") <= CURDATE()')
-                        ->whereRaw('STR_TO_DATE(dk.tgl_akhir_ktr, "%Y-%m-%d") >= CURDATE()');
-                    break;
-                case 'expired':
-                    $latestContractsQuery->whereNotNull('dk.tgl_akhir_ktr')
-                        ->whereRaw('STR_TO_DATE(dk.tgl_akhir_ktr, "%Y-%m-%d") < CURDATE()');
-                    break;
-                case 'expiring_soon':
-                    $latestContractsQuery->whereNotNull('dk.tgl_akhir_ktr')
-                        ->whereRaw('STR_TO_DATE(dk.tgl_akhir_ktr, "%Y-%m-%d") BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)');
-                    break;
-            }
-        }
-
-        // Education level filter
-        if ($request->has('filter_education_level') && !empty($request->filter_education_level)) {
-            $latestContractsQuery->where('dk.jenjang_skl', $request->filter_education_level);
-        }
-
-        // Search functionality
-        if ($request->has('search') && !empty($request->search)) {
-            $latestContractsQuery->where(function ($query) use ($request) {
-                $search = $request->search;
-                $query->where('dk.no_srt_ktr', 'like', '%' . $search . '%')
-                    ->orWhereExists(function ($subQuery) use ($search) {
-                        $subQuery->select(DB::raw(1))
-                            ->from('201_dm_data_karyawan as k')
-                            ->whereColumn('k.id', 'dk.id_data_kry')
-                            ->where(function ($kQuery) use ($search) {
-                                $kQuery->where('k.nama', 'like', '%' . $search . '%')
-                                    ->orWhere('k.nrk', 'like', '%' . $search . '%')
-                                    ->orWhere('k.nik', 'like', '%' . $search . '%');
-                            });
-                    });
-            });
-        }
-
-        if ($request->has('export')) {
-            $exportType = $request->export;
-
-            // Get filtered data first
-            $data = $this->getFilteredData($request->all());
-
-            switch ($exportType) {
-                case 'excel':
-                    return $this->exportExcel($request);
-                case 'pdf':
-                    return $this->exportPDF($request);
-                case 'csv':
-                    return $this->exportCSV($request);
-            }
-        }
-
-        // Get the latest contracts with relationships
-        $dataKontraks = DataKontrak::whereIn('id', function ($query) use ($latestContractsQuery) {
-            $query->select('id')->fromSub($latestContractsQuery, 'latest_contracts');
-        })->with([
+        // Initialize query with relationships
+        $query = DataKontrak::with([
             'karyawan',
             'kontrakKerja',
             'perusahaan',
@@ -133,22 +41,107 @@ class DataKontrakController extends Controller
             'wilayahKerja',
             'creator',
             'updater'
-        ])->orderBy('created_at', 'desc')->get();
+        ]);
 
+        // Get latest contract per employee first
+        $query->whereIn('id', function ($subquery) {
+            $subquery->select(DB::raw('MAX(id)'))
+                ->from('202_dm_data_kontrak')
+                ->groupBy('id_data_kry');
+        });
+
+        // Apply filters if they exist - SAMA PERSIS DENGAN DATA KARYAWAN
+
+        // Filter by Status Kontrak
+        if ($request->has('filter_status') && !empty($request->filter_status)) {
+            $query->where('sts_srt_ktr', $request->filter_status);
+        }
+
+        // Filter by Perusahaan
+        if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
+            $query->where('id_prsh', $request->filter_perusahaan);
+        }
+
+        // Filter by Nama Karyawan
+        if ($request->has('filter_nama') && !empty($request->filter_nama)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('nama', 'LIKE', '%' . $request->filter_nama . '%');
+            });
+        }
+
+        // Filter by NRK
+        if ($request->has('filter_nrk') && !empty($request->filter_nrk)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('nrk', 'LIKE', '%' . $request->filter_nrk . '%');
+            });
+        }
+
+        // Filter by Departemen (grouped by nama_dep)
+        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
+            $selectedDepartemen = Departemen::find($request->filter_departemen);
+            if ($selectedDepartemen) {
+                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
+                $query->whereIn('id_departemen', $departemenIds);
+            }
+        }
+
+        // Filter by Jabatan (specific position)
+        if ($request->has('filter_jabatan') && !empty($request->filter_jabatan)) {
+            $query->where('id_departemen', $request->filter_jabatan);
+        }
+
+        // Filter by Jenis Kontrak
+        if ($request->has('filter_kontrak') && !empty($request->filter_kontrak)) {
+            $query->where('id_ktr', $request->filter_kontrak);
+        }
+
+        // Filter by Jenis Kelamin
+        if ($request->has('filter_jenis_kelamin') && !empty($request->filter_jenis_kelamin)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('sex', $request->filter_jenis_kelamin);
+            });
+        }
+
+        // Filter by Wilayah Kerja (wilker field stores STRING)
+        if ($request->has('filter_wilker') && !empty($request->filter_wilker)) {
+            $query->whereHas('wilayahKerja', function ($q) use ($request) {
+                $q->where('wilayah_krj', $request->filter_wilker);
+            });
+        }
+
+        // Filter by Unit Kerja (area_krj)
+        if ($request->has('filter_unit_kerja') && !empty($request->filter_unit_kerja)) {
+            $query->where('id_wilker', $request->filter_unit_kerja);
+        }
+
+        // Get filtered data
+        $dataKontraks = $query->orderBy('created_at', 'desc')->get();
+
+        // Handle export
+        if ($request->has('export')) {
+            $exportType = $request->export;
+            $filteredData = $this->getFilteredData($request->all());
+
+            switch ($exportType) {
+                case 'excel':
+                    return $this->exportExcel($filteredData);
+                case 'pdf':
+                    return $this->exportPDF($filteredData);
+                case 'csv':
+                    return $this->exportCSV($filteredData);
+            }
+        }
+
+        // Calculate contract counts per employee
         $contractCounts = [];
         foreach ($dataKontraks as $kontrak) {
             $employeeId = $kontrak->id_data_kry;
 
             if (!isset($contractCounts[$employeeId])) {
-                // Count total contracts for this employee
                 $totalContracts = DataKontrak::where('id_data_kry', $employeeId)->count();
-
-                // Count active contracts
                 $activeContracts = DataKontrak::where('id_data_kry', $employeeId)
                     ->where('sts_srt_ktr', 'AKTIF')
                     ->count();
-
-                // Count non-active contracts
                 $nonActiveContracts = DataKontrak::where('id_data_kry', $employeeId)
                     ->where('sts_srt_ktr', '!=', 'AKTIF')
                     ->count();
@@ -161,14 +154,12 @@ class DataKontrakController extends Controller
             }
         }
 
-        // ========== ACTIVE CONTRACTS DATA CALCULATION ==========
+        // Calculate active contracts data
         $activeContractsData = [];
         foreach ($dataKontraks as $kontrak) {
             $employeeId = $kontrak->id_data_kry;
 
-            // For the latest contract display, we'll use the current contract data
             if ($kontrak->sts_srt_ktr === 'AKTIF' && $kontrak->tgl_akhir_ktr) {
-
                 $endDate = \Carbon\Carbon::parse($kontrak->tgl_akhir_ktr);
                 $reminderDate = $kontrak->tgl_pgt_ktr ? \Carbon\Carbon::parse($kontrak->tgl_pgt_ktr) : null;
                 $today = \Carbon\Carbon::now()->startOf('day');
@@ -176,50 +167,42 @@ class DataKontrakController extends Controller
                 $daysUntilExpiry = $today->diffInDays($endDate, false);
                 $daysUntilReminder = $reminderDate ? $today->diffInDays($reminderDate, false) : null;
 
-                // Determine priority and status based on reminder date first, then end date
-                $priority = 4; // default normal
+                $priority = 4;
                 $status = 'normal';
                 $badgeClass = 'bg-success';
                 $warningText = 'Aman';
 
                 if ($reminderDate && $daysUntilReminder <= 0) {
-                    // Reminder date has passed or is today
                     $priority = 1;
                     $status = 'expired';
                     $badgeClass = 'bg-danger';
                     $warningText = $daysUntilReminder == 0 ? 'Hari ini' : 'Terlambat ' . abs($daysUntilReminder) . ' hari';
                 } elseif ($daysUntilExpiry < 0) {
-                    // Contract expired
                     $priority = 1;
                     $status = 'expired';
                     $badgeClass = 'bg-danger';
                     $warningText = 'Terlambat ' . abs($daysUntilExpiry) . ' hari';
                 } elseif ($reminderDate && $daysUntilReminder <= 7) {
-                    // Urgent - reminder within 7 days
                     $priority = 2;
                     $status = 'urgent';
                     $badgeClass = 'bg-warning text-dark';
                     $warningText = $daysUntilReminder . ' hari lagi';
                 } elseif ($daysUntilExpiry <= 7) {
-                    // Urgent - expires within 7 days
                     $priority = 2;
                     $status = 'urgent';
                     $badgeClass = 'bg-warning text-dark';
                     $warningText = $daysUntilExpiry . ' hari lagi';
                 } elseif ($reminderDate && $daysUntilReminder <= 30) {
-                    // Warning - reminder within 30 days
                     $priority = 3;
                     $status = 'warning';
                     $badgeClass = 'bg-info';
                     $warningText = $daysUntilReminder . ' hari lagi';
                 } elseif ($daysUntilExpiry <= 30) {
-                    // Warning - expires within 30 days
                     $priority = 3;
                     $status = 'warning';
                     $badgeClass = 'bg-info';
                     $warningText = $daysUntilExpiry . ' hari lagi';
                 } else {
-                    // Safe
                     $warningText = $reminderDate ? $daysUntilReminder . ' hari lagi' : $daysUntilExpiry . ' hari lagi';
                 }
 
@@ -243,10 +226,9 @@ class DataKontrakController extends Controller
                     'has_active_contract' => true
                 ];
             } else {
-                // No active contract or contract is not active
                 $activeContractsData[$employeeId] = [
                     'has_active_contract' => false,
-                    'priority' => 5, // lowest priority
+                    'priority' => 5,
                     'status' => 'no_active',
                     'badge_class' => 'bg-secondary',
                     'warning_text' => 'Tidak ada kontrak aktif'
@@ -254,14 +236,14 @@ class DataKontrakController extends Controller
             }
         }
 
-        // Sort contracts by priority (expired first, then by priority level)
+        // Sort contracts by priority
         $dataKontraks = $dataKontraks->sort(function ($a, $b) use ($activeContractsData) {
             $priorityA = $activeContractsData[$a->id_data_kry]['priority'] ?? 5;
             $priorityB = $activeContractsData[$b->id_data_kry]['priority'] ?? 5;
-
             return $priorityA <=> $priorityB;
         })->values();
 
+        // Calculate expired and expiring contracts count
         $today = \Carbon\Carbon::now()->startOf('day')->format('Y-m-d');
 
         $expiredContractsCount = DataKontrak::uniqueEmployees()
@@ -277,7 +259,7 @@ class DataKontrakController extends Controller
             ->whereRaw("STR_TO_DATE(tgl_pgt_ktr, '%Y-%m-%d') <= DATE_ADD(?, INTERVAL 30 DAY)", [$today])
             ->count();
 
-        // Get master data for filter dropdowns
+        // Get master data for filter dropdowns - SAMA DENGAN DATA KARYAWAN
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
         $kontrakTypes = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
         $departemens = Departemen::sortByCode()->get();
@@ -291,53 +273,34 @@ class DataKontrakController extends Controller
             'PENDING' => 'PENDING'
         ];
 
-        // Contract status options
-        $contractStatusOptions = [
-            'active' => 'Kontrak Aktif',
-            'expired' => 'Kontrak Berakhir',
-            'expiring_soon' => 'Akan Berakhir (30 hari)'
-        ];
-
-        // Education level options
-        $educationLevelOptions = [
-            'SD' => 'SD',
-            'SMP' => 'SMP',
-            'SMA' => 'SMA',
-            'SMK' => 'SMK',
-            'D1' => 'D1',
-            'D2' => 'D2',
-            'D3' => 'D3',
-            'D4' => 'D4',
-            'S1' => 'S1',
-            'S2' => 'S2',
-            'S3' => 'S3'
-        ];
-
-        // Gender options
+        // Gender options - SAMA DENGAN DATA KARYAWAN
         $jenisKelaminOptions = [
-            'LAKI-LAKI' => 'LAKI-LAKI',
-            'PEREMPUAN' => 'PEREMPUAN'
+            'LAKI-LAKI' => 'Laki-laki',
+            'PEREMPUAN' => 'Perempuan'
         ];
 
-        // Department options (for filter)
-        $departemenOptions = $departemens->unique('nama_dep')->values();
+        // Get unique departemen names for filter dropdown - SAMA DENGAN DATA KARYAWAN
+        $departemenOptions = Departemen::select('nama_dep', 'singkatan_dep', DB::raw('MIN(id) as id'), DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode_dep'))
+            ->groupBy('nama_dep', 'singkatan_dep')
+            ->orderBy('min_kode_dep', 'asc')
+            ->get();
 
-        // Jabatan options (same as departemen for filter)
-        $jabatanOptions = $departemens;
+        // Get all jabatan/positions for filter dropdown - SAMA DENGAN DATA KARYAWAN
+        $jabatanOptions = Departemen::sortByCode()->get(['id', 'kode_dep', 'nama_dep', 'nama_jbt', 'singkatan_jbt']);
 
-        // Wilayah Kerja options
-        $wilayahKerjaOptions = $wilayahKerjas->unique('wilayah_krj')->values();
+        // Get contract types for filter dropdown
+        $kontrakOptions = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
 
-        // Kontrak options
-        $kontrakOptions = $kontrakTypes;
+        // Get UNIQUE wilayah_krj for filter dropdown - SAMA DENGAN DATA KARYAWAN
+        $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
+            ->groupBy('wilayah_krj')
+            ->orderBy('wilayah_krj', 'asc')
+            ->get();
 
-        // FIXED: Get DataKaryawan collection for summary statistics
-        $dataKaryawans = collect();
-        foreach ($dataKontraks as $kontrak) {
-            if ($kontrak->karyawan) {
-                $dataKaryawans->push($kontrak->karyawan);
-            }
-        }
+        // Unit Kerja options - SAMA DENGAN DATA KARYAWAN
+        $unitKerjaOptions = WilayahKerja::select('id', 'area_krj', 'kode_wk')
+            ->orderBy('area_krj')
+            ->get();
 
         // Get user permissions
         $userPermissions = [];
@@ -367,23 +330,27 @@ class DataKontrakController extends Controller
             }
         }
 
-        // FIXED: Store current filters for view - include ALL possible filter keys
+        // Store current filters for view - SAMA DENGAN DATA KARYAWAN
         $currentFilters = [
             'status' => $request->filter_status ?? '',
             'perusahaan' => $request->filter_perusahaan ?? '',
-            'kontrak_type' => $request->filter_kontrak_type ?? '',
-            'departemen' => $request->filter_departemen ?? '',
-            'wilayah_kerja' => $request->filter_wilayah_kerja ?? '',
-            'contract_status' => $request->filter_contract_status ?? '',
-            'education_level' => $request->filter_education_level ?? '',
-            'search' => $request->search ?? '',
-            // ADD missing filter keys to prevent undefined array key errors
             'nama' => $request->filter_nama ?? '',
-            'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
+            'nrk' => $request->filter_nrk ?? '',
+            'departemen' => $request->filter_departemen ?? '',
             'jabatan' => $request->filter_jabatan ?? '',
-            'wilker' => $request->filter_wilker ?? '',
             'kontrak' => $request->filter_kontrak ?? '',
+            'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
+            'wilker' => $request->filter_wilker ?? '',
+            'unit_kerja' => $request->filter_unit_kerja ?? '',
         ];
+
+        // Get DataKaryawan collection for summary statistics
+        $dataKaryawans = collect();
+        foreach ($dataKontraks as $kontrak) {
+            if ($kontrak->karyawan) {
+                $dataKaryawans->push($kontrak->karyawan);
+            }
+        }
 
         return view('data.data-kontrak.index', compact(
             'dataKontraks',
@@ -395,21 +362,19 @@ class DataKontrakController extends Controller
             'departemens',
             'wilayahKerjas',
             'statusOptions',
-            'contractStatusOptions',
-            'educationLevelOptions',
             'expiredContractsCount',
             'expiringContractsCount',
             'jenisKelaminOptions',
             'departemenOptions',
             'jabatanOptions',
             'wilayahKerjaOptions',
+            'unitKerjaOptions',
             'kontrakOptions',
             'currentFilters',
-            'dataKaryawans' // Add this for summary statistics
+            'dataKaryawans'
         ));
     }
 
-    // ... Rest of the methods remain the same ...
     public function create()
     {
         // Generate automatic ID for main record
@@ -1159,16 +1124,22 @@ class DataKontrakController extends Controller
 
     private function getFilteredData($filters)
     {
-        // Instead of using uniqueEmployees() scope, get all contracts
         $query = DataKontrak::with([
             'karyawan',
             'kontrakKerja',
             'perusahaan',
             'departemen',
             'wilayahKerja'
-        ]); // Apply unique employees scope
+        ]);
 
-        // Apply filters (same as index method)
+        // Get latest contract per employee
+        $query->whereIn('id', function ($subquery) {
+            $subquery->select(DB::raw('MAX(id)'))
+                ->from('202_dm_data_kontrak')
+                ->groupBy('id_data_kry');
+        });
+
+        // Apply filters - SAMA DENGAN INDEX
         if (!empty($filters['filter_status'])) {
             $query->where('sts_srt_ktr', $filters['filter_status']);
         }
@@ -1177,42 +1148,48 @@ class DataKontrakController extends Controller
             $query->where('id_prsh', $filters['filter_perusahaan']);
         }
 
-        if (!empty($filters['filter_kontrak_type'])) {
-            $query->where('id_ktr', $filters['filter_kontrak_type']);
+        if (!empty($filters['filter_nama'])) {
+            $query->whereHas('karyawan', function ($q) use ($filters) {
+                $q->where('nama', 'LIKE', '%' . $filters['filter_nama'] . '%');
+            });
+        }
+
+        if (!empty($filters['filter_nrk'])) {
+            $query->whereHas('karyawan', function ($q) use ($filters) {
+                $q->where('nrk', 'LIKE', '%' . $filters['filter_nrk'] . '%');
+            });
         }
 
         if (!empty($filters['filter_departemen'])) {
-            $query->where('id_departemen', $filters['filter_departemen']);
-        }
-
-        if (!empty($filters['filter_wilayah_kerja'])) {
-            $query->where('id_wilker', $filters['filter_wilayah_kerja']);
-        }
-
-        if (!empty($filters['filter_contract_status'])) {
-            switch ($filters['filter_contract_status']) {
-                case 'active':
-                    $query->where('sts_srt_ktr', 'AKTIF')
-                        ->whereNotNull('tgl_awl_ktr')
-                        ->whereNotNull('tgl_akhir_ktr')
-                        ->whereRaw('STR_TO_DATE(tgl_awl_ktr, "%Y-%m-%d") <= CURDATE()')
-                        ->whereRaw('STR_TO_DATE(tgl_akhir_ktr, "%Y-%m-%d") >= CURDATE()');
-                    break;
-                case 'expired':
-                    $query->expired();
-                    break;
-                case 'expiring_soon':
-                    $query->expiringSoon(30);
-                    break;
+            $selectedDepartemen = Departemen::find($filters['filter_departemen']);
+            if ($selectedDepartemen) {
+                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
+                $query->whereIn('id_departemen', $departemenIds);
             }
         }
 
-        if (!empty($filters['filter_education_level'])) {
-            $query->where('jenjang_skl', $filters['filter_education_level']);
+        if (!empty($filters['filter_jabatan'])) {
+            $query->where('id_departemen', $filters['filter_jabatan']);
         }
 
-        if (!empty($filters['search'])) {
-            $query->search($filters['search']);
+        if (!empty($filters['filter_kontrak'])) {
+            $query->where('id_ktr', $filters['filter_kontrak']);
+        }
+
+        if (!empty($filters['filter_jenis_kelamin'])) {
+            $query->whereHas('karyawan', function ($q) use ($filters) {
+                $q->where('sex', $filters['filter_jenis_kelamin']);
+            });
+        }
+
+        if (!empty($filters['filter_wilker'])) {
+            $query->whereHas('wilayahKerja', function ($q) use ($filters) {
+                $q->where('wilayah_krj', $filters['filter_wilker']);
+            });
+        }
+
+        if (!empty($filters['filter_unit_kerja'])) {
+            $query->where('id_wilker', $filters['filter_unit_kerja']);
         }
 
         $dataKontraks = $query->orderBy('created_at', 'desc')->get();

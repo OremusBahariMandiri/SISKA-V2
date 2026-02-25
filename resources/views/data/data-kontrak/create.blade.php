@@ -118,65 +118,79 @@
                                                         </div>
                                                         <div class="card-body">
                                                             <div class="row">
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">NIK</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="emp_nik" readonly>
+                                                                <!-- Foto Karyawan -->
+                                                                <div class="col-md-3 text-center mb-4">
+                                                                    <div class="employee-photo-container">
+                                                                        <img id="emp_foto"
+                                                                             src=""
+                                                                             alt="Foto Karyawan"
+                                                                             class="img-fluid rounded shadow employee-photo"
+                                                                             style="display: none;">
+                                                                        <div id="emp_foto_placeholder" class="default-avatar rounded shadow">
+                                                                            <i class="fas fa-user-circle fa-8x text-secondary"></i>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">NRK</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="emp_nrk" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">Tempat
-                                                                            Lahir</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="emp_tpt_lahir" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">Tanggal
-                                                                            Lahir</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="emp_tgl_lahir" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">Jenis
-                                                                            Kelamin</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="emp_sex" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">Telepon</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="emp_tlp1" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">Status
-                                                                            Kawin</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="emp_sts_nikah" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group mb-3">
-                                                                        <label class="form-label fw-bold">Jumlah
-                                                                            Anak</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="emp_jml_anak" readonly>
+
+                                                                <!-- Informasi Karyawan -->
+                                                                <div class="col-md-9">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">NIK</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_nik" readonly>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">NRK</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_nrk" readonly>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">Jenis Kelamin</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_sex" readonly>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">Tempat Lahir</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_tpt_lahir" readonly>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">Tanggal Lahir</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_tgl_lahir" readonly>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">Telepon</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_tlp1" readonly>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">Status Kawin</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_sts_nikah" readonly>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <div class="form-group mb-3">
+                                                                                <label class="form-label fw-bold">Jumlah Anak</label>
+                                                                                <input type="text" class="form-control"
+                                                                                    id="emp_jml_anak" readonly>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -370,7 +384,6 @@
                                                     </div>
                                                 </div>
 
-                                                <!-- Durasi Pengingat -->
                                                 <!-- Durasi Pengingat -->
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -566,21 +579,6 @@
                                                     </div>
                                                 </div>
 
-                                                {{-- <!-- SKT Institusi -->
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="skt_inst_skl" class="form-label fw-bold">SKT
-                                                            Institusi</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-certificate"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="skt_inst_skl" name="skt_inst_skl"
-                                                                value="{{ old('skt_inst_skl') }}">
-                                                        </div>
-                                                    </div>
-                                                </div> --}}
-
                                                 <!-- Jurusan -->
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -653,7 +651,6 @@
                                                                     @foreach ($departemens->groupBy('nama_dep') as $namaDep => $group)
                                                                         <option value="{{ $namaDep }}"
                                                                             data-singkatan="{{ $group->first()->singkatan_dep }}"
-                                                                            ← DATA ATTRIBUTE
                                                                             {{ old('departemen_nama') == $namaDep ? 'selected' : '' }}>
                                                                             {{ $namaDep }} -
                                                                             {{ $group->first()->singkatan_dep }}
@@ -1105,6 +1102,56 @@
             }
         }
 
+        /* ===== EMPLOYEE PHOTO STYLING ===== */
+        .employee-photo-container {
+            position: relative;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .employee-photo {
+            width: 100%;
+            height: auto;
+            max-height: 250px;
+            object-fit: cover;
+            border: 3px solid #0d6efd;
+        }
+
+        .employee-photo.loaded {
+            animation: photoFadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes photoFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .default-avatar {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+        }
+
+        .default-avatar i {
+            transition: all 0.3s ease;
+        }
+
+        .default-avatar:hover i {
+            transform: scale(1.1);
+            color: #0d6efd !important;
+        }
+
         /* ===== RESPONSIVE IMPROVEMENTS ===== */
         @media (max-width: 768px) {
             .card-header {
@@ -1128,6 +1175,18 @@
 
             .form-control {
                 font-size: 14px;
+            }
+
+            .employee-photo-container {
+                max-width: 150px;
+            }
+
+            .default-avatar {
+                height: 150px;
+            }
+
+            .default-avatar i {
+                font-size: 6rem !important;
             }
         }
 
@@ -1742,6 +1801,25 @@
                         $('#emp_sts_nikah').val(emp.sts_nikah || '-');
                         $('#emp_jml_anak').val(emp.jml_anak || '-');
 
+                        // Handle employee photo
+                        if (emp.foto_dokumen) {
+                            const photoUrl = `/storage/${emp.foto_dokumen}`;
+                            $('#emp_foto').attr('src', photoUrl).show().addClass('loaded');
+                            $('#emp_foto_placeholder').hide();
+                            console.log('✅ Employee photo loaded:', photoUrl);
+                        } else {
+                            $('#emp_foto').hide().removeClass('loaded');
+                            $('#emp_foto_placeholder').show();
+                            console.log('ℹ️ No employee photo available');
+                        }
+
+                        // Handle photo error
+                        $('#emp_foto').off('error').on('error', function() {
+                            console.log('⚠️ Photo failed to load, showing placeholder');
+                            $(this).hide().removeClass('loaded');
+                            $('#emp_foto_placeholder').show();
+                        });
+
                         // Tab 3: Auto-populate pendidikan
                         populateEducationData(emp);
 
@@ -1756,10 +1834,6 @@
 
                         console.log('✅ All employee data populated successfully');
 
-                        // Show success toast
-                        if (typeof Swal !== 'undefined') {
-
-                        }
                     } else {
                         throw new Error(response.message || 'Data tidak valid');
                     }
@@ -1800,6 +1874,10 @@
                 $('#employeeInfo input').val('');
                 $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val('');
 
+                // Clear photo
+                $('#emp_foto').hide().attr('src', '').removeClass('loaded');
+                $('#emp_foto_placeholder').show();
+
                 $('#jenjang_skl').val('').trigger('change.select2');
                 $('#institusi_skl, #kota_skl, #fakultas_skl, #jurusan_skl, #gelar_skl').val('');
                 $('#tgl_lulus_skl').val('');
@@ -1811,7 +1889,7 @@
                 $('#info_singkatan_dep, #info_singkatan_jbt, #info_skt_wilker').val('');
                 $('#tugas').val('');
 
-                console.log('✅ All employee fields cleared');
+                console.log('✅ All employee fields cleared including photo');
             }
 
             // ===== ENHANCED EMPLOYEE SELECTION =====

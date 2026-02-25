@@ -60,13 +60,15 @@
                         @if (
                             !empty($currentFilters['status']) ||
                                 !empty($currentFilters['perusahaan']) ||
-                                !empty($currentFilters['kontrak_type']) ||
+                                !empty($currentFilters['nama']) ||
+                                !empty($currentFilters['nrk']) ||
                                 !empty($currentFilters['departemen']) ||
-                                !empty($currentFilters['wilayah_kerja']) ||
-                                !empty($currentFilters['contract_status']) ||
-                                !empty($currentFilters['education_level']) ||
-                                !empty($currentFilters['search']))
-                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                !empty($currentFilters['jabatan']) ||
+                                !empty($currentFilters['kontrak']) ||
+                                !empty($currentFilters['jenis_kelamin']) ||
+                                !empty($currentFilters['wilker']) ||
+                                !empty($currentFilters['unit_kerja']))
+                            <div class="alert alert-info" role="alert" id="filterActiveAlert">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Filter Aktif:</strong>
 
@@ -86,59 +88,70 @@
                                     @endif
                                 @endif
 
-                                @if (!empty($currentFilters['kontrak_type']))
-                                    @php
-                                        $selectedKontrak = $kontrakTypes
-                                            ->where('id', $currentFilters['kontrak_type'])
-                                            ->first();
-                                    @endphp
-                                    @if ($selectedKontrak)
-                                        Tipe Kontrak: <span class="badge bg-info">{{ $selectedKontrak->nama_ktr }}</span>
-                                    @endif
+                                @if (!empty($currentFilters['nama']))
+                                    Nama: <span class="badge bg-primary">{{ $currentFilters['nama'] }}</span>
+                                @endif
+
+                                @if (!empty($currentFilters['nrk']))
+                                    NRK: <span class="badge bg-primary">{{ $currentFilters['nrk'] }}</span>
                                 @endif
 
                                 @if (!empty($currentFilters['departemen']))
                                     @php
-                                        $selectedDepartemen = $departemens
+                                        $selectedDepartemen = $departemenOptions
                                             ->where('id', $currentFilters['departemen'])
                                             ->first();
                                     @endphp
                                     @if ($selectedDepartemen)
-                                        Departemen: <span
-                                            class="badge bg-warning">{{ $selectedDepartemen->nama_dep }}</span>
+                                        Departemen: <span class="badge bg-info">{{ $selectedDepartemen->nama_dep }}</span>
                                     @endif
                                 @endif
 
-                                @if (!empty($currentFilters['wilayah_kerja']))
+                                @if (!empty($currentFilters['jabatan']))
                                     @php
-                                        $selectedWilayah = $wilayahKerjas
-                                            ->where('id', $currentFilters['wilayah_kerja'])
+                                        $selectedJabatan = $jabatanOptions
+                                            ->where('id', $currentFilters['jabatan'])
                                             ->first();
                                     @endphp
-                                    @if ($selectedWilayah)
-                                        Wilayah: <span class="badge bg-secondary">{{ $selectedWilayah->wilayah_krj }}</span>
+                                    @if ($selectedJabatan)
+                                        Jabatan: <span class="badge bg-warning">{{ $selectedJabatan->nama_jbt }}</span>
                                     @endif
                                 @endif
 
-                                @if (!empty($currentFilters['contract_status']))
-                                    Status Kontrak: <span
-                                        class="badge bg-dark">{{ $contractStatusOptions[$currentFilters['contract_status']] ?? $currentFilters['contract_status'] }}</span>
+                                @if (!empty($currentFilters['kontrak']))
+                                    @php
+                                        $selectedKontrak = $kontrakOptions
+                                            ->where('id', $currentFilters['kontrak'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedKontrak)
+                                        Kontrak: <span class="badge bg-secondary">{{ $selectedKontrak->nama_ktr }}</span>
+                                    @endif
                                 @endif
 
-                                @if (!empty($currentFilters['education_level']))
-                                    Pendidikan: <span
-                                        class="badge bg-light text-dark">{{ $currentFilters['education_level'] }}</span>
+                                @if (!empty($currentFilters['unit_kerja']))
+                                    @php
+                                        $selectedUnitKerja = $unitKerjaOptions
+                                            ->where('id', $currentFilters['unit_kerja'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedUnitKerja)
+                                        Unit Kerja: <span class="badge bg-danger">{{ $selectedUnitKerja->area_krj }}</span>
+                                    @endif
                                 @endif
 
-                                @if (!empty($currentFilters['search']))
-                                    Pencarian: <span class="badge bg-danger">{{ $currentFilters['search'] }}</span>
+                                @if (!empty($currentFilters['jenis_kelamin']))
+                                    Jenis Kelamin: <span
+                                        class="badge bg-dark">{{ $jenisKelaminOptions[$currentFilters['jenis_kelamin']] ?? $currentFilters['jenis_kelamin'] }}</span>
+                                @endif
+
+                                @if (!empty($currentFilters['wilker']))
+                                    Wilayah Kerja: <span class="badge bg-danger">{{ $currentFilters['wilker'] }}</span>
                                 @endif
 
                                 <a href="{{ route('data-kontrak.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
                                     <i class="fas fa-times me-1"></i> Reset Filter
                                 </a>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
                             </div>
                         @endif
 
@@ -474,16 +487,15 @@
     </div>
 
     <!-- Filter Modal -->
-    <!-- Filter Modal -->
     <div class="modal fade" id="filterModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="fas fa-filter me-2"></i>Filter Data Karyawan</h5>
+                    <h5 class="modal-title"><i class="fas fa-filter me-2"></i>Filter Data Kontrak</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="filterForm" method="GET" action="{{ route('data-karyawan.index') }}">
+                    <form id="filterForm" method="GET" action="{{ route('data-kontrak.index') }}">
                         <!-- Row 1: Basic Filters -->
                         <div class="row mb-3">
                             <div class="col-md-12">
@@ -512,7 +524,7 @@
                             </div>
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
-                                    <label for="filter_status" class="form-label fw-bold">Status Karyawan</label>
+                                    <label for="filter_status" class="form-label fw-bold">Status Kontrak</label>
                                     <div style="flex: 1">
                                         <select class="form-select select2" id="filter_status" name="filter_status">
                                             <option value="">Semua Status</option>
@@ -621,6 +633,30 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="filter_unit_kerja" class="form-label fw-bold">Area Kerja</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_unit_kerja"
+                                            name="filter_unit_kerja">
+                                            <option value="">Semua Area Kerja</option>
+                                            @foreach ($unitKerjaOptions as $unitKerja)
+                                                <option value="{{ $unitKerja->id }}"
+                                                    {{ $currentFilters['unit_kerja'] == $unitKerja->id ? 'selected' : '' }}>
+                                                    {{ $unitKerja->area_krj }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_nrk" class="form-label fw-bold">NRK</label>
+                                    <input type="text" class="form-control" id="filter_nrk" name="filter_nrk"
+                                        placeholder="Cari NRK karyawan..." value="{{ $currentFilters['nrk'] ?? '' }}">
                                 </div>
                             </div>
                             <div class="d-flex">
@@ -1065,6 +1101,31 @@
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
         }
 
+        /* ===== SELECT2 CUSTOM STYLING ===== */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+        }
+
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            z-index: 1070 !important;
+        }
+
+        .modal .select2-container {
+            z-index: 1070 !important;
+        }
+
+        .modal .select2-dropdown {
+            z-index: 1071 !important;
+        }
+
+        .select2-container--open .select2-dropdown {
+            z-index: 1071 !important;
+        }
+
         /* ===== BADGE STYLING ===== */
         .badge-lg {
             font-size: 0.75em;
@@ -1080,6 +1141,13 @@
         .badge.bg-pink {
             background-color: #e91e63 !important;
             color: white !important;
+        }
+
+
+        #filterActiveAlert {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
         /* ===== HIGHLIGHT ROWS STYLING ===== */
@@ -1249,6 +1317,78 @@
     <script>
         $(document).ready(function() {
             console.log('Contract system initializing...');
+
+            function initializeSelect2InModal() {
+                $('#filterModal .select2').each(function() {
+                    // Destroy existing Select2 instance if any
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+
+                    // Initialize Select2 with proper configuration
+                    $(this).select2({
+                        theme: 'bootstrap-5',
+                        dropdownParent: $('#filterModal'),
+                        width: '100%',
+                        placeholder: $(this).find('option:first').text() || 'Pilih...',
+                        allowClear: true,
+                        language: {
+                            noResults: function() {
+                                return "Tidak ada hasil ditemukan";
+                            },
+                            searching: function() {
+                                return "Mencari...";
+                            },
+                            inputTooShort: function() {
+                                return "Ketik untuk mencari...";
+                            }
+                        }
+                    });
+                });
+            }
+
+            // Initialize Select2 when modal is opened
+            $('#filterModal').on('shown.bs.modal', function() {
+                initializeSelect2InModal();
+            });
+
+            // Cleanup when modal is closed
+            $('#filterModal').on('hidden.bs.modal', function() {
+                $('#filterModal .select2').each(function() {
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+                });
+            });
+
+            // ===== FILTER BUTTON =====
+            $('#filterButton').click(function() {
+                $('#filterModal').modal('show');
+            });
+
+            // ===== APPLY FILTER =====
+            $('#applyFilter').click(function() {
+                $('#filterForm').submit();
+            });
+
+            // ===== RESET FILTER =====
+            $('#resetFilter').click(function() {
+                // Reset all form inputs
+                $('#filter_nama').val('');
+                $('#filter_nrk').val('');
+                $('#filter_status').val('').trigger('change');
+                $('#filter_perusahaan').val('').trigger('change');
+                $('#filter_departemen').val('').trigger('change');
+                $('#filter_jabatan').val('').trigger('change');
+                $('#filter_kontrak').val('').trigger('change');
+                $('#filter_jenis_kelamin').val('').trigger('change');
+                $('#filter_wilker').val('').trigger('change');
+                $('#filter_unit_kerja').val('').trigger('change');
+
+                // Reinitialize Select2 after reset
+                initializeSelect2InModal();
+            });
+
 
             // Destroy existing DataTable if it exists
             if ($.fn.DataTable.isDataTable('#dataKontrakTable')) {

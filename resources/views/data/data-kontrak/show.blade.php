@@ -80,69 +80,90 @@
                                     <div class="card-body">
                                         @if ($dataKontrak->karyawan)
                                             <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Nama Lengkap</label>
-                                                        <input type="text" class="form-control fw-bold"
-                                                            value="{{ $dataKontrak->karyawan->nama ?? '' }}" readonly>
+                                                <!-- Foto Karyawan -->
+                                                <div class="col-md-3 text-center mb-4">
+                                                    <div class="employee-photo-container">
+                                                        @if($dataKontrak->karyawan->foto_dokumen)
+                                                            <img src="{{ asset('storage/' . $dataKontrak->karyawan->foto_dokumen) }}"
+                                                                 alt="Foto {{ $dataKontrak->karyawan->nama ?? 'Karyawan' }}"
+                                                                 class="img-fluid rounded shadow employee-photo"
+                                                                 onerror="this.src='{{ asset('images/default-avatar.png') }}'">
+                                                        @else
+                                                            <div class="default-avatar rounded shadow">
+                                                                <i class="fas fa-user-circle fa-8x text-secondary"></i>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">NIK</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->karyawan->nik ?? '' }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">NRK</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->karyawan->nrk ?? '' }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Tempat, Tanggal Lahir</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->karyawan->tpt_lahir ?? '' }}{{ $dataKontrak->karyawan->tgl_lahir ? ', ' . $dataKontrak->karyawan->tgl_lahir->format('d-m-Y') : '' }}"
-                                                            readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Jenis Kelamin</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->karyawan->sex ?? '' }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Telepon</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->karyawan->tlp1 ?? '' }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Email</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->karyawan->email1 ?? '' }}" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Status Kawin</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->karyawan->sts_nikah ?? '' }}"
-                                                            readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group mb-3">
-                                                        <label class="form-label fw-bold">Jumlah Anak</label>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->karyawan->jml_anak ?? '' }}" readonly>
+
+                                                <!-- Informasi Karyawan -->
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        <div class="col-md-4 mb-3">
+                                                            <div class="form-group">
+                                                                <label class="form-label fw-bold">Nama Lengkap</label>
+                                                                <input type="text" class="form-control fw-bold"
+                                                                    value="{{ $dataKontrak->karyawan->nama ?? '' }}" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label fw-bold">NIK</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ $dataKontrak->karyawan->nik ?? '' }}" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label fw-bold">NRK</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ $dataKontrak->karyawan->nrk ?? '' }}" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label fw-bold">Jenis Kelamin</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ $dataKontrak->karyawan->sex ?? '' }}" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label fw-bold">Tempat, Tanggal Lahir</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ $dataKontrak->karyawan->tpt_lahir ?? '' }}{{ $dataKontrak->karyawan->tgl_lahir ? ', ' . $dataKontrak->karyawan->tgl_lahir->format('d-m-Y') : '' }}"
+                                                                    readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label fw-bold">Telepon</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ $dataKontrak->karyawan->tlp1 ?? '' }}" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label fw-bold">Status Kawin</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ $dataKontrak->karyawan->sts_nikah ?? '' }}"
+                                                                    readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label fw-bold">Jumlah Anak</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ $dataKontrak->karyawan->jml_anak ?? '' }}" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label fw-bold">Email</label>
+                                                                <input type="text" class="form-control"
+                                                                    value="{{ $dataKontrak->karyawan->email1 ?? '' }}" readonly>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -766,6 +787,32 @@
         #contractDetailModal .card-header h6 {
             margin: 0;
             font-weight: 600;
+        }
+
+        /* Employee Photo Styling */
+        .employee-photo-container {
+            position: relative;
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        .employee-photo {
+            width: 100%;
+            height: auto;
+            max-height: 300px;
+            object-fit: cover;
+            border: 3px solid #0d6efd;
+        }
+
+        .default-avatar {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
         }
 
         @media print {

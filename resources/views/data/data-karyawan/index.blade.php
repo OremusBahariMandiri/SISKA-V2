@@ -57,7 +57,7 @@
                                 !empty($currentFilters['jenis_kelamin']) ||
                                 !empty($currentFilters['wilker']) ||
                                 !empty($currentFilters['unit_kerja']))
-                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <div class="alert alert-info" role="alert" id="filterActiveAlert">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Filter Aktif:</strong>
 
@@ -141,9 +141,6 @@
                                 <a href="{{ route('data-karyawan.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
                                     <i class="fas fa-times me-1"></i> Reset Filter
                                 </a>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
-
                             </div>
                         @endif
 
@@ -207,8 +204,8 @@
                                         <th width="7%" class="text-center">TGL HK</th>
                                         <th width="8%" class="text-center">DEP</th>
                                         <th width="7%" class="text-center">JBT</th>
-                                        <th width="7%" class="text-center">WILKER</th>
-                                        <th width="7%" class="text-center">SKT WILKER</th>
+                                        <th width="7%" class="text-center">SKTWK</th>
+                                        <th width="7%" class="text-center">SKTAK</th>
                                         <th width="7%" class="text-center">STKAR</th>
                                         <th width="7%" class="text-center">TGL NA</th>
                                         <th width="8%" class="text-center">MKR</th>
@@ -274,6 +271,15 @@
                                             $jabatan = $karyawan->departemenRelation
                                                 ? $karyawan->departemenRelation->singkatan_jbt
                                                 : '-';
+
+                                            // Gunakan unit_krj (ID) bukan wilker (string)
+                                            $sktwk = $karyawan->unitKerjaRelation
+                                                ? $karyawan->unitKerjaRelation->skt_wilker
+                                                : '-';
+                                            $sktak = $karyawan->unitKerjaRelation
+                                                ? $karyawan->unitKerjaRelation->singkatan_wk
+                                                : '-';
+
                                         @endphp
                                         <tr>
                                             <!-- Kolom Prioritas -->
@@ -342,8 +348,11 @@
                                             </td>
                                             <td><small>{{ Str::limit($departemen, 15) }}</small></td>
                                             <td><small>{{ Str::limit($jabatan, 15) }}</small></td>
-                                            <td><small>{{ $karyawan->wilker ?? '-' }}</small></td>
-                                            <td><small>{{ $karyawan->skt_wil_krj ?? '-' }}</small></td>
+                                            {{-- SKTWK --}}
+                                            <td><small>{{ $sktwk ?? '-' }}</small></td>
+
+                                            {{-- SKTAK --}}
+                                            <td><small>{{ $sktak ?? '-' }}</small></td>
                                             <td class="text-center">
                                                 @if ($karyawan->sts_kry == 'CALON')
                                                     <span>CALON</span>
@@ -351,7 +360,7 @@
                                                     <span>AK
                                                     </span>
                                                 @elseif ($karyawan->sts_kry == 'NON-AKTIF')
-                                                    <span>NA
+                                                    <span class="badge bg-danger">NA
                                                     </span>
                                                 @else
                                                     <span>{{ $karyawan->sts_kry }}</span>
@@ -736,7 +745,8 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
                                                     <p class="mb-0 fw-bold text-truncate"
-                                                        title="{{ $perusahaan->nama_prs2 }}" style="max-width: 150px;">PT.
+                                                        title="{{ $perusahaan->nama_prs2 }}" style="max-width: 150px;">
+                                                        PT.
                                                         {{ Str::limit($perusahaan->nama_prs2, 20) }}
                                                     </p>
                                                 </div>
@@ -1058,6 +1068,12 @@
             opacity: 0.7;
         }
 
+        #filterActiveAlert {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
         /* ===== ALERT STYLING ===== */
         .alert {
             border: none;
@@ -1375,7 +1391,7 @@
 
             // ===== AUTO DISMISS ALERTS =====
             setTimeout(function() {
-                $('.alert').fadeOut('slow', function() {
+                $('.alert-success, .alert-danger').fadeOut('slow', function() {
                     $(this).remove();
                 });
             }, 5000);

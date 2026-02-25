@@ -83,7 +83,7 @@ class DataKaryawan extends Model
         'durasi_ktr',
         'perusahaan',
         'skt_prs', //3
-         // Jenjang Karir
+        // Jenjang Karir
         'id_karir',
         'departemen',
         'skt_dep', //4
@@ -129,6 +129,11 @@ class DataKaryawan extends Model
     public function perusahaanRelation(): BelongsTo
     {
         return $this->belongsTo(Perusahaan::class, 'perusahaan', 'id');
+    }
+
+    public function unitKerjaRelation(): BelongsTo
+    {
+        return $this->belongsTo(WilayahKerja::class, 'unit_krj', 'id');
     }
 
     /**
@@ -254,7 +259,7 @@ class DataKaryawan extends Model
      * @return string|null
      */
     public function getPrimaryPhoneAttribute(): ?string
-{
+    {
         return $this->tlp1 ?: $this->tlp2;
     }
 
@@ -362,7 +367,7 @@ class DataKaryawan extends Model
     public function scopeSearch($query, $search)
     {
         return $query->where('nama', 'like', '%' . $search . '%')
-                    ->orWhere('nrk', 'like', '%' . $search . '%')
-                    ->orWhere('nik', 'like', '%' . $search . '%');
+            ->orWhere('nrk', 'like', '%' . $search . '%')
+            ->orWhere('nik', 'like', '%' . $search . '%');
     }
 }

@@ -568,7 +568,7 @@
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-12 mb-3">
                                                 <label class="form-label fw-bold text-muted">Wilayah Kerja</label>
                                                 <div class="detail-value">
                                                     <i class="fas fa-map text-primary me-2"></i>
@@ -582,13 +582,6 @@
                                                     {{ $wilayahKerja->unit_krj ?? '-' }}
                                                 </div>
                                             </div> --}}
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">SKT Wilayah Kerja</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                                                    {{ $dataKaryawan->skt_wil_krj ?? '-' }}
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <div class="row">

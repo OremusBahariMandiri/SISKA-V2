@@ -855,7 +855,7 @@
                                                                 value="{{ old('jurusan_skl', $dataKaryawan->jurusan_skl) }}">
                                                         </div>
                                                     </div>
-                                                </div>  
+                                                </div>
 
                                                 {{-- Tgl Lulus --}}
                                                 <div class="col-md-6">
@@ -1031,7 +1031,7 @@
 
                                             <div class="row">
                                                 {{-- wilker --}}
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="wilker" class="form-label fw-bold">Wilayah
                                                             Kerja</label>
@@ -1054,7 +1054,7 @@
                                                     </div>
                                                 </div>
                                                 {{-- unit krj --}}
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="unit_krj" class="form-label fw-bold">Area
                                                             Kerja</label>
@@ -1070,21 +1070,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- SKT Wilker --}}
-                                                <div class="col-md-4">
-                                                    <div class="form-group mb-3">
-                                                        <label for="skt_wil_krj" class="form-label fw-bold">SKT Wilayah
-                                                            Kerja</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text"><i
-                                                                    class="fas fa-map-marker-alt"></i></span>
-                                                            <input type="text" class="form-control auto-uppercase"
-                                                                id="skt_wil_krj" name="skt_wil_krj"
-                                                                value="{{ old('skt_wil_krj', $dataKaryawan->skt_wil_krj) }}"
-                                                                readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
+
+                                                <input type="text" class="form-control auto-uppercase"
+                                                id="skt_wil_krj" name="skt_wil_krj"
+                                                value="{{ old('skt_wil_krj', $dataKaryawan->skt_wil_krj) }}"
+                                                hidden>
                                             </div>
 
                                             <div class="row">

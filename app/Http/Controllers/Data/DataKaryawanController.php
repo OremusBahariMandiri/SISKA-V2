@@ -32,7 +32,7 @@ class DataKaryawanController extends Controller
     public function index(Request $request)
     {
         // Initialize query with relationships
-        $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'kontrakRelation', 'creator', 'updater']);
+        $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'kontrakRelation', 'unitKerjaRelation', 'creator', 'updater']);
 
         // Apply filters if they exist
         if ($request->has('filter_status') && !empty($request->filter_status)) {

@@ -269,8 +269,6 @@ class DataKontrakController extends Controller
         $statusOptions = [
             'AKTIF' => 'AKTIF',
             'NON-AKTIF' => 'NON-AKTIF',
-            'EXPIRED' => 'EXPIRED',
-            'PENDING' => 'PENDING'
         ];
 
         // Gender options - SAMA DENGAN DATA KARYAWAN

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Data\DataDokumenController;
 use App\Http\Controllers\Data\DataKaryawanController;
 use App\Http\Controllers\Data\DataKontrakController;
 use App\Http\Controllers\DataMaster\DepartemenController;
@@ -89,7 +90,7 @@ Route::middleware('auth')->group(function () {
     // ================================================ DATA KONTRAK ROUTES ========================================= //
     // ============================================================================================================== //
     Route::get('/data-kontrak/check-employee/{id}', [DataKontrakController::class, 'checkEmployeeExists'])
-    ->name('data-kontrak.check-employee');
+        ->name('data-kontrak.check-employee');
 
     Route::resource('data-kontrak', DataKontrakController::class);
     Route::delete('data-kontrak/{id}', [DataKontrakController::class, 'destroy'])->name('data-kontrak.destroy');
@@ -158,4 +159,29 @@ Route::middleware('auth')->group(function () {
     // Export routes
     Route::post('data-kontrak/export-excel', [DataKontrakController::class, 'exportExcel'])
         ->name('data-kontrak.export-excel');
+
+    // ================================================ DATA DOKUMEN ROUTES ========================================= //
+    // ============================================================================================================== //
+    // ===== DATA DOKUMEN ROUTES =====
+    Route::resource('data-dokumen', DataDokumenController::class);
+
+    Route::prefix('data-dokumen')->group(function () {
+        // Employee validation & data
+        Route::get('check-employee/{id}', [DataDokumenController::class, 'checkEmployeeExists']);
+        Route::get('get-employee-data/{id}', [DataDokumenController::class, 'getEmployeeData']);
+
+        // Master data helpers
+        Route::get('get-jabatan-by-departemen/{namaDep}', [DataDokumenController::class, 'getJabatanByDepartemen']);
+        Route::get('get-unit-kerja-by-wilayah/{wilayahKrj}', [DataDokumenController::class, 'getUnitKerjaByWilayah']);
+
+        // Document CRUD operations (for modal)
+        Route::post('documents/store', [DataDokumenController::class, 'storeDocument'])->name('data-dokumen.documents.store');
+        Route::get('documents/{id}', [DataDokumenController::class, 'getDocument'])->name('data-dokumen.documents.get');
+        Route::put('documents/{id}', [DataDokumenController::class, 'updateDocument'])->name('data-dokumen.documents.update');
+        Route::delete('documents/{id}', [DataDokumenController::class, 'deleteDocument'])->name('data-dokumen.documents.delete');
+
+        // Additional features
+        Route::get('expiring-documents', [DataDokumenController::class, 'getExpiringDocuments']);
+        Route::get('active-documents-data', [DataDokumenController::class, 'getActiveDocumentsData']);
+    });
 });

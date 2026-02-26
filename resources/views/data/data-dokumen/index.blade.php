@@ -57,13 +57,19 @@
                         @endif
 
                         <!-- Active Filter Display -->
+                        <!-- Active Filter Display -->
                         @if (
                             !empty($currentFilters['status']) ||
                                 !empty($currentFilters['jenis_dokumen']) ||
                                 !empty($currentFilters['nama']) ||
                                 !empty($currentFilters['nrk']) ||
                                 !empty($currentFilters['no_dokumen']) ||
-                                !empty($currentFilters['jenis_kelamin']))
+                                !empty($currentFilters['departemen']) ||
+                                !empty($currentFilters['jabatan']) ||
+                                !empty($currentFilters['perusahaan']) ||
+                                !empty($currentFilters['jenis_kelamin']) ||
+                                !empty($currentFilters['wilker']) ||
+                                !empty($currentFilters['unit_kerja']))
                             <div class="alert alert-info" role="alert" id="filterActiveAlert">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Filter Aktif:</strong>
@@ -84,6 +90,18 @@
                                     @endif
                                 @endif
 
+                                @if (!empty($currentFilters['perusahaan']))
+                                    @php
+                                        $selectedPerusahaan = $perusahaans
+                                            ->where('id', $currentFilters['perusahaan'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedPerusahaan)
+                                        Perusahaan: <span
+                                            class="badge bg-warning">{{ $selectedPerusahaan->nama_prs2 }}</span>
+                                    @endif
+                                @endif
+
                                 @if (!empty($currentFilters['nama']))
                                     Nama: <span class="badge bg-primary">{{ $currentFilters['nama'] }}</span>
                                 @endif
@@ -96,9 +114,46 @@
                                     No Dokumen: <span class="badge bg-info">{{ $currentFilters['no_dokumen'] }}</span>
                                 @endif
 
+                                @if (!empty($currentFilters['departemen']))
+                                    @php
+                                        $selectedDepartemen = $departemenOptions
+                                            ->where('id', $currentFilters['departemen'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedDepartemen)
+                                        Departemen: <span class="badge bg-info">{{ $selectedDepartemen->nama_dep }}</span>
+                                    @endif
+                                @endif
+
+                                @if (!empty($currentFilters['jabatan']))
+                                    @php
+                                        $selectedJabatan = $jabatanOptions
+                                            ->where('id', $currentFilters['jabatan'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedJabatan)
+                                        Jabatan: <span class="badge bg-warning">{{ $selectedJabatan->nama_jbt }}</span>
+                                    @endif
+                                @endif
+
                                 @if (!empty($currentFilters['jenis_kelamin']))
                                     Jenis Kelamin: <span
                                         class="badge bg-dark">{{ $jenisKelaminOptions[$currentFilters['jenis_kelamin']] ?? $currentFilters['jenis_kelamin'] }}</span>
+                                @endif
+
+                                @if (!empty($currentFilters['wilker']))
+                                    Wilayah Kerja: <span class="badge bg-danger">{{ $currentFilters['wilker'] }}</span>
+                                @endif
+
+                                @if (!empty($currentFilters['unit_kerja']))
+                                    @php
+                                        $selectedUnitKerja = $unitKerjaOptions
+                                            ->where('id', $currentFilters['unit_kerja'])
+                                            ->first();
+                                    @endphp
+                                    @if ($selectedUnitKerja)
+                                        Unit Kerja: <span class="badge bg-danger">{{ $selectedUnitKerja->area_krj }}</span>
+                                    @endif
                                 @endif
 
                                 <a href="{{ route('data-dokumen.index') }}" class="btn btn-sm btn-outline-secondary ms-2">
@@ -383,6 +438,7 @@
     </div>
 
     <!-- Filter Modal -->
+    <!-- Filter Modal -->
     <div class="modal fade" id="filterModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -392,43 +448,147 @@
                 </div>
                 <div class="modal-body">
                     <form id="filterForm" method="GET" action="{{ route('data-dokumen.index') }}">
+                        <!-- Row 1: Basic Filters -->
                         <div class="row mb-3">
-                            <!-- Status Dokumen -->
+                            {{-- 1 --}}
+                            {{-- Status Dokumen --}}
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="filter_status" class="form-label fw-bold">Status Dokumen</label>
-                                    <select class="form-select select2" id="filter_status" name="filter_status">
-                                        <option value="">Semua Status</option>
-                                        @foreach ($statusOptions as $value => $label)
-                                            <option value="{{ $value }}"
-                                                {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_status" name="filter_status">
+                                            <option value="">Semua Status</option>
+                                            @foreach ($statusOptions as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ $currentFilters['status'] == $value ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-
-                            <!-- Jenis Dokumen -->
+                            {{-- 6 --}}
+                            {{-- Jabatan --}}
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="filter_jenis_dokumen" class="form-label fw-bold">Jenis Dokumen</label>
-                                    <select class="form-select select2" id="filter_jenis_dokumen"
-                                        name="filter_jenis_dokumen">
-                                        <option value="">Semua Jenis Dokumen</option>
-                                        @foreach ($dokumenTypes as $dokumen)
-                                            <option value="{{ $dokumen->id }}"
-                                                {{ $currentFilters['jenis_dokumen'] == $dokumen->id ? 'selected' : '' }}>
-                                                {{ $dokumen->nama_dok }} @if ($dokumen->singkatan_dok)
-                                                    ({{ $dokumen->singkatan_dok }})
-                                                @endif
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="filter_jabatan" class="form-label fw-bold">Jabatan</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jabatan" name="filter_jabatan">
+                                            <option value="">Semua Jabatan</option>
+                                            @foreach ($jabatanOptions as $jabatan)
+                                                <option value="{{ $jabatan->id }}"
+                                                    {{ $currentFilters['jabatan'] == $jabatan->id ? 'selected' : '' }}>
+                                                    {{ $jabatan->nama_jbt }} @if ($jabatan->singkatan_jbt)
+                                                        ({{ $jabatan->singkatan_jbt }})
+                                                    @endif - {{ $jabatan->nama_dep }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Nama Karyawan -->
+                            {{-- 2 --}}
+                            {{-- Jenis Dokumen --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_jenis_dokumen" class="form-label fw-bold">Jenis Dokumen</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jenis_dokumen"
+                                            name="filter_jenis_dokumen">
+                                            <option value="">Semua Jenis Dokumen</option>
+                                            @foreach ($dokumenTypes as $dokumen)
+                                                <option value="{{ $dokumen->id }}"
+                                                    {{ $currentFilters['jenis_dokumen'] == $dokumen->id ? 'selected' : '' }}>
+                                                    {{ $dokumen->nama_dok }} @if ($dokumen->singkatan_dok)
+                                                        ({{ $dokumen->singkatan_dok }})
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- 7 --}}
+                            {{-- Perusahaan --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_perusahaan"
+                                            name="filter_perusahaan">
+                                            <option value="">Semua Perusahaan</option>
+                                            @foreach ($perusahaans as $perusahaan)
+                                                <option value="{{ $perusahaan->id }}"
+                                                    {{ $currentFilters['perusahaan'] == $perusahaan->id ? 'selected' : '' }}>
+                                                    {{ $perusahaan->nama_prs1 }} - {{ $perusahaan->nama_prs2 }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- 3 --}}
+                            {{-- Wilker --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_wilker" class="form-label fw-bold">Wilayah Kerja</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_wilker" name="filter_wilker">
+                                            <option value="">Semua Wilayah Kerja</option>
+                                            @foreach ($wilayahKerjaOptions as $wilker)
+                                                <option value="{{ $wilker->wilayah_krj }}"
+                                                    {{ $currentFilters['wilker'] == $wilker->wilayah_krj ? 'selected' : '' }}>
+                                                    {{ $wilker->wilayah_krj }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- 8 --}}
+                            {{-- Jenis Kelamin --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_jenis_kelamin" class="form-label fw-bold">Jenis Kelamin</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_jenis_kelamin"
+                                            name="filter_jenis_kelamin">
+                                            <option value="">Semua Jenis Kelamin</option>
+                                            @foreach ($jenisKelaminOptions as $value => $label)
+                                                <option value="{{ $value }}"
+                                                    {{ $currentFilters['jenis_kelamin'] == $value ? 'selected' : '' }}>
+                                                    {{ $label }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- 4 --}}
+                            {{-- Unit Kerja --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_unit_kerja" class="form-label fw-bold">Area Kerja</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_unit_kerja"
+                                            name="filter_unit_kerja">
+                                            <option value="">Semua Area Kerja</option>
+                                            @foreach ($unitKerjaOptions as $unitKerja)
+                                                <option value="{{ $unitKerja->id }}"
+                                                    {{ $currentFilters['unit_kerja'] == $unitKerja->id ? 'selected' : '' }}>
+                                                    {{ $unitKerja->area_krj }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- 9 --}}
+                            {{-- Nama Karyawan --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_nama" class="form-label fw-bold">Nama Karyawan</label>
@@ -437,7 +597,29 @@
                                 </div>
                             </div>
 
-                            <!-- NRK -->
+                            {{-- 5 --}}
+                            {{-- Departemen --}}
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="filter_departemen" class="form-label fw-bold">Departemen</label>
+                                    <div style="flex: 1">
+                                        <select class="form-select select2" id="filter_departemen"
+                                            name="filter_departemen">
+                                            <option value="">Semua Departemen</option>
+                                            @foreach ($departemenOptions as $departemen)
+                                                <option value="{{ $departemen->id }}"
+                                                    {{ $currentFilters['departemen'] == $departemen->id ? 'selected' : '' }}>
+                                                    {{ $departemen->nama_dep }} @if ($departemen->singkatan_dep)
+                                                        ({{ $departemen->singkatan_dep }})
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- 10 --}}
+                            {{-- NRK --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_nrk" class="form-label fw-bold">NRK</label>
@@ -446,30 +628,14 @@
                                 </div>
                             </div>
 
-                            <!-- No Dokumen -->
+                            {{-- 11 --}}
+                            {{-- No Dokumen --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_no_dokumen" class="form-label fw-bold">No Dokumen</label>
                                     <input type="text" class="form-control" id="filter_no_dokumen"
                                         name="filter_no_dokumen" placeholder="Cari nomor dokumen..."
                                         value="{{ $currentFilters['no_dokumen'] ?? '' }}">
-                                </div>
-                            </div>
-
-                            <!-- Jenis Kelamin -->
-                            <div class="col-md-6 mt-2">
-                                <div class="form-group">
-                                    <label for="filter_jenis_kelamin" class="form-label fw-bold">Jenis Kelamin</label>
-                                    <select class="form-select select2" id="filter_jenis_kelamin"
-                                        name="filter_jenis_kelamin">
-                                        <option value="">Semua Jenis Kelamin</option>
-                                        @foreach ($jenisKelaminOptions as $value => $label)
-                                            <option value="{{ $value }}"
-                                                {{ $currentFilters['jenis_kelamin'] == $value ? 'selected' : '' }}>
-                                                {{ $label }}
-                                            </option>
-                                        @endforeach
-                                    </select>
                                 </div>
                             </div>
 
@@ -1046,13 +1212,20 @@
             });
 
             $('#resetFilter').click(function() {
+                // Reset all form inputs
                 $('#filter_nama').val('');
                 $('#filter_nrk').val('');
                 $('#filter_no_dokumen').val('');
                 $('#filter_status').val('').trigger('change');
                 $('#filter_jenis_dokumen').val('').trigger('change');
+                $('#filter_perusahaan').val('').trigger('change');
+                $('#filter_departemen').val('').trigger('change');
+                $('#filter_jabatan').val('').trigger('change');
                 $('#filter_jenis_kelamin').val('').trigger('change');
+                $('#filter_wilker').val('').trigger('change');
+                $('#filter_unit_kerja').val('').trigger('change');
 
+                // Reinitialize Select2 after reset
                 initializeSelect2InModal();
             });
 

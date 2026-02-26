@@ -41,6 +41,7 @@ class DataDokumenController extends Controller
             'updater'
         ]);
 
+
         // Get latest document per employee first
         $query->whereIn('id', function ($subquery) {
             $subquery->select(DB::raw('MAX(id)'))
@@ -79,10 +80,49 @@ class DataDokumenController extends Controller
             $query->where('no_dok', 'LIKE', '%' . $request->filter_no_dokumen . '%');
         }
 
+        // Filter by Departemen (grouped by nama_dep)
+        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
+            $selectedDepartemen = Departemen::find($request->filter_departemen);
+            if ($selectedDepartemen) {
+                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
+                $query->whereHas('karyawan', function ($q) use ($departemenIds) {
+                    $q->whereIn('departemen', $departemenIds);
+                });
+            }
+        }
+
+        // Filter by Jabatan (specific position)
+        if ($request->has('filter_jabatan') && !empty($request->filter_jabatan)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('departemen', $request->filter_jabatan);
+            });
+        }
+
+        // Filter by Perusahaan
+        if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('perusahaan', $request->filter_perusahaan);
+            });
+        }
+
         // Filter by Jenis Kelamin
         if ($request->has('filter_jenis_kelamin') && !empty($request->filter_jenis_kelamin)) {
             $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('sex', $request->filter_jenis_kelamin);
+            });
+        }
+
+        // Filter by Wilayah Kerja (wilker field stores ID that references wilayah_krj STRING)
+        if ($request->has('filter_wilker') && !empty($request->filter_wilker)) {
+            $query->whereHas('karyawan.wilayahKerjaRelation', function ($q) use ($request) {
+                $q->where('wilayah_krj', $request->filter_wilker);
+            });
+        }
+
+        // Filter by Unit Kerja (area_krj)
+        if ($request->has('filter_unit_kerja') && !empty($request->filter_unit_kerja)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('unit_krj', $request->filter_unit_kerja);
             });
         }
 
@@ -233,6 +273,8 @@ class DataDokumenController extends Controller
 
         // Get master data for filter dropdowns
         $dokumenTypes = DokumenKaryawan::orderBy('kode_dok_kry', 'asc')->get();
+        $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
+        $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
 
         // Status options
         $statusOptions = [
@@ -240,11 +282,31 @@ class DataDokumenController extends Controller
             'NON-AKTIF' => 'NON-AKTIF',
         ];
 
-        // Gender options
+        // Gender options - SAMA DENGAN DATA KONTRAK
         $jenisKelaminOptions = [
             'LAKI-LAKI' => 'Laki-laki',
             'PEREMPUAN' => 'Perempuan'
         ];
+
+        // Get unique departemen names for filter dropdown - SAMA DENGAN DATA KONTRAK
+        $departemenOptions = Departemen::select('nama_dep', 'singkatan_dep', DB::raw('MIN(id) as id'), DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode_dep'))
+            ->groupBy('nama_dep', 'singkatan_dep')
+            ->orderBy('min_kode_dep', 'asc')
+            ->get();
+
+        // Get all jabatan/positions for filter dropdown - SAMA DENGAN DATA KONTRAK
+        $jabatanOptions = Departemen::sortByCode()->get(['id', 'kode_dep', 'nama_dep', 'nama_jbt', 'singkatan_jbt']);
+
+        // Get UNIQUE wilayah_krj for filter dropdown - SAMA DENGAN DATA KONTRAK
+        $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
+            ->groupBy('wilayah_krj')
+            ->orderBy('wilayah_krj', 'asc')
+            ->get();
+
+        // Unit Kerja options - SAMA DENGAN DATA KONTRAK
+        $unitKerjaOptions = WilayahKerja::select('id', 'area_krj', 'kode_wk')
+            ->orderBy('area_krj')
+            ->get();
 
         // Get user permissions
         $userPermissions = [];
@@ -281,8 +343,14 @@ class DataDokumenController extends Controller
             'nama' => $request->filter_nama ?? '',
             'nrk' => $request->filter_nrk ?? '',
             'no_dokumen' => $request->filter_no_dokumen ?? '',
+            'departemen' => $request->filter_departemen ?? '',
+            'jabatan' => $request->filter_jabatan ?? '',
+            'perusahaan' => $request->filter_perusahaan ?? '',
             'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
+            'wilker' => $request->filter_wilker ?? '',
+            'unit_kerja' => $request->filter_unit_kerja ?? '',
         ];
+
 
         // Get DataKaryawan collection for summary statistics
         $dataKaryawans = collect();
@@ -298,10 +366,16 @@ class DataDokumenController extends Controller
             'documentCounts',
             'userPermissions',
             'dokumenTypes',
+            'perusahaans',
+            'wilayahKerjas',
             'statusOptions',
             'expiredDocumentsCount',
             'expiringDocumentsCount',
             'jenisKelaminOptions',
+            'departemenOptions',
+            'jabatanOptions',
+            'wilayahKerjaOptions',
+            'unitKerjaOptions',
             'currentFilters',
             'dataKaryawans'
         ));
@@ -969,7 +1043,7 @@ class DataDokumenController extends Controller
                 ->groupBy('id_data_kry');
         });
 
-        // Apply filters
+        // Apply filters - SAMA DENGAN INDEX
         if (!empty($filters['filter_status'])) {
             $query->where('sts_dok', $filters['filter_status']);
         }
@@ -994,9 +1068,43 @@ class DataDokumenController extends Controller
             $query->where('no_dok', 'LIKE', '%' . $filters['filter_no_dokumen'] . '%');
         }
 
+        if (!empty($filters['filter_departemen'])) {
+            $selectedDepartemen = Departemen::find($filters['filter_departemen']);
+            if ($selectedDepartemen) {
+                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
+                $query->whereHas('karyawan', function ($q) use ($departemenIds) {
+                    $q->whereIn('departemen', $departemenIds);
+                });
+            }
+        }
+
+        if (!empty($filters['filter_jabatan'])) {
+            $query->whereHas('karyawan', function ($q) use ($filters) {
+                $q->where('departemen', $filters['filter_jabatan']);
+            });
+        }
+
+        if (!empty($filters['filter_perusahaan'])) {
+            $query->whereHas('karyawan', function ($q) use ($filters) {
+                $q->where('perusahaan', $filters['filter_perusahaan']);
+            });
+        }
+
         if (!empty($filters['filter_jenis_kelamin'])) {
             $query->whereHas('karyawan', function ($q) use ($filters) {
                 $q->where('sex', $filters['filter_jenis_kelamin']);
+            });
+        }
+
+        if (!empty($filters['filter_wilker'])) {
+            $query->whereHas('karyawan.wilayahKerjaRelation', function ($q) use ($filters) {
+                $q->where('wilayah_krj', $filters['filter_wilker']);
+            });
+        }
+
+        if (!empty($filters['filter_unit_kerja'])) {
+            $query->whereHas('karyawan', function ($q) use ($filters) {
+                $q->where('unit_krj', $filters['filter_unit_kerja']);
             });
         }
 
@@ -1233,6 +1341,85 @@ class DataDokumenController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Karyawan tidak ditemukan: ' . $e->getMessage()
+            ], 404);
+        }
+    }
+
+    /**
+     * Get jabatan by departemen name (sama seperti data-kontrak)
+     */
+    public function getJabatanByDepartemen($namaDep)
+    {
+        try {
+            $jabatans = Departemen::where('nama_dep', $namaDep)
+                ->orderByRaw('CAST(kode_dep AS UNSIGNED) ASC')
+                ->orderBy('kode_dep', 'ASC')
+                ->get(['id', 'kode_dep', 'nama_jbt', 'singkatan_jbt']);
+
+            return response()->json([
+                'success' => true,
+                'data' => $jabatans
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memuat data jabatan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get departemen jabatan by ID (sama seperti data-kontrak)
+     */
+    public function getDepartemenJabatan($id)
+    {
+        try {
+            $departemen = Departemen::findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $departemen->id,
+                    'kode_dep' => $departemen->kode_dep,
+                    'nama_dep' => $departemen->nama_dep,
+                    'singkatan_dep' => $departemen->singkatan_dep,
+                    'nama_jbt' => $departemen->nama_jbt,
+                    'singkatan_jbt' => $departemen->singkatan_jbt,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data departemen tidak ditemukan: ' . $e->getMessage()
+            ], 404);
+        }
+    }
+
+    /**
+     * Get wilker unit kerja by ID (sama seperti data-kontrak)
+     */
+    public function getWilkerUnitKrj($id)
+    {
+        try {
+            $wilker = WilayahKerja::findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $wilker->id,
+                    'kode_wk' => $wilker->kode_wk,
+                    'wilayah_krj' => $wilker->wilayah_krj,
+                    'area_krj' => $wilker->area_krj,
+                    'singkatan_wk' => $wilker->singkatan_wk,
+                    'alamat_wk' => $wilker->alamat_wk,
+                    'kota_wk' => $wilker->kota_wk,
+                    'prov_wk' => $wilker->prov_wk,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data wilayah kerja tidak ditemukan: ' . $e->getMessage()
             ], 404);
         }
     }

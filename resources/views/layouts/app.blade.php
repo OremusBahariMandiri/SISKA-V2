@@ -274,9 +274,9 @@
                         ]);
 
                         // Dokumen Access Management
-                        $manajemenDataActive = isMenuActive(['data-karyawan*', 'data-kontrak*']);
+                        $manajemenDataActive = isMenuActive(['data-karyawan*', 'data-kontrak*', 'data-dokumen*']);
 
-                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan', 'data-kontrak']);
+                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan', 'data-kontrak', 'data-dokumen']);
                     @endphp
 
                     <!-- DATA MASTER DROPDOWN MENU -->
@@ -379,6 +379,15 @@
                                             href="{{ route('data-kontrak.index') }}">
                                             <i class="fas fa-scroll"></i>
                                             <span class="sidebar-menu-text">Data Kontrak</span>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-dokumen'))
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('data-dokumen*') ? 'active' : '' }}"
+                                            href="{{ route('data-dokumen.index') }}">
+                                            <i class="fas fa-scroll"></i>
+                                            <span class="sidebar-menu-text">Data Dokumen</span>
                                         </a>
                                     </li>
                                 @endif

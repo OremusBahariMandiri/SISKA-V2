@@ -386,7 +386,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('data-dokumen*') ? 'active' : '' }}"
                                             href="{{ route('data-dokumen.index') }}">
-                                            <i class="fas fa-scroll"></i>
+                                            <i class="fas fa-folder-open"></i>
                                             <span class="sidebar-menu-text">Data Dokumen</span>
                                         </a>
                                     </li>

@@ -1035,6 +1035,10 @@ class DataDokumenController extends Controller
                     'tgl_lahir' => $employee->tgl_lahir ? $employee->tgl_lahir->format('Y-m-d') : null,
                     'tgl_lahir_formatted' => $employee->tgl_lahir ? $employee->tgl_lahir->format('d-m-Y') : null,
                     'sex' => $employee->sex,
+                    'tlp1' => $employee->tlp1,
+                    'sts_nikah' => $employee->sts_nikah,
+                    'jml_anak' => $employee->jml_anak,
+                    'email1' => $employee->email1,
 
                     // Employment info
                     'tgl_masuk' => $employee->tgl_masuk ? $employee->tgl_masuk->format('Y-m-d') : null,

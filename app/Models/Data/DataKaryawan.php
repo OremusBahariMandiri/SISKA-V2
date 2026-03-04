@@ -99,6 +99,25 @@ class DataKaryawan extends Model
         'skt_sts_kry', //7
         'tgl_phk',
         'ket_phk',
+        // Kontrak Darurat
+        'jns_kd',
+        'sts_kd',
+        'nik_kd',
+        'nama_kd',
+        'tpt_lhr_kd',
+        'tgl_lhr_kd',
+        'sex_kd',
+        'agama_kd',
+        'sts_nikah_kd',
+        'telp1_kd',
+        'telp2_kd',
+        'alamat_kd',
+        'rt_rw_kd',
+        'kel_kd',
+        'kec_kd',
+        'kota_kd',
+        'prov_kd',
+        'kd_pos_kd',
         'created_by',
         'updated_by',
     ];
@@ -254,6 +273,44 @@ class DataKaryawan extends Model
     }
 
     /**
+     * Get the emergency contact's full address.
+     *
+     * @return string
+     */
+    public function getFullKontakDaruratAddressAttribute(): string
+    {
+        if (!$this->alamat_kd) return '';
+
+        $address = $this->alamat_kd;
+
+        if ($this->rt_rw_kd) {
+            $address .= ', RT/RW ' . $this->rt_rw_kd;
+        }
+
+        if ($this->kel_kd) {
+            $address .= ', ' . $this->kel_kd;
+        }
+
+        if ($this->kec_kd) {
+            $address .= ', ' . $this->kec_kd;
+        }
+
+        if ($this->kota_kd) {
+            $address .= ', ' . $this->kota_kd;
+        }
+
+        if ($this->prov_kd) {
+            $address .= ', ' . $this->prov_kd;
+        }
+
+        if ($this->kd_pos_kd) {
+            $address .= ' ' . $this->kd_pos_kd;
+        }
+
+        return $address;
+    }
+
+    /**
      * Get the employee's primary phone number.
      *
      * @return string|null
@@ -271,6 +328,16 @@ class DataKaryawan extends Model
     public function getPrimaryEmailAttribute(): ?string
     {
         return $this->email1 ?: $this->email2;
+    }
+
+    /**
+     * Get the emergency contact's primary phone.
+     *
+     * @return string|null
+     */
+    public function getKontakDaruratPrimaryPhoneAttribute(): ?string
+    {
+        return $this->telp1_kd ?: $this->telp2_kd;
     }
 
     /**

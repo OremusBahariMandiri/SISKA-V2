@@ -57,7 +57,6 @@
                         @endif
 
                         <!-- Active Filter Display -->
-                        <!-- Active Filter Display -->
                         @if (
                             !empty($currentFilters['status']) ||
                                 !empty($currentFilters['jenis_dokumen']) ||
@@ -169,26 +168,17 @@
                                         <th width="1%" class="text-center">NO</th>
                                         <th width="3%" class="text-center">NRK</th>
                                         <th width="5%" class="text-center">NAMA</th>
-                                        <th width="2%" class="text-center">JML</th>
                                         <th width="2%" class="text-center">UMR</th>
                                         <th width="1%" class="text-center">SEX</th>
                                         <th width="2%" class="text-center">FOTO</th>
                                         <th width="3%" class="text-center">TGL MSK</th>
                                         <th width="2%" class="text-center">MKR</th>
-                                        <th width="3%" class="text-center">JNS DOK</th>
-                                        <th width="4%" class="text-center">NO DOK</th>
-                                        <th width="3%" class="text-center">TGL TTD</th>
-                                        <th width="2%" class="text-center">JNS MSB</th>
-                                        <th width="3%" class="text-center">TGL AKR</th>
-                                        <th width="2%" class="text-center">MSB</th>
-                                        <th width="3%" class="text-center">TGL PGT</th>
-                                        <th width="1%" class="text-center">PERINGATAN</th>
-                                        <th width="1%" class="text-center">FILE</th>
-                                        <th width="2%" class="text-center">STS</th>
-                                        <th width="3%" class="text-center">TGL NA</th>
-                                        <th width="4%" class="text-center">KET</th>
-                                        <th width="4%" class="text-center">CREATE</th>
-                                        <th width="4%" class="text-center">UPDATE</th>
+                                        <th width="2%" class="text-center">SKL</th>
+                                        <th width="2%" class="text-center">DEP</th>
+                                        <th width="2%" class="text-center">JBT</th>
+                                        <th width="2%" class="text-center">WLK</th>
+                                        <th width="2%" class="text-center">PRS</th>
+                                        <th width="2%" class="text-center">JML</th>
                                         <th width="3%" class="text-center no-wrap">AKSI</th>
                                     </tr>
                                 </thead>
@@ -197,7 +187,9 @@
                                         @php
                                             // Get related data
                                             $karyawan = $dokumen->karyawan;
-                                            $dokumenType = $dokumen->dokumenKaryawan;
+                                            $departemen = $karyawan ? $karyawan->departemenRelation : null;
+                                            $wilayah = $karyawan ? $karyawan->wilayahKerjaRelation : null;
+                                            $perusahaan = $karyawan ? $karyawan->perusahaanRelation : null;
 
                                             // Calculate age
                                             $age = null;
@@ -239,21 +231,6 @@
                                                 <div class="fw-bold">{{ $karyawan->nama ?? '-' }}</div>
                                             </td>
 
-                                            <!-- JUMLAH DOKUMEN -->
-                                            <td class="text-center">
-                                                @php
-                                                    $documentCount = $documentCounts[$dokumen->id_data_kry] ?? [
-                                                        'total' => 0,
-                                                        'active' => 0,
-                                                        'non_active' => 0,
-                                                    ];
-                                                @endphp
-                                                <div class="document-count-display">
-                                                    <span class="badge bg-primary" title="Total Dokumen">
-                                                        <i class="fas fa-file-alt me-1"></i>{{ $documentCount['total'] }}
-                                                    </span>
-                                                </div>
-                                            </td>
 
                                             <!-- UMUR -->
                                             <td class="text-center">
@@ -322,90 +299,50 @@
                                                 @endif
                                             </td>
 
-                                            <!-- JENIS DOKUMEN -->
+                                            <!-- PENDIDIKAN -->
                                             <td class="text-center">
-                                                <span>{{ $dokumenType->singkatan_dok ?? '-' }}</span>
+                                                <span>{{ $karyawan->jenjang_skl ?? '-' }}</span>
                                             </td>
 
-                                            <!-- NO DOKUMEN -->
+                                            <!-- DEPARTEMEN -->
                                             <td class="text-center">
-                                                <small>{{ $dokumen->no_dok ?? '-' }}</small>
-                                            </td>
-
-                                            <!-- TGL TANDA TANGAN -->
-                                            <td class="text-center">
-                                                {{ $dokumen->tgl_ttd ? date('d-m-Y', strtotime($dokumen->tgl_ttd)) : '-' }}
-                                            </td>
-
-                                            <!-- JENIS MASA BERLAKU -->
-                                            <td class="text-center">
-                                                <span>{{ $dokumen->jns_msb_dok ?? '-' }}</span>
-                                            </td>
-
-                                            <!-- TGL AKHIR -->
-                                            <td class="text-center">
-                                                {{ $dokumen->tgl_akr_dok ? date('d-m-Y', strtotime($dokumen->tgl_akr_dok)) : '-' }}
-                                            </td>
-
-                                            <!-- MASA BERLAKU -->
-                                            <td class="text-center">
-                                                @if ($dokumen->msb_dok)
-                                                    <span>{{ $dokumen->msb_dok }} bln</span>
+                                                @if ($departemen)
+                                                    <span>{{ $departemen->singkatan_dep }}</span>
                                                 @else
                                                     -
                                                 @endif
                                             </td>
 
-                                            <!-- TGL PERINGATAN -->
+                                            <!-- JABATAN -->
                                             <td class="text-center">
-                                                {{ $dokumen->tgl_pgt_dok ? date('d-m-Y', strtotime($dokumen->tgl_pgt_dok)) : '-' }}
+                                                <span>{{ $departemen->singkatan_jbt ?? '-' }}</span>
                                             </td>
 
-                                            <!-- PERINGATAN (Will be calculated by JS) -->
-                                            <td class="text-center sisa-peringatan-col">
-                                                <span>Loading...</span>
-                                            </td>
-
-                                            <!-- FILE -->
+                                            <!-- WILKER -->
                                             <td class="text-center">
-                                                @if ($dokumen->file_dok)
-                                                    <a href="{{ asset('storage/' . $dokumen->file_dok) }}"
-                                                        target="_blank" class="btn btn-sm btn-outline-primary"
-                                                        data-bs-toggle="tooltip" title="Lihat File">
-                                                        <i class="fas fa-file-pdf"></i>
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
+                                                <span>{{ $wilayah->singkatan_wk ?? '-' }}</span>
                                             </td>
 
-                                            <!-- STATUS -->
+                                            <!-- PERUSAHAAN -->
                                             <td class="text-center">
-                                                {{ $dokumen->sts_dok }}
+                                                <span>{{ $perusahaan->nama_prs2 ?? '-' }}</span>
                                             </td>
 
-                                            <!-- TGL NON AKTIF -->
                                             <td class="text-center">
-                                                {{ $dokumen->tgl_dok_na ? date('d-m-Y', strtotime($dokumen->tgl_dok_na)) : '-' }}
+                                                @php
+                                                    $documentCount = $documentCounts[$dokumen->id_data_kry] ?? [
+                                                        'total' => 0,
+                                                        'active' => 0,
+                                                        'non_active' => 0,
+                                                    ];
+                                                @endphp
+                                                <div class="document-count-display">
+                                                    <span class="badge bg-primary" title="Total Dokumen">
+                                                        <i class="fas fa-file-alt me-1"></i>{{ $documentCount['total'] }}
+                                                    </span>
+                                                </div>
                                             </td>
-
-                                            <!-- KETERANGAN -->
-                                            <td>
-                                                <small>{{ Str::limit($dokumen->ket_dok ?? '-', 30) }}</small>
-                                            </td>
-
-                                            <!-- CREATED BY -->
-                                            <td>{{ $dokumen->creator ? $dokumen->creator->nama_kry : '-' }}
-                                                <span
-                                                    style="font-size: 11px">{{ $dokumen->created_at ? $dokumen->created_at->format('d/m/y H:i') : '-' }}</span>
-                                            </td>
-
-                                            <!-- UPDATED BY -->
-                                            <td>{{ $dokumen->updater ? $dokumen->updater->nama_kry : '-' }}
-                                                <span
-                                                    style="font-size: 11px">{{ $dokumen->updated_at ? $dokumen->updated_at->format('d/m/y H:i') : '-' }}</span>
-                                            </td>
-
+                                            
                                             <!-- AKSI -->
                                             <td class="text-center no-wrap">
                                                 <div class="btn-group" role="group" aria-label="Actions">
@@ -437,8 +374,7 @@
         </div>
     </div>
 
-    <!-- Filter Modal -->
-    <!-- Filter Modal -->
+    <!-- Filter Modal (tetap sama seperti sebelumnya) -->
     <div class="modal fade" id="filterModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -448,10 +384,8 @@
                 </div>
                 <div class="modal-body">
                     <form id="filterForm" method="GET" action="{{ route('data-dokumen.index') }}">
-                        <!-- Row 1: Basic Filters -->
                         <div class="row mb-3">
-                            {{-- 1 --}}
-                            {{-- Status Dokumen --}}
+                            <!-- Filter sama seperti sebelumnya -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="filter_status" class="form-label fw-bold">Status Dokumen</label>
@@ -468,8 +402,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- 6 --}}
-                            {{-- Jabatan --}}
+
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="filter_jabatan" class="form-label fw-bold">Jabatan</label>
@@ -489,8 +422,6 @@
                                 </div>
                             </div>
 
-                            {{-- 2 --}}
-                            {{-- Jenis Dokumen --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_jenis_dokumen" class="form-label fw-bold">Jenis Dokumen</label>
@@ -510,8 +441,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- 7 --}}
-                            {{-- Perusahaan --}}
+
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_perusahaan" class="form-label fw-bold">Perusahaan</label>
@@ -530,8 +460,6 @@
                                 </div>
                             </div>
 
-                            {{-- 3 --}}
-                            {{-- Wilker --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_wilker" class="form-label fw-bold">Wilayah Kerja</label>
@@ -548,8 +476,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- 8 --}}
-                            {{-- Jenis Kelamin --}}
+
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_jenis_kelamin" class="form-label fw-bold">Jenis Kelamin</label>
@@ -568,8 +495,6 @@
                                 </div>
                             </div>
 
-                            {{-- 4 --}}
-                            {{-- Unit Kerja --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_unit_kerja" class="form-label fw-bold">Area Kerja</label>
@@ -587,8 +512,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- 9 --}}
-                            {{-- Nama Karyawan --}}
+
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_nama" class="form-label fw-bold">Nama Karyawan</label>
@@ -597,8 +521,6 @@
                                 </div>
                             </div>
 
-                            {{-- 5 --}}
-                            {{-- Departemen --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_departemen" class="form-label fw-bold">Departemen</label>
@@ -618,8 +540,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- 10 --}}
-                            {{-- NRK --}}
+
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_nrk" class="form-label fw-bold">NRK</label>
@@ -628,8 +549,6 @@
                                 </div>
                             </div>
 
-                            {{-- 11 --}}
-                            {{-- No Dokumen --}}
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_no_dokumen" class="form-label fw-bold">No Dokumen</label>
@@ -658,7 +577,7 @@
         </div>
     </div>
 
-    <!-- Export Modal -->
+    <!-- Export Modal (tetap sama) -->
     <div class="modal fade" id="exportModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -688,43 +607,7 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModal"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Konfirmasi Hapus Semua Dokumen</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Peringatan!</strong> Tindakan ini akan menghapus <strong>SEMUA</strong> dokumen karyawan.
-                    </div>
-                    <p>Apakah Anda yakin ingin menghapus <strong>semua data dokumen</strong> untuk karyawan <strong
-                            id="employeeName"></strong>?</p>
-                    <p class="text-muted">
-                        <i class="fas fa-info-circle me-1"></i>
-                        Ini akan menghapus seluruh riwayat dokumen karyawan tersebut.
-                        Data yang sudah dihapus tidak dapat dikembalikan.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <form id="deleteForm" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash me-1"></i>Hapus Semua Dokumen
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Summary Modal -->
+    <!-- Summary Modal (tetap sama) -->
     <div class="modal fade" id="summaryModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -868,7 +751,6 @@
 
     <style>
         /* ===== CARD STYLING ===== */
-        /* ===== CARD STYLING ===== */
         .dataDokumenPage .card {
             border: none;
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
@@ -994,82 +876,6 @@
             display: block !important;
             opacity: 1 !important;
             visibility: visible !important;
-        }
-
-        /* ===== HIGHLIGHT ROWS STYLING ===== */
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-red {
-            background-color: #fc0000 !important;
-            color: rgb(0, 0, 0) !important;
-            --bs-table-accent-bg: none !important;
-            --bs-table-striped-bg: none !important;
-        }
-
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-yellow {
-            background-color: #ffff00 !important;
-            color: rgb(0, 0, 0) !important;
-            --bs-table-accent-bg: none !important;
-            --bs-table-striped-bg: none !important;
-        }
-
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-orange {
-            background-color: #00e013 !important;
-            color: rgb(0, 0, 0) !important;
-            --bs-table-accent-bg: none !important;
-            --bs-table-striped-bg: none !important;
-        }
-
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-gray {
-            background-color: #cccccc !important;
-            color: rgb(0, 0, 0) !important;
-            --bs-table-accent-bg: none !important;
-            --bs-table-striped-bg: none !important;
-        }
-
-        /* Ensure hover states don't override highlight colors */
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-red:hover {
-            background-color: #ff3333 !important;
-        }
-
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-yellow:hover {
-            background-color: #ffff66 !important;
-        }
-
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-orange:hover {
-            background-color: #33ff33 !important;
-        }
-
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-gray:hover {
-            background-color: #dddddd !important;
-        }
-
-        /* Override Bootstrap's striped table styles */
-        .dataDokumenPage .table-striped>tbody>tr:nth-of-type(odd).highlight-red,
-        .dataDokumenPage .table-striped>tbody>tr:nth-of-type(even).highlight-red {
-            background-color: #fc0000 !important;
-        }
-
-        .dataDokumenPage .table-striped>tbody>tr:nth-of-type(odd).highlight-yellow,
-        .dataDokumenPage .table-striped>tbody>tr:nth-of-type(even).highlight-yellow {
-            background-color: #ffff00 !important;
-        }
-
-        .dataDokumenPage .table-striped>tbody>tr:nth-of-type(odd).highlight-orange,
-        .dataDokumenPage .table-striped>tbody>tr:nth-of-type(even).highlight-orange {
-            background-color: #00e013 !important;
-        }
-
-        .dataDokumenPage .table-striped>tbody>tr:nth-of-type(odd).highlight-gray,
-        .dataDokumenPage .table-striped>tbody>tr:nth-of-type(even).highlight-gray {
-            background-color: #cccccc !important;
-        }
-
-        /* ===== INI YANG KURANG — WAJIB DITAMBAHKAN ===== */
-        /* Memastikan warna background tr diturunkan ke td di dalamnya */
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-red>td,
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-yellow>td,
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-orange>td,
-        .dataDokumenPage table#dataDokumenTable tbody tr.highlight-gray>td {
-            background-color: inherit !important;
         }
 
         /* ===== DOCUMENT STATUS SUMMARY BADGES ===== */
@@ -1212,7 +1018,6 @@
             });
 
             $('#resetFilter').click(function() {
-                // Reset all form inputs
                 $('#filter_nama').val('');
                 $('#filter_nrk').val('');
                 $('#filter_no_dokumen').val('');
@@ -1225,7 +1030,6 @@
                 $('#filter_wilker').val('').trigger('change');
                 $('#filter_unit_kerja').val('').trigger('change');
 
-                // Reinitialize Select2 after reset
                 initializeSelect2InModal();
             });
 
@@ -1255,246 +1059,8 @@
                 });
             });
 
-            function calculateRowWarning(row) {
-                const tglPeringatan = row.data('tgl-peringatan');
-                const documentStatus = row.data('document-status');
-                const tglAkhir = row.data('tgl-akhir');
-                const jnsMsb = row.data('jns-msb'); // ← TAMBAHKAN INI
-
-                console.log('Calculating for row:', {
-                    'tgl-peringatan': tglPeringatan,
-                    'document-status': documentStatus,
-                    'tgl-akhir': tglAkhir,
-                    'jns-msb': jnsMsb // ← TAMBAHKAN INI
-                });
-
-                // Skip NON-AKTIF documents - Abu-abu
-                if (documentStatus === 'NON-AKTIF') {
-                    return {
-                        text: 'NON-AKTIF',
-                        badgeClass: 'bg-secondary',
-                        priority: 10, // ← UBAH dari 10 agar selalu paling bawah
-                        status: 'non_active'
-                    };
-                }
-
-                // Skip non-active documents (EXPIRED, PENDING, etc)
-                if (documentStatus !== 'AKTIF') {
-                    return {
-                        text: 'Dokumen Tidak Aktif',
-                        badgeClass: 'bg-secondary',
-                        priority: 5,
-                        status: 'inactive'
-                    };
-                }
-
-                // PERBAIKAN: Handle dokumen TETAP yang AKTIF
-                if (jnsMsb === 'TETAP') {
-                    // Dokumen TETAP yang AKTIF = "Tidak Ada Pengingat" tapi TIDAK abu-abu
-                    return {
-                        text: 'Tidak Ada Pengingat',
-                        badgeClass: 'bg-secondary',
-                        priority: 5,
-                        status: 'tetap_no_reminder' // ← Status khusus untuk TETAP
-                    };
-                }
-
-                // If no reminder date for PERPANJANGAN documents, abu-abu
-                if (!tglPeringatan || tglPeringatan === '') {
-                    return {
-                        text: 'Tidak Ada Pengingat',
-                        badgeClass: 'bg-secondary',
-                        priority: 5,
-                        status: 'no_reminder'
-                    };
-                }
-
-                // Calculate days difference using moment (untuk PERPANJANGAN dengan pengingat)
-                const today = moment().startOf('day');
-                const reminderDate = moment(tglPeringatan);
-                const diffDays = reminderDate.diff(today, 'days');
-
-                console.log('Date calculation:', {
-                    today: today.format('YYYY-MM-DD'),
-                    reminderDate: reminderDate.format('YYYY-MM-DD'),
-                    diffDays: diffDays
-                });
-
-                let result = {
-                    text: '',
-                    badgeClass: '',
-                    priority: 4,
-                    status: 'normal'
-                };
-
-                if (diffDays < 0) {
-                    // Expired - reminder date has passed
-                    result.text = 'Terlambat ' + Math.abs(diffDays) + ' hari';
-                    result.badgeClass = 'bg-danger';
-                    result.priority = 1;
-                    result.status = 'expired';
-                } else if (diffDays === 0) {
-                    // Today
-                    result.text = 'HARI INI';
-                    result.badgeClass = 'bg-danger';
-                    result.priority = 1;
-                    result.status = 'expired';
-                } else if (diffDays <= 7) {
-                    // Urgent - within 7 days
-                    result.text = diffDays + ' Hr lg';
-                    result.badgeClass = 'bg-warning text-dark';
-                    result.priority = 2;
-                    result.status = 'urgent';
-                } else if (diffDays <= 30) {
-                    // Warning - within 30 days
-                    result.text = diffDays + ' Hr lg';
-                    result.badgeClass = 'bg-info';
-                    result.priority = 3;
-                    result.status = 'warning';
-                } else {
-                    // Safe - more than 30 days
-                    result.text = diffDays + ' Hr lg';
-                    result.badgeClass = 'bg-success';
-                    result.priority = 4;
-                    result.status = 'safe';
-                }
-
-                console.log('Warning result:', result);
-                return result;
-            }
-
-            function applyRowProcessing() {
-                console.log('Applying row processing...');
-
-                let expiredCount = 0;
-                let warningCount = 0;
-
-                // Reset all highlighting
-                $('#dataDokumenTable tbody tr').removeClass(
-                    'highlight-red highlight-yellow highlight-orange highlight-gray');
-
-                $('#dataDokumenTable tbody tr').each(function() {
-                    const row = $(this);
-                    const warningData = calculateRowWarning(row);
-
-                    const peringatanCol = row.find('.sisa-peringatan-col');
-                    peringatanCol.html('<span>' + warningData.text + '</span>');
-
-                    // Apply row highlighting
-                    switch (warningData.status) {
-                        case 'expired':
-                            row.addClass('highlight-red');
-                            expiredCount++;
-                            break;
-                        case 'urgent':
-                            row.addClass('highlight-yellow');
-                            warningCount++;
-                            break;
-                        case 'warning':
-                            row.addClass('highlight-orange');
-                            warningCount++;
-                            break;
-                        case 'safe':
-                            // No highlighting for safe status - tetap putih
-                            break;
-                        case 'tetap_no_reminder':
-                            // PERBAIKAN: Dokumen TETAP AKTIF tidak diberi highlighting - tetap putih
-                            break;
-                        case 'non_active':
-                            // Abu-abu untuk NON-AKTIF
-                            row.addClass('highlight-gray');
-                            break;
-                        case 'no_reminder':
-                            // Abu-abu untuk PERPANJANGAN tanpa pengingat
-                            row.addClass('highlight-gray');
-                            break;
-                        default:
-                            // Inactive documents - abu-abu
-                            row.addClass('highlight-gray');
-                            break;
-                    }
-
-                    // Store priority for sorting
-                    row.data('priority', warningData.priority);
-                });
-
-                console.log('Statistics updated - Expired:', expiredCount, 'Warning:', warningCount);
-            }
-
-            function getRowPriority(row) {
-                return $(row).data('priority') || 5;
-            }
-
-            $.fn.dataTable.ext.order['dom-priority'] = function(settings, col) {
-                return this.api().column(col, {
-                    order: 'index'
-                }).nodes().map(function(td, i) {
-                    return getRowPriority($(td).closest('tr'));
-                });
-            };
-
-            $('#dataDokumenTable tbody tr').each(function() {
-                const row = $(this);
-                const warningData = calculateRowWarning(row);
-                row.data('priority', warningData.priority);
-            });
-
-            var table = $('#dataDokumenTable').DataTable({
-                responsive: true,
-                destroy: true,
-                language: {
-                    "emptyTable": "Tidak ada data yang tersedia pada tabel ini",
-                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
-                    "infoEmpty": "Menampilkan 0 sampai 0 dari 0 entri",
-                    "infoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
-                    "lengthMenu": "Tampilkan _MENU_ entri",
-                    "loadingRecords": "Sedang memuat...",
-                    "processing": "Sedang memproses...",
-                    "search": "Cari:",
-                    "zeroRecords": "Tidak ditemukan data yang sesuai",
-                    "paginate": {
-                        "first": "Pertama",
-                        "last": "Terakhir",
-                        "next": "Selanjutnya",
-                        "previous": "Sebelumnya"
-                    }
-                },
-                columnDefs: [{
-                    targets: 0,
-                    orderDataType: 'dom-priority'
-                }, {
-                    orderable: false,
-                    targets: [23]
-                }, {
-                    responsivePriority: 1,
-                    targets: [23]
-                }, {
-                    responsivePriority: 2,
-                    targets: [0, 1, 2]
-                }, {
-                    responsivePriority: 3,
-                    targets: [18, 16]
-                }],
-                order: [
-                    [0, 'asc']
-                ],
-                drawCallback: function() {
-                    var api = this.api();
-                    var startIndex = api.page.info().start;
-
-                    api.column(0, {
-                        page: 'current'
-                    }).nodes().each(function(cell, i) {
-                        cell.innerHTML = startIndex + i + 1;
-                    });
-
-                    applyRowProcessing();
-                },
-                initComplete: function() {
-                    console.log('DataTable initialized, applying initial processing...');
-                    applyRowProcessing();
-                }
-            });
+            var table = $('#dataDokumenTable').DataTable(
+        );
 
             $('#filterButton').on('click', function() {
                 $('#filterModal').modal('show');
@@ -1523,21 +1089,6 @@
                 $('#summaryModal').modal('show');
             });
 
-            $(document).on('click', '.delete-confirm', function() {
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-
-                var deleteUrl = "{{ route('data-dokumen.destroy', ':id') }}".replace(':id', id);
-                $('#deleteForm').attr('action', deleteUrl);
-                $('#employeeName').text(name);
-
-                $('#deleteConfirmationModal').modal('show');
-            });
-
-            table.on('draw.dt', function() {
-                applyRowProcessing();
-            });
-
             $('#dataDokumenTable tbody').on('mouseenter', 'tr', function() {
                 $(this).addClass('row-hover-active');
             }).on('mouseleave', 'tr', function() {
@@ -1547,11 +1098,6 @@
             setTimeout(function() {
                 $(".alert").fadeOut("slow");
             }, 5000);
-
-            setTimeout(function() {
-                console.log('Force applying initial processing...');
-                applyRowProcessing();
-            }, 1000);
 
             console.log('Document system initialization complete!');
         });

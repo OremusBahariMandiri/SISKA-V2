@@ -74,6 +74,13 @@
                                         <i class="fas fa-user-check me-1"></i> Hubungan Industrial
                                     </button>
                                 </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="kontak-darurat-tab" data-bs-toggle="tab"
+                                        data-bs-target="#kontak-darurat" type="button" role="tab"
+                                        aria-controls="kontak-darurat" aria-selected="false">
+                                        <i class="fas fa-phone-square-alt me-1"></i> Kontak Darurat
+                                    </button>
+                                </li>
                             </ul>
 
                             <!-- Tab panes -->
@@ -359,7 +366,6 @@
                                             </h5>
                                         </div>
                                         <div class="card-body">
-
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
@@ -718,6 +724,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Pendidikan -->
                                 <div class="tab-pane fade" id="pendidikan" role="tabpanel"
                                     aria-labelledby="pendidikan-tab">
@@ -1161,71 +1168,71 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- Hubungan Industrial -->
-                                    <div class="tab-pane fade" id="hubin" role="tabpanel"
-                                        aria-labelledby="hubin-tab">
-                                        <!-- Status Karyawan -->
-                                        <div class="card border-primary mb-4">
-                                            <div class="card-header bg-primary bg-opacity-25">
-                                                <h5 class="mb-0 text-white"><i class="fas fa-user-check me-2"></i>Status
-                                                    Hubungan
-                                                    Industrial</h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    {{-- NRK --}}
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-3">
-                                                            <label for="nrk" class="form-label fw-bold">NRK</label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text"><i
-                                                                        class="fas fa-id-badge"></i></span>
-                                                                <input type="text" class="form-control auto-uppercase"
-                                                                    id="nrk" name="nrk"
-                                                                    value="{{ old('nrk') }}">
-                                                            </div>
+                                <!-- Hubungan Industrial -->
+                                <div class="tab-pane fade" id="hubin" role="tabpanel" aria-labelledby="hubin-tab">
+                                    <!-- Status Karyawan -->
+                                    <div class="card border-primary mb-4">
+                                        <div class="card-header bg-primary bg-opacity-25">
+                                            <h5 class="mb-0 text-white"><i class="fas fa-user-check me-2"></i>Status
+                                                Hubungan
+                                                Industrial</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {{-- NRK --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="nrk" class="form-label fw-bold">NRK</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-id-badge"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="nrk" name="nrk"
+                                                                value="{{ old('nrk') }}">
                                                         </div>
                                                     </div>
-                                                    {{-- Tanggal Masuk --}}
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-3">
-                                                            <label for="tgl_masuk" class="form-label fw-bold">
-                                                                <i class="fas fa-calendar-plus me-1"></i>Tanggal Masuk
-                                                            </label>
-                                                            <input type="date" class="form-control" id="tgl_masuk"
-                                                                name="tgl_masuk" value="{{ old('tgl_masuk') }}">
+                                                </div>
+                                                {{-- Tanggal Masuk --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="tgl_masuk" class="form-label fw-bold">
+                                                            <i class="fas fa-calendar-plus me-1"></i>Tanggal Masuk
+                                                        </label>
+                                                        <input type="date" class="form-control" id="tgl_masuk"
+                                                            name="tgl_masuk" value="{{ old('tgl_masuk') }}">
+                                                    </div>
+                                                </div>
+                                                {{-- Status Karyawan --}}
+                                                <div class="col-md-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="sts_kry" class="form-label fw-bold">Status
+                                                            Karyawan
+                                                            <span class="text-danger">*</span></label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-user-check"></i></span>
+                                                            <select class="form-select" id="sts_kry" name="sts_kry"
+                                                                data-required="true">
+                                                                <option value="">Pilih Status</option>
+                                                                <option value="CALON"
+                                                                    {{ old('sts_kry') == 'CALON' ? 'selected' : '' }}>
+                                                                    CALON
+                                                                </option>
+                                                                <option value="AKTIF"
+                                                                    {{ old('sts_kry') == 'AKTIF' ? 'selected' : '' }}>
+                                                                    AKTIF
+                                                                </option>
+                                                                <option value="NON-AKTIF"
+                                                                    {{ old('sts_kry') == 'NON-AKTIF' ? 'selected' : '' }}>
+                                                                    NON-AKTIF</option>
+                                                            </select>
                                                         </div>
                                                     </div>
-                                                    {{-- Status Karyawan --}}
-                                                    <div class="col-md-12">
-                                                        <div class="form-group mb-3">
-                                                            <label for="sts_kry" class="form-label fw-bold">Status
-                                                                Karyawan
-                                                                <span class="text-danger">*</span></label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text"><i
-                                                                        class="fas fa-user-check"></i></span>
-                                                                <select class="form-select" id="sts_kry" name="sts_kry"
-                                                                    data-required="true">
-                                                                    <option value="">Pilih Status</option>
-                                                                    <option value="CALON"
-                                                                        {{ old('sts_kry') == 'CALON' ? 'selected' : '' }}>
-                                                                        CALON
-                                                                    </option>
-                                                                    <option value="AKTIF"
-                                                                        {{ old('sts_kry') == 'AKTIF' ? 'selected' : '' }}>
-                                                                        AKTIF
-                                                                    </option>
-                                                                    <option value="NON-AKTIF"
-                                                                        {{ old('sts_kry') == 'NON-AKTIF' ? 'selected' : '' }}>
-                                                                        NON-AKTIF</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {{-- SKT Status Kry --}}
-                                                    {{-- <div class="col-md-6">
+                                                </div>
+                                                {{-- SKT Status Kry --}}
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="skt_sts_kry" class="form-label fw-bold">SKT
                                                             Status Karyawan</label>
@@ -1238,38 +1245,37 @@
                                                         </div>
                                                     </div>
                                                 </div> --}}
-                                                </div>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <!-- Status PHK (jika diperlukan) -->
-                                        <div class="card border-danger mb-4" id="phkCard" style="display: none;">
-                                            <div class="card-header bg-danger bg-opacity-25">
-                                                <h5 class="mb-0"><i class="fas fa-user-times me-2"></i>Informasi PHK
-                                                </h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-3">
-                                                            <label for="tgl_phk" class="form-label fw-bold">
-                                                                <i class="fas fa-calendar-minus me-1"></i>Tanggal PHK
-                                                            </label>
-                                                            <input type="date" class="form-control" id="tgl_phk"
-                                                                name="tgl_phk" value="{{ old('tgl_phk') }}">
-                                                        </div>
+                                    <!-- Status PHK (jika diperlukan) -->
+                                    <div class="card border-danger mb-4" id="phkCard" style="display: none;">
+                                        <div class="card-header bg-danger bg-opacity-25">
+                                            <h5 class="mb-0"><i class="fas fa-user-times me-2"></i>Informasi PHK
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="tgl_phk" class="form-label fw-bold">
+                                                            <i class="fas fa-calendar-minus me-1"></i>Tanggal PHK
+                                                        </label>
+                                                        <input type="date" class="form-control" id="tgl_phk"
+                                                            name="tgl_phk" value="{{ old('tgl_phk') }}">
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-3">
-                                                            <label for="ket_phk" class="form-label fw-bold">Keterangan
-                                                                PHK</label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text"><i
-                                                                        class="fas fa-comment-alt"></i></span>
-                                                                <input type="text" class="form-control auto-uppercase"
-                                                                    id="ket_phk" name="ket_phk"
-                                                                    value="{{ old('ket_phk') }}">
-                                                            </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="ket_phk" class="form-label fw-bold">Keterangan
+                                                            PHK</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-comment-alt"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="ket_phk" name="ket_phk"
+                                                                value="{{ old('ket_phk') }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1278,20 +1284,419 @@
                                     </div>
                                 </div>
 
-                                <!-- Submit Button - Always visible at bottom -->
-                                <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                                    <a href="{{ route('data-karyawan.index') }}" class="btn btn-secondary btn-lg">
-                                        <i class="fas fa-times me-2"></i> Batal
-                                    </a>
-                                    <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
-                                        <i class="fas fa-save me-2"></i> Simpan Data Karyawan
-                                    </button>
+                                <div class="tab-pane fade" id="kontak-darurat" role="tabpanel"
+                                    aria-labelledby="kontak-darurat-tab">
+                                    <div class="card border-primary mb-4">
+                                        <div class="card-header bg-primary bg-opacity-25">
+                                            <h5 class="mb-0 text-white"><i
+                                                    class="fas fa-phone-square-alt me-2"></i>Informasi Kontak Darurat</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {{-- Jenis Kontak Darurat --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="jns_kd" class="form-label fw-bold">Jenis
+                                                            Kontak</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-user-friends"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="jns_kd"
+                                                                    name="jns_kd">
+                                                                    <option value="">Pilih Jenis Kontak</option>
+                                                                    <option value="ORANG TUA"
+                                                                        {{ old('jns_kd') == 'ORANG TUA' ? 'selected' : '' }}>
+                                                                        ORANG TUA</option>
+                                                                    <option value="SUAMI"
+                                                                        {{ old('jns_kd') == 'SUAMI' ? 'selected' : '' }}>
+                                                                        SUAMI</option>
+                                                                    <option value="ISTRI"
+                                                                        {{ old('jns_kd') == 'ISTRI' ? 'selected' : '' }}>
+                                                                        ISTRI</option>
+                                                                    <option value="SAUDARA KANDUNG"
+                                                                        {{ old('jns_kd') == 'SAUDARA KANDUNG' ? 'selected' : '' }}>
+                                                                        SAUDARA KANDUNG</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- Status Kontak --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="sts_kd" class="form-label fw-bold">Status
+                                                            Kontak</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-check-circle"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="sts_kd"
+                                                                    name="sts_kd">
+                                                                    <option value="">Pilih Status</option>
+                                                                    <option value="BAPAK"
+                                                                        {{ old('sts_kd') == 'BAPAK' ? 'selected' : '' }}>
+                                                                        BAPAK</option>
+                                                                    <option value="IBU"
+                                                                        {{ old('sts_kd') == 'IBU' ? 'selected' : '' }}>
+                                                                        IBU</option>
+                                                                    <option value="SUAMI"
+                                                                        {{ old('sts_kd') == 'SUAMI' ? 'selected' : '' }}>
+                                                                        SUAMI</option>
+                                                                    <option value="ISTRI"
+                                                                        {{ old('sts_kd') == 'ISTRI' ? 'selected' : '' }}>
+                                                                        ISTRI</option>
+                                                                    <option value="KAKAK"
+                                                                        {{ old('sts_kd') == 'KAKAK' ? 'selected' : '' }}>
+                                                                        KAKAK</option>
+                                                                    <option value="ADIK"
+                                                                        {{ old('sts_kd') == 'ADIK' ? 'selected' : '' }}>
+                                                                        ADIK</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                {{-- Nama Kontak Darurat --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="nama_kd" class="form-label fw-bold">Nama
+                                                            Lengkap</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-user"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="nama_kd" name="nama_kd"
+                                                                value="{{ old('nama_kd') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- NIK Kontak Darurat --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="nik_kd" class="form-label fw-bold">NIK</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-id-card-alt"></i></span>
+                                                            <input type="text" class="form-control no-uppercase"
+                                                                id="nik_kd" name="nik_kd"
+                                                                value="{{ old('nik_kd') }}" minlength="16"
+                                                                maxlength="16">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="row">
+                                                {{-- Tempat Lahir --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="tpt_lhr_kd" class="form-label fw-bold">Tempat
+                                                            Lahir</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-map-marker-alt"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="tpt_lhr_kd" name="tpt_lhr_kd"
+                                                                value="{{ old('tpt_lhr_kd') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Tanggal Lahir --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="tgl_lhr_kd" class="form-label fw-bold">
+                                                            <i class="fas fa-calendar-alt me-1"></i>Tanggal Lahir
+                                                        </label>
+                                                        <input type="date" class="form-control" id="tgl_lhr_kd"
+                                                            name="tgl_lhr_kd" value="{{ old('tgl_lhr_kd') }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+
+                                                {{-- Jenis Kelamin --}}
+                                                <div class="col-md-4">
+                                                    <div class="form-group mb-3">
+                                                        <label for="sex_kd" class="form-label fw-bold">Jenis
+                                                            Kelamin</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-venus-mars"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="sex_kd"
+                                                                    name="sex_kd">
+                                                                    <option value="">Pilih Jenis Kelamin</option>
+                                                                    <option value="LAKI-LAKI"
+                                                                        {{ old('sex_kd') == 'LAKI-LAKI' ? 'selected' : '' }}>
+                                                                        LAKI-LAKI</option>
+                                                                    <option value="PEREMPUAN"
+                                                                        {{ old('sex_kd') == 'PEREMPUAN' ? 'selected' : '' }}>
+                                                                        PEREMPUAN</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Agama --}}
+                                                <div class="col-md-4">
+                                                    <div class="form-group mb-3">
+                                                        <label for="agama_kd" class="form-label fw-bold">Agama</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-pray"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="agama_kd"
+                                                                    name="agama_kd">
+                                                                    <option value="">Pilih Agama</option>
+                                                                    <option value="ISLAM"
+                                                                        {{ old('agama_kd') == 'ISLAM' ? 'selected' : '' }}>
+                                                                        ISLAM</option>
+                                                                    <option value="KRISTEN"
+                                                                        {{ old('agama_kd') == 'KRISTEN' ? 'selected' : '' }}>
+                                                                        KRISTEN</option>
+                                                                    <option value="KATOLIK"
+                                                                        {{ old('agama_kd') == 'KATOLIK' ? 'selected' : '' }}>
+                                                                        KATOLIK</option>
+                                                                    <option value="HINDU"
+                                                                        {{ old('agama_kd') == 'HINDU' ? 'selected' : '' }}>
+                                                                        HINDU</option>
+                                                                    <option value="BUDDHA"
+                                                                        {{ old('agama_kd') == 'BUDDHA' ? 'selected' : '' }}>
+                                                                        BUDDHA</option>
+                                                                    <option value="KONGHUCU"
+                                                                        {{ old('agama_kd') == 'KONGHUCU' ? 'selected' : '' }}>
+                                                                        KONGHUCU</option>
+                                                                    <option value="LAINNYA"
+                                                                        {{ old('agama_kd') == 'LAINNYA' ? 'selected' : '' }}>
+                                                                        LAINNYA</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Status Nikah --}}
+                                                <div class="col-md-4">
+                                                    <div class="form-group mb-3">
+                                                        <label for="sts_nikah_kd" class="form-label fw-bold">Status
+                                                            Pernikahan</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-heart"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="sts_nikah_kd"
+                                                                    name="sts_nikah_kd">
+                                                                    <option value="">Pilih Status</option>
+                                                                    <option value="BELUM KAWIN"
+                                                                        {{ old('sts_nikah_kd') == 'BELUM KAWIN' ? 'selected' : '' }}>
+                                                                        BELUM KAWIN</option>
+                                                                    <option value="KAWIN"
+                                                                        {{ old('sts_nikah_kd') == 'KAWIN' ? 'selected' : '' }}>
+                                                                        KAWIN</option>
+                                                                    <option value="CERAI HIDUP"
+                                                                        {{ old('sts_nikah_kd') == 'CERAI HIDUP' ? 'selected' : '' }}>
+                                                                        CERAI HIDUP</option>
+                                                                    <option value="CERAI MATI"
+                                                                        {{ old('sts_nikah_kd') == 'CERAI MATI' ? 'selected' : '' }}>
+                                                                        CERAI MATI</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                {{-- Telepon 1 --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="telp1_kd" class="form-label fw-bold">No. Telepon
+                                                            Utama</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-phone"></i></span>
+                                                            <input type="text" class="form-control no-uppercase"
+                                                                id="telp1_kd" name="telp1_kd"
+                                                                value="{{ old('telp1_kd') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                                {{-- Telepon 2 --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="telp2_kd" class="form-label fw-bold">No. Telepon
+                                                            Alternatif</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-mobile-alt"></i></span>
+                                                            <input type="text" class="form-control no-uppercase"
+                                                                id="telp2_kd" name="telp2_kd"
+                                                                value="{{ old('telp2_kd') }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card border-primary mb-4">
+                                        <div class="card-header bg-primary bg-opacity-25">
+                                            <h5 class="mb-0 text-white"><i
+                                                    class="fas fa-phone-square-alt me-2"></i>Alamat Kontak Darurat</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {{-- Provinsi --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="prov_kd"
+                                                            class="form-label fw-bold">Provinsi</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-globe-asia"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="prov_kd"
+                                                                    name="prov_kd">
+                                                                    <option value="">Pilih Provinsi</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Kelurahan --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="kel_kd"
+                                                            class="form-label fw-bold">Kelurahan/Desa</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-building"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="kel_kd"
+                                                                    name="kel_kd" disabled>
+                                                                    <option value="">Pilih Kelurahan/Desa</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                {{-- Kota --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="kota_kd"
+                                                            class="form-label fw-bold">Kota/Kabupaten</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-map"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="kota_kd"
+                                                                    name="kota_kd" disabled>
+                                                                    <option value="">Pilih Kota/Kabupaten</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- RT/RW --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="rt_rw_kd" class="form-label fw-bold">RT/RW</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-home"></i></span>
+                                                            <input type="text" class="form-control auto-uppercase"
+                                                                id="rt_rw_kd" name="rt_rw_kd"
+                                                                value="{{ old('rt_rw_kd') }}" placeholder="001/002">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                {{-- Kecamatan --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="kec_kd"
+                                                            class="form-label fw-bold">Kecamatan</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-city"></i></span>
+                                                            <div style="flex: 1">
+                                                                <select class="form-select select2" id="kec_kd"
+                                                                    name="kec_kd" disabled>
+                                                                    <option value="">Pilih Kecamatan</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Kode Pos --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="kd_pos_kd" class="form-label fw-bold">Kode
+                                                            Pos</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-mail-bulk"></i></span>
+                                                            <input type="text" class="form-control no-uppercase"
+                                                                id="kd_pos_kd" name="kd_pos_kd"
+                                                                value="{{ old('kd_pos_kd') }}" maxlength="5"
+                                                                pattern="[0-9]{5}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                {{-- Alamat Lengkap --}}
+                                                <div class="col-md-12">
+                                                    <div class="form-group mb-3">
+                                                        <label for="alamat_kd" class="form-label fw-bold">Alamat
+                                                            Lengkap</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-map-marked-alt"></i></span>
+                                                            <textarea class="form-control auto-uppercase" id="alamat_kd" name="alamat_kd" rows="3">{{ old('alamat_kd') }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+                            <!-- Submit Button - Always visible at bottom -->
+                            <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                                <a href="{{ route('data-karyawan.index') }}" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-times me-2"></i> Batal
+                                </a>
+                                <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                    <i class="fas fa-save me-2"></i> Simpan Data Karyawan
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection
 
@@ -1945,6 +2350,10 @@
                     }
                 });
             });
+
+
+
+
         });
     </script>
 @endpush

@@ -64,6 +64,13 @@
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="kontak-darurat-tab" data-bs-toggle="tab"
+                                    data-bs-target="#kontak-darurat" type="button" role="tab"
+                                    aria-controls="kontak-darurat" aria-selected="false">
+                                    <i class="fas fa-phone-square-alt me-1"></i> Kontak Darurat
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="sistem-tab" data-bs-toggle="tab" data-bs-target="#sistem"
                                     type="button" role="tab" aria-controls="sistem" aria-selected="false">
                                     <i class="fas fa-cog me-1"></i> Informasi Sistem
@@ -687,6 +694,179 @@
                                     </div>
                                 @endif
 
+                            </div>
+
+                            <!-- Kontak Darurat -->
+                            <div class="tab-pane fade" id="kontak-darurat" role="tabpanel"
+                                aria-labelledby="kontak-darurat-tab">
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
+                                        <h5 class="mb-0 text-white"><i class="fas fa-phone-square-alt me-2"></i>Informasi
+                                            Kontak Darurat</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Jenis Kontak</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-user-friends text-primary me-2"></i>
+                                                    {{ $dataKaryawan->jns_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Status Kontak</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                                    {{ $dataKaryawan->sts_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Nama Lengkap</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-user text-primary me-2"></i>
+                                                    {{ $dataKaryawan->nama_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">NIK</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-id-card-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->nik_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Tempat Lahir</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->tpt_lhr_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Tanggal Lahir</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-calendar-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->tgl_lhr_kd ? \Carbon\Carbon::parse($dataKaryawan->tgl_lhr_kd)->format('d F Y') : '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label fw-bold text-muted">Jenis Kelamin</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-venus-mars text-primary me-2"></i>
+                                                    {{ $dataKaryawan->sex_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label fw-bold text-muted">Agama</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-pray text-primary me-2"></i>
+                                                    {{ $dataKaryawan->agama_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label fw-bold text-muted">Status Pernikahan</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-heart text-primary me-2"></i>
+                                                    {{ $dataKaryawan->sts_nikah_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">No. Telepon Utama</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-phone text-primary me-2"></i>
+                                                    {{ $dataKaryawan->telp1_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">No. Telepon Alternatif</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-mobile-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->telp2_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
+                                        <h5 class="mb-0 text-white"><i class="fas fa-map-marked-alt me-2"></i>Alamat
+                                            Kontak Darurat</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Provinsi</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-globe-asia text-primary me-2"></i>
+                                                    {{ $dataKaryawan->prov_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Kelurahan/Desa</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-building text-primary me-2"></i>
+                                                    {{ $dataKaryawan->kel_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Kota/Kabupaten</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map text-primary me-2"></i>
+                                                    {{ $dataKaryawan->kota_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">RT/RW</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-home text-primary me-2"></i>
+                                                    {{ $dataKaryawan->rt_rw_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Kecamatan</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-city text-primary me-2"></i>
+                                                    {{ $dataKaryawan->kec_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label fw-bold text-muted">Kode Pos</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-mail-bulk text-primary me-2"></i>
+                                                    {{ $dataKaryawan->kd_pos_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label class="form-label fw-bold text-muted">Alamat Lengkap</label>
+                                                <div class="detail-value">
+                                                    <i class="fas fa-map-marked-alt text-primary me-2"></i>
+                                                    {{ $dataKaryawan->alamat_kd ?? '-' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="tab-pane fade" id="sistem" role="tabpanel" aria-labelledby="sistem-tab">

@@ -383,6 +383,25 @@ class DataKaryawanController extends Controller
             'skt_sts_kry' => $request->skt_sts_kry,
             'tgl_phk' => $request->tgl_phk,
             'ket_phk' => $request->ket_phk,
+            // ✅ PERBAIKAN: Kontak Darurat (FIELD YANG SEBELUMNYA HILANG)
+            'jns_kd' => $request->jns_kd,
+            'sts_kd' => $request->sts_kd,
+            'nik_kd' => $request->nik_kd,
+            'nama_kd' => $request->nama_kd,
+            'tpt_lhr_kd' => $request->tpt_lhr_kd,
+            'tgl_lhr_kd' => $request->tgl_lhr_kd,
+            'sex_kd' => $request->sex_kd,
+            'agama_kd' => $request->agama_kd,
+            'sts_nikah_kd' => $request->sts_nikah_kd,
+            'telp1_kd' => $request->telp1_kd,
+            'telp2_kd' => $request->telp2_kd,
+            'alamat_kd' => $request->alamat_kd,
+            'rt_rw_kd' => $request->rt_rw_kd,
+            'kel_kd' => $request->kel_kd,
+            'kec_kd' => $request->kec_kd,
+            'kota_kd' => $request->kota_kd,
+            'prov_kd' => $request->prov_kd,
+            'kd_pos_kd' => $request->kd_pos_kd,
             'created_by' => auth()->user()->id_kode ?? null,
         ]);
 
@@ -442,6 +461,25 @@ class DataKaryawanController extends Controller
             'prov_dom' => 'required|string|max:100',
             'sts_kry' => 'required|in:CALON,AKTIF,NON-AKTIF',
             'foto_dokumen' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf,doc,docx',
+            // ✅ PERBAIKAN: Kontak Darurat validation (yang sebelumnya salah)
+            'jns_kd' => 'nullable|string|max:50',
+            'sts_kd' => 'nullable|string|max:50',
+            'nik_kd' => 'nullable|string|size:16',
+            'nama_kd' => 'nullable|string|max:255',
+            'tpt_lhr_kd' => 'nullable|string|max:255',
+            'tgl_lhr_kd' => 'nullable|date', // ✅ UBAH dari string ke date
+            'sex_kd' => 'nullable|string|max:20',
+            'agama_kd' => 'nullable|string|max:50',
+            'sts_nikah_kd' => 'nullable|string|max:50',
+            'telp1_kd' => 'nullable|string|max:20',
+            'telp2_kd' => 'nullable|string|max:20',
+            'alamat_kd' => 'nullable|string',
+            'rt_rw_kd' => 'nullable|string|max:10',
+            'kel_kd' => 'nullable|string|max:100',
+            'kec_kd' => 'nullable|string|max:100',
+            'kota_kd' => 'nullable|string|max:100',
+            'prov_kd' => 'nullable|string|max:100',
+            'kd_pos_kd' => 'nullable|string|max:10',
         ]);
 
         // Handle file upload
@@ -525,6 +563,26 @@ class DataKaryawanController extends Controller
             'skt_sts_kry' => $request->skt_sts_kry,
             'tgl_phk' => $request->tgl_phk,
             'ket_phk' => $request->ket_phk,
+            // kontak darurat
+            'jns_kd' => $request->jns_kd,
+            'sts_kd' => $request->sts_kd,
+            'nik_kd' => $request->nik_kd,
+            'nama_kd' => $request->nama_kd,
+            'tpt_lhr_kd' => $request->tpt_lhr_kd,
+            'tgl_lhr_kd' => $request->tgl_lhr_kd,
+            'sex_kd' => $request->sex_kd,
+            'agama_kd' => $request->agama_kd,
+            'sts_nikah_kd' => $request->sts_nikah_kd,
+            'telp1_kd' => $request->telp1_kd,
+            'telp2_kd' => $request->telp2_kd,
+            'alamat_kd' => $request->alamat_kd,
+            'rt_rw_kd' => $request->rt_rw_kd,
+            'kel_kd' => $request->kel_kd,
+            'kec_kd' => $request->kec_kd,
+            'kota_kd' => $request->kota_kd,
+            'prov_kd' => $request->prov_kd,
+            'kd_pos_kd' => $request->kd_pos_kd,
+
             'updated_by' => auth()->user()->id_kode ?? null,
         ];
 
@@ -707,5 +765,30 @@ class DataKaryawanController extends Controller
                 'message' => 'Wilayah Kerja tidak ditemukan'
             ], 404);
         }
+    }
+
+    public function customExport(Request $request)
+    {
+        // Validasi minimal harus ada 1 field yang dipilih
+        if (!$request->has('fields') || empty($request->fields)) {
+            return redirect()->route('data-karyawan.index')
+                ->with('error', 'Silakan pilih minimal satu field untuk di-export.');
+        }
+
+        // Get filtered data
+        $data = $this->getFilteredData($request->all());
+        $dataKaryawans = $data['dataKaryawans'];
+        $filters = $data['filters'];
+        $selectedFields = $request->fields;
+
+        // Generate filename
+        $currentDate = now()->format('d-m-Y_H-i-s');
+        $fileName = 'Data_Karyawan_Custom_' . $currentDate . '.xlsx';
+
+        // Export using custom export class
+        return Excel::download(
+            new \App\Exports\CustomDataKaryawanExport($dataKaryawans, $selectedFields, $filters),
+            $fileName
+        );
     }
 }

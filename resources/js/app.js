@@ -135,7 +135,7 @@ if (window.appInitialized) {
         if (typeof $.fn.select2 === 'undefined') {
             console.error('Select2 is not loaded properly - plugin not found on jQuery');
             console.log('Attempting to load Select2 from CDN as fallback...');
-            
+
             // Fallback: load from CDN
             loadSelect2FromCDN();
             return;
@@ -194,20 +194,20 @@ if (window.appInitialized) {
             console.log('Select2 already loading from CDN');
             return;
         }
-        
+
         window.select2Loading = true;
-        
+
         // Load Select2 CSS
         const cssLink1 = document.createElement('link');
         cssLink1.rel = 'stylesheet';
         cssLink1.href = 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css';
         document.head.appendChild(cssLink1);
-        
+
         const cssLink2 = document.createElement('link');
         cssLink2.rel = 'stylesheet';
         cssLink2.href = 'https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css';
         document.head.appendChild(cssLink2);
-        
+
         // Load Select2 JS
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js';

@@ -19,9 +19,9 @@
                             <button type="button" class="btn btn-light me-2" id="exportButton">
                                 <i class="fas fa-download me-1"></i> Export
                             </button>
-                            <button type="button" class="btn btn-light me-2" id="customExportButton">
+                            {{-- <button type="button" class="btn btn-light me-2" id="customExportButton">
                                 <i class="fas fa-file-export me-1"></i> Custom Export
-                            </button>
+                            </button> --}}
                             @if (auth()->user()->is_admin || ($userPermissions['tambah'] ?? false))
                                 <a href="{{ route('data-karyawan.create') }}" class="btn btn-light">
                                     <i class="fas fa-plus-circle me-1"></i> Tambah

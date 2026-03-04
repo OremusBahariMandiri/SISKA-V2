@@ -694,7 +694,7 @@
 
                         <!-- Field Selection -->
                         <div class="row">
-                            <!-- Basic Info -->
+                            <!-- Data Pribadi -->
                             <div class="col-md-6 mb-3">
                                 <div class="card h-100">
                                     <div class="card-header bg-primary text-white">
@@ -780,19 +780,6 @@
                                                 name="fields[]" value="jml_anak" id="field_jml_anak">
                                             <label class="form-check-label" for="field_jml_anak">Jumlah Anak</label>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Contact Info -->
-                            <div class="col-md-6 mb-3">
-                                <div class="card h-100">
-                                    <div class="card-header bg-info text-white">
-                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
-                                            data-section="contact">
-                                        <strong>Kontak</strong>
-                                    </div>
-                                    <div class="card-body">
                                         <div class="form-check">
                                             <input class="form-check-input field-checkbox" type="checkbox"
                                                 name="fields[]" value="tlp1" id="field_tlp1">
@@ -827,13 +814,13 @@
                                 </div>
                             </div>
 
-                            <!-- KTP Address -->
+                            <!-- Alamat -->
                             <div class="col-md-6 mb-3">
                                 <div class="card h-100">
-                                    <div class="card-header bg-warning text-dark">
+                                    <div class="card-header bg-primary text-white">
                                         <input type="checkbox" class="form-check-input me-2 section-checkbox"
                                             data-section="ktp">
-                                        <strong>Alamat KTP</strong>
+                                        <strong>Alamat</strong>
                                     </div>
                                     <div class="card-body">
                                         <div class="form-check">
@@ -871,19 +858,6 @@
                                                 name="fields[]" value="alamat_ktp" id="field_alamat_ktp">
                                             <label class="form-check-label" for="field_alamat_ktp">Alamat KTP</label>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Domicile Address -->
-                            <div class="col-md-6 mb-3">
-                                <div class="card h-100">
-                                    <div class="card-header bg-secondary text-white">
-                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
-                                            data-section="dom">
-                                        <strong>Alamat Domisili</strong>
-                                    </div>
-                                    <div class="card-body">
                                         <div class="form-check">
                                             <input class="form-check-input field-checkbox" type="checkbox"
                                                 name="fields[]" value="prov_dom" id="field_prov_dom">
@@ -923,10 +897,11 @@
                                 </div>
                             </div>
 
+
                             <!-- Education -->
                             <div class="col-md-6 mb-3">
                                 <div class="card h-100">
-                                    <div class="card-header bg-success text-white">
+                                    <div class="card-header bg-primary text-white">
                                         <input type="checkbox" class="form-check-input me-2 section-checkbox"
                                             data-section="education">
                                         <strong>Pendidikan</strong>
@@ -975,12 +950,23 @@
                             <!-- Employment -->
                             <div class="col-md-6 mb-3">
                                 <div class="card h-100">
-                                    <div class="card-header bg-danger text-white">
+                                    <div class="card-header bg-primary text-white">
                                         <input type="checkbox" class="form-check-input me-2 section-checkbox"
                                             data-section="employment">
-                                        <strong>Pekerjaan</strong>
+                                        <strong>Kontrak Kerja</strong>
                                     </div>
                                     <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="sts_ktr" id="field_sts_ktr" checked>
+                                            <label class="form-check-label" for="field_sts_ktr">Status Kontrak</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="singkatan_kontrak" id="field_singkatan_kontrak">
+                                            <label class="form-check-label" for="field_singkatan_kontrak">Singkatan
+                                                Kontrak</label>
+                                        </div>
                                         <div class="form-check">
                                             <input class="form-check-input field-checkbox essential-field" type="checkbox"
                                                 name="fields[]" value="perusahaan" id="field_perusahaan" checked>
@@ -992,17 +978,6 @@
                                                 id="field_singkatan_perusahaan">
                                             <label class="form-check-label" for="field_singkatan_perusahaan">Singkatan
                                                 Perusahaan</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
-                                                name="fields[]" value="sts_ktr" id="field_sts_ktr" checked>
-                                            <label class="form-check-label" for="field_sts_ktr">Status Kontrak</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input field-checkbox" type="checkbox"
-                                                name="fields[]" value="singkatan_kontrak" id="field_singkatan_kontrak">
-                                            <label class="form-check-label" for="field_singkatan_kontrak">Singkatan
-                                                Kontrak</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input field-checkbox" type="checkbox"
@@ -1021,6 +996,18 @@
                                                 name="fields[]" value="durasi_ktr" id="field_durasi_ktr">
                                             <label class="form-check-label" for="field_durasi_ktr">Durasi Kontrak</label>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
+                                            data-section="employment">
+                                        <strong>Jenjang Karir</strong>
+                                    </div>
+                                    <div class="card-body">
                                         <div class="form-check">
                                             <input class="form-check-input field-checkbox essential-field" type="checkbox"
                                                 name="fields[]" value="departemen" id="field_departemen" checked>
@@ -1072,6 +1059,18 @@
                                                 name="fields[]" value="tugas" id="field_tugas">
                                             <label class="form-check-label" for="field_tugas">Tugas</label>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
+                                            data-section="employment">
+                                        <strong>Hubungan Industrial</strong>
+                                    </div>
+                                    <div class="card-body">
                                         <div class="form-check">
                                             <input class="form-check-input field-checkbox essential-field" type="checkbox"
                                                 name="fields[]" value="sts_kry" id="field_sts_kry" checked>
@@ -1090,13 +1089,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="alert alert-warning mt-3">
-                            <i class="fas fa-exclamation-triangle me-1"></i>
-                            <small><strong>Catatan:</strong> Field yang dipilih akan mempengaruhi waktu proses export.
-                                Semakin banyak field, semakin lama proses.</small>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">

@@ -222,7 +222,7 @@
 
                                             <!-- NRK -->
                                             <td>
-                                                <span class="fw-bold">{{ $karyawan->nrk ?? '-' }}</span>
+                                                <span class="fw-bold">{{ $karyawan->nrk ?? '-' }}</span></br>
                                                 <span class="text-muted">{{ $karyawan->nik ?? '-' }}</span>
                                             </td>
 
@@ -342,7 +342,7 @@
                                                     </span>
                                                 </div>
                                             </td>
-                                            
+
                                             <!-- AKSI -->
                                             <td class="text-center no-wrap">
                                                 <div class="btn-group" role="group" aria-label="Actions">

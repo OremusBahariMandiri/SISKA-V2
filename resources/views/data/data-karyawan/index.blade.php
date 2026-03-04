@@ -19,6 +19,9 @@
                             <button type="button" class="btn btn-light me-2" id="exportButton">
                                 <i class="fas fa-download me-1"></i> Export
                             </button>
+                            <button type="button" class="btn btn-light me-2" id="customExportButton">
+                                <i class="fas fa-file-export me-1"></i> Custom Export
+                            </button>
                             @if (auth()->user()->is_admin || ($userPermissions['tambah'] ?? false))
                                 <a href="{{ route('data-karyawan.create') }}" class="btn btn-light">
                                     <i class="fas fa-plus-circle me-1"></i> Tambah
@@ -642,9 +645,465 @@
                     </div>
                     <div class="d-grid gap-2">
                         <button type="button" class="btn btn-outline-success" id="exportExcel">
-                            <i class="fas fa-file-excel me-2"></i>Export ke Excel (.xlsx)
+                            <i class="fas fa-file-excel me-2"></i>Export ke Excel (Semua Field)
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" id="openCustomExport">
+                            <i class="fas fa-file-export me-2"></i>Custom Export (Pilih Field)
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Export Modal - UPDATED WITH NEW FIELDS -->
+    <div class="modal fade" id="customExportModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-file-export me-2"></i>Custom Export Data</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="customExportForm" method="GET" action="{{ route('data-karyawan.custom-export') }}">
+                        <!-- Preserve current filters -->
+                        @foreach ($currentFilters as $key => $value)
+                            @if (!empty($value))
+                                <input type="hidden" name="filter_{{ $key }}" value="{{ $value }}">
+                            @endif
+                        @endforeach
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <small>Pilih field yang ingin di-export. Export akan menggunakan filter yang sedang
+                                aktif.</small>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllFields">
+                                <i class="fas fa-check-double me-1"></i>Pilih Semua
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllFields">
+                                <i class="fas fa-times me-1"></i>Batal Semua
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-success" id="selectEssentialFields">
+                                <i class="fas fa-star me-1"></i>Field Penting
+                            </button>
+                        </div>
+
+                        <!-- Field Selection -->
+                        <div class="row">
+                            <!-- Basic Info -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
+                                            data-section="basic">
+                                        <strong>Informasi Dasar</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="no" id="field_no" checked>
+                                            <label class="form-check-label" for="field_no">No</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="tgl_masuk" id="field_tgl_masuk" checked>
+                                            <label class="form-check-label" for="field_tgl_masuk">Tanggal Masuk</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="masa_kerja" id="field_masa_kerja" checked>
+                                            <label class="form-check-label" for="field_masa_kerja">Masa Kerja</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="nrk" id="field_nrk" checked>
+                                            <label class="form-check-label" for="field_nrk">NRK</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="nik" id="field_nik" checked>
+                                            <label class="form-check-label" for="field_nik">NIK</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="nama" id="field_nama" checked>
+                                            <label class="form-check-label" for="field_nama">Nama</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tpt_lahir" id="field_tpt_lahir">
+                                            <label class="form-check-label" for="field_tpt_lahir">Tempat Lahir</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tgl_lahir" id="field_tgl_lahir">
+                                            <label class="form-check-label" for="field_tgl_lahir">Tanggal Lahir</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="umur" id="field_umur">
+                                            <label class="form-check-label" for="field_umur">Umur</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="sex" id="field_sex" checked>
+                                            <label class="form-check-label" for="field_sex">Jenis Kelamin</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="agama" id="field_agama">
+                                            <label class="form-check-label" for="field_agama">Agama</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kewarganegaraan" id="field_kewarganegaraan">
+                                            <label class="form-check-label"
+                                                for="field_kewarganegaraan">Kewarganegaraan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="sts_nikah" id="field_sts_nikah">
+                                            <label class="form-check-label" for="field_sts_nikah">Status Nikah</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="sts_keluarga" id="field_sts_keluarga">
+                                            <label class="form-check-label" for="field_sts_keluarga">Status
+                                                Keluarga</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="jml_anak" id="field_jml_anak">
+                                            <label class="form-check-label" for="field_jml_anak">Jumlah Anak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contact Info -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-info text-white">
+                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
+                                            data-section="contact">
+                                        <strong>Kontak</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tlp1" id="field_tlp1">
+                                            <label class="form-check-label" for="field_tlp1">Telepon 1</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tlp2" id="field_tlp2">
+                                            <label class="form-check-label" for="field_tlp2">Telepon 2</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="email1" id="field_email1">
+                                            <label class="form-check-label" for="field_email1">Email 1</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="email2" id="field_email2">
+                                            <label class="form-check-label" for="field_email2">Email 2</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="instagram" id="field_instagram">
+                                            <label class="form-check-label" for="field_instagram">Instagram</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="facebook" id="field_facebook">
+                                            <label class="form-check-label" for="field_facebook">Facebook</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- KTP Address -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-warning text-dark">
+                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
+                                            data-section="ktp">
+                                        <strong>Alamat KTP</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="prov_ktp" id="field_prov_ktp">
+                                            <label class="form-check-label" for="field_prov_ktp">Provinsi KTP</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kota_ktp" id="field_kota_ktp">
+                                            <label class="form-check-label" for="field_kota_ktp">Kota KTP</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kec_ktp" id="field_kec_ktp">
+                                            <label class="form-check-label" for="field_kec_ktp">Kecamatan KTP</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kel_ktp" id="field_kel_ktp">
+                                            <label class="form-check-label" for="field_kel_ktp">Kelurahan KTP</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="rt_rw_ktp" id="field_rt_rw_ktp">
+                                            <label class="form-check-label" for="field_rt_rw_ktp">RT/RW KTP</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kd_pos_ktp" id="field_kd_pos_ktp">
+                                            <label class="form-check-label" for="field_kd_pos_ktp">Kode Pos KTP</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="alamat_ktp" id="field_alamat_ktp">
+                                            <label class="form-check-label" for="field_alamat_ktp">Alamat KTP</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Domicile Address -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-secondary text-white">
+                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
+                                            data-section="dom">
+                                        <strong>Alamat Domisili</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="prov_dom" id="field_prov_dom">
+                                            <label class="form-check-label" for="field_prov_dom">Provinsi DOM</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kota_dom" id="field_kota_dom">
+                                            <label class="form-check-label" for="field_kota_dom">Kota DOM</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kec_dom" id="field_kec_dom">
+                                            <label class="form-check-label" for="field_kec_dom">Kecamatan DOM</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kel_dom" id="field_kel_dom">
+                                            <label class="form-check-label" for="field_kel_dom">Kelurahan DOM</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="rt_rw_dom" id="field_rt_rw_dom">
+                                            <label class="form-check-label" for="field_rt_rw_dom">RT/RW DOM</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kd_pos_dom" id="field_kd_pos_dom">
+                                            <label class="form-check-label" for="field_kd_pos_dom">Kode Pos DOM</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="alamat_dom" id="field_alamat_dom">
+                                            <label class="form-check-label" for="field_alamat_dom">Alamat DOM</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Education -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-success text-white">
+                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
+                                            data-section="education">
+                                        <strong>Pendidikan</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="jenjang_skl" id="field_jenjang_skl">
+                                            <label class="form-check-label" for="field_jenjang_skl">Jenjang</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="institusi_skl" id="field_institusi_skl">
+                                            <label class="form-check-label" for="field_institusi_skl">Institusi</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="kota_skl" id="field_kota_skl">
+                                            <label class="form-check-label" for="field_kota_skl">Kota</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="fakultas_skl" id="field_fakultas_skl">
+                                            <label class="form-check-label" for="field_fakultas_skl">Fakultas</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="jurusan_skl" id="field_jurusan_skl">
+                                            <label class="form-check-label" for="field_jurusan_skl">Jurusan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="gelar_skl" id="field_gelar_skl">
+                                            <label class="form-check-label" for="field_gelar_skl">Gelar</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tgl_lulus_skl" id="field_tgl_lulus_skl">
+                                            <label class="form-check-label" for="field_tgl_lulus_skl">Tanggal
+                                                Lulus</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Employment -->
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header bg-danger text-white">
+                                        <input type="checkbox" class="form-check-input me-2 section-checkbox"
+                                            data-section="employment">
+                                        <strong>Pekerjaan</strong>
+                                    </div>
+                                    <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="perusahaan" id="field_perusahaan" checked>
+                                            <label class="form-check-label" for="field_perusahaan">Perusahaan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="singkatan_perusahaan"
+                                                id="field_singkatan_perusahaan">
+                                            <label class="form-check-label" for="field_singkatan_perusahaan">Singkatan
+                                                Perusahaan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="sts_ktr" id="field_sts_ktr" checked>
+                                            <label class="form-check-label" for="field_sts_ktr">Status Kontrak</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="singkatan_kontrak" id="field_singkatan_kontrak">
+                                            <label class="form-check-label" for="field_singkatan_kontrak">Singkatan
+                                                Kontrak</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tgl_awal_ktr" id="field_tgl_awal_ktr">
+                                            <label class="form-check-label" for="field_tgl_awal_ktr">Tanggal Awal
+                                                Kontrak</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tgl_akhir_ktr" id="field_tgl_akhir_ktr">
+                                            <label class="form-check-label" for="field_tgl_akhir_ktr">Tanggal Akhir
+                                                Kontrak</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="durasi_ktr" id="field_durasi_ktr">
+                                            <label class="form-check-label" for="field_durasi_ktr">Durasi Kontrak</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="departemen" id="field_departemen" checked>
+                                            <label class="form-check-label" for="field_departemen">Departemen</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="singkatan_departemen"
+                                                id="field_singkatan_departemen">
+                                            <label class="form-check-label" for="field_singkatan_departemen">Singkatan
+                                                Departemen</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="jabatan" id="field_jabatan" checked>
+                                            <label class="form-check-label" for="field_jabatan">Jabatan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="singkatan_jabatan" id="field_singkatan_jabatan">
+                                            <label class="form-check-label" for="field_singkatan_jabatan">Singkatan
+                                                Jabatan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="wilker" id="field_wilker" checked>
+                                            <label class="form-check-label" for="field_wilker">Wilayah Kerja</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="singkatan_wilker" id="field_singkatan_wilker">
+                                            <label class="form-check-label" for="field_singkatan_wilker">Singkatan Wilayah
+                                                Kerja</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="unit_krj" id="field_unit_krj" checked>
+                                            <label class="form-check-label" for="field_unit_krj">Unit Kerja</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="singkatan_unit_kerja"
+                                                id="field_singkatan_unit_kerja">
+                                            <label class="form-check-label" for="field_singkatan_unit_kerja">Singkatan
+                                                Unit Kerja</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tugas" id="field_tugas">
+                                            <label class="form-check-label" for="field_tugas">Tugas</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox essential-field" type="checkbox"
+                                                name="fields[]" value="sts_kry" id="field_sts_kry" checked>
+                                            <label class="form-check-label" for="field_sts_kry">Status Karyawan</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="tgl_phk" id="field_tgl_phk">
+                                            <label class="form-check-label" for="field_tgl_phk">Tanggal PHK</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input field-checkbox" type="checkbox"
+                                                name="fields[]" value="ket_phk" id="field_ket_phk">
+                                            <label class="form-check-label" for="field_ket_phk">Keterangan PHK</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <small><strong>Catatan:</strong> Field yang dipilih akan mempengaruhi waktu proses export.
+                                Semakin banyak field, semakin lama proses.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success" id="executeCustomExport">
+                        <i class="fas fa-file-excel me-1"></i>Export ke Excel
+                    </button>
                 </div>
             </div>
         </div>
@@ -1305,6 +1764,103 @@
                 let currentUrl = new URL(window.location.href);
                 currentUrl.searchParams.set('export', 'csv');
                 window.location.href = currentUrl.toString();
+            });
+
+            // ===== OPEN CUSTOM EXPORT FROM EXPORT MODAL =====
+            $('#openCustomExport').click(function() {
+                $('#exportModal').modal('hide');
+                setTimeout(function() {
+                    $('#customExportModal').modal('show');
+                }, 300);
+            });
+
+            // ===== CUSTOM EXPORT BUTTON (Direct) =====
+            $('#customExportButton').click(function() {
+                $('#customExportModal').modal('show');
+            });
+
+            // ===== SELECT ALL FIELDS =====
+            $('#selectAllFields').click(function() {
+                $('.field-checkbox').prop('checked', true);
+                $('.section-checkbox').prop('checked', true);
+            });
+
+            // ===== DESELECT ALL FIELDS =====
+            $('#deselectAllFields').click(function() {
+                $('.field-checkbox').prop('checked', false);
+                $('.section-checkbox').prop('checked', false);
+            });
+
+            // ===== SELECT ESSENTIAL FIELDS ONLY =====
+            $('#selectEssentialFields').click(function() {
+                $('.field-checkbox').prop('checked', false);
+                $('.section-checkbox').prop('checked', false);
+                $('.essential-field').prop('checked', true);
+                $('#field_no, #field_masa_kerja').prop('checked', true);
+            });
+
+            // ===== SECTION CHECKBOX HANDLER =====
+            $(document).on('change', '.section-checkbox', function() {
+                const isChecked = $(this).prop('checked');
+                $(this).closest('.card').find('.field-checkbox').prop('checked', isChecked);
+            });
+
+            // ===== INDIVIDUAL CHECKBOX HANDLER =====
+            $(document).on('change', '.field-checkbox', function() {
+                const card = $(this).closest('.card');
+                const sectionCheckbox = card.find('.section-checkbox');
+                const allCheckboxes = card.find('.field-checkbox');
+                const checkedCheckboxes = card.find('.field-checkbox:checked');
+
+                if (allCheckboxes.length === checkedCheckboxes.length) {
+                    sectionCheckbox.prop('checked', true);
+                } else {
+                    sectionCheckbox.prop('checked', false);
+                }
+            });
+
+            // ===== EXECUTE CUSTOM EXPORT =====
+            $('#executeCustomExport').click(function() {
+                const checkedFields = $('.field-checkbox:checked').length;
+
+                if (checkedFields === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Pilih Field',
+                        text: 'Silakan pilih minimal satu field untuk di-export',
+                        confirmButtonColor: '#0d6efd'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Memproses Export...',
+                    html: `Sedang memproses <b>${checkedFields}</b> field`,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                const form = $('#customExportForm');
+                const url = form.attr('action');
+                const data = form.serialize();
+
+                window.location.href = url + '?' + data;
+
+                setTimeout(function() {
+                    Swal.close();
+                    $('#customExportModal').modal('hide');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Export Berhasil',
+                        text: 'File sedang diunduh...',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }, 2000);
             });
 
             $(document).on('click', '.delete-confirm', function() {

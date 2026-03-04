@@ -66,6 +66,10 @@ Route::middleware('auth')->group(function () {
 
     // ================================================ MANAJEMEN DATA ROUTE ======================================== //
     // ============================================================================================================== //
+    
+    Route::get('/data-karyawan/custom-export', [DataKaryawanController::class, 'customExport'])
+    ->name('data-karyawan.custom-export')
+    ->middleware(['auth', 'check.access:data-karyawan,download']);
 
     Route::resource('data-karyawan', DataKaryawanController::class);
     Route::post('data-karyawan/export-excel', [DataKaryawanController::class, 'exportExcel'])
@@ -159,6 +163,7 @@ Route::middleware('auth')->group(function () {
     // Export routes
     Route::post('data-kontrak/export-excel', [DataKontrakController::class, 'exportExcel'])
         ->name('data-kontrak.export-excel');
+
 
     // ================================================ DATA DOKUMEN ROUTES ========================================= //
     // ============================================================================================================== //

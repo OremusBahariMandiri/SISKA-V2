@@ -259,9 +259,10 @@
                                             </td>
 
                                             <!-- TGL TERBIT -->
+                                            <!-- TGL TERBIT -->
                                             <td class="text-center">
-                                                @if ($dokumen->tgl_awal_dok)
-                                                    {{ $dokumen->tgl_awal_dok->format('d-m-Y') }}
+                                                @if ($dokumen->tgl_ttd)
+                                                    {{ $dokumen->tgl_ttd->format('d-m-Y') }}
                                                 @else
                                                     -
                                                 @endif
@@ -276,6 +277,7 @@
                                                 @endif
                                             </td>
 
+                                            <!-- TGL AKHIR -->
                                             <!-- TGL AKHIR -->
                                             <td class="text-center">
                                                 @if ($dokumen->tgl_akr_dok)

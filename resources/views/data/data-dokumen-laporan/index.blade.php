@@ -122,17 +122,21 @@
                                     <tr>
                                         <th width="1%" class="text-center">NO</th>
                                         <th width="3%" class="text-center">NRK</th>
-                                        <th width="5%" class="text-center">NAMA KARYAWAN</th>
-                                        <th width="4%" class="text-center">JENIS DOKUMEN</th>
-                                        <th width="4%" class="text-center">NO DOKUMEN</th>
-                                        <th width="3%" class="text-center">TGL TERBIT</th>
-                                        <th width="3%" class="text-center">TGL AKHIR</th>
-                                        <th width="3%" class="text-center">TGL PERINGATAN</th>
-                                        <th width="2%" class="text-center">STATUS</th>
+                                        <th width="5%" class="text-center">NAMA</th>
+                                        <th width="1%" class="text-center">SEX</th>
+                                        <th width="2%" class="text-center">PRS</th>
                                         <th width="2%" class="text-center">DEP</th>
                                         <th width="2%" class="text-center">JBT</th>
-                                        <th width="2%" class="text-center">WLK</th>
-                                        <th width="2%" class="text-center">PRS</th>
+                                        <th width="2%" class="text-center">WILKER</th>
+                                        <th width="2%" class="text-center">AREA</th>
+                                        <th width="4%" class="text-center">NO DOK</th>
+                                        <th width="3%" class="text-center">KET DOK</th>
+                                        <th width="3%" class="text-center">JENIS DOK</th>
+                                        <th width="4%" class="text-center">CATATAN</th>
+                                        <th width="3%" class="text-center">TGL TERBIT</th>
+                                        <th width="3%" class="text-center">MASA BERLAKU</th>
+                                        <th width="3%" class="text-center">TGL AKHIR</th>
+                                        <th width="2%" class="text-center">STATUS</th>
                                         <th width="3%" class="text-center no-wrap">AKSI</th>
                                     </tr>
                                 </thead>
@@ -141,7 +145,10 @@
                                         @php
                                             $karyawan = $dokumen->karyawan;
                                             $departemen = $karyawan ? $karyawan->departemenRelation : null;
-                                            $wilayah = $karyawan ? $karyawan->wilayahKerjaRelation : null;
+                                            // Gunakan unitKerjaRelation seperti di Data Karyawan
+                                            $unitKerja = $karyawan ? $karyawan->unitKerjaRelation : null;
+                                            $wilayahKrj = $unitKerja ? $unitKerja->wilayah_krj : '-';
+                                            $areaKrj = $unitKerja ? $unitKerja->area_krj : '-';
                                             $perusahaan = $karyawan ? $karyawan->perusahaanRelation : null;
                                             $dokumenType = $dokumen->dokumenType;
 
@@ -163,6 +170,14 @@
                                             } elseif ($isExpiring) {
                                                 $rowClass = 'table-warning';
                                             }
+
+                                            // Determine masa berlaku
+                                            $masaBerlaku = '-';
+                                            if ($dokumen->tgl_akr_dok) {
+                                                $masaBerlaku = 'Terbatas';
+                                            } else {
+                                                $masaBerlaku = 'Selamanya';
+                                            }
                                         @endphp
                                         <tr class="{{ $rowClass }}">
                                             <!-- NO -->
@@ -174,67 +189,23 @@
                                                 <small class="text-muted">{{ $karyawan->nik ?? '-' }}</small>
                                             </td>
 
-                                            <!-- NAMA KARYAWAN -->
+                                            <!-- NAMA -->
                                             <td>
                                                 <div class="fw-bold">{{ $karyawan->nama ?? '-' }}</div>
                                             </td>
 
-                                            <!-- JENIS DOKUMEN -->
-                                            <td>
-                                                @if ($dokumenType)
-                                                    {{ $dokumenType->singkatan_dok ?? $dokumenType->jns_dok_kry }}
+                                            <!-- SEX (Jenis Kelamin) -->
+                                            <td class="text-center">
+                                                @if ($karyawan && $karyawan->sex)
+                                                    <span>{{ $karyawan->sex == 'LAKI-LAKI' ? 'L' : 'P' }}</span>
                                                 @else
                                                     -
                                                 @endif
                                             </td>
 
-                                            <!-- NO DOKUMEN -->
-                                            <td>
-                                                <span class="fw-bold">{{ $dokumen->no_dok ?? '-' }}</span>
-                                            </td>
-
-                                            <!-- TGL TERBIT -->
+                                            <!-- PERUSAHAAN -->
                                             <td class="text-center">
-                                                @if ($dokumen->tgl_awal_dok)
-                                                    {{ $dokumen->tgl_awal_dok->format('d-m-Y') }}
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-
-                                            <!-- TGL AKHIR -->
-                                            <td class="text-center">
-                                                @if ($dokumen->tgl_akr_dok)
-                                                    {{ $dokumen->tgl_akr_dok->format('d-m-Y') }}
-                                                    @if ($isExpired)
-                                                        <br><span class="badge bg-danger"><i
-                                                                class="fas fa-times-circle"></i> EXPIRED</span>
-                                                    @endif
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-
-                                            <!-- TGL PERINGATAN -->
-                                            <td class="text-center">
-                                                @if ($dokumen->tgl_pgt_dok)
-                                                    {{ $dokumen->tgl_pgt_dok->format('d-m-Y') }}
-                                                    @if ($isExpiring)
-                                                        <br><span class="badge bg-warning text-dark"><i
-                                                                class="fas fa-exclamation-triangle"></i> SEGERA</span>
-                                                    @endif
-                                                @else
-                                                    -
-                                                @endif
-                                            </td>
-
-                                            <!-- STATUS -->
-                                            <td class="text-center">
-                                                @if ($dokumen->sts_dok == 'AKTIF')
-                                                    <span class="badge bg-success">AKTIF</span>
-                                                @else
-                                                    <span class="badge bg-secondary">NON-AKTIF</span>
-                                                @endif
+                                                <span>{{ $perusahaan->nama_prs2 ?? '-' }}</span>
                                             </td>
 
                                             <!-- DEPARTEMEN -->
@@ -251,14 +222,83 @@
                                                 <span>{{ $departemen->singkatan_jbt ?? '-' }}</span>
                                             </td>
 
-                                            <!-- WILKER -->
+                                            <!-- WILAYAH KERJA -->
                                             <td class="text-center">
-                                                <span>{{ $wilayah->singkatan_wk ?? '-' }}</span>
+                                                <span>{{ $wilayahKrj }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span>{{ $areaKrj }}</span>
                                             </td>
 
-                                            <!-- PERUSAHAAN -->
+                                            <!-- NO DOKUMEN -->
+                                            <td>
+                                                <span class="fw-bold">{{ $dokumen->no_dok ?? '-' }}</span>
+                                            </td>
+
+                                            <!-- KETERANGAN DOK (Kategori dari master) -->
                                             <td class="text-center">
-                                                <span>{{ $perusahaan->nama_prs2 ?? '-' }}</span>
+                                                @if ($dokumenType)
+                                                    <span>{{ $dokumenType->ktg_dok_kry ?? '-' }}</span>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+
+                                            <!-- JENIS DOKUMEN (Singkatan/Jenis dari master) -->
+                                            <td class="text-center">
+                                                @if ($dokumenType)
+                                                    <span>{{ $dokumenType->singkatan_dok ?? $dokumenType->jns_dok_kry }}</span>
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+
+                                            <!-- CATATAN -->
+                                            <td>
+                                                <small>{{ $dokumen->ket_dok ?? '-' }}</small>
+                                            </td>
+
+                                            <!-- TGL TERBIT -->
+                                            <td class="text-center">
+                                                @if ($dokumen->tgl_awal_dok)
+                                                    {{ $dokumen->tgl_awal_dok->format('d-m-Y') }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+
+                                            <!-- JENIS MASA BERLAKU -->
+                                            <td class="text-center">
+                                                @if ($dokumen->tgl_akr_dok)
+                                                    <span class="badge bg-warning text-dark">Terbatas</span>
+                                                @else
+                                                    <span class="badge bg-success">Selamanya</span>
+                                                @endif
+                                            </td>
+
+                                            <!-- TGL AKHIR -->
+                                            <td class="text-center">
+                                                @if ($dokumen->tgl_akr_dok)
+                                                    {{ $dokumen->tgl_akr_dok->format('d-m-Y') }}
+                                                    @if ($isExpired)
+                                                        <br><span class="badge bg-danger"><i
+                                                                class="fas fa-times-circle"></i> EXPIRED</span>
+                                                    @elseif ($isExpiring)
+                                                        <br><span class="badge bg-warning text-dark"><i
+                                                                class="fas fa-exclamation-triangle"></i> SEGERA</span>
+                                                    @endif
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+
+                                            <!-- STATUS -->
+                                            <td class="text-center">
+                                                @if ($dokumen->sts_dok == 'AKTIF')
+                                                    <span class="badge bg-success">AKTIF</span>
+                                                @else
+                                                    <span class="badge bg-secondary">NON-AKTIF</span>
+                                                @endif
                                             </td>
 
                                             <!-- AKSI -->
@@ -326,7 +366,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="filter_kategori_dokumen" class="form-label fw-bold">Kategori
                                         Dokumen</label>
@@ -857,7 +897,41 @@
             });
 
             // Initialize DataTable
-            $('#dataDokumenPelaporanTable').DataTable();
+            $('#dataDokumenPelaporanTable').DataTable(
+                //     {
+                //     responsive: true,
+                //     language: {
+                //         "emptyTable": "Tidak ada data yang tersedia pada tabel ini",
+                //         "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+                //         "infoEmpty": "Menampilkan 0 sampai 0 dari 0 entri",
+                //         "infoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+                //         "lengthMenu": "Tampilkan _MENU_ entri",
+                //         "loadingRecords": "Sedang memuat...",
+                //         "processing": "Sedang memproses...",
+                //         "search": "Cari:",
+                //         "zeroRecords": "Tidak ditemukan data yang sesuai",
+                //         "paginate": {
+                //             "first": "Pertama",
+                //             "last": "Terakhir",
+                //             "next": "Selanjutnya",
+                //             "previous": "Sebelumnya"
+                //         }
+                //     },
+                //     columnDefs: [{
+                //         orderable: false,
+                //         targets: [17] // AKSI column
+                //     }, {
+                //         responsivePriority: 1,
+                //         targets: [17] // AKSI - highest priority
+                //     }, {
+                //         responsivePriority: 2,
+                //         targets: [0, 1, 2] // NO, NRK, NAMA
+                //     }, {
+                //         responsivePriority: 3,
+                //         targets: [9, 11, 16] // NO DOK, JENIS DOK, STATUS
+                //     }]
+                // }
+            );
 
             // Filter button
             $('#filterButton').click(function() {

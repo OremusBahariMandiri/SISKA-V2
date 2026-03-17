@@ -62,6 +62,11 @@ class DataDokumen extends Model
         'updated_at' => 'datetime',
     ];
 
+    public function dokumenType()
+    {
+        return $this->belongsTo(\App\Models\DataMaster\DokumenKaryawan::class, 'id_dokumen', 'id');
+    }
+
     /**
      * Get the employee that owns the document.
      */
@@ -216,7 +221,7 @@ class DataDokumen extends Model
     public function scopeUniqueEmployees($query)
     {
         return $query->select('*')
-            ->whereIn('id', function($subquery) {
+            ->whereIn('id', function ($subquery) {
                 $subquery->select(\DB::raw('MAX(id)'))
                     ->from('203_dm_data_dokumen')
                     ->groupBy('id_data_kry');
@@ -229,7 +234,7 @@ class DataDokumen extends Model
     public function scopeEmployeeLatestData($query)
     {
         return $query->select('*')
-            ->whereIn('id', function($subquery) {
+            ->whereIn('id', function ($subquery) {
                 $subquery->select(\DB::raw('MAX(id)'))
                     ->from('203_dm_data_dokumen')
                     ->groupBy('id_data_kry');

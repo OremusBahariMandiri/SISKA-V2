@@ -66,10 +66,10 @@ Route::middleware('auth')->group(function () {
 
     // ================================================ MANAJEMEN DATA ROUTE ======================================== //
     // ============================================================================================================== //
-    
+
     Route::get('/data-karyawan/custom-export', [DataKaryawanController::class, 'customExport'])
-    ->name('data-karyawan.custom-export')
-    ->middleware(['auth', 'check.access:data-karyawan,download']);
+        ->name('data-karyawan.custom-export')
+        ->middleware(['auth', 'check.access:data-karyawan,download']);
 
     Route::resource('data-karyawan', DataKaryawanController::class);
     Route::post('data-karyawan/export-excel', [DataKaryawanController::class, 'exportExcel'])
@@ -188,5 +188,10 @@ Route::middleware('auth')->group(function () {
         // Additional features
         Route::get('expiring-documents', [DataDokumenController::class, 'getExpiringDocuments']);
         Route::get('active-documents-data', [DataDokumenController::class, 'getActiveDocumentsData']);
+    });
+
+    Route::prefix('data-dokumen-laporan')->name('data-dokumen-laporan.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Data\DataDokumenLaporanController::class, 'index'])->name('index');
+        Route::get('/{id}', [App\Http\Controllers\Data\DataDokumenLaporanController::class, 'show'])->name('show');
     });
 });

@@ -98,6 +98,11 @@
             position: relative;
         }
 
+        /* Nested submenu styles */
+        .submenu-item.has-nested-submenu .sidebar-menu-link {
+            position: relative;
+        }
+
         .submenu-indicator {
             margin-left: auto;
             font-size: 0.75rem;
@@ -177,6 +182,64 @@
             max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        /* Nested submenu styles */
+        .submenu-item.has-nested-submenu .sidebar-menu-link {
+            position: relative;
+        }
+
+        .sidebar-nested-submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background-color: #e8f4f8;
+            border-left: 3px solid var(--primary-blue);
+            margin-left: 1rem;
+        }
+
+        .sidebar-nested-submenu.show {
+            max-height: 300px;
+        }
+
+        .nested-submenu-item {
+            border-bottom: 1px solid #d1e7f0;
+        }
+
+        .nested-submenu-item:last-child {
+            border-bottom: none;
+        }
+
+        .nested-submenu-item .sidebar-menu-link {
+            padding-left: 3rem;
+            font-size: 0.813rem;
+            border-right: none;
+        }
+
+        .nested-submenu-item .sidebar-menu-link:hover,
+        .nested-submenu-item .sidebar-menu-link.active {
+            background-color: #c3e3ef;
+            color: var(--primary-blue);
+        }
+
+        .sidebar.collapsed .has-nested-submenu .sidebar-menu-link {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .sidebar-nested-submenu {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-nested-submenu {
+                margin-left: 0;
+                border-left: none;
+                border-top: 1px solid #d1e7f0;
+            }
+
+            .nested-submenu-item .sidebar-menu-link {
+                padding-left: 4rem;
+            }
         }
     </style>
 
@@ -274,9 +337,9 @@
                         ]);
 
                         // Dokumen Access Management
-                        $manajemenDataActive = isMenuActive(['data-karyawan*', 'data-kontrak*', 'data-dokumen*']);
+                        $manajemenDataActive = isMenuActive(['data-karyawan*', 'data-kontrak*', 'data-dokumen*', 'data-dokumen-laporan*']);
 
-                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan', 'data-kontrak', 'data-dokumen']);
+                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan', 'data-kontrak', 'data-dokumen', 'data-dokumen-laporan']);
                     @endphp
 
                     <!-- DATA MASTER DROPDOWN MENU -->
@@ -354,6 +417,7 @@
                     @endif
 
                     <!-- APPLICANT DATA DROPDOWN MENU -->
+                    <!-- APPLICANT DATA DROPDOWN MENU -->
                     @if ($hasManajemenDataAccess)
                         <li class="sidebar-menu-item has-submenu" data-tooltip="Applicant Data">
                             <a class="sidebar-menu-link menu-dropdown {{ $manajemenDataActive ? 'active' : '' }}"
@@ -373,6 +437,7 @@
                                         </a>
                                     </li>
                                 @endif
+
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-kontrak'))
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('data-kontrak*') ? 'active' : '' }}"
@@ -382,13 +447,35 @@
                                         </a>
                                     </li>
                                 @endif
+
+
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-dokumen'))
-                                    <li class="submenu-item">
-                                        <a class="sidebar-menu-link {{ request()->is('data-dokumen*') ? 'active' : '' }}"
-                                            href="{{ route('data-dokumen.index') }}">
+                                    <!-- Data Dokumen with nested submenu -->
+                                    <li class="submenu-item has-nested-submenu">
+                                        <a class="sidebar-menu-link menu-dropdown {{ request()->is('data-dokumen*') ? 'active' : '' }}"
+                                            href="#" data-menu="dataDokumenSub">
                                             <i class="fas fa-folder-open"></i>
                                             <span class="sidebar-menu-text">Data Dokumen</span>
+                                            <i
+                                                class="fas fa-chevron-down submenu-indicator {{ request()->is('data-dokumen*') ? 'rotated' : '' }}"></i>
                                         </a>
+                                        <ul class="sidebar-nested-submenu {{ request()->is('data-dokumen*') ? 'show' : '' }}"
+                                            id="dataDokumenSub">
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-dokumen') || request()->is('data-dokumen/create') || request()->is('data-dokumen/*/edit') ? 'active' : '' }}"
+                                                    href="{{ route('data-dokumen.index') }}">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span class="sidebar-menu-text">Pencatatan</span>
+                                                </a>
+                                            </li>
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-dokumen-laporan') ? 'active' : '' }}"
+                                                    href="{{ route('data-dokumen-laporan.index') }}">
+                                                    <i class="fas fa-file-alt"></i>
+                                                    <span class="sidebar-menu-text">Laporan</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 @endif
                             </ul>
@@ -481,6 +568,7 @@
                 document.querySelectorAll('.menu-dropdown').forEach(toggle => {
                     toggle.addEventListener('click', (e) => {
                         e.preventDefault();
+                        e.stopPropagation(); // Mencegah event bubbling
 
                         if (this.isMobile && this.isCollapsed) {
                             return;
@@ -491,17 +579,41 @@
                         const arrow = toggle.querySelector('.submenu-indicator');
 
                         if (submenu && arrow) {
-                            document.querySelectorAll('.sidebar-submenu.show').forEach(menu => {
-                                if (menu !== submenu) {
-                                    menu.classList.remove('show');
-                                    const otherArrow = document.querySelector(
-                                        `[data-menu="${menu.id}"] .submenu-indicator`);
-                                    if (otherArrow) otherArrow.classList.remove('rotated');
-                                }
-                            });
+                            // Check if this is a nested submenu
+                            const isNestedSubmenu = submenu.classList.contains(
+                            'sidebar-nested-submenu');
+                            const parentSubmenu = toggle.closest('.sidebar-submenu');
 
-                            submenu.classList.toggle('show');
-                            arrow.classList.toggle('rotated');
+                            if (isNestedSubmenu) {
+                                // For nested submenu, only toggle itself, don't close other nested submenus
+                                submenu.classList.toggle('show');
+                                arrow.classList.toggle('rotated');
+                            } else {
+                                // For main submenu, close other main submenus but not their nested ones
+                                document.querySelectorAll('.sidebar-submenu.show').forEach(menu => {
+                                    if (menu !== submenu && !menu.classList.contains(
+                                            'sidebar-nested-submenu')) {
+                                        menu.classList.remove('show');
+                                        const otherArrow = document.querySelector(
+                                            `[data-menu="${menu.id}"] .submenu-indicator`);
+                                        if (otherArrow) otherArrow.classList.remove('rotated');
+
+                                        // Also close nested submenus inside the closing main submenu
+                                        menu.querySelectorAll('.sidebar-nested-submenu.show')
+                                            .forEach(nestedMenu => {
+                                                nestedMenu.classList.remove('show');
+                                                const nestedArrow = document.querySelector(
+                                                    `[data-menu="${nestedMenu.id}"] .submenu-indicator`
+                                                    );
+                                                if (nestedArrow) nestedArrow.classList
+                                                    .remove('rotated');
+                                            });
+                                    }
+                                });
+
+                                submenu.classList.toggle('show');
+                                arrow.classList.toggle('rotated');
+                            }
                         }
                     });
                 });

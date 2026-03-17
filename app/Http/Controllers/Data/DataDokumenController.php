@@ -432,7 +432,7 @@ class DataDokumenController extends Controller
             'ket_dok_na' => 'nullable|string|max:255',
 
             // File upload
-            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // 5MB max
+            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png', // 5MB max
         ]);
 
         // Generate IDs
@@ -444,12 +444,31 @@ class DataDokumenController extends Controller
         $id_dok_kry = $this->generateAutoIncrement();
 
         // Handle file upload
+        // Handle file upload
         $fileDok = null;
         if ($request->hasFile('file_dok')) {
             $file = $request->file('file_dok');
-            $fileName = time() . '_' . $id_kode . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/dokumen/files', $fileName);
-            $fileDok = 'dokumen/files/' . $fileName;
+
+            // Get employee data
+            $employee = DataKaryawan::findOrFail($request->id_data_kry);
+
+            // Get document type
+            $dokumenType = DokumenKaryawan::findOrFail($request->id_dokumen);
+
+            // Clean filename components (remove special characters and spaces)
+            $jenisDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $dokumenType->jns_dok_kry ?? 'Dokumen'));
+            $namaKaryawan = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $employee->nama));
+            $nrk = preg_replace('/[^A-Za-z0-9\-]/', '', $employee->nrk ?? 'NoNRK');
+
+            // Get file extension
+            $extension = $file->getClientOriginalExtension();
+
+            // Create new filename: jenisdokumen_namakaryawan_nrk.ext
+            $fileName = $jenisDokumen . '_' .$nrk . '_' . $namaKaryawan . '.' . $extension;
+
+            // Store in dokumen/dokumen-karyawan folder
+            $file->storeAs('public/dokumen/dokumen-karyawan', $fileName);
+            $fileDok = 'dokumen/dokumen-karyawan/' . $fileName;
         }
 
         // Calculate masa berlaku dokumen (msb_dok) in MONTHS if dates provided
@@ -563,9 +582,10 @@ class DataDokumenController extends Controller
             'sts_dok' => 'required|in:AKTIF,NON-AKTIF,EXPIRED,PENDING',
             'tgl_dok_na' => 'nullable|date',
             'ket_dok_na' => 'nullable|string|max:255',
-            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
         ]);
 
+        // Handle file upload
         // Handle file upload
         $fileDok = $dataDokumen->file_dok;
         if ($request->hasFile('file_dok')) {
@@ -575,9 +595,27 @@ class DataDokumenController extends Controller
             }
 
             $file = $request->file('file_dok');
-            $fileName = time() . '_' . $dataDokumen->id_kode . '_' . $file->getClientOriginalName();
-            $file->storeAs('public/dokumen/files', $fileName);
-            $fileDok = 'dokumen/files/' . $fileName;
+
+            // Get employee data
+            $employee = DataKaryawan::findOrFail($request->id_data_kry);
+
+            // Get document type
+            $dokumenType = DokumenKaryawan::findOrFail($request->id_dokumen);
+
+            // Clean filename components (remove special characters and spaces)
+            $jenisDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $dokumenType->jns_dok_kry ?? 'Dokumen'));
+            $namaKaryawan = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $employee->nama));
+            $nrk = preg_replace('/[^A-Za-z0-9\-]/', '', $employee->nrk ?? 'NoNRK');
+
+            // Get file extension
+            $extension = $file->getClientOriginalExtension();
+
+            // Create new filename: jenisdokumen_namakaryawan_nrk.ext
+            $fileName = $jenisDokumen . '_' .$nrk . '_' . $namaKaryawan . '.' . $extension;
+
+            // Store in dokumen/dokumen-karyawan folder
+            $file->storeAs('public/dokumen/dokumen-karyawan', $fileName);
+            $fileDok = 'dokumen/dokumen-karyawan/' . $fileName;
         }
 
         // Calculate masa berlaku dokumen (msb_dok) in MONTHS if dates provided
@@ -694,7 +732,7 @@ class DataDokumenController extends Controller
             'ctt_dok' => 'nullable|string',
             'tgl_dok_na' => 'nullable|date',
             'ket_dok_na' => 'nullable|string|max:255',
-            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
         ]);
 
         try {
@@ -721,12 +759,31 @@ class DataDokumenController extends Controller
             }
 
             // Handle file upload if exists
+            // Handle file upload if exists
             $fileDok = null;
             if ($request->hasFile('file_dok')) {
                 $file = $request->file('file_dok');
-                $fileName = time() . '_' . $id_kode . '_' . $file->getClientOriginalName();
-                $file->storeAs('public/dokumen/files', $fileName);
-                $fileDok = 'dokumen/files/' . $fileName;
+
+                // Get employee data
+                $employee = DataKaryawan::findOrFail($request->employee_id);
+
+                // Get document type
+                $dokumenType = DokumenKaryawan::findOrFail($request->id_dokumen);
+
+                // Clean filename components (remove special characters and spaces)
+                $jenisDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $dokumenType->jns_dok_kry ?? 'Dokumen'));
+                $namaKaryawan = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $employee->nama));
+                $nrk = preg_replace('/[^A-Za-z0-9\-]/', '', $employee->nrk ?? 'NoNRK');
+
+                // Get file extension
+                $extension = $file->getClientOriginalExtension();
+
+                // Create new filename: jenisdokumen_namakaryawan_nrk.ext
+                $fileName = $jenisDokumen . '_' .$nrk . '_' . $namaKaryawan . '.' . $extension;
+
+                // Store in dokumen/dokumen-karyawan folder
+                $file->storeAs('public/dokumen/dokumen-karyawan', $fileName);
+                $fileDok = 'dokumen/dokumen-karyawan/' . $fileName;
             }
 
             $document = DataDokumen::create([
@@ -836,7 +893,7 @@ class DataDokumenController extends Controller
             'ctt_dok' => 'nullable|string',
             'tgl_dok_na' => 'nullable|date',
             'ket_dok_na' => 'nullable|string|max:255',
-            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
         ]);
 
         try {
@@ -861,6 +918,7 @@ class DataDokumenController extends Controller
             }
 
             // Handle file upload if exists
+            // Handle file upload if exists
             $fileDok = $document->file_dok; // Keep existing file
             if ($request->hasFile('file_dok')) {
                 // Delete old file if exists
@@ -869,9 +927,27 @@ class DataDokumenController extends Controller
                 }
 
                 $file = $request->file('file_dok');
-                $fileName = time() . '_' . $document->id_kode . '_' . $file->getClientOriginalName();
-                $file->storeAs('public/dokumen/files', $fileName);
-                $fileDok = 'dokumen/files/' . $fileName;
+
+                // Get employee data
+                $employee = DataKaryawan::findOrFail($document->id_data_kry);
+
+                // Get document type
+                $dokumenType = DokumenKaryawan::findOrFail($request->id_dokumen);
+
+                // Clean filename components (remove special characters and spaces)
+                $jenisDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $dokumenType->jns_dok_kry ?? 'Dokumen'));
+                $namaKaryawan = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $employee->nama));
+                $nrk = preg_replace('/[^A-Za-z0-9\-]/', '', $employee->nrk ?? 'NoNRK');
+
+                // Get file extension
+                $extension = $file->getClientOriginalExtension();
+
+                // Create new filename: jenisdokumen_namakaryawan_nrk.ext
+                $fileName = $jenisDokumen . '_' .$nrk . '_' . $namaKaryawan . '.' . $extension;
+
+                // Store in dokumen/dokumen-karyawan folder
+                $file->storeAs('public/dokumen/dokumen-karyawan', $fileName);
+                $fileDok = 'dokumen/dokumen-karyawan/' . $fileName;
             }
 
             // UPDATE SEMUA FIELD

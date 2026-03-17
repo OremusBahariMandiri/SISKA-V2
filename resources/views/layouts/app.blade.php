@@ -448,6 +448,7 @@
                                     </li>
                                 @endif
 
+
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-dokumen'))
                                     <!-- Data Dokumen with nested submenu -->
                                     <li class="submenu-item has-nested-submenu">

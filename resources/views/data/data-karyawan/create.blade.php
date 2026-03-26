@@ -69,16 +69,16 @@
                                     </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="hubin-tab" data-bs-toggle="tab" data-bs-target="#hubin"
-                                        type="button" role="tab" aria-controls="hubin" aria-selected="false">
-                                        <i class="fas fa-user-check me-1"></i> Hubungan Industrial
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
                                     <button class="nav-link" id="kontak-darurat-tab" data-bs-toggle="tab"
                                         data-bs-target="#kontak-darurat" type="button" role="tab"
                                         aria-controls="kontak-darurat" aria-selected="false">
                                         <i class="fas fa-phone-square-alt me-1"></i> Kontak Darurat
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="hubin-tab" data-bs-toggle="tab" data-bs-target="#hubin"
+                                        type="button" role="tab" aria-controls="hubin" aria-selected="false">
+                                        <i class="fas fa-user-check me-1"></i> Hubungan Industrial
                                     </button>
                                 </li>
                             </ul>

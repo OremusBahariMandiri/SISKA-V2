@@ -44,6 +44,7 @@ class UserAccessController extends Controller
             'data-kontrak' => 'Data Kontrak',
             'data-dokumen' => 'Data Dokumen',
             'data-dokumen-laporan' => 'Data Dokumen Pelaporan',
+            'data-jenjang-karir' => 'Data Jenjang Karir',
 
         ];
 

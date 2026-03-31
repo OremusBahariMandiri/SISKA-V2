@@ -52,7 +52,7 @@ class DokumenKaryawan extends Model
         'updated_by',
     ];
 
-    /**
+/**
      * The attributes that should be cast.
      *
      * @var array<string, string>

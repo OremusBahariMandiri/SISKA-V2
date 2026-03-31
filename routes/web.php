@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Data\DataDokumenController;
+use App\Http\Controllers\Data\DataJenjangKarirController;
 use App\Http\Controllers\Data\DataKaryawanController;
 use App\Http\Controllers\Data\DataKontrakController;
 use App\Http\Controllers\DataMaster\DepartemenController;
@@ -193,5 +194,36 @@ Route::middleware('auth')->group(function () {
     Route::prefix('data-dokumen-laporan')->name('data-dokumen-laporan.')->group(function () {
         Route::get('/', [App\Http\Controllers\Data\DataDokumenLaporanController::class, 'index'])->name('index');
         Route::get('/{id}', [App\Http\Controllers\Data\DataDokumenLaporanController::class, 'show'])->name('show');
+    });
+
+    // ================================================ DATA DOKUMEN ROUTES ========================================= //
+    // ============================================================================================================== //
+    // ===== DATA DOKUMEN ROUTES =====
+    // ================================================ DATA JENJANG KARIR ROUTES ==================================== //
+    // ============================================================================================================== //
+
+    // ===== DATA JENJANG KARIR ROUTES =====
+    Route::resource('data-jenjang-karir', DataJenjangKarirController::class);
+
+    Route::prefix('data-jenjang-karir')->group(function () {
+        // Employee validation & data
+        Route::get('check-employee/{id}', [DataJenjangKarirController::class, 'checkEmployeeExists']);
+        Route::get('get-employee-data/{id}', [DataJenjangKarirController::class, 'getEmployeeData']);
+
+        // Master data helpers
+        Route::get('get-jabatan-by-departemen/{namaDep}', [DataJenjangKarirController::class, 'getJabatanByDepartemen']);
+        Route::get('get-unit-kerja-by-wilayah/{wilayahKrj}', [DataJenjangKarirController::class, 'getUnitKerjaByWilayah']);
+        Route::get('get-departemen-jabatan/{id}', [DataJenjangKarirController::class, 'getDepartemenJabatan']);
+        Route::get('get-wilker-unit-krj/{id}', [DataJenjangKarirController::class, 'getWilkerUnitKrj']);
+
+        // Career CRUD operations (for modal)
+        Route::post('careers/store', [DataJenjangKarirController::class, 'storeCareer'])->name('data-jenjang-karir.careers.store');
+        Route::get('careers/{id}', [DataJenjangKarirController::class, 'getCareer'])->name('data-jenjang-karir.careers.get');
+        Route::put('careers/{id}', [DataJenjangKarirController::class, 'updateCareer'])->name('data-jenjang-karir.careers.update');
+        Route::delete('careers/{id}', [DataJenjangKarirController::class, 'deleteCareer'])->name('data-jenjang-karir.careers.delete');
+        Route::get('check-employee/{id}',        [DataJenjangKarirController::class, 'checkEmployeeExists'])->name('check-employee');
+        Route::get('get-employee-data/{id}',     [DataJenjangKarirController::class, 'getEmployeeData'])->name('get-employee-data');
+        Route::get('get-jabatan-by-departemen/{namaDep}', [DataJenjangKarirController::class, 'getJabatanByDepartemen'])->name('get-jabatan');
+        Route::get('get-unit-kerja-by-wilayah/{wilayahKrj}', [DataJenjangKarirController::class, 'getUnitKerjaByWilayah'])->name('get-unit-kerja');
     });
 });

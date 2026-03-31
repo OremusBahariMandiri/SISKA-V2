@@ -334,12 +334,13 @@
                             'departemen',
                             'kontrak-kerja',
                             'dokumen-karyawan',
+
                         ]);
 
                         // Dokumen Access Management
-                        $manajemenDataActive = isMenuActive(['data-karyawan*', 'data-kontrak*', 'data-dokumen*', 'data-dokumen-laporan*']);
+                        $manajemenDataActive = isMenuActive(['data-karyawan*', 'data-kontrak*', 'data-dokumen*', 'data-dokumen-laporan*', 'data-jenjang-karir*']);
 
-                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan', 'data-kontrak', 'data-dokumen', 'data-dokumen-laporan']);
+                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan', 'data-kontrak', 'data-dokumen', 'data-dokumen-laporan', 'data-jenjang-karir']);
                     @endphp
 
                     <!-- DATA MASTER DROPDOWN MENU -->
@@ -478,6 +479,16 @@
                                         </ul>
                                     </li>
                                 @endif
+
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-jenjang-karir'))
+                                <li class="submenu-item">
+                                    <a class="sidebar-menu-link {{ request()->is('data-jenjang-karir*') ? 'active' : '' }}"
+                                        href="{{ route('data-jenjang-karir.index') }}">
+                                        <i class="fas fa-scroll"></i>
+                                        <span class="sidebar-menu-text">Data Jenjang Karir</span>
+                                    </a>
+                                </li>
+                            @endif
                             </ul>
                         </li>
                     @endif

@@ -503,7 +503,7 @@
                                     </li>
                                 @endif
 
-                                {{-- @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-gaji'))
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-gaji'))
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('data-gaji*') ? 'active' : '' }}"
                                             href="{{ route('data-gaji.index') }}">
@@ -511,7 +511,7 @@
                                             <span class="sidebar-menu-text">Data Gaji</span>
                                         </a>
                                     </li>
-                                @endif --}}
+                                @endif
                             </ul>
                         </li>
                     @endif

@@ -91,6 +91,10 @@ class DataGaji extends Model
         'askes_prs',        // AskesPrs - Asuransi Kesehatan Perusahaan
         'ttl_terima_gaji',  // Total Terima Gaji / Take Home Pay (stored)
 
+        'sts_data_gaji',
+        'tgl_na_gaji',
+        'ket_na_gaji',
+
         // Informasi
         'created_by',
         'updated_by',

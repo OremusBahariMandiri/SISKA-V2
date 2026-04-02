@@ -63,7 +63,8 @@
                                                 <div class="d-flex gap-1 justify-content-center">
                                                     @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
                                                         <a href="{{ route('wilayah-kerja.show', $wilayahKerja->id) }}"
-                                                            class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="Detail">
+                                                            class="btn btn-sm btn-info" data-bs-toggle="tooltip"
+                                                            title="Detail">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                     @endif
@@ -77,10 +78,11 @@
                                                     @endif
 
                                                     @if (auth()->user()->is_admin || ($userPermissions['hapus'] ?? false))
-                                                        <button type="button" class="btn btn-sm btn-danger delete-confirm"
-                                                            data-bs-toggle="tooltip" title="Hapus"
+                                                        <button type="button" class="btn btn-sm btn-danger btn-delete"
                                                             data-id="{{ $wilayahKerja->id }}"
-                                                            data-name="{{ $wilayahKerja->wilayah_krj }}">
+                                                            data-name="{{ $wilayahKerja->wilayah_krj }}"
+                                                            data-url="{{ route('wilayah-kerja.destroy', $wilayahKerja->id) }}"
+                                                            data-bs-toggle="tooltip" title="Hapus">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     @endif
@@ -96,44 +98,17 @@
             </div>
         </div>
     </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="deleteConfirmationModalLabel">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Hapus
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menghapus wilayah kerja <strong id="wilayahKerjaNameToDelete"></strong>?</p>
-                    <p class="text-danger"><i class="fas fa-info-circle me-1"></i>Tindakan ini tidak dapat dibatalkan!</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Batal
-                    </button>
-                    <form id="deleteForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash me-1"></i>Hapus
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <form id="deleteForm" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
 @endsection
 
 @push('styles')
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap5.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <style>
         /* CSS dengan spesifisitas tinggi untuk DataTables */
         .wilayahKerjaPage .dataTables_wrapper .dataTables_length,
@@ -260,17 +235,6 @@
             });
 
 
-            $(document).on('click', '.delete-confirm', function() {
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-
-                // Using Laravel route helper with placeholder
-                var deleteUrl = "{{ route('wilayah-kerja.destroy', ':id') }}".replace(':id', id);
-                $('#deleteForm').attr('action', deleteUrl);
-
-                $('#deleteConfirmationModal').modal('show');
-            });
-
 
             // Tambahkan efek klik pada baris tabel untuk menuju halaman detail
             $('#wilayahKerjaTable tbody').on('click', 'tr', function(e) {
@@ -290,12 +254,37 @@
                 @endif
             });
 
+            // Delete dengan SweetAlert - scope halaman ini saja
+            $(document).on('click', '.btn-delete', function(e) {
+                e.stopPropagation();
+
+                const name = $(this).data('name');
+                const url = $(this).data('url');
+
+                Swal.fire({
+                    title: 'Hapus Wilayah Kerja?',
+                    html: `Data <strong>${name}</strong> akan dihapus permanen.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-trash me-1"></i> Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    focusCancel: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#deleteForm').attr('action', url).submit();
+                    }
+                });
+            });
+
             // Add flash effect when hovering over rows
             $('#wilayahKerjaTable tbody').on('mouseenter', 'tr', function() {
                 $(this).addClass('row-hover-active');
             }).on('mouseleave', 'tr', function() {
                 $(this).removeClass('row-hover-active');
             });
+
 
             // Auto-hide alerts after 5 seconds
             setTimeout(function() {

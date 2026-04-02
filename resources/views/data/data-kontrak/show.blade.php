@@ -317,17 +317,6 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold">SKT Institusi</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i
-                                                                class="fas fa-certificate"></i></span>
-                                                        <input type="text" class="form-control"
-                                                            value="{{ $dataKontrak->skt_inst_skl ?? '' }}" readonly>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
                                                     <label class="form-label fw-bold">Fakultas</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i

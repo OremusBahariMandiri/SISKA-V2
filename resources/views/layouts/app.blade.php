@@ -334,13 +334,26 @@
                             'departemen',
                             'kontrak-kerja',
                             'dokumen-karyawan',
-
                         ]);
 
                         // Dokumen Access Management
-                        $manajemenDataActive = isMenuActive(['data-karyawan*', 'data-kontrak*', 'data-dokumen*', 'data-dokumen-laporan*', 'data-jenjang-karir*']);
+                        $manajemenDataActive = isMenuActive([
+                            'data-karyawan*',
+                            'data-kontrak*',
+                            'data-dokumen*',
+                            'data-dokumen-laporan*',
+                            'data-jenjang-karir*',
+                            'data-jenjang-karir*',
+                        ]);
 
-                        $hasManajemenDataAccess = hasMenuAccess(['data-karyawan', 'data-kontrak', 'data-dokumen', 'data-dokumen-laporan', 'data-jenjang-karir']);
+                        $hasManajemenDataAccess = hasMenuAccess([
+                            'data-karyawan',
+                            'data-kontrak',
+                            'data-dokumen',
+                            'data-dokumen-laporan',
+                            'data-jenjang-karir',
+                            'data-gaji',
+                        ]);
                     @endphp
 
                     <!-- DATA MASTER DROPDOWN MENU -->
@@ -481,14 +494,24 @@
                                 @endif
 
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-jenjang-karir'))
-                                <li class="submenu-item">
-                                    <a class="sidebar-menu-link {{ request()->is('data-jenjang-karir*') ? 'active' : '' }}"
-                                        href="{{ route('data-jenjang-karir.index') }}">
-                                        <i class="fas fa-scroll"></i>
-                                        <span class="sidebar-menu-text">Data Jenjang Karir</span>
-                                    </a>
-                                </li>
-                            @endif
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('data-jenjang-karir*') ? 'active' : '' }}"
+                                            href="{{ route('data-jenjang-karir.index') }}">
+                                            <i class="fas fa-scroll"></i>
+                                            <span class="sidebar-menu-text">Data Jenjang Karir</span>
+                                        </a>
+                                    </li>
+                                @endif
+
+                                {{-- @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-gaji'))
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('data-gaji*') ? 'active' : '' }}"
+                                            href="{{ route('data-gaji.index') }}">
+                                            <i class="fas fa-scroll"></i>
+                                            <span class="sidebar-menu-text">Data Gaji</span>
+                                        </a>
+                                    </li>
+                                @endif --}}
                             </ul>
                         </li>
                     @endif
@@ -592,7 +615,7 @@
                         if (submenu && arrow) {
                             // Check if this is a nested submenu
                             const isNestedSubmenu = submenu.classList.contains(
-                            'sidebar-nested-submenu');
+                                'sidebar-nested-submenu');
                             const parentSubmenu = toggle.closest('.sidebar-submenu');
 
                             if (isNestedSubmenu) {
@@ -615,7 +638,7 @@
                                                 nestedMenu.classList.remove('show');
                                                 const nestedArrow = document.querySelector(
                                                     `[data-menu="${nestedMenu.id}"] .submenu-indicator`
-                                                    );
+                                                );
                                                 if (nestedArrow) nestedArrow.classList
                                                     .remove('rotated');
                                             });

@@ -409,10 +409,22 @@ class DataKaryawanController extends Controller
             ->with('success', 'Data karyawan berhasil dibuat.');
     }
 
+    // File: App/Http/Controllers/Data/DataKaryawanController.php
+
     public function show($id)
     {
-        $dataKaryawan = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'kontrakRelation', 'creator', 'updater'])
-            ->findOrFail($id);
+        $dataKaryawan = DataKaryawan::with([
+            'perusahaanRelation',
+            'departemenRelation',
+            'wilayahKerjaRelation',
+            'kontrakRelation',
+            'creator',
+            'updater',
+            'latestActiveContract', // TAMBAHAN: load kontrak aktif terbaru
+            'latestActiveContract.kontrakKerja', // TAMBAHAN: load relasi jenis kontrak
+            'latestActiveContract.perusahaan' // TAMBAHAN: load relasi perusahaan
+        ])->findOrFail($id);
+
         return view('data.data-karyawan.show', compact('dataKaryawan'));
     }
 

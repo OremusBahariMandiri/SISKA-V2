@@ -19,9 +19,6 @@
                             <button type="button" class="btn btn-light me-2" id="exportButton">
                                 <i class="fas fa-download me-1"></i> Export
                             </button>
-                            {{-- <button type="button" class="btn btn-light me-2" id="customExportButton">
-                                <i class="fas fa-file-export me-1"></i> Custom Export
-                            </button> --}}
                             @if (auth()->user()->is_admin || ($userPermissions['tambah'] ?? false))
                                 <a href="{{ route('data-karyawan.create') }}" class="btn btn-light">
                                     <i class="fas fa-plus-circle me-1"></i> Tambah
@@ -47,7 +44,6 @@
                             </div>
                         @endif
 
-                        <!-- Active Filter Display -->
                         <!-- Active Filter Display -->
                         @if (
                             !empty($currentFilters['status']) ||
@@ -146,47 +142,6 @@
                                 </a>
                             </div>
                         @endif
-
-                        <!-- Quick Search Bar -->
-                        {{-- <div class="row mb-3">
-                            <div class="col-md-6">
-                                <form method="GET" action="{{ route('data-karyawan.index') }}" id="quickSearchForm">
-                                    <!-- Preserve other filters -->
-                                    @foreach ($currentFilters as $key => $value)
-                                        @if ($key !== 'nama' && !empty($value))
-                                            <input type="hidden" name="filter_{{ $key }}" value="{{ $value }}">
-                                        @endif
-                                    @endforeach
-
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light">
-                                            <i class="fas fa-search text-primary"></i>
-                                        </span>
-                                        <input type="text"
-                                               class="form-control"
-                                               name="filter_nama"
-                                               id="quickSearchInput"
-                                               placeholder="Cari nama karyawan..."
-                                               value="{{ $currentFilters['nama'] ?? '' }}"
-                                               autocomplete="off">
-                                        @if (!empty($currentFilters['nama']))
-                                            <button type="button" class="btn btn-outline-secondary" id="clearSearch" title="Hapus pencarian">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        @endif
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-search me-1"></i>Cari
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="col-md-6 text-end">
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Menampilkan {{ $dataKaryawans->count() }} dari total karyawan
-                                </small>
-                            </div>
-                        </div> --}}
 
                         <div class="table-responsive">
                             <table id="dataKaryawanTable" class="table table-bordered table-striped data-table">
@@ -351,25 +306,19 @@
                                             </td>
                                             <td><small>{{ Str::limit($departemen, 15) }}</small></td>
                                             <td><small>{{ Str::limit($jabatan, 15) }}</small></td>
-                                            {{-- SKTWK --}}
                                             <td><small>{{ $sktwk ?? '-' }}</small></td>
-
-                                            {{-- SKTAK --}}
                                             <td><small>{{ $sktak ?? '-' }}</small></td>
                                             <td class="text-center">
                                                 @if ($karyawan->sts_kry == 'CALON')
                                                     <span>CALON</span>
                                                 @elseif ($karyawan->sts_kry == 'AKTIF')
-                                                    <span>AK
-                                                    </span>
+                                                    <span>AK</span>
                                                 @elseif ($karyawan->sts_kry == 'NON-AKTIF')
-                                                    <span class="badge bg-danger">NA
-                                                    </span>
+                                                    <span class="badge bg-danger">NA</span>
                                                 @else
                                                     <span>{{ $karyawan->sts_kry }}</span>
                                                 @endif
                                             </td>
-                                            <!-- Kolom Tambahan -->
                                             <td>{{ $karyawan->tgl_phk ? date('d-m-Y', strtotime($karyawan->tgl_phk)) : '-' }}
                                             </td>
                                             <td>{{ $workDuration }}</td>
@@ -400,11 +349,11 @@
                                                     @endif
 
                                                     @if (auth()->user()->is_admin || ($userPermissions['hapus'] ?? false))
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-danger delete-confirm"
-                                                            data-bs-toggle="tooltip" title="Hapus"
+                                                        <button type="button" class="btn btn-sm btn-danger btn-delete"
                                                             data-id="{{ $karyawan->id }}"
-                                                            data-name="{{ $karyawan->nama }}">
+                                                            data-name="{{ $karyawan->nama }}"
+                                                            data-url="{{ route('data-karyawan.destroy', $karyawan->id) }}"
+                                                            data-bs-toggle="tooltip" title="Hapus">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     @endif
@@ -421,7 +370,6 @@
         </div>
     </div>
 
-    <!-- Filter Modal -->
     <!-- Filter Modal -->
     <div class="modal fade" id="filterModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
@@ -656,7 +604,7 @@
         </div>
     </div>
 
-    <!-- Custom Export Modal - UPDATED WITH NEW FIELDS -->
+    <!-- Custom Export Modal -->
     <div class="modal fade" id="customExportModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -897,7 +845,6 @@
                                 </div>
                             </div>
 
-
                             <!-- Education -->
                             <div class="col-md-6 mb-3">
                                 <div class="card h-100">
@@ -1102,31 +1049,6 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModal"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">Konfirmasi Hapus</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menghapus karyawan <strong id="employeeName"></strong>?</p>
-                    <p class="text-muted">Data yang sudah dihapus tidak dapat dikembalikan.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <form id="deleteForm" method="POST" style="display: inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Hapus</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Summary Modal -->
     <div class="modal fade" id="summaryModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
@@ -1226,16 +1148,12 @@
                         </h5>
                         <div class="row">
                             @php
-                                // Group departemen by nama_dep
                                 $groupedDepartemen = $departemens->groupBy('singkatan_dep');
                             @endphp
                             @foreach ($groupedDepartemen as $namaDep => $deptGroup)
                                 @php
-                                    // Get all IDs for this department name
                                     $deptIds = $deptGroup->pluck('id')->toArray();
-                                    // Count karyawan for all departments with this name
                                     $count = $dataKaryawans->whereIn('departemen', $deptIds)->count();
-                                    // Get first department for display
                                     $firstDept = $deptGroup->first();
                                 @endphp
                                 <div class="col-md-4 col-lg-3 mb-3">
@@ -1348,45 +1266,6 @@
                             @endforeach
                         </div>
                     </div>
-
-                    <hr class="my-4">
-
-                    <!-- By Work Area -->
-                    {{-- <div class="mb-4">
-                        <h5 class="fw-bold mb-3"><i class="fas fa-map-marked-alt me-2 text-info"></i>Berdasarkan Wilayah
-                            Kerja</h5>
-                        <div class="row">
-                            @foreach ($wilayahKerjas as $wilker)
-                                @php
-                                    $count = $dataKaryawans->where('wilker', $wilker->id)->count();
-                                @endphp
-                                <div class="col-md-4 col-lg-3 mb-3">
-                                    <div class="card border-left-info shadow-sm h-100">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="text-muted mb-1 small">{{ $wilker->kode_wk }}</h6>
-                                                    <p class="mb-0 fw-bold text-truncate"
-                                                        title="{{ $wilker->wilayah_krj }}" style="max-width: 150px;">
-                                                        {{ Str::limit($wilker->wilayah_krj, 20) }} -
-                                                        {{ Str::limit($wilker->area_krj, 20) }}
-                                                    </p>
-                                                </div>
-                                                <div class="text-end">
-                                                    <h3 class="fw-bold text-info mb-0">{{ $count }}</h3>
-                                                </div>
-                                            </div>
-                                            <div class="progress mt-2" style="height: 5px;">
-                                                <div class="progress-bar bg-info" role="progressbar"
-                                                    style="width: {{ $dataKaryawans->count() > 0 ? ($count / $dataKaryawans->count()) * 100 : 0 }}%">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -1394,6 +1273,10 @@
             </div>
         </div>
     </div>
+    <form id="deleteForm" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
 @endsection
 
 @push('styles')
@@ -1401,8 +1284,10 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
         rel="stylesheet" />
+
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <style>
         /* ===== CARD STYLING ===== */
@@ -1564,7 +1449,6 @@
             border: 1px solid #ced4da;
             border-radius: 0.375rem;
             z-index: 1070 !important;
-            /* PENTING: Lebih tinggi dari modal */
         }
 
         .select2-container--bootstrap-5 .select2-results__option--highlighted[aria-selected] {
@@ -1578,7 +1462,7 @@
             padding: 6px 12px;
         }
 
-        /* Select2 in modal specific styling - PENTING */
+        /* Select2 in modal specific styling */
         .modal .select2-container {
             z-index: 1070 !important;
         }
@@ -1589,24 +1473,6 @@
 
         .select2-container--open .select2-dropdown {
             z-index: 1071 !important;
-        }
-
-        /* Input group with select2 */
-        .input-group .select2-container {
-            flex: 1 1 auto;
-            width: 1%;
-            min-width: 0;
-        }
-
-        .input-group .select2-container .select2-selection {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-            border-left: 0;
-        }
-
-        .input-group .select2-container--focus .select2-selection {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
 
         /* ===== RESPONSIVE TABLE ===== */
@@ -1652,20 +1518,16 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
             // ===== INISIALISASI SELECT2 UNTUK FILTER MODAL =====
             function initializeSelect2InModal() {
                 $('#filterModal .select2').each(function() {
-                    // Destroy existing Select2 instance if any
                     if ($(this).hasClass('select2-hidden-accessible')) {
                         $(this).select2('destroy');
                     }
 
-                    // Initialize Select2 with proper configuration
                     $(this).select2({
                         theme: 'bootstrap-5',
                         dropdownParent: $('#filterModal'),
@@ -1713,7 +1575,6 @@
 
             // ===== RESET FILTER =====
             $('#resetFilter').click(function() {
-                // Reset all form inputs
                 $('#filter_nama').val('');
                 $('#filter_status').val('').trigger('change');
                 $('#filter_perusahaan').val('').trigger('change');
@@ -1721,12 +1582,10 @@
                 $('#filter_jabatan').val('').trigger('change');
                 $('#filter_kontrak').val('').trigger('change');
                 $('#filter_jenis_kelamin').val('').trigger('change');
-                $('#filter_skt_wilker').val('').trigger('change');
                 $('#filter_wilker').val('').trigger('change');
                 $('#filter_unit_kerja').val('').trigger('change');
                 $('#filter_nrk').val('');
 
-                // Reinitialize Select2 after reset
                 initializeSelect2InModal();
             });
 
@@ -1747,29 +1606,12 @@
                 window.location.href = currentUrl.toString();
             });
 
-            $('#exportPDF').click(function() {
-                let currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('export', 'pdf');
-                window.location.href = currentUrl.toString();
-            });
-
-            $('#exportCSV').click(function() {
-                let currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('export', 'csv');
-                window.location.href = currentUrl.toString();
-            });
-
             // ===== OPEN CUSTOM EXPORT FROM EXPORT MODAL =====
             $('#openCustomExport').click(function() {
                 $('#exportModal').modal('hide');
                 setTimeout(function() {
                     $('#customExportModal').modal('show');
                 }, 300);
-            });
-
-            // ===== CUSTOM EXPORT BUTTON (Direct) =====
-            $('#customExportButton').click(function() {
-                $('#customExportModal').modal('show');
             });
 
             // ===== SELECT ALL FIELDS =====
@@ -1817,24 +1659,11 @@
                 const checkedFields = $('.field-checkbox:checked').length;
 
                 if (checkedFields === 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Pilih Field',
-                        text: 'Silakan pilih minimal satu field untuk di-export',
-                        confirmButtonColor: '#0d6efd'
-                    });
+                    showWarning('Pilih Field', 'Silakan pilih minimal satu field untuk di-export');
                     return;
                 }
 
-                Swal.fire({
-                    title: 'Memproses Export...',
-                    html: `Sedang memproses <b>${checkedFields}</b> field`,
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+                showLoading(`Memproses ${checkedFields} field`);
 
                 const form = $('#customExportForm');
                 const url = form.attr('action');
@@ -1843,53 +1672,11 @@
                 window.location.href = url + '?' + data;
 
                 setTimeout(function() {
-                    Swal.close();
+                    closeAlert();
                     $('#customExportModal').modal('hide');
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Export Berhasil',
-                        text: 'File sedang diunduh...',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
+                    showSuccess('Export Berhasil', 'File sedang diunduh...');
                 }, 2000);
-            });
-
-            $(document).on('click', '.delete-confirm', function() {
-                var id = $(this).data('id');
-                var name = $(this).data('name');
-
-                // Using Laravel route helper with placeholder
-                var deleteUrl = "{{ route('data-karyawan.destroy', ':id') }}".replace(':id', id);
-                $('#deleteForm').attr('action', deleteUrl);
-
-                $('#deleteConfirmationModal').modal('show');
-            });
-
-            // ===== DELETE CONFIRMATION =====
-            // $('.delete-confirm').click(function() {
-            //     const employeeId = $(this).data('id');
-            //     const employeeName = $(this).data('name');
-
-            //     $('#employeeName').text(employeeName);
-            //     $('#deleteForm').attr('action', `/data-karyawan/${employeeId}`);
-            //     $('#deleteConfirmationModal').modal('show');
-            // });
-
-            // ===== QUICK SEARCH FUNCTIONALITY =====
-            $('#quickSearchInput').on('keyup', function(e) {
-                if (e.key === 'Enter') {
-                    $('#quickSearchForm').submit();
-                }
-            });
-
-            // ===== CLEAR SEARCH =====
-            $('#clearSearch').click(function() {
-                $('#quickSearchInput').val('');
-                let form = $('#quickSearchForm');
-                form.find('input[name="filter_nama"]').val('');
-                form.submit();
             });
 
             // ===== IMAGE PREVIEW ON CLICK =====
@@ -1897,7 +1684,7 @@
                 const imgSrc = $(this).attr('src');
                 const employeeName = $(this).attr('alt');
 
-                Swal.fire({
+                Swal.fire({ // ✅ BENAR: Menggunakan Swal.fire() dari SweetAlert2
                     title: employeeName,
                     imageUrl: imgSrc,
                     imageAlt: employeeName,
@@ -1910,26 +1697,27 @@
                 });
             });
 
-            // ===== LOADING STATE FOR SEARCH =====
-            $('#quickSearchForm').on('submit', function() {
-                let submitBtn = $(this).find('button[type="submit"]');
-                submitBtn.html('<i class="fas fa-spinner fa-spin me-1"></i>Mencari...');
-                submitBtn.prop('disabled', true);
-            });
+            $(document).on('click', '.btn-delete', function(e) {
+                e.stopPropagation();
 
-            // ===== KEYBOARD SHORTCUTS =====
-            $(document).keydown(function(e) {
-                // Ctrl/Cmd + F for quick search
-                if ((e.ctrlKey || e.metaKey) && e.keyCode === 70) {
-                    e.preventDefault();
-                    $('#quickSearchInput').focus();
-                }
+                const name = $(this).data('name');
+                const url = $(this).data('url');
 
-                // Ctrl/Cmd + K for filter modal
-                if ((e.ctrlKey || e.metaKey) && e.keyCode === 75) {
-                    e.preventDefault();
-                    $('#filterModal').modal('show');
-                }
+                Swal.fire({
+                    title: 'Hapus Karyawan?',
+                    html: `Data <strong>${name}</strong> akan dihapus permanen.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-trash me-1"></i> Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    focusCancel: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#deleteForm').attr('action', url).submit();
+                    }
+                });
             });
 
             // ===== TOOLTIP INITIALIZATION =====

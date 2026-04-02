@@ -75,10 +75,11 @@
                                                     @endif
 
                                                     @if (auth()->user()->is_admin || ($userPermissions['hapus'] ?? false))
-                                                        <button type="button" class="btn btn-sm btn-danger delete-confirm"
-                                                            data-bs-toggle="tooltip" title="Hapus"
+                                                        <button type="button" class="btn btn-sm btn-danger btn-delete"
                                                             data-id="{{ $dokumen->id }}"
-                                                            data-name="{{ $dokumen->kode_dok_kry }}">
+                                                            data-name="{{ $dokumen->ktg_dok_kry }}"
+                                                            data-url="{{ route('dokumen-karyawan.destroy', $dokumen->id) }}"
+                                                            data-bs-toggle="tooltip" title="Hapus">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     @endif
@@ -94,44 +95,17 @@
             </div>
         </div>
     </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="deleteConfirmationModalLabel">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Hapus
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menghapus dokumen <strong id="dokumenNameToDelete"></strong>?</p>
-                    <p class="text-danger"><i class="fas fa-info-circle me-1"></i>Tindakan ini tidak dapat dibatalkan!</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Batal
-                    </button>
-                    <form id="deleteForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            <i class="fas fa-trash me-1"></i>Hapus
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <form id="deleteForm" method="POST" style="display:none;">
+        @csrf
+        @method('DELETE')
+    </form>
 @endsection
 
 @push('styles')
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap5.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <style>
         .dokumenKaryawanPage .dataTables_wrapper .dataTables_length,
         .dokumenKaryawanPage .dataTables_wrapper .dataTables_filter {
@@ -202,15 +176,28 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
 
-            $(document).on('click', '.delete-confirm', function() {
-                var id = $(this).data('id');
-                var name = $(this).data('name');
+            // Delete dengan SweetAlert - scope halaman ini saja
+            $(document).on('click', '.btn-delete', function(e) {
+                e.stopPropagation();
 
-                var deleteUrl = "{{ route('dokumen-karyawan.destroy', ':id') }}".replace(':id', id);
-                $('#deleteForm').attr('action', deleteUrl);
-                $('#dokumenNameToDelete').text(name);
+                const name = $(this).data('name');
+                const url = $(this).data('url');
 
-                $('#deleteConfirmationModal').modal('show');
+                Swal.fire({
+                    title: 'Hapus Dokumen Karyawan?',
+                    html: `Data <strong>${name}</strong> akan dihapus permanen.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fas fa-trash me-1"></i> Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    focusCancel: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#deleteForm').attr('action', url).submit();
+                    }
+                });
             });
 
             setTimeout(function() {

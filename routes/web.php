@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Data\DataDokumenController;
+use App\Http\Controllers\Data\DataGajiController;
 use App\Http\Controllers\Data\DataJenjangKarirController;
 use App\Http\Controllers\Data\DataKaryawanController;
 use App\Http\Controllers\Data\DataKontrakController;
@@ -225,5 +226,20 @@ Route::middleware('auth')->group(function () {
         Route::get('get-employee-data/{id}',     [DataJenjangKarirController::class, 'getEmployeeData'])->name('get-employee-data');
         Route::get('get-jabatan-by-departemen/{namaDep}', [DataJenjangKarirController::class, 'getJabatanByDepartemen'])->name('get-jabatan');
         Route::get('get-unit-kerja-by-wilayah/{wilayahKrj}', [DataJenjangKarirController::class, 'getUnitKerjaByWilayah'])->name('get-unit-kerja');
+    });
+
+    // ===== DATA GAJI ROUTES =====
+    Route::resource('data-gaji', DataGajiController::class);
+
+    Route::prefix('data-gaji')->group(function () {
+        // Employee validation & data
+        Route::get('check-employee/{id}',    [DataGajiController::class, 'checkEmployeeExists'])->name('data-gaji.check-employee');
+        Route::get('get-employee-data/{id}', [DataGajiController::class, 'getEmployeeData'])->name('data-gaji.get-employee-data');
+
+        // Gaji CRUD operations (for modal)
+        Route::post('gaji/store',        [DataGajiController::class, 'storeGaji'])->name('data-gaji.gaji.store');
+        Route::get('gaji/{id}',          [DataGajiController::class, 'getGaji'])->name('data-gaji.gaji.get');
+        Route::put('gaji/{id}',          [DataGajiController::class, 'updateGaji'])->name('data-gaji.gaji.update');
+        Route::delete('gaji/{id}',       [DataGajiController::class, 'deleteGaji'])->name('data-gaji.gaji.delete');
     });
 });

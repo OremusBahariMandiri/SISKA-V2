@@ -437,4 +437,46 @@ class DataKaryawan extends Model
             ->orWhere('nrk', 'like', '%' . $search . '%')
             ->orWhere('nik', 'like', '%' . $search . '%');
     }
+
+    public function latestActiveContract()
+    {
+        return $this->hasOne(DataKontrak::class, 'id_data_kry', 'id')
+            ->where('sts_srt_ktr', 'AKTIF')
+            ->latest('created_at'); // atau bisa pakai latest('id') untuk yang terakhir dibuat
+    }
+
+    /**
+     * Get all contracts for this employee from DataKontrak table
+     */
+    public function allContracts()
+    {
+        return $this->hasMany(DataKontrak::class, 'id_data_kry', 'id')
+            ->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get active contracts for this employee from DataKontrak table
+     */
+    public function activeContracts()
+    {
+        return $this->hasMany(DataKontrak::class, 'id_data_kry', 'id')
+            ->where('sts_srt_ktr', 'AKTIF')
+            ->orderBy('created_at', 'desc');
+    }
+
+    public function latestCareer()
+    {
+        return $this->hasOne(DataJenjangKarir::class, 'id_karyawan', 'id')
+            ->latest('tgl_ttd')
+            ->latest('id');
+    }
+
+    /**
+     * Get all career records for this employee from DataJenjangKarir table
+     */
+    public function allCareers()
+    {
+        return $this->hasMany(DataJenjangKarir::class, 'id_karyawan', 'id')
+            ->orderBy('tgl_ttd', 'desc');
+    }
 }

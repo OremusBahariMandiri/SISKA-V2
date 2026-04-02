@@ -494,64 +494,151 @@
                             <div class="tab-pane fade" id="kontrak" role="tabpanel" aria-labelledby="kontrak-tab">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-file-contract me-2"></i>Informasi
-                                            Kontrak Kerja</h5>
+                                        <h5 class="mb-0 text-white">
+                                            <i class="fas fa-file-contract me-2"></i>Informasi Kontrak Kerja Aktif Terbaru
+                                        </h5>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Status Kontrak</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-clipboard-check text-primary me-2"></i>
-                                                    {{ $dataKaryawan->kontrakRelation && is_object($dataKaryawan->kontrakRelation) ? $dataKaryawan->kontrakRelation->nama_ktr : '-' }}
-                                                    @if (
-                                                        $dataKaryawan->kontrakRelation &&
-                                                            is_object($dataKaryawan->kontrakRelation) &&
-                                                            $dataKaryawan->kontrakRelation->singkatan_ktr)
-                                                        - {{ $dataKaryawan->kontrakRelation->singkatan_ktr }}
-                                                    @endif
-                                                </div>
+                                        @if($dataKaryawan->latestActiveContract)
+                                            {{-- Kontrak Aktif Ditemukan --}}
+                                            <div class="alert alert-success mb-4">
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                <strong>Kontrak Aktif:</strong> Nomor {{ $dataKaryawan->latestActiveContract->no_srt_ktr ?? 'N/A' }}
+                                                <span class="badge bg-success ms-2">AKTIF</span>
                                             </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label fw-bold text-muted">Perusahaan</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-building text-primary me-2"></i>
-                                                    {{ $dataKaryawan->perusahaanRelation && is_object($dataKaryawan->perusahaanRelation) ? $dataKaryawan->perusahaanRelation->nama_prs1 : '-' }}
-                                                    @if (
-                                                        $dataKaryawan->perusahaanRelation &&
-                                                            is_object($dataKaryawan->perusahaanRelation) &&
-                                                            $dataKaryawan->perusahaanRelation->nama_prs2)
-                                                        - {{ $dataKaryawan->perusahaanRelation->nama_prs2 }}
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold text-muted">Tanggal Mulai
-                                                    Kontrak</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-calendar-plus text-primary me-2"></i>
-                                                    {{ $dataKaryawan->tgl_awal_ktr ? \Carbon\Carbon::parse($dataKaryawan->tgl_awal_ktr)->format('d F Y') : '-' }}
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Jenis Kontrak</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-clipboard-check text-primary me-2"></i>
+                                                        {{ $dataKaryawan->latestActiveContract->kontrakKerja->nama_ktr ?? '-' }}
+                                                        @if($dataKaryawan->latestActiveContract->kontrakKerja && $dataKaryawan->latestActiveContract->kontrakKerja->singkatan_ktr)
+                                                            <span class="badge bg-info ms-2">{{ $dataKaryawan->latestActiveContract->kontrakKerja->singkatan_ktr }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Perusahaan</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-building text-primary me-2"></i>
+                                                        {{ $dataKaryawan->latestActiveContract->perusahaan->nama_prs1 ?? '-' }}
+                                                        @if($dataKaryawan->latestActiveContract->perusahaan && $dataKaryawan->latestActiveContract->perusahaan->nama_prs2)
+                                                            - {{ $dataKaryawan->latestActiveContract->perusahaan->nama_prs2 }}
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold text-muted">Tanggal Akhir
-                                                    Kontrak</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-calendar-minus text-primary me-2"></i>
-                                                    {{ $dataKaryawan->tgl_akhir_ktr ? \Carbon\Carbon::parse($dataKaryawan->tgl_akhir_ktr)->format('d F Y') : '-' }}
+
+                                            <div class="row">
+                                                <div class="col-md-4 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Tanggal Mulai Kontrak</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-calendar-plus text-primary me-2"></i>
+                                                        {{ $dataKaryawan->latestActiveContract->tgl_awl_ktr ? \Carbon\Carbon::parse($dataKaryawan->latestActiveContract->tgl_awl_ktr)->format('d F Y') : '-' }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Tanggal Akhir Kontrak</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-calendar-minus text-primary me-2"></i>
+                                                        {{ $dataKaryawan->latestActiveContract->tgl_akhir_ktr ? \Carbon\Carbon::parse($dataKaryawan->latestActiveContract->tgl_akhir_ktr)->format('d F Y') : '-' }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 mb-3">
+                                                    <label class="form-label fw-bold text-muted">Durasi Kontrak</label>
+                                                    <div class="detail-value">
+                                                        <i class="fas fa-clock text-primary me-2"></i>
+                                                        {{ $dataKaryawan->latestActiveContract->durasi_ktr ? $dataKaryawan->latestActiveContract->durasi_ktr . ' Bulan' : '-' }}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label fw-bold text-muted">Durasi Kontrak</label>
-                                                <div class="detail-value">
-                                                    <i class="fas fa-clock text-primary me-2"></i>
-                                                    {{ $dataKaryawan->durasi_ktr ? $dataKaryawan->durasi_ktr . ' Bulan' : '-' }}
+
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        <strong>Informasi:</strong> Data kontrak di atas adalah kontrak aktif yang terakhir diupload pada
+                                                        <strong>{{ $dataKaryawan->latestActiveContract->created_at->format('d F Y H:i') }}</strong>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+
+                                            {{-- Link ke Data Kontrak --}}
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <a href="{{ route('data-kontrak.index') }}?filter_nrk={{ $dataKaryawan->nrk }}"
+                                                       class="btn btn-primary">
+                                                        <i class="fas fa-list me-1"></i>Lihat Semua Riwayat Kontrak
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                        @else
+                                            {{-- Tidak Ada Kontrak Aktif --}}
+                                            <div class="alert alert-warning">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                                <strong>Tidak ada kontrak aktif</strong> untuk karyawan ini saat ini.
+                                            </div>
+
+                                            {{-- Fallback ke data kontrak lama di tabel data_karyawan (opsional) --}}
+                                            @if($dataKaryawan->tgl_awal_ktr || $dataKaryawan->tgl_akhir_ktr)
+                                                <div class="alert alert-info">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Menampilkan data kontrak terakhir dari sistem lama:
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label fw-bold text-muted">Status Kontrak (Lama)</label>
+                                                        <div class="detail-value">
+                                                            <i class="fas fa-clipboard-check text-primary me-2"></i>
+                                                            {{ $dataKaryawan->kontrakRelation && is_object($dataKaryawan->kontrakRelation) ? $dataKaryawan->kontrakRelation->nama_ktr : '-' }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label fw-bold text-muted">Perusahaan (Lama)</label>
+                                                        <div class="detail-value">
+                                                            <i class="fas fa-building text-primary me-2"></i>
+                                                            {{ $dataKaryawan->perusahaanRelation && is_object($dataKaryawan->perusahaanRelation) ? $dataKaryawan->perusahaanRelation->nama_prs1 : '-' }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label fw-bold text-muted">Tanggal Mulai (Lama)</label>
+                                                        <div class="detail-value">
+                                                            <i class="fas fa-calendar-plus text-primary me-2"></i>
+                                                            {{ $dataKaryawan->tgl_awal_ktr ? \Carbon\Carbon::parse($dataKaryawan->tgl_awal_ktr)->format('d F Y') : '-' }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label fw-bold text-muted">Tanggal Akhir (Lama)</label>
+                                                        <div class="detail-value">
+                                                            <i class="fas fa-calendar-minus text-primary me-2"></i>
+                                                            {{ $dataKaryawan->tgl_akhir_ktr ? \Carbon\Carbon::parse($dataKaryawan->tgl_akhir_ktr)->format('d F Y') : '-' }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label fw-bold text-muted">Durasi (Lama)</label>
+                                                        <div class="detail-value">
+                                                            <i class="fas fa-clock text-primary me-2"></i>
+                                                            {{ $dataKaryawan->durasi_ktr ? $dataKaryawan->durasi_ktr . ' Bulan' : '-' }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            <div class="row mt-3">
+                                                <div class="col-md-12 text-center">
+                                                    <a href="{{ route('data-kontrak.create') }}?employee_id={{ $dataKaryawan->id }}"
+                                                       class="btn btn-success">
+                                                        <i class="fas fa-plus me-1"></i>Tambah Kontrak Baru
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

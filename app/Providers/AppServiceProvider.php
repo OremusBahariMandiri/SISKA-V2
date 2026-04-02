@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Data\DataJenjangKarir;
+use App\Models\Data\DataKontrak;
+use App\Observers\DataJenjangKarirObserver;
+use App\Observers\DataKontrakObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        DataKontrak::observe(DataKontrakObserver::class);
+        DataJenjangKarir::observe(DataJenjangKarirObserver::class);
     }
 }

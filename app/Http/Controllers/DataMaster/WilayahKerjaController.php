@@ -208,6 +208,6 @@ class WilayahKerjaController extends Controller
         $wilayahKerja->delete();
 
         return redirect()->route('wilayah-kerja.index')
-            ->with('success', 'Wilayah Kerja berhasil dihapus.');
+            ->with('success', 'Wilayah Kerja berhasil dihapus');
     }
 }

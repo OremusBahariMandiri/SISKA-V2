@@ -241,5 +241,15 @@ Route::middleware('auth')->group(function () {
         Route::get('gaji/{id}',          [DataGajiController::class, 'getGaji'])->name('data-gaji.gaji.get');
         Route::put('gaji/{id}',          [DataGajiController::class, 'updateGaji'])->name('data-gaji.gaji.update');
         Route::delete('gaji/{id}',       [DataGajiController::class, 'deleteGaji'])->name('data-gaji.gaji.delete');
+
+        // AJAX Routes for Salary Management (NEW)
+        Route::post('/salaries', [DataGajiController::class, 'storeSalary'])->name('data-gaji.salaries.store');
+        Route::get('/salaries/{id}', [DataGajiController::class, 'getSalary'])->name('data-gaji.salaries.get');
+        Route::put('/salaries/{id}', [DataGajiController::class, 'updateSalary'])->name('data-gaji.salaries.update');
+        Route::delete('/salaries/{id}', [DataGajiController::class, 'deleteSalary'])->name('data-gaji.salaries.delete');
+
+        // Employee Data
+        Route::get('/get-employee-data/{id}', [DataGajiController::class, 'getEmployeeData']);
+        Route::get('/check-employee/{id}', [DataGajiController::class, 'checkEmployeeExists']);
     });
 });

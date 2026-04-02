@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Data\DataGaji;
 use App\Models\Data\DataKaryawan;
+use App\Models\DataMaster\Departemen;
+use App\Models\DataMaster\WilayahKerja;
 use Illuminate\Support\Facades\DB;
 
 class DataGajiController extends Controller
@@ -25,97 +27,134 @@ class DataGajiController extends Controller
 
     public function index(Request $request)
     {
-        $query = DataGaji::with(['karyawan.departemenRelation', 'karyawan.wilayahKerjaRelation', 'karyawan.unitKerjaRelation']);
+        $userPermissions = $this->getUserPermissions('data-gaji');
 
-        $query->whereIn('id', function ($subquery) {
-            $subquery->select(DB::raw('MAX(id)'))
-                ->from('205_dm_data_gaji')
-                ->groupBy('id_karyawan');
-        });
+        // Initialize filter arrays
+        $currentFilters = [
+            'nama'          => $request->get('filter_nama'),
+            'nrk'           => $request->get('filter_nrk'),
+            'departemen'    => $request->get('filter_departemen'),
+            'jabatan'       => $request->get('filter_jabatan'),
+            'jenis_kelamin' => $request->get('filter_jenis_kelamin'),
+            'wilker'        => $request->get('filter_wilker'),
+            'unit_kerja'    => $request->get('filter_unit_kerja'),
+            'status'        => $request->get('filter_status'),
+        ];
+
+        // Start query with eager loading
+        $query = DataGaji::with([
+            'karyawan.departemenRelation',
+            'karyawan.wilayahKerjaRelation',
+            'karyawan.unitKerjaRelation',
+            'creator',
+            'updater'
+        ]);
 
         // Apply filters
-        if ($request->filled('filter_nama')) {
-            $query->whereHas('karyawan', fn($q) => $q->where('nama', 'LIKE', '%' . $request->filter_nama . '%'));
+        if (!empty($currentFilters['nama'])) {
+            $query->whereHas('karyawan', function ($q) use ($currentFilters) {
+                $q->where('nama', 'LIKE', '%' . $currentFilters['nama'] . '%');
+            });
         }
 
-        if ($request->filled('filter_nrk')) {
-            $query->whereHas('karyawan', fn($q) => $q->where('nrk', 'LIKE', '%' . $request->filter_nrk . '%'));
+        if (!empty($currentFilters['nrk'])) {
+            $query->whereHas('karyawan', function ($q) use ($currentFilters) {
+                $q->where('nrk', 'LIKE', '%' . $currentFilters['nrk'] . '%');
+            });
         }
 
-        if ($request->filled('filter_departemen')) {
-            $selectedDepartemen = \App\Models\DataMaster\Departemen::find($request->filter_departemen);
-            if ($selectedDepartemen) {
-                $departemenIds = \App\Models\DataMaster\Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
-                $query->whereHas('karyawan', fn($q) => $q->whereIn('departemen', $departemenIds));
-            }
+        if (!empty($currentFilters['departemen'])) {
+            $query->whereHas('karyawan', function ($q) use ($currentFilters) {
+                $q->where('departemen', $currentFilters['departemen']);
+            });
         }
 
-        if ($request->filled('filter_jabatan')) {
-            $query->whereHas('karyawan', fn($q) => $q->where('departemen', $request->filter_jabatan));
+        if (!empty($currentFilters['jabatan'])) {
+            $query->whereHas('karyawan.departemenRelation', function ($q) use ($currentFilters) {
+                $q->where('id', $currentFilters['jabatan']);
+            });
         }
 
-        if ($request->filled('filter_jenis_kelamin')) {
-            $query->whereHas('karyawan', fn($q) => $q->where('sex', $request->filter_jenis_kelamin));
+        if (!empty($currentFilters['jenis_kelamin'])) {
+            $query->whereHas('karyawan', function ($q) use ($currentFilters) {
+                $q->where('sex', $currentFilters['jenis_kelamin']);
+            });
         }
 
-        if ($request->filled('filter_wilker')) {
-            $query->whereHas('karyawan', fn($q) => $q->where('wilker', $request->filter_wilker));
+        if (!empty($currentFilters['wilker'])) {
+            $query->whereHas('karyawan.wilayahKerjaRelation', function ($q) use ($currentFilters) {
+                $q->where('wilayah_krj', 'LIKE', '%' . $currentFilters['wilker'] . '%');
+            });
         }
 
-        if ($request->filled('filter_unit_kerja')) {
-            $query->whereHas('karyawan', fn($q) => $q->where('unit_krj', $request->filter_unit_kerja));
+        if (!empty($currentFilters['unit_kerja'])) {
+            $query->whereHas('karyawan.unitKerjaRelation', function ($q) use ($currentFilters) {
+                $q->where('id', $currentFilters['unit_kerja']);
+            });
         }
 
-        if ($request->filled('filter_id_gaji')) {
-            $query->where('id_gaji', 'LIKE', '%' . $request->filter_id_gaji . '%');
+        if (!empty($currentFilters['status'])) {
+            $query->where('sts_data_gaji', $currentFilters['status']);
         }
 
-        $dataGajis = $query->orderBy('id', 'desc')->get();
+        // Get filtered data
+        $dataGajis = $query->orderBy('created_at', 'desc')->get();
 
-        // Get master data for filters
-        $departemenOptions = \App\Models\DataMaster\Departemen::select('nama_dep', 'singkatan_dep', DB::raw('MIN(id) as id'), DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode_dep'))
-            ->groupBy('nama_dep', 'singkatan_dep')
-            ->orderBy('min_kode_dep', 'asc')
+        // Get all active employees for create form
+        $karyawans = DataKaryawan::where('sts_kry', 'AKTIF')
+            ->with([
+                'departemenRelation',
+                'wilayahKerjaRelation',
+                'unitKerjaRelation'
+            ])
+            ->orderBy('nama', 'asc')
             ->get();
 
-        $jabatanOptions = \App\Models\DataMaster\Departemen::sortByCode()->get(['id', 'kode_dep', 'nama_dep', 'nama_jbt', 'singkatan_jbt']);
+        // Get filter options
+        $departemenOptions = Departemen::select('id', 'nama_dep', 'singkatan_dep', 'nama_jbt', 'singkatan_jbt')
+            ->distinct()
+            ->orderBy('nama_dep', 'asc')
+            ->get();
 
-        $wilayahKerjaOptions = \App\Models\DataMaster\WilayahKerja::select('wilayah_krj')
-            ->groupBy('wilayah_krj')
+        $jabatanOptions = Departemen::select('id', 'nama_jbt', 'singkatan_jbt', 'nama_dep')
+            ->whereNotNull('nama_jbt')
+            ->distinct()
+            ->orderBy('nama_jbt', 'asc')
+            ->get();
+
+        $wilayahKerjaOptions = WilayahKerja::select('id', 'wilayah_krj', 'area_krj', 'singkatan_wk')
+            ->distinct()
             ->orderBy('wilayah_krj', 'asc')
             ->get();
 
-        $unitKerjaOptions = \App\Models\DataMaster\WilayahKerja::select('id', 'area_krj', 'kode_wk')
-            ->orderBy('area_krj')
+        $unitKerjaOptions = WilayahKerja::select('id', 'area_krj', 'singkatan_wk')
+            ->distinct()
+            ->orderBy('area_krj', 'asc')
             ->get();
 
+        // Jenis Kelamin options
         $jenisKelaminOptions = [
-            'LAKI-LAKI' => 'Laki-laki',
+            'LAKI-LAKI'  => 'Laki-laki',
             'PEREMPUAN'  => 'Perempuan',
         ];
 
-        $userPermissions = $this->getUserPermissions('data-gaji');
-
-        $currentFilters = [
-            'nama'          => $request->filter_nama ?? '',
-            'nrk'           => $request->filter_nrk ?? '',
-            'departemen'    => $request->filter_departemen ?? '',
-            'jabatan'       => $request->filter_jabatan ?? '',
-            'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
-            'wilker'        => $request->filter_wilker ?? '',
-            'unit_kerja'    => $request->filter_unit_kerja ?? '',
-            'id_gaji'       => $request->filter_id_gaji ?? '',
+        // Status options
+        $statusOptions = [
+            'AKTIF'      => 'Aktif',
+            'NON-AKTIF'  => 'Non-Aktif',
         ];
 
         return view('data.data-gaji.index', compact(
             'dataGajis',
+            'karyawans',
             'userPermissions',
+            'currentFilters',
             'departemenOptions',
             'jabatanOptions',
             'wilayahKerjaOptions',
             'unitKerjaOptions',
             'jenisKelaminOptions',
-            'currentFilters'
+            'statusOptions'
         ));
     }
 
@@ -154,20 +193,41 @@ class DataGajiController extends Controller
 
     public function show($id)
     {
-        $dataGaji        = DataGaji::with(['karyawan'])->findOrFail($id);
+        $dataGaji = DataGaji::with([
+            'karyawan.departemenRelation',
+            'karyawan.wilayahKerjaRelation',
+            'karyawan.unitKerjaRelation',
+            'creator',
+            'updater'
+        ])->findOrFail($id);
+
+        // Get all salaries for this employee
+        $allGajis = DataGaji::where('id_karyawan', $dataGaji->id_karyawan)
+            ->with(['creator', 'updater'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Get user permissions
         $userPermissions = $this->getUserPermissions('data-gaji');
 
-        return view('data.data-gaji.show', compact('dataGaji', 'userPermissions'));
+        return view('data.data-gaji.show', compact('dataGaji', 'allGajis', 'userPermissions'));
     }
 
     public function edit($id)
     {
-        $dataGaji  = DataGaji::with(['karyawan'])->findOrFail($id);
+        $dataGaji = DataGaji::with(['karyawan'])->findOrFail($id);
+
+        // PERBAIKAN: Ambil semua data gaji untuk karyawan ini
+        $allGajis = DataGaji::where('id_karyawan', $dataGaji->id_karyawan)
+            ->with(['creator', 'updater'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $karyawans = DataKaryawan::where('sts_kry', 'AKTIF')
             ->orderBy('nama', 'asc')
             ->get();
 
-        return view('data.data-gaji.edit', compact('dataGaji', 'karyawans'));
+        return view('data.data-gaji.edit', compact('dataGaji', 'karyawans', 'allGajis'));
     }
 
     public function update(Request $request, $id)
@@ -463,7 +523,7 @@ class DataGajiController extends Controller
             'bonus'      => 'nullable|numeric|min:0',
             'thr'        => 'nullable|numeric|min:0',
 
-            // Potongan — sesuai migration
+            // Potongan
             'bpjs_tkj'       => 'nullable|numeric|min:0',
             'bpjs_kes'       => 'nullable|numeric|min:0',
             'iuran_koperasi' => 'nullable|numeric|min:0',
@@ -474,11 +534,16 @@ class DataGajiController extends Controller
             'pjm_kop'        => 'nullable|numeric|min:0',
             'dda_sanksi'     => 'nullable|numeric|min:0',
 
-            // Beban Tanggungan Perusahaan
+            // Beban Perusahaan
             'bpjs_tkj_prs' => 'nullable|numeric|min:0',
             'bpjs_kes_prs' => 'nullable|numeric|min:0',
             'tps_prs'      => 'nullable|numeric|min:0',
             'askes_prs'    => 'nullable|numeric|min:0',
+
+            // TAMBAHAN: Field Status (mirip kontrak)
+            'sts_data_gaji' => 'required|in:AKTIF,NON-AKTIF',
+            'tgl_na_gaji'   => 'nullable|date',
+            'ket_na_gaji'   => 'nullable|string|max:255',
         ];
 
         if ($withEmployee) {
@@ -512,7 +577,7 @@ class DataGajiController extends Controller
             'bonus'      => $request->bonus,
             'thr'        => $request->thr,
 
-            // Potongan — nama kolom sesuai migration
+            // Potongan
             'bpjs_tkj'       => $request->bpjs_tkj,
             'bpjs_kes'       => $request->bpjs_kes,
             'iuran_koperasi' => $request->iuran_koperasi,
@@ -523,14 +588,19 @@ class DataGajiController extends Controller
             'pjm_kop'        => $request->pjm_kop,
             'dda_sanksi'     => $request->dda_sanksi,
 
-            // Beban Tanggungan Perusahaan
+            // Beban Perusahaan
             'bpjs_tkj_prs' => $request->bpjs_tkj_prs,
             'bpjs_kes_prs' => $request->bpjs_kes_prs,
             'tps_prs'      => $request->tps_prs,
             'askes_prs'    => $request->askes_prs,
+
+            // Status Data Gaji
+            'sts_data_gaji' => $request->sts_data_gaji ?? 'AKTIF',
+            'tgl_na_gaji'   => $request->tgl_na_gaji,
+            'ket_na_gaji'   => $request->ket_na_gaji,
         ];
 
-        // Hitung dan simpan kolom stored totals
+        // Hitung totals
         $ttlPendapatanTtp = collect([
             $request->gj_pokok,
             $request->tunjab,
@@ -566,12 +636,14 @@ class DataGajiController extends Controller
         $data['ttl_potongan']          = $ttlPotongan;
         $data['ttl_terima_gaji']       = ($ttlPendapatanTtp + $ttlPendapatanTdkTtp) - $ttlPotongan;
 
-        // Tambah ID-ID sub-dokumen hanya saat create
+        // ⭐ PENTING: Tambah ID-ID sub-dokumen hanya saat create
         if ($withIds) {
             $data = array_merge($data, [
                 'id_karyawan'   => $request->id_karyawan,
                 'id_kode'       => $idGaji,
                 'id_gaji'       => $idGaji,
+
+                // ⭐ ID-ID WAJIB untuk sub-dokumen (yang menyebabkan error)
                 'id_lembur'     => $this->generateAutoIncrement(),
                 'id_tukin'      => $this->generateAutoIncrement(),
                 'id_insentif'   => $this->generateAutoIncrement(),
@@ -585,7 +657,8 @@ class DataGajiController extends Controller
                 'id_ptg_thr'    => $this->generateAutoIncrement(),
                 'id_pjm_kop'    => $this->generateAutoIncrement(),
                 'id_dda_sanksi' => $this->generateAutoIncrement(),
-                'id_askes_prs'  => $this->generateAutoIncrement(), // sesuai migration
+                'id_askes_prs'  => $this->generateAutoIncrement(),
+
                 'created_by'    => auth()->user()->id_kode ?? null,
             ]);
         }
@@ -667,4 +740,173 @@ class DataGajiController extends Controller
     private function exportExcel($filteredData) {}
     private function exportPDF($filteredData) {}
     private function exportCSV($filteredData) {}
+
+    // Tambahkan method-method ini ke DataGajiController.php
+
+// ================================================ SALARY MANAGEMENT METHODS (AJAX) ================================================ //
+
+    /**
+     * Store a new salary record for an employee
+     */
+    public function storeSalary(Request $request)
+    {
+        $request->validate(array_merge(
+            ['employee_id' => 'required|exists:201_dm_data_karyawan,id'],
+            $this->validationRules(withEmployee: false)
+        ));
+
+        try {
+            DB::beginTransaction();
+
+            $idGaji = $this->generateAutoIncrement();
+
+            // VALIDASI: hanya boleh ada 1 data gaji AKTIF per karyawan
+            if ($request->sts_data_gaji === 'AKTIF') {
+                $existingActiveSalary = DataGaji::where('id_karyawan', $request->employee_id)
+                    ->where('sts_data_gaji', 'AKTIF')
+                    ->first();
+
+                if ($existingActiveSalary) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Karyawan sudah memiliki data gaji aktif. Hanya diperbolehkan 1 data gaji aktif per karyawan.',
+                        'existing_salary' => [
+                            'id_gaji'  => $existingActiveSalary->id_gaji,
+                            'gj_pokok' => $existingActiveSalary->gj_pokok,
+                        ]
+                    ], 400);
+                }
+            }
+
+            $gaji = DataGaji::create(array_merge(
+                [
+                    'id_karyawan' => $request->employee_id,
+                    'id_kode'     => $idGaji,
+                ],
+                $this->prepareData($request, withIds: true, idGaji: $idGaji)
+            ));
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data gaji berhasil ditambahkan.',
+                'data'    => $gaji,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get salary details
+     */
+    public function getSalary($id)
+    {
+        try {
+            $gaji = DataGaji::with(['karyawan', 'creator', 'updater'])->findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'data'    => $gaji->toArray(),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data gaji tidak ditemukan: ' . $e->getMessage(),
+            ], 404);
+        }
+    }
+
+    /**
+     * Update salary
+     */
+    public function updateSalary(Request $request, $id)
+    {
+        $request->validate($this->validationRules(withEmployee: false));
+
+        try {
+            DB::beginTransaction();
+
+            $gaji = DataGaji::findOrFail($id);
+
+            // VALIDASI: jika status diubah menjadi AKTIF
+            if ($request->sts_data_gaji === 'AKTIF' && $gaji->sts_data_gaji !== 'AKTIF') {
+                $existingActiveSalary = DataGaji::where('id_karyawan', $gaji->id_karyawan)
+                    ->where('sts_data_gaji', 'AKTIF')
+                    ->where('id', '!=', $id)
+                    ->first();
+
+                if ($existingActiveSalary) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Karyawan sudah memiliki data gaji aktif lain.',
+                        'existing_salary' => [
+                            'id_gaji'  => $existingActiveSalary->id_gaji,
+                            'gj_pokok' => $existingActiveSalary->gj_pokok,
+                        ]
+                    ], 400);
+                }
+            }
+
+            $gaji->update($this->prepareData($request, withIds: false, isUpdate: true));
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data gaji berhasil diperbarui.',
+                'data'    => $gaji->fresh(),
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete salary
+     */
+    public function deleteSalary($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $gaji = DataGaji::findOrFail($id);
+            $employeeName = $gaji->karyawan->nama ?? 'N/A';
+
+            // Check if this is the only salary for the employee
+            $employeeSalariesCount = DataGaji::where('id_karyawan', $gaji->id_karyawan)->count();
+
+            if ($employeeSalariesCount <= 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Tidak dapat menghapus data gaji terakhir karyawan {$employeeName}. Setiap karyawan harus memiliki minimal 1 data gaji dalam sistem."
+                ], 400);
+            }
+
+            $gaji->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data gaji berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
 }

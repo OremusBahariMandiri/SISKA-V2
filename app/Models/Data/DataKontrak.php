@@ -86,6 +86,9 @@ class DataKontrak extends Model
     protected $casts = [
         'tgl_lahir' => 'date',
         'tgl_lulus_skl' => 'date',
+        'tgl_awl_ktr'  => 'datetime',
+        'tgl_akhir_ktr' => 'datetime',
+        'tgl_pgt_ktr'  => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

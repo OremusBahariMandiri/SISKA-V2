@@ -3,9 +3,12 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Data\DataDokumenController;
 use App\Http\Controllers\Data\DataGajiController;
+use App\Http\Controllers\Data\DataGajiPelaporanController;
 use App\Http\Controllers\Data\DataJenjangKarirController;
+use App\Http\Controllers\Data\DataJenjangKarirPelaporanController;
 use App\Http\Controllers\Data\DataKaryawanController;
 use App\Http\Controllers\Data\DataKontrakController;
+use App\Http\Controllers\Data\DataKontrakPelaporanController;
 use App\Http\Controllers\DataMaster\DepartemenController;
 use App\Http\Controllers\DataMaster\DokumenKaryawanController;
 use App\Http\Controllers\DataMaster\KontrakKerjaController;
@@ -161,6 +164,11 @@ Route::middleware('auth')->group(function () {
             ->name('add-career');
     });
 
+    Route::prefix('data-kontrak-laporan')->name('data-kontrak-laporan.')->middleware('auth')->group(function () {
+        Route::get('/', [DataKontrakPelaporanController::class, 'index'])->name('index');
+        Route::get('{id}', [DataKontrakPelaporanController::class, 'show'])->name('show');
+    });
+
 
     // Export routes
     Route::post('data-kontrak/export-excel', [DataKontrakController::class, 'exportExcel'])
@@ -228,6 +236,11 @@ Route::middleware('auth')->group(function () {
         Route::get('get-unit-kerja-by-wilayah/{wilayahKrj}', [DataJenjangKarirController::class, 'getUnitKerjaByWilayah'])->name('get-unit-kerja');
     });
 
+    Route::prefix('data-jenjang-karir-laporan')->name('data-jenjang-karir-laporan.')->middleware('auth')->group(function () {
+        Route::get('/', [DataJenjangKarirPelaporanController::class, 'index'])->name('index');
+        Route::get('{id}', [DataJenjangKarirPelaporanController::class, 'show'])->name('show');
+    });
+
     // ===== DATA GAJI ROUTES =====
     Route::resource('data-gaji', DataGajiController::class);
 
@@ -251,5 +264,10 @@ Route::middleware('auth')->group(function () {
         // Employee Data
         Route::get('/get-employee-data/{id}', [DataGajiController::class, 'getEmployeeData']);
         Route::get('/check-employee/{id}', [DataGajiController::class, 'checkEmployeeExists']);
+    });
+
+    Route::prefix('data-gaji-laporan')->name('data-gaji-laporan.')->middleware('auth')->group(function () {
+        Route::get('/', [DataGajiPelaporanController::class, 'index'])->name('index');
+        Route::get('{id}', [DataGajiPelaporanController::class, 'show'])->name('show');
     });
 });

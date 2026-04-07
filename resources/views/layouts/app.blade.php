@@ -311,7 +311,7 @@
                     <li class="sidebar-menu-item" data-tooltip="Dashboard">
                         <a href="{{ url('/') }}"
                             class="sidebar-menu-link {{ request()->is('/') || request()->is('home') || request()->is('dashboard') || request()->is('index.php') || request()->fullUrlIs(url('/')) ? 'active' : '' }}">
-                            <i class="fas fa-home"></i>
+                            <i class="fas fa-chart-line"></i>
                             <span class="sidebar-menu-text">Dashboard</span>
                         </a>
                     </li>
@@ -343,7 +343,7 @@
                             'data-dokumen*',
                             'data-dokumen-laporan*',
                             'data-jenjang-karir*',
-                            'data-jenjang-karir*',
+                            'data-jenjang-gaji*',
                         ]);
 
                         $hasManajemenDataAccess = hasMenuAccess([
@@ -361,7 +361,7 @@
                         <li class="sidebar-menu-item has-submenu" data-tooltip="Data Master">
                             <a class="sidebar-menu-link menu-dropdown {{ $dataMasterActive ? 'active' : '' }}"
                                 href="#" data-menu="dataMaster">
-                                <i class="fas fa-database"></i>
+                                <i class="fas fa-cogs"></i>
                                 <span class="sidebar-menu-text">Data Master</span>
                                 <i
                                     class="fas fa-chevron-down submenu-indicator {{ $dataMasterActive ? 'rotated' : '' }}"></i>
@@ -371,7 +371,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('users*') ? 'active' : '' }}"
                                             href="{{ route('users.index') }}">
-                                            <i class="fas fa-users"></i>
+                                            <i class="fas fa-user-circle"></i>
                                             <span class="sidebar-menu-text">Pengguna</span>
                                         </a>
                                     </li>
@@ -381,7 +381,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('perusahaan*') ? 'active' : '' }}"
                                             href="{{ route('perusahaan.index') }}">
-                                            <i class="fas fa-industry"></i>
+                                            <i class="fas fa-building"></i>
                                             <span class="sidebar-menu-text">Perusahaan</span>
                                         </a>
                                     </li>
@@ -391,7 +391,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('wilayah-kerja*') ? 'active' : '' }}"
                                             href="{{ route('wilayah-kerja.index') }}">
-                                            <i class="fas fa-map"></i>
+                                            <i class="fas fa-globe"></i>
                                             <span class="sidebar-menu-text">Wilayah Kerja</span>
                                         </a>
                                     </li>
@@ -401,7 +401,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('departemen*') ? 'active' : '' }}"
                                             href="{{ route('departemen.index') }}">
-                                            <i class="fas fa-sitemap"></i>
+                                            <i class="fas fa-project-diagram"></i>
                                             <span class="sidebar-menu-text">Departemen</span>
                                         </a>
                                     </li>
@@ -411,7 +411,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('kontrak-kerja*') ? 'active' : '' }}"
                                             href="{{ route('kontrak-kerja.index') }}">
-                                            <i class="fas fa-file-contract"></i>
+                                            <i class="fas fa-handshake"></i>
                                             <span class="sidebar-menu-text">Kontrak Kerja</span>
                                         </a>
                                     </li>
@@ -421,7 +421,7 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('dokumen-karyawan*') ? 'active' : '' }}"
                                             href="{{ route('dokumen-karyawan.index') }}">
-                                            <i class="fas fa-folder-open"></i>
+                                            <i class="fas fa-file-pdf"></i>
                                             <span class="sidebar-menu-text">Dokumen Karyawan</span>
                                         </a>
                                     </li>
@@ -431,12 +431,11 @@
                     @endif
 
                     <!-- APPLICANT DATA DROPDOWN MENU -->
-                    <!-- APPLICANT DATA DROPDOWN MENU -->
                     @if ($hasManajemenDataAccess)
                         <li class="sidebar-menu-item has-submenu" data-tooltip="Applicant Data">
                             <a class="sidebar-menu-link menu-dropdown {{ $manajemenDataActive ? 'active' : '' }}"
                                 href="#" data-menu="manajemenData">
-                                <i class="fas fa-user-tie"></i>
+                                <i class="fas fa-briefcase"></i>
                                 <span class="sidebar-menu-text">Manajemen Data</span>
                                 <i
                                     class="fas fa-chevron-down submenu-indicator {{ $manajemenDataActive ? 'rotated' : '' }}"></i>
@@ -446,29 +445,48 @@
                                     <li class="submenu-item">
                                         <a class="sidebar-menu-link {{ request()->is('data-karyawan*') ? 'active' : '' }}"
                                             href="{{ route('data-karyawan.index') }}">
-                                            <i class="fas fa-address-card"></i>
+                                            <i class="fas fa-id-card"></i>
                                             <span class="sidebar-menu-text">Data Karyawan</span>
                                         </a>
                                     </li>
                                 @endif
 
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-kontrak'))
-                                    <li class="submenu-item">
-                                        <a class="sidebar-menu-link {{ request()->is('data-kontrak*') ? 'active' : '' }}"
-                                            href="{{ route('data-kontrak.index') }}">
+                                    <!-- Data Kontrak with nested submenu -->
+                                    <li class="submenu-item has-nested-submenu">
+                                        <a class="sidebar-menu-link menu-dropdown {{ request()->is('data-kontrak*') ? 'active' : '' }}"
+                                            href="#" data-menu="dataKontrakSub">
                                             <i class="fas fa-scroll"></i>
                                             <span class="sidebar-menu-text">Data Kontrak</span>
+                                            <i
+                                                class="fas fa-chevron-down submenu-indicator {{ request()->is('data-kontrak*') ? 'rotated' : '' }}"></i>
                                         </a>
+                                        <ul class="sidebar-nested-submenu {{ request()->is('data-kontrak*') ? 'show' : '' }}"
+                                            id="dataKontrakSub">
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-kontrak') || request()->is('data-kontrak/create') || request()->is('data-kontrak/*/edit') ? 'active' : '' }}"
+                                                    href="{{ route('data-kontrak.index') }}">
+                                                    <i class="fas fa-pen-fancy"></i>
+                                                    <span class="sidebar-menu-text">Pencatatan</span>
+                                                </a>
+                                            </li>
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-kontrak-laporan') ? 'active' : '' }}"
+                                                    href="{{ route('data-kontrak-laporan.index') }}">
+                                                    <i class="fas fa-chart-bar"></i>
+                                                    <span class="sidebar-menu-text">Laporan</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 @endif
-
 
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-dokumen'))
                                     <!-- Data Dokumen with nested submenu -->
                                     <li class="submenu-item has-nested-submenu">
                                         <a class="sidebar-menu-link menu-dropdown {{ request()->is('data-dokumen*') ? 'active' : '' }}"
                                             href="#" data-menu="dataDokumenSub">
-                                            <i class="fas fa-folder-open"></i>
+                                            <i class="fas fa-file-alt"></i>
                                             <span class="sidebar-menu-text">Data Dokumen</span>
                                             <i
                                                 class="fas fa-chevron-down submenu-indicator {{ request()->is('data-dokumen*') ? 'rotated' : '' }}"></i>
@@ -478,14 +496,14 @@
                                             <li class="nested-submenu-item">
                                                 <a class="sidebar-menu-link {{ request()->is('data-dokumen') || request()->is('data-dokumen/create') || request()->is('data-dokumen/*/edit') ? 'active' : '' }}"
                                                     href="{{ route('data-dokumen.index') }}">
-                                                    <i class="fas fa-edit"></i>
+                                                    <i class="fas fa-pen-fancy"></i>
                                                     <span class="sidebar-menu-text">Pencatatan</span>
                                                 </a>
                                             </li>
                                             <li class="nested-submenu-item">
                                                 <a class="sidebar-menu-link {{ request()->is('data-dokumen-laporan') ? 'active' : '' }}"
                                                     href="{{ route('data-dokumen-laporan.index') }}">
-                                                    <i class="fas fa-file-alt"></i>
+                                                    <i class="fas fa-chart-bar"></i>
                                                     <span class="sidebar-menu-text">Laporan</span>
                                                 </a>
                                             </li>
@@ -494,35 +512,73 @@
                                 @endif
 
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-jenjang-karir'))
-                                    <li class="submenu-item">
-                                        <a class="sidebar-menu-link {{ request()->is('data-jenjang-karir*') ? 'active' : '' }}"
-                                            href="{{ route('data-jenjang-karir.index') }}">
-                                            <i class="fas fa-scroll"></i>
+                                    <!-- Data Jenjang Karir with nested submenu -->
+                                    <li class="submenu-item has-nested-submenu">
+                                        <a class="sidebar-menu-link menu-dropdown {{ request()->is('data-jenjang-karir*') ? 'active' : '' }}"
+                                            href="#" data-menu="dataJenjangKarirSub">
+                                            <i class="fas fa-arrow-up"></i>
                                             <span class="sidebar-menu-text">Data Jenjang Karir</span>
+                                            <i
+                                                class="fas fa-chevron-down submenu-indicator {{ request()->is('data-jenjang-karir*') ? 'rotated' : '' }}"></i>
                                         </a>
+                                        <ul class="sidebar-nested-submenu {{ request()->is('data-jenjang-karir*') ? 'show' : '' }}"
+                                            id="dataJenjangKarirSub">
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-jenjang-karir') || request()->is('data-jenjang-karir/create') || request()->is('data-jenjang-karir/*/edit') ? 'active' : '' }}"
+                                                    href="{{ route('data-jenjang-karir.index') }}">
+                                                    <i class="fas fa-pen-fancy"></i>
+                                                    <span class="sidebar-menu-text">Pencatatan</span>
+                                                </a>
+                                            </li>
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-jenjang-karir-laporan') ? 'active' : '' }}"
+                                                    href="{{ route('data-jenjang-karir-laporan.index') }}">
+                                                    <i class="fas fa-chart-bar"></i>
+                                                    <span class="sidebar-menu-text">Laporan</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 @endif
 
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-gaji'))
-                                    <li class="submenu-item">
-                                        <a class="sidebar-menu-link {{ request()->is('data-gaji*') ? 'active' : '' }}"
-                                            href="{{ route('data-gaji.index') }}">
-                                            <i class="fas fa-scroll"></i>
+                                    <!-- Data Gaji with nested submenu -->
+                                    <li class="submenu-item has-nested-submenu">
+                                        <a class="sidebar-menu-link menu-dropdown {{ request()->is('data-gaji*') ? 'active' : '' }}"
+                                            href="#" data-menu="dataGajiSub">
+                                            <i class="fas fa-money-bill-wave"></i>
                                             <span class="sidebar-menu-text">Data Gaji</span>
+                                            <i
+                                                class="fas fa-chevron-down submenu-indicator {{ request()->is('data-gaji*') ? 'rotated' : '' }}"></i>
                                         </a>
+                                        <ul class="sidebar-nested-submenu {{ request()->is('data-gaji*') ? 'show' : '' }}"
+                                            id="dataGajiSub">
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-gaji') || request()->is('data-gaji/create') || request()->is('data-gaji/*/edit') ? 'active' : '' }}"
+                                                    href="{{ route('data-gaji.index') }}">
+                                                    <i class="fas fa-pen-fancy"></i>
+                                                    <span class="sidebar-menu-text">Pencatatan</span>
+                                                </a>
+                                            </li>
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-gaji-laporan') ? 'active' : '' }}"
+                                                    href="{{ route('data-gaji-laporan.index') }}">
+                                                    <i class="fas fa-chart-bar"></i>
+                                                    <span class="sidebar-menu-text">Laporan</span>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 @endif
                             </ul>
                         </li>
                     @endif
 
-
-
                     <!-- Settings -->
                     <li class="sidebar-menu-item" data-tooltip="Pengaturan">
                         <a href=""
                             class="sidebar-menu-link {{ request()->is('settings.index') ? 'active' : '' }}">
-                            <i class="fas fa-gear"></i>
+                            <i class="fas fa-sliders-h"></i>
                             <span class="sidebar-menu-text">Pengaturan</span>
                         </a>
                     </li>

@@ -129,7 +129,8 @@
                                                                             style="display: none;">
                                                                         <div id="emp_foto_placeholder"
                                                                             class="default-avatar rounded shadow">
-                                                                            <i class="fas fa-user-circle fa-8x text-secondary"></i>
+                                                                            <i
+                                                                                class="fas fa-user-circle fa-8x text-secondary"></i>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -139,63 +140,72 @@
                                                                     <div class="row">
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">NIK</label>
+                                                                                <label
+                                                                                    class="form-label fw-bold">NIK</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_nik" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">NRK</label>
+                                                                                <label
+                                                                                    class="form-label fw-bold">NRK</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_nrk" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">Jenis Kelamin</label>
+                                                                                <label class="form-label fw-bold">Jenis
+                                                                                    Kelamin</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_sex" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">Tempat Lahir</label>
+                                                                                <label class="form-label fw-bold">Tempat
+                                                                                    Lahir</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_tpt_lahir" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">Tanggal Lahir</label>
+                                                                                <label class="form-label fw-bold">Tanggal
+                                                                                    Lahir</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_tgl_lahir" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">Telepon</label>
+                                                                                <label
+                                                                                    class="form-label fw-bold">Telepon</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_tlp1" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">Status Kawin</label>
+                                                                                <label class="form-label fw-bold">Status
+                                                                                    Kawin</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_sts_nikah" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">Jumlah Anak</label>
+                                                                                <label class="form-label fw-bold">Jumlah
+                                                                                    Anak</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_jml_anak" readonly>
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-4">
                                                                             <div class="form-group mb-3">
-                                                                                <label class="form-label fw-bold">Email</label>
+                                                                                <label
+                                                                                    class="form-label fw-bold">Email</label>
                                                                                 <input type="text" class="form-control"
                                                                                     id="emp_email" readonly>
                                                                             </div>
@@ -509,8 +519,8 @@
                                                     <div class="form-group mb-3">
                                                         <label for="pend_jenjang_skl" class="form-label fw-bold">Jenjang
                                                             Pendidikan</label>
-                                                        <input type="text" class="form-control"
-                                                            id="pend_jenjang_skl" readonly>
+                                                        <input type="text" class="form-control" id="pend_jenjang_skl"
+                                                            readonly>
                                                     </div>
                                                 </div>
 
@@ -539,8 +549,8 @@
                                                     <div class="form-group mb-3">
                                                         <label for="pend_fakultas_skl"
                                                             class="form-label fw-bold">Fakultas</label>
-                                                        <input type="text" class="form-control"
-                                                            id="pend_fakultas_skl" readonly>
+                                                        <input type="text" class="form-control" id="pend_fakultas_skl"
+                                                            readonly>
                                                     </div>
                                                 </div>
 
@@ -549,8 +559,8 @@
                                                     <div class="form-group mb-3">
                                                         <label for="pend_jurusan_skl"
                                                             class="form-label fw-bold">Jurusan</label>
-                                                        <input type="text" class="form-control"
-                                                            id="pend_jurusan_skl" readonly>
+                                                        <input type="text" class="form-control" id="pend_jurusan_skl"
+                                                            readonly>
                                                     </div>
                                                 </div>
 
@@ -558,17 +568,18 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label for="pend_kota_skl" class="form-label fw-bold">Kota</label>
-                                                        <input type="text" class="form-control"
-                                                            id="pend_kota_skl" readonly>
+                                                        <input type="text" class="form-control" id="pend_kota_skl"
+                                                            readonly>
                                                     </div>
                                                 </div>
 
                                                 <!-- Gelar -->
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
-                                                        <label for="pend_gelar_skl" class="form-label fw-bold">Gelar</label>
-                                                        <input type="text" class="form-control"
-                                                            id="pend_gelar_skl" readonly>
+                                                        <label for="pend_gelar_skl"
+                                                            class="form-label fw-bold">Gelar</label>
+                                                        <input type="text" class="form-control" id="pend_gelar_skl"
+                                                            readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -603,8 +614,8 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">Singkatan Dep.</label>
-                                                        <input type="text" class="form-control"
-                                                            id="karir_skt_dep" readonly>
+                                                        <input type="text" class="form-control" id="karir_skt_dep"
+                                                            readonly>
                                                     </div>
                                                 </div>
 
@@ -621,8 +632,8 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group mb-3">
                                                         <label class="form-label fw-bold">Singkatan Jbt.</label>
-                                                        <input type="text" class="form-control"
-                                                            id="karir_skt_jbt" readonly>
+                                                        <input type="text" class="form-control" id="karir_skt_jbt"
+                                                            readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -744,48 +755,166 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
 
     <style>
-        .card-header { font-weight: 600; }
-        .form-label { margin-bottom: 0.3rem; }
-        .card { margin-bottom: 1rem; transition: all 0.3s ease; }
-        .card:hover { box-shadow: 0 8px 25px rgba(0,0,0,0.15); transform: translateY(-2px); }
+        .card-header {
+            font-weight: 600;
+        }
 
-        .employee-photo-container { position: relative; width: 100%; max-width: 200px; margin: 0 auto; }
-        .employee-photo { width: 100%; height: auto; max-height: 250px; object-fit: cover; border: 3px solid #0d6efd; }
-        .employee-photo.loaded { animation: photoFadeIn 0.5s ease-in-out; }
-        @keyframes photoFadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        .default-avatar { width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa; border: 2px dashed #dee2e6; }
+        .form-label {
+            margin-bottom: 0.3rem;
+        }
+
+        .card {
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .employee-photo-container {
+            position: relative;
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .employee-photo {
+            width: 100%;
+            height: auto;
+            max-height: 250px;
+            object-fit: cover;
+            border: 3px solid #0d6efd;
+        }
+
+        .employee-photo.loaded {
+            animation: photoFadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes photoFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .default-avatar {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+        }
 
         .employee-validation-error {
-            border: 2px solid #dc3545 !important; border-radius: 0.375rem !important;
-            background-color: rgba(248,215,218,0.3); animation: shake 0.8s ease-in-out;
+            border: 2px solid #dc3545 !important;
+            border-radius: 0.375rem !important;
+            background-color: rgba(248, 215, 218, 0.3);
+            animation: shake 0.8s ease-in-out;
         }
-        @keyframes shake { 0%,20%,40%,60%,80% { transform: translateX(0); } 10%,30%,50%,70%,90% { transform: translateX(-10px); } }
+
+        @keyframes shake {
+
+            0%,
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(0);
+            }
+
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-10px);
+            }
+        }
 
         .employee-validation-success {
-            border: 2px solid #198754 !important; border-radius: 0.375rem !important;
-            background-color: rgba(25,135,84,0.1); animation: successPulse 1s ease-in-out;
+            border: 2px solid #198754 !important;
+            border-radius: 0.375rem !important;
+            background-color: rgba(25, 135, 84, 0.1);
+            animation: successPulse 1s ease-in-out;
         }
+
         @keyframes successPulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(25,135,84,0.7); }
-            50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(25,135,84,0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(25,135,84,0); }
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
+            }
+
+            50% {
+                transform: scale(1.02);
+                box-shadow: 0 0 0 10px rgba(25, 135, 84, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+            }
         }
 
-        .employee-loading { position: relative; }
+        .employee-loading {
+            position: relative;
+        }
+
         .employee-loading::after {
-            content: ''; position: absolute; top: 50%; right: 35px; transform: translateY(-50%);
-            width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid #0d6efd;
-            border-radius: 50%; animation: spin 1s linear infinite; z-index: 10;
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 35px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 10;
         }
-        @keyframes spin { 0% { transform: translateY(-50%) rotate(0deg); } 100% { transform: translateY(-50%) rotate(360deg); } }
 
-        .is-invalid { border-color: #dc3545 !important; background-color: rgba(220,53,69,0.05); }
+        @keyframes spin {
+            0% {
+                transform: translateY(-50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-50%) rotate(360deg);
+            }
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+            background-color: rgba(220, 53, 69, 0.05);
+        }
 
         .select2-container--default .select2-selection--single {
-            height: 38px; border: 1px solid #ced4da; border-radius: 0.375rem;
+            height: 38px;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
         }
-        .input-group .select2-container { flex: 1 1 auto; width: 1%; min-width: 0; }
-        .input-group .select2-container .select2-selection { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: 0; }
+
+        .input-group .select2-container {
+            flex: 1 1 auto;
+            width: 1%;
+            min-width: 0;
+        }
+
+        .input-group .select2-container .select2-selection {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: 0;
+        }
     </style>
 @endpush
 
@@ -797,18 +926,20 @@
     <script>
         const allDokumenKaryawan = @json($dokumenKaryawans);
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Data Jenjang Karir Form Script Loading...');
 
             // Auto-uppercase
-            document.querySelectorAll('input.auto-uppercase, textarea.auto-uppercase').forEach(function (el) {
+            document.querySelectorAll('input.auto-uppercase, textarea.auto-uppercase').forEach(function(el) {
                 if (el.type === 'text' || el.tagName.toLowerCase() === 'textarea') {
-                    el.addEventListener('input', function () { this.value = this.value.toUpperCase(); });
+                    el.addEventListener('input', function() {
+                        this.value = this.value.toUpperCase();
+                    });
                 }
             });
 
             // ===== CASCADING KATEGORI → JENIS DOKUMEN =====
-            $('#ktg_dokumen').on('change', function () {
+            $('#ktg_dokumen').on('change', function() {
                 const selectedCategory = $(this).val();
                 $('#id_dokumen_karyawan').val('').trigger('change').prop('disabled', true);
 
@@ -819,14 +950,17 @@
 
                     $('#id_dokumen_karyawan').empty().append('<option value="">Pilih Jenis</option>');
                     filtered.forEach(doc => {
-                        $('#id_dokumen_karyawan').append(`<option value="${doc.id}">${doc.jns_dok_kry}</option>`);
+                        $('#id_dokumen_karyawan').append(
+                            `<option value="${doc.id}">${doc.jns_dok_kry}</option>`);
                     });
 
                     $('#id_dokumen_karyawan').prop('disabled', false);
                     if ($('#id_dokumen_karyawan').hasClass('select2-hidden-accessible')) {
                         $('#id_dokumen_karyawan').select2('destroy');
                     }
-                    $('#id_dokumen_karyawan').select2({ theme: 'bootstrap-5' });
+                    $('#id_dokumen_karyawan').select2({
+                        theme: 'bootstrap-5'
+                    });
                 }
             });
 
@@ -850,7 +984,9 @@
                         confirmButtonColor: '#198754',
                         timer: 4000,
                         timerProgressBar: true,
-                        showClass: { popup: 'animate__animated animate__bounceIn' }
+                        showClass: {
+                            popup: 'animate__animated animate__bounceIn'
+                        }
                     });
                 }
             }
@@ -888,10 +1024,13 @@
                         cancelButtonColor: '#0d6efd',
                         allowOutsideClick: false,
                         width: '600px',
-                        showClass: { popup: 'animate__animated animate__shakeX' }
+                        showClass: {
+                            popup: 'animate__animated animate__shakeX'
+                        }
                     }).then((result) => {
                         if (result.isDismissed && result.dismiss === Swal.DismissReason.cancel) {
-                            window.location.href = `/data-jenjang-karir?search=${encodeURIComponent(response.employee_name)}`;
+                            window.location.href =
+                                `/data-jenjang-karir?search=${encodeURIComponent(response.employee_name)}`;
                         }
                     });
                 }
@@ -903,23 +1042,29 @@
 
                     const response = await $.ajax({
                         url: `/data-jenjang-karir/check-employee/${karyawanId}`,
-                        type: 'GET', dataType: 'json', timeout: 10000
+                        type: 'GET',
+                        dataType: 'json',
+                        timeout: 10000
                     });
 
                     $('#id_karyawan').closest('.input-group').removeClass('employee-loading');
 
                     if (response.success === true && response.exists === false) {
                         showSuccessValidation(response);
-                        $('#id_karyawan').closest('.input-group').find('.form-select').addClass('employee-validation-success');
+                        $('#id_karyawan').closest('.input-group').find('.form-select').addClass(
+                            'employee-validation-success');
                         setTimeout(() => {
-                            $('#id_karyawan').closest('.input-group').find('.form-select').removeClass('employee-validation-success');
+                            $('#id_karyawan').closest('.input-group').find('.form-select').removeClass(
+                                'employee-validation-success');
                         }, 4000);
                         return true;
                     } else if (response.success === false && response.exists === true) {
                         showErrorValidation(response);
-                        $('#id_karyawan').closest('.input-group').find('.form-select').addClass('employee-validation-error');
+                        $('#id_karyawan').closest('.input-group').find('.form-select').addClass(
+                            'employee-validation-error');
                         setTimeout(() => {
-                            $('#id_karyawan').closest('.input-group').find('.form-select').removeClass('employee-validation-error');
+                            $('#id_karyawan').closest('.input-group').find('.form-select').removeClass(
+                                'employee-validation-error');
                         }, 3000);
                         $('#id_karyawan').val('').trigger('change.select2');
                         clearAllEmployeeFields();
@@ -946,13 +1091,16 @@
                 $('#employeeInfo').show();
 
                 const loadingText = 'Loading...';
-                $('#emp_nik, #emp_nrk, #emp_sex, #emp_tpt_lahir, #emp_tgl_lahir, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak, #emp_email').val(loadingText);
+                $('#emp_nik, #emp_nrk, #emp_sex, #emp_tpt_lahir, #emp_tgl_lahir, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak, #emp_email')
+                    .val(loadingText);
                 $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val(loadingText);
 
                 try {
                     const response = await $.ajax({
                         url: `/data-jenjang-karir/get-employee-data/${karyawanId}`,
-                        type: 'GET', dataType: 'json', timeout: 15000
+                        type: 'GET',
+                        dataType: 'json',
+                        timeout: 15000
                     });
 
                     if (response.success && response.data) {
@@ -971,13 +1119,14 @@
 
                         // Foto
                         if (emp.foto_dokumen) {
-                            $('#emp_foto').attr('src', `/storage/${emp.foto_dokumen}`).show().addClass('loaded');
+                            $('#emp_foto').attr('src', `/storage/${emp.foto_dokumen}`).show().addClass(
+                            'loaded');
                             $('#emp_foto_placeholder').hide();
                         } else {
                             $('#emp_foto').hide().removeClass('loaded');
                             $('#emp_foto_placeholder').show();
                         }
-                        $('#emp_foto').off('error').on('error', function () {
+                        $('#emp_foto').off('error').on('error', function() {
                             $(this).hide().removeClass('loaded');
                             $('#emp_foto_placeholder').show();
                         });
@@ -1009,7 +1158,8 @@
                     }
                 } catch (error) {
                     console.error('❌ Employee data loading error:', error);
-                    $('#emp_nik, #emp_nrk, #emp_sex, #emp_tpt_lahir, #emp_tgl_lahir, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak, #emp_email').val('Error');
+                    $('#emp_nik, #emp_nrk, #emp_sex, #emp_tpt_lahir, #emp_tgl_lahir, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak, #emp_email')
+                        .val('Error');
                     $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val('Error');
                 }
             }
@@ -1018,22 +1168,25 @@
                 $('#employeeInfo').hide();
 
                 // Tab 1
-                $('#emp_nik, #emp_nrk, #emp_sex, #emp_tpt_lahir, #emp_tgl_lahir, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak, #emp_email').val('');
+                $('#emp_nik, #emp_nrk, #emp_sex, #emp_tpt_lahir, #emp_tgl_lahir, #emp_tlp1, #emp_sts_nikah, #emp_jml_anak, #emp_email')
+                    .val('');
                 $('#emp_foto').hide().attr('src', '').removeClass('loaded');
                 $('#emp_foto_placeholder').show();
 
                 // Tab 3
-                $('#pend_jenjang_skl, #pend_tgl_lulus_skl, #pend_institusi_skl, #pend_fakultas_skl, #pend_jurusan_skl, #pend_kota_skl, #pend_gelar_skl').val('');
+                $('#pend_jenjang_skl, #pend_tgl_lulus_skl, #pend_institusi_skl, #pend_fakultas_skl, #pend_jurusan_skl, #pend_kota_skl, #pend_gelar_skl')
+                    .val('');
 
                 // Tab 4
-                $('#karir_departemen_nama, #karir_skt_dep, #karir_jabatan_nama, #karir_skt_jbt, #karir_wilker_nama, #karir_unit_krj_nama, #karir_skt_wilker, #karir_tugas').val('');
+                $('#karir_departemen_nama, #karir_skt_dep, #karir_jabatan_nama, #karir_skt_jbt, #karir_wilker_nama, #karir_unit_krj_nama, #karir_skt_wilker, #karir_tugas')
+                    .val('');
 
                 // Tab 5
                 $('#hubin_tgl_masuk, #hubin_sts_kry, #hubin_tgl_phk, #hubin_ket_phk').val('');
             }
 
             // ===== EMPLOYEE SELECTION =====
-            $('#id_karyawan').on('change', function () {
+            $('#id_karyawan').on('change', function() {
                 const karyawanId = $(this).val();
                 if (karyawanId) {
                     checkEmployeeExists(karyawanId).then(canProceed => {
@@ -1047,7 +1200,7 @@
             });
 
             // ===== DEPARTEMEN → JABATAN =====
-            $('#departemen_nama').on('change', function () {
+            $('#departemen_nama').on('change', function() {
                 const namaDep = $(this).val();
                 const jabatanSelect = $('#id_departemen');
 
@@ -1059,20 +1212,27 @@
 
                     $.ajax({
                         url: `/data-jenjang-karir/get-jabatan-by-departemen/${encodeURIComponent(namaDep)}`,
-                        type: 'GET', dataType: 'json',
-                        success: function (response) {
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
                             if (response.success && response.data) {
                                 jabatanSelect.html('<option value="">Pilih Jabatan</option>');
-                                response.data.forEach(function (jabatan) {
-                                    jabatanSelect.append(`<option value="${jabatan.id}" data-singkatan-jbt="${jabatan.singkatan_jbt || ''}">${jabatan.nama_jbt}</option>`);
+                                response.data.forEach(function(jabatan) {
+                                    jabatanSelect.append(
+                                        `<option value="${jabatan.id}" data-singkatan-jbt="${jabatan.singkatan_jbt || ''}">${jabatan.nama_jbt}</option>`
+                                        );
                                 });
                                 jabatanSelect.prop('disabled', false);
-                                if (jabatanSelect.hasClass('select2-hidden-accessible')) jabatanSelect.select2('destroy');
-                                jabatanSelect.select2({ theme: 'bootstrap-5' });
+                                if (jabatanSelect.hasClass('select2-hidden-accessible'))
+                                    jabatanSelect.select2('destroy');
+                                jabatanSelect.select2({
+                                    theme: 'bootstrap-5'
+                                });
                             }
                         },
-                        error: function () {
-                            jabatanSelect.html('<option value="">Error loading</option>').prop('disabled', false);
+                        error: function() {
+                            jabatanSelect.html('<option value="">Error loading</option>').prop(
+                                'disabled', false);
                         }
                     });
                 } else {
@@ -1081,61 +1241,93 @@
                 }
             });
 
-            $('#id_departemen').on('change', function () {
+            $('#id_departemen').on('change', function() {
                 $('#info_singkatan_jbt').val($(this).find('option:selected').data('singkatan-jbt') || '');
             });
 
             // ===== WILAYAH KERJA → AREA KERJA =====
-            $('#wilayah_kerja_nama').on('change', function () {
+            $('#wilayah_kerja_nama').on('change', function() {
                 const wilayahKrj = $(this).val();
                 const areaSelect = $('#id_wilayah_kerja');
-                $('#info_skt_wilker_display, #info_skt_area').val('');
 
-                if (wilayahKrj) {
-                    areaSelect.prop('disabled', true).html('<option value="">Loading...</option>');
+                // Reset semua field singkatan & area setiap kali wilayah berubah
+                $('#info_skt_wilker_display').val('');
+                $('#info_skt_area').val('');
+                areaSelect.html('<option value="">Pilih Area Kerja</option>').prop('disabled', true);
 
-                    $.ajax({
-                        url: `/data-jenjang-karir/get-unit-kerja-by-wilayah/${encodeURIComponent(wilayahKrj)}`,
-                        type: 'GET', dataType: 'json',
-                        success: function (response) {
-                            if (response.success && response.data && response.data.length > 0) {
-                                areaSelect.html('<option value="">Pilih Area Kerja</option>');
-                                response.data.forEach(function (area) {
-                                    areaSelect.append(`<option value="${area.id}" data-singkatan-wk="${area.singkatan_wk || ''}">${area.area_krj}</option>`);
-                                });
-                                areaSelect.prop('disabled', false);
-                                if (areaSelect.hasClass('select2-hidden-accessible')) areaSelect.select2('destroy');
-                                areaSelect.select2({ theme: 'bootstrap-5' });
-                                $('#info_skt_wilker_display').val(response.data[0].skt_wilker || '');
+                if (!wilayahKrj) return;
+
+                areaSelect.html('<option value="">Loading...</option>').prop('disabled', true);
+
+                $.ajax({
+                    url: `/data-jenjang-karir/get-unit-kerja-by-wilayah/${encodeURIComponent(wilayahKrj)}`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        areaSelect.html('<option value="">Pilih Area Kerja</option>');
+
+                        if (response.success && response.data && response.data.length > 0) {
+                            // ─── Isi singkatan wilayah kerja dari data pertama ───────────────
+                            // Field skt_wilker ada di setiap row (nilainya sama per wilayah),
+                            // cukup ambil dari item pertama.
+                            const sktWilker = response.data[0].skt_wilker || '';
+                            $('#info_skt_wilker_display').val(sktWilker);
+
+                            // ─── Isi dropdown area kerja ─────────────────────────────────────
+                            response.data.forEach(function(area) {
+                                areaSelect.append(
+                                    `<option value="${area.id}"
+                                        data-singkatan-wk="${area.singkatan_wk || ''}"
+                                        data-skt-wilker="${area.skt_wilker || ''}">
+                                        ${area.area_krj}
+                                    </option>`
+                                );
+                            });
+
+                            areaSelect.prop('disabled', false);
+
+                            // Re-init Select2 agar dropdown tampil dengan benar
+                            if (areaSelect.hasClass('select2-hidden-accessible')) {
+                                areaSelect.select2('destroy');
                             }
-                        },
-                        error: function () {
-                            areaSelect.html('<option value="">Error loading</option>').prop('disabled', false);
+                            areaSelect.select2({
+                                theme: 'bootstrap-5'
+                            });
+                        } else {
+                            // Tidak ada area kerja untuk wilayah ini
+                            $('#info_skt_wilker_display').val('');
                         }
-                    });
-                } else {
-                    areaSelect.html('<option value="">Pilih Area Kerja</option>').prop('disabled', true);
-                }
+                    },
+                    error: function() {
+                        areaSelect.html('<option value="">Error loading data</option>').prop(
+                            'disabled', false);
+                        $('#info_skt_wilker_display').val('');
+                    }
+                });
             });
 
-            $('#id_wilayah_kerja').on('change', function () {
-                $('#info_skt_area').val($(this).find('option:selected').data('singkatan-wk') || '');
+            // Saat area kerja dipilih → isi singkatan area kerja
+            $('#id_wilayah_kerja').on('change', function() {
+                const selected = $(this).find('option:selected');
+                $('#info_skt_area').val(selected.data('singkatan-wk') || '');
             });
 
             // ===== FORM VALIDATION =====
-            document.getElementById('jenjangKarirForm').addEventListener('submit', function (e) {
+            document.getElementById('jenjangKarirForm').addEventListener('submit', function(e) {
                 e.preventDefault();
 
                 const requiredFields = this.querySelectorAll('[data-required="true"]:not(:disabled)');
                 let missingFields = [];
                 let firstInvalidField = null;
 
-                this.querySelectorAll('[data-required="true"]').forEach(f => f.classList.remove('is-invalid'));
+                this.querySelectorAll('[data-required="true"]').forEach(f => f.classList.remove(
+                    'is-invalid'));
 
-                requiredFields.forEach(function (field) {
+                requiredFields.forEach(function(field) {
                     if (!field.value.trim()) {
                         field.classList.add('is-invalid');
-                        const label = field.closest('.form-group')?.querySelector('label')?.textContent?.replace('*', '').trim() || field.name;
+                        const label = field.closest('.form-group')?.querySelector('label')
+                            ?.textContent?.replace('*', '').trim() || field.name;
                         missingFields.push(label);
                         if (!firstInvalidField) firstInvalidField = field;
                     }
@@ -1150,7 +1342,8 @@
                         Swal.fire({
                             icon: 'warning',
                             title: 'Data Belum Lengkap',
-                            html: '<p class="mb-2">Mohon lengkapi field berikut yang wajib diisi:</p>' + fieldsList,
+                            html: '<p class="mb-2">Mohon lengkapi field berikut yang wajib diisi:</p>' +
+                                fieldsList,
                             confirmButtonText: 'OK, Saya Mengerti',
                             confirmButtonColor: '#0d6efd',
                         });
@@ -1162,7 +1355,13 @@
                             const tabButton = document.querySelector(`[data-bs-target="#${tabPane.id}"]`);
                             if (tabButton) {
                                 new bootstrap.Tab(tabButton).show();
-                                setTimeout(() => { firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' }); firstInvalidField.focus(); }, 300);
+                                setTimeout(() => {
+                                    firstInvalidField.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'center'
+                                    });
+                                    firstInvalidField.focus();
+                                }, 300);
                             }
                         }
                     }
@@ -1176,7 +1375,9 @@
             });
 
             // Initialize Select2
-            $('.select2').select2({ theme: 'bootstrap-5' });
+            $('.select2').select2({
+                theme: 'bootstrap-5'
+            });
             console.log('✅ Data Jenjang Karir Form Script Loaded Successfully');
         });
     </script>

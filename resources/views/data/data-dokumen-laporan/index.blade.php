@@ -304,6 +304,7 @@
                                             </td>
 
                                             <!-- AKSI -->
+                                            <!-- AKSI -->
                                             <td class="text-center no-wrap">
                                                 <div class="btn-group" role="group">
                                                     @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
@@ -312,6 +313,18 @@
                                                             title="Detail">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
+                                                    @endif
+                                                    @if ($dokumen->file_dok)
+                                                        <a href="{{ asset('storage/' . $dokumen->file_dok) }}"
+                                                            target="_blank" class="btn btn-sm btn-success"
+                                                            data-bs-toggle="tooltip" title="Lihat File">
+                                                            <i class="fas fa-file-alt"></i>
+                                                        </a>
+                                                    @else
+                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                            data-bs-toggle="tooltip" title="File tidak tersedia">
+                                                            <i class="fas fa-file-alt"></i>
+                                                        </button>
                                                     @endif
                                                 </div>
                                             </td>

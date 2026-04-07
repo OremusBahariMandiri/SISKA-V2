@@ -509,305 +509,303 @@
                             <span id="modeText">Mode Detail - Data hanya dapat dilihat</span>
                         </div>
 
+                        <!-- ===== ROW UTAMA: Pendapatan (Kiri) | Potongan (Kanan) ===== -->
                         <div class="row">
-                            <!-- Kolom Kiri: Pendapatan Tetap & Pendapatan Tidak Tetap -->
-                            <div class="col-md-6">
-                                <!-- Card: Pendapatan Tetap -->
-                                <div class="card border-success mb-4">
-                                    <div class="card-header bg-success bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-wallet me-2"></i>Pendapatan Tetap</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_gj_pokok" class="form-label fw-bold">Gaji Pokok</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_gj_pokok" name="gj_pokok" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_tunjab" class="form-label fw-bold">Tunjangan Jabatan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_tunjab" name="tunjab" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_tunkom" class="form-label fw-bold">Tunjangan Komunikasi</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_tunkom" name="tunkom" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_fot" class="form-label fw-bold">Fix Over Time (FOT)</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_fot" name="fot" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_tunmal" class="form-label fw-bold">Tunjangan Kemahalan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_tunmal" name="tunmal" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold text-success">Total Pendapatan Tetap</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="text" class="form-control fw-bold text-success" id="modal_total_pendapatan_tetap" readonly>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <!-- Card: Pendapatan Tidak Tetap -->
-                                <div class="card border-warning mb-4">
-                                    <div class="card-header bg-warning bg-opacity-25">
-                                        <h5 class="mb-0 text-dark"><i class="fas fa-coins me-2"></i>Pendapatan Tidak Tetap</h5>
+                            <!-- ===== KOLOM KIRI: Pendapatan Tetap + Tidak Tetap ===== -->
+                            <div class="col-md-6">
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
+                                        <h5 class="mb-0 text-white"><i class="fas fa-wallet me-2"></i>Pendapatan</h5>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_lbr_harian" class="form-label fw-bold">Lembur Harian</label>
+
+                                        <!-- Pendapatan Tetap -->
+                                        <div class="mb-4">
+                                            <h6 class="text-success fw-bold mb-3 pb-2 border-bottom">
+                                                <i class="fas fa-check-circle me-2"></i>Pendapatan Tetap
+                                            </h6>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_gj_pokok" class="col-sm-5 col-form-label">Gaji Pokok</label>
+                                                <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_lbr_harian" name="lbr_harian" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end" id="modal_gj_pokok"
+                                                            name="gj_pokok" value="0" min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_lbr_perjam" class="form-label fw-bold">Lembur Per Jam</label>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_tunjab" class="col-sm-5 col-form-label">Tunjangan Jabatan</label>
+                                                <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_lbr_perjam" name="lbr_perjam" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end" id="modal_tunjab"
+                                                            name="tunjab" value="0" min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_tukin" class="form-label fw-bold">Tunjangan Kinerja</label>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_tunkom" class="col-sm-5 col-form-label">Tunjangan Komunikasi</label>
+                                                <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_tukin" name="tukin" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end" id="modal_tunkom"
+                                                            name="tunkom" value="0" min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_insentif" class="form-label fw-bold">Insentif</label>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_fot" class="col-sm-5 col-form-label">Fix Over Time (FOT)</label>
+                                                <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_insentif" name="insentif" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end" id="modal_fot"
+                                                            name="fot" value="0" min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_bonus" class="form-label fw-bold">Bonus</label>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_tunmal" class="col-sm-5 col-form-label">Tunjangan Kemahalan</label>
+                                                <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_bonus" name="bonus" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end" id="modal_tunmal"
+                                                            name="tunmal" value="0" min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_thr" class="form-label fw-bold">Tunjangan Hari Raya (THR)</label>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label class="col-sm-5 col-form-label fw-bold">Jumlah Pendapatan Tetap</label>
+                                                <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_thr" name="thr" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold text-warning">Total Pendapatan Tidak Tetap</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="text" class="form-control fw-bold text-warning" id="modal_total_pendapatan_tidak_tetap" readonly>
+                                                        <input type="text" class="form-control fw-bold text-end"
+                                                            id="modal_total_pendapatan_tetap" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <!-- Pendapatan Tidak Tetap -->
+                                        <div>
+                                            <h6 class="text-warning fw-bold mb-3 pb-2 border-bottom">
+                                                <i class="fas fa-coins me-2"></i>Pendapatan Tidak Tetap
+                                            </h6>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_lbr_harian" class="col-sm-5 col-form-label">Lembur Harian</label>
+                                                <div class="col-sm-7">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_lbr_harian"
+                                                            name="lbr_harian" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_lbr_perjam" class="col-sm-5 col-form-label">Lembur Per Jam</label>
+                                                <div class="col-sm-7">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_lbr_perjam"
+                                                            name="lbr_perjam" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_tukin" class="col-sm-5 col-form-label">Tunjangan Kinerja</label>
+                                                <div class="col-sm-7">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_tukin"
+                                                            name="tukin" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_insentif" class="col-sm-5 col-form-label">Insentif</label>
+                                                <div class="col-sm-7">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_insentif"
+                                                            name="insentif" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_bonus" class="col-sm-5 col-form-label">Bonus</label>
+                                                <div class="col-sm-7">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_bonus"
+                                                            name="bonus" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label for="modal_thr" class="col-sm-5 col-form-label">Tunjangan Hari Raya (THR)</label>
+                                                <div class="col-sm-7">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_thr"
+                                                            name="thr" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3 align-items-center">
+                                                <label class="col-sm-5 col-form-label fw-bold">Jumlah Pendapatan Tidak Tetap</label>
+                                                <div class="col-sm-7">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="text" class="form-control fw-bold text-end"
+                                                            id="modal_total_pendapatan_tidak_tetap" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Kolom Kanan: Potongan -->
+                            <!-- ===== KOLOM KANAN: Potongan ===== -->
                             <div class="col-md-6">
-                                <div class="card border-danger mb-4">
+                                <div class="card border-danger mb-4" style="height: 950px">
                                     <div class="card-header bg-danger bg-opacity-25">
                                         <h5 class="mb-0 text-white"><i class="fas fa-minus-circle me-2"></i>Potongan</h5>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_bpjs_tkj" class="form-label fw-bold">BPJS Tenaga Kerja Karyawan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_bpjs_tkj" name="bpjs_tkj" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_bpjs_kes" class="form-label fw-bold">BPJS Kesehatan Karyawan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_bpjs_kes" name="bpjs_kes" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_iuran_koperasi" class="form-label fw-bold">Iuran Wajib Koperasi</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_iuran_koperasi" name="iuran_koperasi" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_tps_kry" class="form-label fw-bold">Tabungan Pensiun Karyawan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_tps_kry" name="tps_kry" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_pjk_pkp" class="form-label fw-bold">Pajak PKP</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_pjk_pkp" name="pjk_pkp" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_pjk_pph" class="form-label fw-bold">Pajak PPh</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_pjk_pph" name="pjk_pph" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_ptg_thr" class="form-label fw-bold">Potongan THR</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_ptg_thr" name="ptg_thr" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_pjm_kop" class="form-label fw-bold">Pinjaman Koperasi</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_pjm_kop" name="pjm_kop" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_dda_sanksi" class="form-label fw-bold">Denda Sanksi</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_dda_sanksi" name="dda_sanksi" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold text-danger">Total Potongan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="text" class="form-control fw-bold text-danger" id="modal_total_potongan" readonly>
-                                                    </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_bpjs_tkj" class="col-sm-5 col-form-label">BPJS Naker</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_bpjs_tkj"
+                                                        name="bpjs_tkj" value="0" min="0" step="100">
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Row baru untuk Beban Tanggungan Perusahaan -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card border-info mb-4">
-                                    <div class="card-header bg-info bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-building me-2"></i>Beban Tanggungan Perusahaan</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_bpjs_tkj_prs" class="form-label fw-bold">BPJS TK Perusahaan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_bpjs_tkj_prs" name="bpjs_tkj_prs" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_bpjs_kes_prs" class="form-label fw-bold">BPJS Kes Perusahaan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_bpjs_kes_prs" name="bpjs_kes_prs" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_tps_prs" class="form-label fw-bold">Tabungan Pensiun Perusahaan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_tps_prs" name="tps_prs" value="0" min="0" step="100">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group mb-3">
-                                                    <label for="modal_askes_prs" class="form-label fw-bold">Asuransi Kesehatan Perusahaan</label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control" id="modal_askes_prs" name="askes_prs" value="0" min="0" step="100">
-                                                    </div>
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_bpjs_kes" class="col-sm-5 col-form-label">BPJS Kesehatan</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_bpjs_kes"
+                                                        name="bpjs_kes" value="0" min="0" step="100">
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_iuran_koperasi" class="col-sm-5 col-form-label">Iuran Wajib Koperasi</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_iuran_koperasi"
+                                                        name="iuran_koperasi" value="0" min="0" step="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_tps_kry" class="col-sm-5 col-form-label">Tabungan Pensiun</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_tps_kry"
+                                                        name="tps_kry" value="0" min="0" step="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_pjk_pkp" class="col-sm-5 col-form-label">Pajak PKP</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_pjk_pkp"
+                                                        name="pjk_pkp" value="0" min="0" step="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_pjk_pph" class="col-sm-5 col-form-label">Pajak PPh</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_pjk_pph"
+                                                        name="pjk_pph" value="0" min="0" step="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_ptg_thr" class="col-sm-5 col-form-label">Potongan THR</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_ptg_thr"
+                                                        name="ptg_thr" value="0" min="0" step="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_pjm_kop" class="col-sm-5 col-form-label">Pinjaman Koperasi</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_pjm_kop"
+                                                        name="pjm_kop" value="0" min="0" step="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label for="modal_dda_sanksi" class="col-sm-5 col-form-label">Denda Sanksi</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="number" class="form-control text-end" id="modal_dda_sanksi"
+                                                        name="dda_sanksi" value="0" min="0" step="100">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3 align-items-center">
+                                            <label class="col-sm-5 col-form-label fw-bold">Jumlah Potongan</label>
+                                            <div class="col-sm-7">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="text" class="form-control fw-bold text-end"
+                                                        id="modal_total_potongan" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Card: Ringkasan Gaji -->
+                        </div>{{-- end row utama --}}
+
+                        <!-- ===== RINGKASAN GAJI ===== -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card border-primary mb-4">
@@ -818,28 +816,31 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold text-success">Total Pendapatan</label>
+                                                    <label class="form-label fw-bold">Total Pendapatan</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="text" class="form-control fw-bold text-success" id="modal_total_pendapatan" readonly>
+                                                        <input type="text" class="form-control fw-bold text-end"
+                                                            id="modal_total_pendapatan" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold text-danger">Total Potongan</label>
+                                                    <label class="form-label fw-bold">Total Potongan</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="text" class="form-control fw-bold text-danger" id="modal_total_potongan_summary" readonly>
+                                                        <input type="text" class="form-control fw-bold text-end"
+                                                            id="modal_total_potongan_summary" readonly>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group mb-3">
-                                                    <label class="form-label fw-bold text-primary">Gaji Diterima</label>
+                                                    <label class="form-label fw-bold">Gaji Diterima</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="text" class="form-control fw-bold text-primary fs-5" id="modal_gaji_bersih" readonly>
+                                                        <input type="text" class="form-control fw-bold text-end"
+                                                            id="modal_gaji_bersih" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -849,7 +850,62 @@
                             </div>
                         </div>
 
-                        <!-- Card: Status -->
+                        <!-- ===== BEBAN TANGGUNGAN PERUSAHAAN ===== -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card border-primary mb-4">
+                                    <div class="card-header bg-primary bg-opacity-25">
+                                        <h5 class="mb-0 text-white"><i class="fas fa-building me-2"></i>Beban Tanggungan Perusahaan</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group mb-3">
+                                                    <label for="modal_bpjs_tkj_prs" class="form-label fw-bold">BPJS Naker</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_bpjs_tkj_prs"
+                                                            name="bpjs_tkj_prs" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group mb-3">
+                                                    <label for="modal_bpjs_kes_prs" class="form-label fw-bold">BPJS Kes</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_bpjs_kes_prs"
+                                                            name="bpjs_kes_prs" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group mb-3">
+                                                    <label for="modal_tps_prs" class="form-label fw-bold">Tabungan Pensiun</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_tps_prs"
+                                                            name="tps_prs" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group mb-3">
+                                                    <label for="modal_askes_prs" class="form-label fw-bold">Asuransi Kesehatan</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="number" class="form-control text-end" id="modal_askes_prs"
+                                                            name="askes_prs" value="0" min="0" step="100">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ===== STATUS DATA GAJI ===== -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card border-secondary">
@@ -860,7 +916,9 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group mb-3">
-                                                    <label for="modal_sts_data_gaji" class="form-label fw-bold">Status Data Gaji <span class="text-danger">*</span></label>
+                                                    <label for="modal_sts_data_gaji" class="form-label fw-bold">
+                                                        Status Data Gaji <span class="text-danger">*</span>
+                                                    </label>
                                                     <div class="input-group">
                                                         <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
                                                         <select class="form-select" id="modal_sts_data_gaji" name="sts_data_gaji">
@@ -879,7 +937,8 @@
                                             <div class="col-md-4" id="modal_field_ket_na" style="display: none;">
                                                 <div class="form-group mb-3">
                                                     <label for="modal_ket_na_gaji" class="form-label fw-bold">Keterangan Non Aktif</label>
-                                                    <textarea class="form-control auto-uppercase" id="modal_ket_na_gaji" name="ket_na_gaji" rows="1"></textarea>
+                                                    <textarea class="form-control auto-uppercase" id="modal_ket_na_gaji"
+                                                        name="ket_na_gaji" rows="1"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -887,6 +946,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </form>
                 </div>
                 <div class="modal-footer" id="salaryModalFooter">
@@ -1008,6 +1068,19 @@
             width: 100%;
             max-width: 250px;
             margin: 0 auto;
+        }
+
+        #modal_total_pendapatan_tetap {
+            text-align: right;
+            padding-right: 24px !important;
+        }
+        #modal_total_pendapatan_tidak_tetap {
+            text-align: right;
+            padding-right: 24px !important;
+        }
+        #modal_total_potongan {
+            text-align: right;
+            padding-right: 24px !important;
         }
 
         .employee-photo {

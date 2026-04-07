@@ -106,6 +106,7 @@ class DataGaji extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'tgl_lahir' => 'date',
         'gj_pokok'              => 'decimal:2',
         'tunjab'                => 'decimal:2',
         'tunkom'                => 'decimal:2',

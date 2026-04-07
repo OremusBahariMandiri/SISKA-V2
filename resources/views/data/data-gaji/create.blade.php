@@ -218,20 +218,25 @@
                                 <!-- ===== TAB 2: DATA GAJI ===== -->
                                 <div class="tab-pane fade" id="data-gaji" role="tabpanel">
                                     <div class="row">
-                                        <!-- Kolom Kiri: Pendapatan Tetap & Pendapatan Tidak Tetap -->
+                                        <!-- Kolom Kiri: Pendapatan (Tetap & Tidak Tetap) -->
                                         <div class="col-md-6">
-                                            <!-- Card: Pendapatan Tetap -->
-                                            <div class="card border-success mb-4">
-                                                <div class="card-header bg-success bg-opacity-25">
+                                            <!-- Card: Pendapatan -->
+                                            <div class="card border-primary mb-4">
+                                                <div class="card-header bg-primary bg-opacity-25">
                                                     <h5 class="mb-0 text-white"><i
-                                                            class="fas fa-wallet me-2"></i>Pendapatan Tetap</h5>
+                                                            class="fas fa-wallet me-2"></i>Pendapatan</h5>
                                                 </div>
                                                 <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="gj_pokok" class="form-label fw-bold">Gaji
-                                                                    Pokok</label>
+                                                    <!-- Pendapatan Tetap Section -->
+                                                    <div class="mb-4">
+                                                        <h6 class="text-success fw-bold mb-3 pb-2 border-bottom">
+                                                            <i class="fas fa-check-circle me-2"></i>Pendapatan Tetap
+                                                        </h6>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="gj_pokok"
+                                                                class="col-sm-5 col-form-label">Gaji Pokok</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -241,10 +246,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="tunjab" class="form-label fw-bold">Tunjangan
-                                                                    Jabatan</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="tunjab"
+                                                                class="col-sm-5 col-form-label">Tunjangan
+                                                                Jabatan</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -254,10 +261,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="tunkom" class="form-label fw-bold">Tunjangan
-                                                                    Komunikasi</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="tunkom"
+                                                                class="col-sm-5 col-form-label">Tunjangan
+                                                                Komunikasi</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -267,10 +276,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="fot" class="form-label fw-bold">Fix Over
-                                                                    Time (FOT)</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="fot"
+                                                                class="col-sm-5 col-form-label">Fix Over Time
+                                                                (FOT)</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -280,10 +291,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="tunmal" class="form-label fw-bold">Tunjangan
-                                                                    Kemahalan</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="tunmal"
+                                                                class="col-sm-5 col-form-label">Tunjangan
+                                                                Kemahalan</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -293,34 +306,33 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label class="form-label fw-bold text-success">Total
-                                                                    Pendapatan Tetap</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label
+                                                                class="col-sm-5 col-form-label fw-bold text-black">Jumlah
+                                                                Pendapatan Tetap</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="text"
-                                                                        class="form-control fw-bold text-success"
+                                                                        class="form-control fw-bold text-black text-end"
                                                                         id="total_pendapatan_tetap" readonly>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
 
-                                            <!-- Card: Pendapatan Tidak Tetap -->
-                                            <div class="card border-warning mb-4">
-                                                <div class="card-header bg-warning bg-opacity-25">
-                                                    <h5 class="mb-0 text-dark"><i class="fas fa-coins me-2"></i>Pendapatan
-                                                        Tidak Tetap</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="lbr_harian" class="form-label fw-bold">Lembur
-                                                                    Harian</label>
+                                                    <!-- Pendapatan Tidak Tetap Section -->
+                                                    <div>
+                                                        <h6 class="text-success fw-bold mb-3 pb-2 border-bottom">
+                                                            <i class="fas fa-coins me-2"></i>Pendapatan Tidak Tetap
+                                                        </h6>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="lbr_harian"
+                                                                class="col-sm-5 col-form-label">Lembur
+                                                                Harian</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -330,10 +342,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="lbr_perjam" class="form-label fw-bold">Lembur
-                                                                    Per Jam</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="lbr_perjam"
+                                                                class="col-sm-5 col-form-label">Lembur Per
+                                                                Jam</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -343,10 +357,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="tukin" class="form-label fw-bold">Tunjangan
-                                                                    Kinerja</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="tukin"
+                                                                class="col-sm-5 col-form-label">Tunjangan
+                                                                Kinerja</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -356,10 +372,11 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="insentif"
-                                                                    class="form-label fw-bold">Insentif</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="insentif"
+                                                                class="col-sm-5 col-form-label">Insentif</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -369,10 +386,11 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="bonus"
-                                                                    class="form-label fw-bold">Bonus</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="bonus"
+                                                                class="col-sm-5 col-form-label">Bonus</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -382,10 +400,12 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="thr" class="form-label fw-bold">Tunjangan
-                                                                    Hari Raya (THR)</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label for="thr"
+                                                                class="col-sm-5 col-form-label">Tunjangan Hari Raya
+                                                                (THR)</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="number" class="form-control"
@@ -395,14 +415,17 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label class="form-label fw-bold text-warning">Total
-                                                                    Pendapatan Tidak Tetap</label>
+
+                                                        <div class="row mb-3 align-items-center">
+                                                            <label
+                                                                class="col-sm-5 col-form-label fw-bold text-black">Jumlah
+                                                                Pendapatan Tidak
+                                                                Tetap</label>
+                                                            <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
-                                                                    <input type="text"
-                                                                        class="form-control fw-bold text-warning"
+                                                                    <input type="text" inputmode="numeric"
+                                                                        class="form-control fw-bold text-black text-end"
                                                                         id="total_pendapatan_tidak_tetap" readonly>
                                                                 </div>
                                                             </div>
@@ -412,142 +435,144 @@
                                             </div>
                                         </div>
 
-                                        <!-- Kolom Kanan: Potongan -->
+                                        <!-- Kolom Kanan: Potongan - DIPERBESAR UNTUK KESEIMBANGAN -->
                                         <div class="col-md-6">
-                                            <div class="card border-danger mb-4">
+                                            <div class="card border-danger mb-4" style="height: 950px">
                                                 <div class="card-header bg-danger bg-opacity-25">
                                                     <h5 class="mb-0 text-white"><i
                                                             class="fas fa-minus-circle me-2"></i>Potongan</h5>
                                                 </div>
                                                 <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="bpjs_tkj" class="form-label fw-bold">BPJS
-                                                                    Tenaga Kerja Karyawan</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="bpjs_tkj" name="bpjs_tkj"
-                                                                        value="{{ old('bpjs_tkj', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="bpjs_tkj" class="col-sm-5 col-form-label">BPJS
+                                                            Naker</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control" id="bpjs_tkj"
+                                                                    name="bpjs_tkj" value="{{ old('bpjs_tkj', 0) }}"
+                                                                    min="0" step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="bpjs_kes" class="form-label fw-bold">BPJS
-                                                                    Kesehatan Karyawan</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="bpjs_kes" name="bpjs_kes"
-                                                                        value="{{ old('bpjs_kes', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="bpjs_kes" class="col-sm-5 col-form-label">BPJS
+                                                            Kesehatan</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control" id="bpjs_kes"
+                                                                    name="bpjs_kes" value="{{ old('bpjs_kes', 0) }}"
+                                                                    min="0" step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="iuran_koperasi"
-                                                                    class="form-label fw-bold">Iuran Wajib Koperasi</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="iuran_koperasi" name="iuran_koperasi"
-                                                                        value="{{ old('iuran_koperasi', 0) }}"
-                                                                        min="0" step="100">
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="iuran_koperasi"
+                                                            class="col-sm-5 col-form-label">Iuran Wajib
+                                                            Koperasi</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control"
+                                                                    id="iuran_koperasi" name="iuran_koperasi"
+                                                                    value="{{ old('iuran_koperasi', 0) }}" min="0"
+                                                                    step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="tps_kry" class="form-label fw-bold">Tabungan
-                                                                    Pensiun Karyawan</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="tps_kry" name="tps_kry"
-                                                                        value="{{ old('tps_kry', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="tps_kry"
+                                                            class="col-sm-5 col-form-label">Tabungan Pensiun</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control" id="tps_kry"
+                                                                    name="tps_kry" value="{{ old('tps_kry', 0) }}"
+                                                                    min="0" step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="pjk_pkp" class="form-label fw-bold">Pajak
-                                                                    PKP</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="pjk_pkp" name="pjk_pkp"
-                                                                        value="{{ old('pjk_pkp', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="pjk_pkp"
+                                                            class="col-sm-5 col-form-label">Pajak PKP</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control" id="pjk_pkp"
+                                                                    name="pjk_pkp" value="{{ old('pjk_pkp', 0) }}"
+                                                                    min="0" step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="pjk_pph" class="form-label fw-bold">Pajak
-                                                                    PPh</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="pjk_pph" name="pjk_pph"
-                                                                        value="{{ old('pjk_pph', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="pjk_pph"
+                                                            class="col-sm-5 col-form-label">Pajak PPh</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control" id="pjk_pph"
+                                                                    name="pjk_pph" value="{{ old('pjk_pph', 0) }}"
+                                                                    min="0" step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="ptg_thr" class="form-label fw-bold">Potongan
-                                                                    THR</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="ptg_thr" name="ptg_thr"
-                                                                        value="{{ old('ptg_thr', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="ptg_thr"
+                                                            class="col-sm-5 col-form-label">Potongan THR</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control" id="ptg_thr"
+                                                                    name="ptg_thr" value="{{ old('ptg_thr', 0) }}"
+                                                                    min="0" step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="pjm_kop" class="form-label fw-bold">Pinjaman
-                                                                    Koperasi</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="pjm_kop" name="pjm_kop"
-                                                                        value="{{ old('pjm_kop', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="pjm_kop"
+                                                            class="col-sm-5 col-form-label">Pinjaman
+                                                            Koperasi</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control" id="pjm_kop"
+                                                                    name="pjm_kop" value="{{ old('pjm_kop', 0) }}"
+                                                                    min="0" step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label for="dda_sanksi" class="form-label fw-bold">Denda
-                                                                    Sanksi</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="dda_sanksi" name="dda_sanksi"
-                                                                        value="{{ old('dda_sanksi', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label for="dda_sanksi"
+                                                            class="col-sm-5 col-form-label">Denda Sanksi</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="number" class="form-control"
+                                                                    id="dda_sanksi" name="dda_sanksi"
+                                                                    value="{{ old('dda_sanksi', 0) }}" min="0"
+                                                                    step="100">
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group mb-3">
-                                                                <label class="form-label fw-bold text-danger">Total
-                                                                    Potongan</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="text"
-                                                                        class="form-control fw-bold text-danger"
-                                                                        id="total_potongan" readonly>
-                                                                </div>
+                                                    </div>
+
+                                                    <div class="row mb-3 align-items-center">
+                                                        <label class="col-sm-5 col-form-label fw-bold text-black">Jumlah
+                                                            Potongan</label>
+                                                        <div class="col-sm-7">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp</span>
+                                                                <input type="text"
+                                                                    class="form-control fw-bold text-black text-end"
+                                                                    id="total_potongan" readonly>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -556,73 +581,7 @@
                                         </div>
                                     </div>
 
-                                    <!-- Row baru untuk Beban Tanggungan Perusahaan -->
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="card border-info mb-4">
-                                                <div class="card-header bg-info bg-opacity-25">
-                                                    <h5 class="mb-0 text-white"><i class="fas fa-building me-2"></i>Beban
-                                                        Tanggungan Perusahaan</h5>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="col-md-3">
-                                                            <div class="form-group mb-3">
-                                                                <label for="bpjs_tkj_prs" class="form-label fw-bold">BPJS
-                                                                    TK Perusahaan</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="bpjs_tkj_prs" name="bpjs_tkj_prs"
-                                                                        value="{{ old('bpjs_tkj_prs', 0) }}"
-                                                                        min="0" step="100">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="form-group mb-3">
-                                                                <label for="bpjs_kes_prs" class="form-label fw-bold">BPJS
-                                                                    Kes Perusahaan</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="bpjs_kes_prs" name="bpjs_kes_prs"
-                                                                        value="{{ old('bpjs_kes_prs', 0) }}"
-                                                                        min="0" step="100">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="form-group mb-3">
-                                                                <label for="tps_prs" class="form-label fw-bold">Tabungan
-                                                                    Pensiun Perusahaan</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="tps_prs" name="tps_prs"
-                                                                        value="{{ old('tps_prs', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="form-group mb-3">
-                                                                <label for="askes_prs" class="form-label fw-bold">Asuransi
-                                                                    Kesehatan Perusahaan</label>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-text">Rp</span>
-                                                                    <input type="number" class="form-control"
-                                                                        id="askes_prs" name="askes_prs"
-                                                                        value="{{ old('askes_prs', 0) }}" min="0"
-                                                                        step="100">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+
 
                                     <!-- Card: Ringkasan Gaji -->
                                     <div class="row">
@@ -636,36 +595,105 @@
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             <div class="form-group mb-3">
-                                                                <label class="form-label fw-bold text-success">Total
+                                                                <label class="form-label fw-bold text-black">Total
                                                                     Pendapatan</label>
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="text"
-                                                                        class="form-control fw-bold text-success"
+                                                                        class="form-control fw-bold text-black text-end"
                                                                         id="total_pendapatan" readonly>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group mb-3">
-                                                                <label class="form-label fw-bold text-danger">Total
+                                                                <label class="form-label fw-bold text-black">Total
                                                                     Potongan</label>
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="text"
-                                                                        class="form-control fw-bold text-danger"
+                                                                        class="form-control fw-bold text-black text-end"
                                                                         id="total_potongan_summary" readonly>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group mb-3">
-                                                                <label class="form-label fw-bold text-primary">Gaji Diterima</label>
+                                                                <label class="form-label fw-bold text-black">Gaji
+                                                                    Diterima</label>
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
                                                                     <input type="text"
-                                                                        class="form-control fw-bold text-primary fs-5"
+                                                                        class="form-control fw-bold text-black fs-5 text-end"
                                                                         id="gaji_bersih" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                     <!-- Row baru untuk Beban Tanggungan Perusahaan -->
+                                     <div class="row">
+                                        <div class="col-12">
+                                            <div class="card border-primary mb-4">
+                                                <div class="card-header bg-primary bg-opacity-25">
+                                                    <h5 class="mb-0 text-white"><i class="fas fa-building me-2"></i>Beban
+                                                        Tanggungan Perusahaan</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <div class="form-group mb-3">
+                                                                <label for="bpjs_tkj_prs" class="form-label fw-bold">BPJS
+                                                                    Naker</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text">Rp</span>
+                                                                    <input type="number" class="form-control"
+                                                                        id="bpjs_tkj_prs" name="bpjs_tkj_prs"
+                                                                        value="{{ old('bpjs_tkj_prs', 0) }}"
+                                                                        min="0" step="100">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group mb-3">
+                                                                <label for="bpjs_kes_prs" class="form-label fw-bold">BPJS
+                                                                    Kes</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text">Rp</span>
+                                                                    <input type="number" class="form-control"
+                                                                        id="bpjs_kes_prs" name="bpjs_kes_prs"
+                                                                        value="{{ old('bpjs_kes_prs', 0) }}"
+                                                                        min="0" step="100">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group mb-3">
+                                                                <label for="tps_prs" class="form-label fw-bold">Tabungan
+                                                                    Pensiun</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text">Rp</span>
+                                                                    <input type="number" class="form-control"
+                                                                        id="tps_prs" name="tps_prs"
+                                                                        value="{{ old('tps_prs', 0) }}" min="0"
+                                                                        step="100">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group mb-3">
+                                                                <label for="askes_prs" class="form-label fw-bold">Asuransi
+                                                                    Kesehatan</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text">Rp</span>
+                                                                    <input type="number" class="form-control"
+                                                                        id="askes_prs" name="askes_prs"
+                                                                        value="{{ old('askes_prs', 0) }}" min="0"
+                                                                        step="100">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -954,6 +982,37 @@
             transform: translateY(-2px);
         }
 
+        #data-gaji input[type="number"] {
+            text-align: right;
+        }
+
+        /* TEXT ALIGN RIGHT UNTUK READONLY SUMMARY FIELDS - FIXED */
+        #total_pendapatan_tetap {
+            text-align: right;
+            padding-right: 24px !important;
+        }
+        #total_pendapatan_tidak_tetap {
+            text-align: right;
+            padding-right: 24px !important;
+        }
+        #total_potongan {
+            text-align: right;
+            padding-right: 24px !important;
+        }
+        #total_pendapatan,
+        #total_potongan_summary,
+        #gaji_bersih {
+            text-align: right;
+        }
+
+        /* TEXT ALIGN RIGHT UNTUK INPUT DI BEBAN TANGGUNGAN PERUSAHAAN */
+        #bpjs_tkj_prs,
+        #bpjs_kes_prs,
+        #tps_prs,
+        #askes_prs {
+            text-align: right;
+        }
+
         .employee-photo-container {
             position: relative;
             width: 100%;
@@ -1146,6 +1205,26 @@
             });
 
             hitungSemua();
+
+            // =====================================================
+            // STATUS DATA GAJI HANDLER - PERBAIKAN #1
+            // =====================================================
+            document.getElementById('sts_data_gaji').addEventListener('change', function() {
+                const status = this.value;
+                const fieldTglNa = document.getElementById('field_tgl_na');
+                const fieldKetNa = document.getElementById('field_ket_na');
+
+                if (status === 'NON-AKTIF') {
+                    fieldTglNa.style.display = 'block';
+                    fieldKetNa.style.display = 'block';
+                    document.getElementById('tgl_na_gaji').focus();
+                } else {
+                    fieldTglNa.style.display = 'none';
+                    fieldKetNa.style.display = 'none';
+                    document.getElementById('tgl_na_gaji').value = '';
+                    document.getElementById('ket_na_gaji').value = '';
+                }
+            });
 
             // =====================================================
             // EMPLOYEE VALIDATION ALERTS

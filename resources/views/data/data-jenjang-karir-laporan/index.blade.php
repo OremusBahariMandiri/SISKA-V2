@@ -206,6 +206,14 @@
 
                                             <td class="text-center no-wrap">
                                                 <div class="btn-group" role="group">
+                                                    @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
+                                                        <a href="{{ route('data-jenjang-karir-laporan.show', $karir->id) }}"
+                                                            class="btn btn-sm btn-info" data-bs-toggle="tooltip"
+                                                            title="Detail">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    @endif
+
                                                     @if ($karir->file_dokumen)
                                                         <a href="{{ asset('storage/' . $karir->file_dokumen) }}"
                                                             target="_blank" class="btn btn-sm btn-success"
@@ -217,14 +225,6 @@
                                                             data-bs-toggle="tooltip" title="File tidak tersedia" disabled>
                                                             <i class="fas fa-file-alt"></i>
                                                         </button>
-                                                    @endif
-
-                                                    @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
-                                                        <a href="{{ route('data-jenjang-karir-laporan.show', $karir->id) }}"
-                                                            class="btn btn-sm btn-info" data-bs-toggle="tooltip"
-                                                            title="Detail">
-                                                            <i class="fas fa-eye"></i>
-                                                        </a>
                                                     @endif
                                                 </div>
                                             </td>

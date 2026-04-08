@@ -217,11 +217,11 @@
 
                                 <!-- ===== TAB 2: DATA GAJI ===== -->
                                 <div class="tab-pane fade" id="data-gaji" role="tabpanel">
-                                    <div class="row">
+                                    <div class="row align-items-stretch">
                                         <!-- Kolom Kiri: Pendapatan (Tetap & Tidak Tetap) -->
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 d-flex flex-column">
                                             <!-- Card: Pendapatan -->
-                                            <div class="card border-primary mb-4">
+                                            <div class="card border-primary mb-4 flex-fill">
                                                 <div class="card-header bg-primary bg-opacity-25">
                                                     <h5 class="mb-0 text-white"><i
                                                             class="fas fa-wallet me-2"></i>Pendapatan</h5>
@@ -234,8 +234,8 @@
                                                         </h6>
 
                                                         <div class="row mb-3 align-items-center">
-                                                            <label for="gj_pokok"
-                                                                class="col-sm-5 col-form-label">Gaji Pokok</label>
+                                                            <label for="gj_pokok" class="col-sm-5 col-form-label">Gaji
+                                                                Pokok</label>
                                                             <div class="col-sm-7">
                                                                 <div class="input-group">
                                                                     <span class="input-group-text">Rp</span>
@@ -278,8 +278,8 @@
                                                         </div>
 
                                                         <div class="row mb-3 align-items-center">
-                                                            <label for="fot"
-                                                                class="col-sm-5 col-form-label">Fix Over Time
+                                                            <label for="fot" class="col-sm-5 col-form-label">Fix Over
+                                                                Time
                                                                 (FOT)</label>
                                                             <div class="col-sm-7">
                                                                 <div class="input-group">
@@ -329,8 +329,7 @@
                                                         </h6>
 
                                                         <div class="row mb-3 align-items-center">
-                                                            <label for="lbr_harian"
-                                                                class="col-sm-5 col-form-label">Lembur
+                                                            <label for="lbr_harian" class="col-sm-5 col-form-label">Lembur
                                                                 Harian</label>
                                                             <div class="col-sm-7">
                                                                 <div class="input-group">
@@ -344,8 +343,8 @@
                                                         </div>
 
                                                         <div class="row mb-3 align-items-center">
-                                                            <label for="lbr_perjam"
-                                                                class="col-sm-5 col-form-label">Lembur Per
+                                                            <label for="lbr_perjam" class="col-sm-5 col-form-label">Lembur
+                                                                Per
                                                                 Jam</label>
                                                             <div class="col-sm-7">
                                                                 <div class="input-group">
@@ -436,8 +435,8 @@
                                         </div>
 
                                         <!-- Kolom Kanan: Potongan - DIPERBESAR UNTUK KESEIMBANGAN -->
-                                        <div class="col-md-6">
-                                            <div class="card border-danger mb-4" style="height: 950px">
+                                        <div class="col-md-6 d-flex flex-column">
+                                            <div class="card border-danger mb-4 flex-fill">
                                                 <div class="card-header bg-danger bg-opacity-25">
                                                     <h5 class="mb-0 text-white"><i
                                                             class="fas fa-minus-circle me-2"></i>Potongan</h5>
@@ -470,8 +469,8 @@
                                                     </div>
 
                                                     <div class="row mb-3 align-items-center">
-                                                        <label for="iuran_koperasi"
-                                                            class="col-sm-5 col-form-label">Iuran Wajib
+                                                        <label for="iuran_koperasi" class="col-sm-5 col-form-label">Iuran
+                                                            Wajib
                                                             Koperasi</label>
                                                         <div class="col-sm-7">
                                                             <div class="input-group">
@@ -485,8 +484,8 @@
                                                     </div>
 
                                                     <div class="row mb-3 align-items-center">
-                                                        <label for="tps_kry"
-                                                            class="col-sm-5 col-form-label">Tabungan Pensiun</label>
+                                                        <label for="tps_kry" class="col-sm-5 col-form-label">Tabungan
+                                                            Pensiun</label>
                                                         <div class="col-sm-7">
                                                             <div class="input-group">
                                                                 <span class="input-group-text">Rp</span>
@@ -498,8 +497,8 @@
                                                     </div>
 
                                                     <div class="row mb-3 align-items-center">
-                                                        <label for="pjk_pkp"
-                                                            class="col-sm-5 col-form-label">Pajak PKP</label>
+                                                        <label for="pjk_pkp" class="col-sm-5 col-form-label">Pajak
+                                                            PKP</label>
                                                         <div class="col-sm-7">
                                                             <div class="input-group">
                                                                 <span class="input-group-text">Rp</span>
@@ -511,8 +510,8 @@
                                                     </div>
 
                                                     <div class="row mb-3 align-items-center">
-                                                        <label for="pjk_pph"
-                                                            class="col-sm-5 col-form-label">Pajak PPh</label>
+                                                        <label for="pjk_pph" class="col-sm-5 col-form-label">Pajak
+                                                            PPh</label>
                                                         <div class="col-sm-7">
                                                             <div class="input-group">
                                                                 <span class="input-group-text">Rp</span>
@@ -524,8 +523,8 @@
                                                     </div>
 
                                                     <div class="row mb-3 align-items-center">
-                                                        <label for="ptg_thr"
-                                                            class="col-sm-5 col-form-label">Potongan THR</label>
+                                                        <label for="ptg_thr" class="col-sm-5 col-form-label">Potongan
+                                                            THR</label>
                                                         <div class="col-sm-7">
                                                             <div class="input-group">
                                                                 <span class="input-group-text">Rp</span>
@@ -537,8 +536,7 @@
                                                     </div>
 
                                                     <div class="row mb-3 align-items-center">
-                                                        <label for="pjm_kop"
-                                                            class="col-sm-5 col-form-label">Pinjaman
+                                                        <label for="pjm_kop" class="col-sm-5 col-form-label">Pinjaman
                                                             Koperasi</label>
                                                         <div class="col-sm-7">
                                                             <div class="input-group">
@@ -551,8 +549,8 @@
                                                     </div>
 
                                                     <div class="row mb-3 align-items-center">
-                                                        <label for="dda_sanksi"
-                                                            class="col-sm-5 col-form-label">Denda Sanksi</label>
+                                                        <label for="dda_sanksi" class="col-sm-5 col-form-label">Denda
+                                                            Sanksi</label>
                                                         <div class="col-sm-7">
                                                             <div class="input-group">
                                                                 <span class="input-group-text">Rp</span>
@@ -580,8 +578,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
 
                                     <!-- Card: Ringkasan Gaji -->
                                     <div class="row">
@@ -635,8 +631,8 @@
                                         </div>
                                     </div>
 
-                                     <!-- Row baru untuk Beban Tanggungan Perusahaan -->
-                                     <div class="row">
+                                    <!-- Row baru untuk Beban Tanggungan Perusahaan -->
+                                    <div class="row">
                                         <div class="col-12">
                                             <div class="card border-primary mb-4">
                                                 <div class="card-header bg-primary bg-opacity-25">
@@ -982,23 +978,23 @@
             transform: translateY(-2px);
         }
 
-        #data-gaji input[type="number"] {
+        #data-gaji input[inputmode="numeric"]:not([readonly]) {
             text-align: right;
         }
 
         /* TEXT ALIGN RIGHT UNTUK READONLY SUMMARY FIELDS - FIXED */
         #total_pendapatan_tetap {
             text-align: right;
-            padding-right: 24px !important;
         }
+
         #total_pendapatan_tidak_tetap {
             text-align: right;
-            padding-right: 24px !important;
         }
+
         #total_potongan {
             text-align: right;
-            padding-right: 24px !important;
         }
+
         #total_pendapatan,
         #total_potongan_summary,
         #gaji_bersih {
@@ -1174,7 +1170,13 @@
             }
 
             function getVal(id) {
-                return parseFloat(document.getElementById(id)?.value || 0) || 0;
+                const el = document.getElementById(id);
+                if (!el) return 0;
+                // Cek apakah pakai format rupiah (ada dataset.rawValue)
+                if (el.dataset.rawValue !== undefined) {
+                    return parseFloat(el.dataset.rawValue) || 0;
+                }
+                return parseFloat(el.value.replace(/\D/g, '') || 0) || 0;
             }
 
             function hitungSemua() {
@@ -1200,8 +1202,90 @@
                 document.getElementById('gaji_bersih').value = formatRupiah(gajiBersih);
             }
 
+            function formatRupiahInput(input) {
+                // Ambil hanya angka
+                let raw = input.value.replace(/\D/g, '');
+
+                // Format dengan titik
+                if (raw === '') {
+                    input.value = '';
+                    input.dataset.rawValue = '0';
+                } else {
+                    let formatted = new Intl.NumberFormat('id-ID').format(parseInt(raw));
+                    input.value = formatted;
+                    input.dataset.rawValue = raw;
+                }
+            }
+
+            function getRawValue(input) {
+                return parseFloat(input.dataset.rawValue || input.value.replace(/\D/g, '') || 0);
+            }
+
+
+
             document.querySelectorAll('#data-gaji input[type="number"]').forEach(function(el) {
-                el.addEventListener('input', hitungSemua);
+                // Ganti type
+                el.type = 'text';
+                el.inputMode = 'numeric';
+
+                // Set nilai awal
+                if (el.value && el.value !== '0') {
+                    el.dataset.rawValue = el.value;
+                    el.value = new Intl.NumberFormat('id-ID').format(parseInt(el.value));
+                } else {
+                    el.value = '0';
+                    el.dataset.rawValue = '0';
+                }
+
+                el.addEventListener('focus', function() {
+                    // Saat focus, hapus format supaya mudah diedit
+                    if (this.value === '0') {
+                        this.value = '';
+                    } else {
+                        this.value = this.dataset.rawValue || this.value.replace(/\D/g, '');
+                    }
+                });
+
+                el.addEventListener('input', function() {
+                    // Simpan posisi cursor
+                    let cursorPos = this.selectionStart;
+                    let prevLength = this.value.length;
+
+                    // Ambil hanya angka
+                    let raw = this.value.replace(/\D/g, '');
+                    this.dataset.rawValue = raw || '0';
+
+                    if (raw === '') {
+                        this.value = '';
+                        return;
+                    }
+
+                    // Format langsung
+                    let formatted = new Intl.NumberFormat('id-ID').format(parseInt(raw));
+                    this.value = formatted;
+
+                    // Sesuaikan posisi cursor setelah format
+                    let newLength = this.value.length;
+                    let diff = newLength - prevLength;
+                    this.setSelectionRange(cursorPos + diff, cursorPos + diff);
+
+                    hitungSemua();
+                });
+
+                el.addEventListener('blur', function() {
+                    // Saat blur, format kembali
+                    formatRupiahInput(this);
+                });
+
+                el.addEventListener('keydown', function(e) {
+                    // Allow: backspace, delete, tab, escape, enter, arrow keys
+                    if ([8, 9, 27, 13, 46, 37, 38, 39, 40].includes(e.keyCode)) return;
+                    // Block non-numeric
+                    if (e.shiftKey || (e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e
+                            .keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });
             });
 
             hitungSemua();

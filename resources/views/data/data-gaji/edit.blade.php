@@ -142,8 +142,7 @@
                                                         <div class="form-group mb-3">
                                                             <label class="form-label fw-bold">Telepon</label>
                                                             <input type="text" class="form-control"
-                                                                value="{{ $dataGaji->karyawan->tlp1 ?? '-' }}"
-                                                                readonly>
+                                                                value="{{ $dataGaji->karyawan->tlp1 ?? '-' }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
@@ -166,8 +165,7 @@
                                                         <div class="form-group mb-3">
                                                             <label class="form-label fw-bold">Email</label>
                                                             <input type="text" class="form-control"
-                                                                value="{{ $dataGaji->karyawan->email1 ?? '-' }}"
-                                                                readonly>
+                                                                value="{{ $dataGaji->karyawan->email1 ?? '-' }}" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -213,22 +211,26 @@
                                                             data-salary-status="{{ $salary->sts_data_gaji ?? 'AKTIF' }}">
                                                             <td class="text-center">{{ $index + 1 }}</td>
                                                             <td class="text-center">
-                                                                <small class="fw-bold">{{ $salary->id_gaji ?: '-' }}</small>
+                                                                <small
+                                                                    class="fw-bold">{{ $salary->id_gaji ?: '-' }}</small>
                                                             </td>
                                                             <td class="text-end">
                                                                 Rp {{ number_format($salary->gj_pokok ?? 0, 0, ',', '.') }}
                                                             </td>
                                                             <td class="text-end">
-                                                                Rp {{ number_format($salary->ttl_pendapatan ?? 0, 0, ',', '.') }}
+                                                                Rp
+                                                                {{ number_format($salary->ttl_pendapatan ?? 0, 0, ',', '.') }}
                                                             </td>
                                                             <td class="text-end">
-                                                                Rp {{ number_format($salary->ttl_potongan ?? 0, 0, ',', '.') }}
+                                                                Rp
+                                                                {{ number_format($salary->ttl_potongan ?? 0, 0, ',', '.') }}
                                                             </td>
                                                             <td class="text-end fw-bold text-success">
-                                                                Rp {{ number_format($salary->ttl_terima_gaji ?? 0, 0, ',', '.') }}
+                                                                Rp
+                                                                {{ number_format($salary->ttl_terima_gaji ?? 0, 0, ',', '.') }}
                                                             </td>
                                                             <td class="text-center">
-                                                                @if(($salary->sts_data_gaji ?? 'AKTIF') === 'AKTIF')
+                                                                @if (($salary->sts_data_gaji ?? 'AKTIF') === 'AKTIF')
                                                                     <span class="badge bg-success">AKTIF</span>
                                                                 @else
                                                                     <span class="badge bg-secondary">NON-AKTIF</span>
@@ -510,11 +512,11 @@
                         </div>
 
                         <!-- ===== ROW UTAMA: Pendapatan (Kiri) | Potongan (Kanan) ===== -->
-                        <div class="row">
+                        <div class="row align-items-stretch">
 
                             <!-- ===== KOLOM KIRI: Pendapatan Tetap + Tidak Tetap ===== -->
-                            <div class="col-md-6">
-                                <div class="card border-primary mb-4">
+                            <div class="col-md-6 d-flex flex-column">
+                                <div class="card border-primary mb-4 flex-fill">
                                     <div class="card-header bg-primary bg-opacity-25">
                                         <h5 class="mb-0 text-white"><i class="fas fa-wallet me-2"></i>Pendapatan</h5>
                                     </div>
@@ -527,62 +529,73 @@
                                             </h6>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_gj_pokok" class="col-sm-5 col-form-label">Gaji Pokok</label>
+                                                <label for="modal_gj_pokok" class="col-sm-5 col-form-label">Gaji
+                                                    Pokok</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_gj_pokok"
-                                                            name="gj_pokok" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_gj_pokok" name="gj_pokok" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_tunjab" class="col-sm-5 col-form-label">Tunjangan Jabatan</label>
+                                                <label for="modal_tunjab" class="col-sm-5 col-form-label">Tunjangan
+                                                    Jabatan</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_tunjab"
-                                                            name="tunjab" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_tunjab" name="tunjab" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_tunkom" class="col-sm-5 col-form-label">Tunjangan Komunikasi</label>
+                                                <label for="modal_tunkom" class="col-sm-5 col-form-label">Tunjangan
+                                                    Komunikasi</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_tunkom"
-                                                            name="tunkom" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_tunkom" name="tunkom" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_fot" class="col-sm-5 col-form-label">Fix Over Time (FOT)</label>
+                                                <label for="modal_fot" class="col-sm-5 col-form-label">Fix Over Time
+                                                    (FOT)</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_fot"
-                                                            name="fot" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_fot" name="fot" value="0" min="0"
+                                                            step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_tunmal" class="col-sm-5 col-form-label">Tunjangan Kemahalan</label>
+                                                <label for="modal_tunmal" class="col-sm-5 col-form-label">Tunjangan
+                                                    Kemahalan</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_tunmal"
-                                                            name="tunmal" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_tunmal" name="tunmal" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label class="col-sm-5 col-form-label fw-bold">Jumlah Pendapatan Tetap</label>
+                                                <label class="col-sm-5 col-form-label fw-bold">Jumlah Pendapatan
+                                                    Tetap</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
@@ -600,45 +613,53 @@
                                             </h6>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_lbr_harian" class="col-sm-5 col-form-label">Lembur Harian</label>
+                                                <label for="modal_lbr_harian" class="col-sm-5 col-form-label">Lembur
+                                                    Harian</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_lbr_harian"
-                                                            name="lbr_harian" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_lbr_harian" name="lbr_harian" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_lbr_perjam" class="col-sm-5 col-form-label">Lembur Per Jam</label>
+                                                <label for="modal_lbr_perjam" class="col-sm-5 col-form-label">Lembur Per
+                                                    Jam</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_lbr_perjam"
-                                                            name="lbr_perjam" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_lbr_perjam" name="lbr_perjam" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_tukin" class="col-sm-5 col-form-label">Tunjangan Kinerja</label>
+                                                <label for="modal_tukin" class="col-sm-5 col-form-label">Tunjangan
+                                                    Kinerja</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_tukin"
-                                                            name="tukin" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_tukin" name="tukin" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_insentif" class="col-sm-5 col-form-label">Insentif</label>
+                                                <label for="modal_insentif"
+                                                    class="col-sm-5 col-form-label">Insentif</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_insentif"
-                                                            name="insentif" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_insentif" name="insentif" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
@@ -648,25 +669,29 @@
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_bonus"
-                                                            name="bonus" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_bonus" name="bonus" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label for="modal_thr" class="col-sm-5 col-form-label">Tunjangan Hari Raya (THR)</label>
+                                                <label for="modal_thr" class="col-sm-5 col-form-label">Tunjangan Hari Raya
+                                                    (THR)</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_thr"
-                                                            name="thr" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_thr" name="thr" value="0" min="0"
+                                                            step="100">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row mb-3 align-items-center">
-                                                <label class="col-sm-5 col-form-label fw-bold">Jumlah Pendapatan Tidak Tetap</label>
+                                                <label class="col-sm-5 col-form-label fw-bold">Jumlah Pendapatan Tidak
+                                                    Tetap</label>
                                                 <div class="col-sm-7">
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
@@ -682,8 +707,8 @@
                             </div>
 
                             <!-- ===== KOLOM KANAN: Potongan ===== -->
-                            <div class="col-md-6">
-                                <div class="card border-danger mb-4" style="height: 950px">
+                            <div class="col-md-6 d-flex flex-column">
+                                <div class="card border-danger mb-4 flex-fill">
                                     <div class="card-header bg-danger bg-opacity-25">
                                         <h5 class="mb-0 text-white"><i class="fas fa-minus-circle me-2"></i>Potongan</h5>
                                     </div>
@@ -694,41 +719,48 @@
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_bpjs_tkj"
-                                                        name="bpjs_tkj" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_bpjs_tkj" name="bpjs_tkj" value="0"
+                                                        min="0" step="100">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3 align-items-center">
-                                            <label for="modal_bpjs_kes" class="col-sm-5 col-form-label">BPJS Kesehatan</label>
+                                            <label for="modal_bpjs_kes" class="col-sm-5 col-form-label">BPJS
+                                                Kesehatan</label>
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_bpjs_kes"
-                                                        name="bpjs_kes" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_bpjs_kes" name="bpjs_kes" value="0"
+                                                        min="0" step="100">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3 align-items-center">
-                                            <label for="modal_iuran_koperasi" class="col-sm-5 col-form-label">Iuran Wajib Koperasi</label>
+                                            <label for="modal_iuran_koperasi" class="col-sm-5 col-form-label">Iuran Wajib
+                                                Koperasi</label>
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_iuran_koperasi"
-                                                        name="iuran_koperasi" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_iuran_koperasi" name="iuran_koperasi" value="0"
+                                                        min="0" step="100">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3 align-items-center">
-                                            <label for="modal_tps_kry" class="col-sm-5 col-form-label">Tabungan Pensiun</label>
+                                            <label for="modal_tps_kry" class="col-sm-5 col-form-label">Tabungan
+                                                Pensiun</label>
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_tps_kry"
-                                                        name="tps_kry" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_tps_kry" name="tps_kry" value="0" min="0"
+                                                        step="100">
                                                 </div>
                                             </div>
                                         </div>
@@ -738,8 +770,9 @@
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_pjk_pkp"
-                                                        name="pjk_pkp" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_pjk_pkp" name="pjk_pkp" value="0" min="0"
+                                                        step="100">
                                                 </div>
                                             </div>
                                         </div>
@@ -749,41 +782,48 @@
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_pjk_pph"
-                                                        name="pjk_pph" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_pjk_pph" name="pjk_pph" value="0" min="0"
+                                                        step="100">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3 align-items-center">
-                                            <label for="modal_ptg_thr" class="col-sm-5 col-form-label">Potongan THR</label>
+                                            <label for="modal_ptg_thr" class="col-sm-5 col-form-label">Potongan
+                                                THR</label>
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_ptg_thr"
-                                                        name="ptg_thr" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_ptg_thr" name="ptg_thr" value="0" min="0"
+                                                        step="100">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3 align-items-center">
-                                            <label for="modal_pjm_kop" class="col-sm-5 col-form-label">Pinjaman Koperasi</label>
+                                            <label for="modal_pjm_kop" class="col-sm-5 col-form-label">Pinjaman
+                                                Koperasi</label>
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_pjm_kop"
-                                                        name="pjm_kop" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_pjm_kop" name="pjm_kop" value="0" min="0"
+                                                        step="100">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3 align-items-center">
-                                            <label for="modal_dda_sanksi" class="col-sm-5 col-form-label">Denda Sanksi</label>
+                                            <label for="modal_dda_sanksi" class="col-sm-5 col-form-label">Denda
+                                                Sanksi</label>
                                             <div class="col-sm-7">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Rp</span>
-                                                    <input type="number" class="form-control text-end" id="modal_dda_sanksi"
-                                                        name="dda_sanksi" value="0" min="0" step="100">
+                                                    <input type="number" class="form-control text-end"
+                                                        id="modal_dda_sanksi" name="dda_sanksi" value="0"
+                                                        min="0" step="100">
                                                 </div>
                                             </div>
                                         </div>
@@ -810,7 +850,8 @@
                             <div class="col-12">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-calculator me-2"></i>Ringkasan Gaji</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-calculator me-2"></i>Ringkasan Gaji
+                                        </h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -855,47 +896,56 @@
                             <div class="col-12">
                                 <div class="card border-primary mb-4">
                                     <div class="card-header bg-primary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-building me-2"></i>Beban Tanggungan Perusahaan</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-building me-2"></i>Beban Tanggungan
+                                            Perusahaan</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="form-group mb-3">
-                                                    <label for="modal_bpjs_tkj_prs" class="form-label fw-bold">BPJS Naker</label>
+                                                    <label for="modal_bpjs_tkj_prs" class="form-label fw-bold">BPJS
+                                                        Naker</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_bpjs_tkj_prs"
-                                                            name="bpjs_tkj_prs" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_bpjs_tkj_prs" name="bpjs_tkj_prs" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group mb-3">
-                                                    <label for="modal_bpjs_kes_prs" class="form-label fw-bold">BPJS Kes</label>
+                                                    <label for="modal_bpjs_kes_prs" class="form-label fw-bold">BPJS
+                                                        Kes</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_bpjs_kes_prs"
-                                                            name="bpjs_kes_prs" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_bpjs_kes_prs" name="bpjs_kes_prs" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group mb-3">
-                                                    <label for="modal_tps_prs" class="form-label fw-bold">Tabungan Pensiun</label>
+                                                    <label for="modal_tps_prs" class="form-label fw-bold">Tabungan
+                                                        Pensiun</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_tps_prs"
-                                                            name="tps_prs" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_tps_prs" name="tps_prs" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group mb-3">
-                                                    <label for="modal_askes_prs" class="form-label fw-bold">Asuransi Kesehatan</label>
+                                                    <label for="modal_askes_prs" class="form-label fw-bold">Asuransi
+                                                        Kesehatan</label>
                                                     <div class="input-group">
                                                         <span class="input-group-text">Rp</span>
-                                                        <input type="number" class="form-control text-end" id="modal_askes_prs"
-                                                            name="askes_prs" value="0" min="0" step="100">
+                                                        <input type="number" class="form-control text-end"
+                                                            id="modal_askes_prs" name="askes_prs" value="0"
+                                                            min="0" step="100">
                                                     </div>
                                                 </div>
                                             </div>
@@ -910,7 +960,8 @@
                             <div class="col-12">
                                 <div class="card border-secondary">
                                     <div class="card-header bg-secondary bg-opacity-25">
-                                        <h5 class="mb-0 text-white"><i class="fas fa-info-circle me-2"></i>Status Data Gaji</h5>
+                                        <h5 class="mb-0 text-white"><i class="fas fa-info-circle me-2"></i>Status Data
+                                            Gaji</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -920,8 +971,10 @@
                                                         Status Data Gaji <span class="text-danger">*</span>
                                                     </label>
                                                     <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
-                                                        <select class="form-select" id="modal_sts_data_gaji" name="sts_data_gaji">
+                                                        <span class="input-group-text"><i
+                                                                class="fas fa-check-circle"></i></span>
+                                                        <select class="form-select" id="modal_sts_data_gaji"
+                                                            name="sts_data_gaji">
                                                             <option value="AKTIF">AKTIF</option>
                                                             <option value="NON-AKTIF">NON-AKTIF</option>
                                                         </select>
@@ -930,15 +983,17 @@
                                             </div>
                                             <div class="col-md-4" id="modal_field_tgl_na" style="display: none;">
                                                 <div class="form-group mb-3">
-                                                    <label for="modal_tgl_na_gaji" class="form-label fw-bold">Tanggal Status Non Aktif</label>
-                                                    <input type="date" class="form-control" id="modal_tgl_na_gaji" name="tgl_na_gaji">
+                                                    <label for="modal_tgl_na_gaji" class="form-label fw-bold">Tanggal
+                                                        Status Non Aktif</label>
+                                                    <input type="date" class="form-control" id="modal_tgl_na_gaji"
+                                                        name="tgl_na_gaji">
                                                 </div>
                                             </div>
                                             <div class="col-md-4" id="modal_field_ket_na" style="display: none;">
                                                 <div class="form-group mb-3">
-                                                    <label for="modal_ket_na_gaji" class="form-label fw-bold">Keterangan Non Aktif</label>
-                                                    <textarea class="form-control auto-uppercase" id="modal_ket_na_gaji"
-                                                        name="ket_na_gaji" rows="1"></textarea>
+                                                    <label for="modal_ket_na_gaji" class="form-label fw-bold">Keterangan
+                                                        Non Aktif</label>
+                                                    <textarea class="form-control auto-uppercase" id="modal_ket_na_gaji" name="ket_na_gaji" rows="1"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -1072,15 +1127,14 @@
 
         #modal_total_pendapatan_tetap {
             text-align: right;
-            padding-right: 24px !important;
         }
+
         #modal_total_pendapatan_tidak_tetap {
             text-align: right;
-            padding-right: 24px !important;
         }
+
         #modal_total_potongan {
             text-align: right;
-            padding-right: 24px !important;
         }
 
         .employee-photo {
@@ -1128,7 +1182,7 @@
     <script>
         $(document).ready(function() {
             let currentSalaryId = null;
-            let currentMode = 'create'; // 'create', 'edit', 'view'
+            let currentMode = 'create';
 
             // ===== DATATABLES INITIALIZATION =====
             if ($.fn.DataTable.isDataTable('#salariesTable')) {
@@ -1157,7 +1211,9 @@
                     orderable: false,
                     targets: [9]
                 }],
-                order: [[0, 'asc']],
+                order: [
+                    [0, 'asc']
+                ],
                 pageLength: 10,
                 drawCallback: function() {
                     this.api().column(0, {
@@ -1168,25 +1224,125 @@
                 }
             });
 
-            // ===== SALARY CALCULATION FUNCTIONS =====
+            // =====================================================
+            // FORMAT RUPIAH
+            // =====================================================
             function formatRupiah(num) {
                 return new Intl.NumberFormat('id-ID').format(Math.round(num || 0));
             }
 
-            function getVal(id) {
-                return parseFloat($('#' + id).val() || 0) || 0;
+            function formatRupiahInput(input) {
+                let raw = input.value.replace(/\D/g, '');
+                if (raw === '') {
+                    input.value = '0';
+                    input.dataset.rawValue = '0';
+                } else {
+                    input.value = new Intl.NumberFormat('id-ID').format(parseInt(raw));
+                    input.dataset.rawValue = raw;
+                }
             }
 
+            function getVal(id) {
+                const el = document.getElementById(id);
+                if (!el) return 0;
+                if (el.dataset.rawValue !== undefined) {
+                    return parseFloat(el.dataset.rawValue) || 0;
+                }
+                return parseFloat(el.value.replace(/\D/g, '') || 0) || 0;
+            }
+
+            function applyRupiahFormat(selector) {
+                $(selector).each(function() {
+                    const el = this;
+
+                    // Skip readonly/summary fields
+                    if (el.readOnly || el.disabled) return;
+                    if ([
+                            'modal_total_pendapatan_tetap',
+                            'modal_total_pendapatan_tidak_tetap',
+                            'modal_total_potongan',
+                            'modal_total_pendapatan',
+                            'modal_total_potongan_summary',
+                            'modal_gaji_bersih'
+                        ].includes(el.id)) return;
+
+                    // Ganti type ke text
+                    el.type = 'text';
+                    el.inputMode = 'numeric';
+                    el.style.textAlign = 'right';
+
+                    // Format nilai awal
+                    const initVal = (el.dataset.rawValue || el.value || '0').replace(/\D/g, '') || '0';
+                    el.dataset.rawValue = initVal;
+                    el.value = initVal === '0' ? '0' : new Intl.NumberFormat('id-ID').format(parseInt(
+                        initVal));
+
+                    // Hapus event lama agar tidak duplikat
+                    $(el).off('focus.rupiah input.rupiah blur.rupiah keydown.rupiah');
+
+                    $(el).on('focus.rupiah', function() {
+                        if (this.value === '0') {
+                            this.value = '';
+                        } else {
+                            this.value = this.dataset.rawValue || this.value.replace(/\D/g, '');
+                        }
+                    });
+
+                    $(el).on('input.rupiah', function() {
+                        let cursorPos = this.selectionStart;
+                        let prevLength = this.value.length;
+
+                        let raw = this.value.replace(/\D/g, '');
+                        this.dataset.rawValue = raw || '0';
+
+                        if (raw === '') {
+                            this.value = '';
+                            return;
+                        }
+
+                        let formatted = new Intl.NumberFormat('id-ID').format(parseInt(raw));
+                        this.value = formatted;
+
+                        let newLength = this.value.length;
+                        let diff = newLength - prevLength;
+                        this.setSelectionRange(cursorPos + diff, cursorPos + diff);
+
+                        hitungSemua();
+                    });
+
+                    $(el).on('blur.rupiah', function() {
+                        if (this.value === '') {
+                            this.value = '0';
+                            this.dataset.rawValue = '0';
+                        } else {
+                            formatRupiahInput(this);
+                        }
+                    });
+
+                    $(el).on('keydown.rupiah', function(e) {
+                        if ([8, 9, 27, 13, 46, 37, 38, 39, 40].includes(e.keyCode)) return;
+                        if (e.shiftKey || (e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e
+                                .keyCode > 105)) {
+                            e.preventDefault();
+                        }
+                    });
+                });
+            }
+
+            // =====================================================
+            // HITUNG SEMUA
+            // =====================================================
             function hitungSemua() {
                 const tetap = getVal('modal_gj_pokok') + getVal('modal_tunjab') + getVal('modal_tunkom') +
-                              getVal('modal_fot') + getVal('modal_tunmal');
+                    getVal('modal_fot') + getVal('modal_tunmal');
 
-                const tidakTetap = getVal('modal_lbr_harian') + getVal('modal_lbr_perjam') + getVal('modal_tukin') +
-                                   getVal('modal_insentif') + getVal('modal_bonus') + getVal('modal_thr');
+                const tidakTetap = getVal('modal_lbr_harian') + getVal('modal_lbr_perjam') +
+                    getVal('modal_tukin') + getVal('modal_insentif') + getVal('modal_bonus') + getVal('modal_thr');
 
-                const potongan = getVal('modal_bpjs_tkj') + getVal('modal_bpjs_kes') + getVal('modal_iuran_koperasi') +
-                                 getVal('modal_tps_kry') + getVal('modal_pjk_pkp') + getVal('modal_pjk_pph') +
-                                 getVal('modal_ptg_thr') + getVal('modal_pjm_kop') + getVal('modal_dda_sanksi');
+                const potongan = getVal('modal_bpjs_tkj') + getVal('modal_bpjs_kes') +
+                    getVal('modal_iuran_koperasi') + getVal('modal_tps_kry') + getVal('modal_pjk_pkp') +
+                    getVal('modal_pjk_pph') + getVal('modal_ptg_thr') + getVal('modal_pjm_kop') +
+                    getVal('modal_dda_sanksi');
 
                 const totalPendapatan = tetap + tidakTetap;
                 const gajiBersih = totalPendapatan - potongan;
@@ -1199,60 +1355,61 @@
                 $('#modal_gaji_bersih').val(formatRupiah(gajiBersih));
             }
 
-            // Attach calculation to all number inputs in modal
-            $('#salaryModal input[type="number"]').on('input', hitungSemua);
-
-            // ===== MODAL MODE MANAGEMENT =====
+            // =====================================================
+            // MODAL MODE MANAGEMENT
+            // =====================================================
             function setModalMode(mode) {
                 currentMode = mode;
-                const header = $('#salaryModalHeader');
-                const modeIndicator = $('#modeIndicator');
-                const saveBtn = $('#saveSalaryBtn');
-                const editBtn = $('#editSalaryBtn');
-                const closeText = $('#closeButtonText');
-
                 const formElements = $('#salaryForm input, #salaryForm select, #salaryForm textarea');
+                const summaryFields = $(
+                    '#modal_total_pendapatan_tetap, #modal_total_pendapatan_tidak_tetap, #modal_total_potongan, #modal_total_pendapatan, #modal_total_potongan_summary, #modal_gaji_bersih'
+                    );
 
                 switch (mode) {
                     case 'create':
-                        header.removeClass('bg-info bg-warning').addClass('bg-primary');
+                        $('#salaryModalHeader').removeClass('bg-info bg-warning').addClass('bg-primary');
                         $('#salaryModalTitle').text('Tambah Data Gaji Baru');
-                        modeIndicator.hide();
-                        saveBtn.show().html('<i class="fas fa-save me-1"></i>Simpan');
-                        editBtn.hide();
-                        closeText.text('Batal');
+                        $('#modeIndicator').hide();
+                        $('#saveSalaryBtn').show().html('<i class="fas fa-save me-1"></i>Simpan');
+                        $('#editSalaryBtn').hide();
+                        $('#closeButtonText').text('Batal');
                         formElements.prop('disabled', false).prop('readonly', false);
-                        // Keep summary fields readonly
-                        $('#modal_total_pendapatan_tetap, #modal_total_pendapatan_tidak_tetap, #modal_total_potongan, #modal_total_pendapatan, #modal_total_potongan_summary, #modal_gaji_bersih').prop('readonly', true);
+                        summaryFields.prop('readonly', true);
+                        // Re-apply rupiah format setelah enable
+                        setTimeout(() => applyRupiahFormat('#salaryModal input[type="text"][inputmode="numeric"]'),
+                            50);
                         break;
 
                     case 'edit':
-                        header.removeClass('bg-info bg-warning').addClass('bg-primary');
+                        $('#salaryModalHeader').removeClass('bg-info bg-warning').addClass('bg-primary');
                         $('#salaryModalTitle').text('Edit Data Gaji');
-                        modeIndicator.hide();
-                        saveBtn.show().html('<i class="fas fa-save me-1"></i>Update');
-                        editBtn.hide();
-                        closeText.text('Batal');
+                        $('#modeIndicator').hide();
+                        $('#saveSalaryBtn').show().html('<i class="fas fa-save me-1"></i>Update');
+                        $('#editSalaryBtn').hide();
+                        $('#closeButtonText').text('Batal');
                         formElements.prop('disabled', false).prop('readonly', false);
-                        $('#modal_total_pendapatan_tetap, #modal_total_pendapatan_tidak_tetap, #modal_total_potongan, #modal_total_pendapatan, #modal_total_potongan_summary, #modal_gaji_bersih').prop('readonly', true);
+                        summaryFields.prop('readonly', true);
+                        setTimeout(() => applyRupiahFormat('#salaryModal input[type="text"][inputmode="numeric"]'),
+                            50);
                         break;
 
                     case 'view':
-                        header.removeClass('bg-primary bg-warning').addClass('bg-info');
+                        $('#salaryModalHeader').removeClass('bg-primary bg-warning').addClass('bg-info');
                         $('#salaryModalTitle').text('Detail Data Gaji');
-                        modeIndicator.show().find('#modeText').text('Mode Detail - Data hanya dapat dilihat');
-                        saveBtn.hide();
-                        editBtn.show();
-                        closeText.text('Tutup');
+                        $('#modeIndicator').show().find('#modeText').text('Mode Detail - Data hanya dapat dilihat');
+                        $('#saveSalaryBtn').hide();
+                        $('#editSalaryBtn').show();
+                        $('#closeButtonText').text('Tutup');
                         formElements.prop('disabled', true).prop('readonly', true);
                         break;
                 }
             }
 
-            // ===== STATUS CHANGE HANDLER =====
+            // =====================================================
+            // STATUS CHANGE HANDLER
+            // =====================================================
             $('#modal_sts_data_gaji').on('change', function() {
                 if (currentMode === 'view') return;
-
                 const status = $(this).val();
                 if (status === 'NON-AKTIF') {
                     $('#modal_field_tgl_na, #modal_field_ket_na').show();
@@ -1262,7 +1419,9 @@
                 }
             });
 
-            // ===== EVENT HANDLERS =====
+            // =====================================================
+            // EVENT HANDLERS - TOMBOL
+            // =====================================================
             $('#addSalaryBtn').on('click', function() {
                 resetSalaryModal();
                 setModalMode('create');
@@ -1270,18 +1429,16 @@
             });
 
             $(document).on('click', '.show-salary-btn', function() {
-                const salaryId = $(this).data('salary-id');
-                currentSalaryId = salaryId;
+                currentSalaryId = $(this).data('salary-id');
                 setModalMode('view');
-                loadSalaryDataToModal(salaryId);
+                loadSalaryDataToModal(currentSalaryId);
                 $('#salaryModal').modal('show');
             });
 
             $(document).on('click', '.edit-salary-btn', function() {
-                const salaryId = $(this).data('salary-id');
-                currentSalaryId = salaryId;
+                currentSalaryId = $(this).data('salary-id');
                 setModalMode('edit');
-                loadSalaryDataToModal(salaryId);
+                loadSalaryDataToModal(currentSalaryId);
                 $('#salaryModal').modal('show');
             });
 
@@ -1296,9 +1453,16 @@
                 $('#deleteSalaryModal').modal('show');
             });
 
-            // ===== SAVE SALARY =====
+            // =====================================================
+            // SAVE SALARY
+            // =====================================================
             $('#saveSalaryBtn').on('click', function() {
                 if (currentMode === 'view') return;
+
+                // Konversi semua input rupiah ke angka murni sebelum submit
+                $('#salaryModal input[inputmode="numeric"]:not([readonly])').each(function() {
+                    this.value = this.dataset.rawValue || '0';
+                });
 
                 const formData = new FormData($('#salaryForm')[0]);
 
@@ -1320,10 +1484,13 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     beforeSend: function() {
-                        $('#saveSalaryBtn').prop('disabled', true).text('Menyimpan...');
+                        $('#saveSalaryBtn').prop('disabled', true).html(
+                            '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...'
+                        );
                     },
                     success: function(response) {
-                        $('#saveSalaryBtn').prop('disabled', false).html('<i class="fas fa-save me-1"></i>Simpan');
+                        $('#saveSalaryBtn').prop('disabled', false).html(
+                            '<i class="fas fa-save me-1"></i>Simpan');
                         if (response.success) {
                             $('#salaryModal').modal('hide');
                             Swal.fire({
@@ -1332,29 +1499,29 @@
                                 icon: 'success',
                                 timer: 2000,
                                 showConfirmButton: false
-                            }).then(() => {
-                                location.reload();
-                            });
+                            }).then(() => location.reload());
                         }
                     },
                     error: function(xhr) {
-                        $('#saveSalaryBtn').prop('disabled', false).html('<i class="fas fa-save me-1"></i>Simpan');
+                        // Kembalikan format rupiah setelah error
+                        applyRupiahFormat(
+                            '#salaryModal input[inputmode="numeric"]:not([readonly])');
 
-                        let errorMessage = 'Terjadi kesalahan saat menyimpan data.';
-                        if (xhr.responseJSON?.message) {
-                            errorMessage = xhr.responseJSON.message;
-                        }
-
+                        $('#saveSalaryBtn').prop('disabled', false).html(
+                            '<i class="fas fa-save me-1"></i>Simpan');
                         Swal.fire({
                             title: 'Error!',
-                            text: errorMessage,
+                            text: xhr.responseJSON?.message ||
+                                'Terjadi kesalahan saat menyimpan data.',
                             icon: 'error'
                         });
                     }
                 });
             });
 
-            // ===== DELETE SALARY =====
+            // =====================================================
+            // DELETE SALARY
+            // =====================================================
             $('#confirmDeleteSalary').on('click', function() {
                 if (!currentSalaryId) return;
 
@@ -1373,12 +1540,10 @@
                                 icon: 'success',
                                 timer: 2000,
                                 showConfirmButton: false
-                            }).then(() => {
-                                location.reload();
-                            });
+                            }).then(() => location.reload());
                         }
                     },
-                    error: function(xhr) {
+                    error: function() {
                         $('#deleteSalaryModal').modal('hide');
                         Swal.fire({
                             title: 'Error!',
@@ -1389,18 +1554,18 @@
                 });
             });
 
-            // ===== DELETE ALL SALARIES =====
+            // =====================================================
+            // DELETE ALL SALARIES
+            // =====================================================
             $('#deleteAllSalariesBtn').on('click', function() {
                 const employeeId = $(this).data('employee-id');
-                const deleteUrl = `/data-gaji/${employeeId}`;
-                $('#deleteAllSalariesForm').attr('action', deleteUrl);
+                $('#deleteAllSalariesForm').attr('action', `/data-gaji/${employeeId}`);
                 $('#deleteAllSalariesModal').modal('show');
             });
 
             $('#deleteAllSalariesForm').on('submit', function(e) {
                 e.preventDefault();
-                const form = $(this);
-                const actionUrl = form.attr('action');
+                const actionUrl = $(this).attr('action');
 
                 Swal.fire({
                     title: 'Konfirmasi Hapus',
@@ -1416,8 +1581,8 @@
                         $.ajax({
                             url: actionUrl,
                             type: 'POST',
-                            data: form.serialize(),
-                            success: function(response) {
+                            data: $(this).serialize(),
+                            success: function() {
                                 $('#deleteAllSalariesModal').modal('hide');
                                 Swal.fire({
                                     title: 'Berhasil Dihapus!',
@@ -1425,15 +1590,15 @@
                                     icon: 'success',
                                     timer: 2000,
                                     showConfirmButton: false
-                                }).then(() => {
-                                    window.location.href = "{{ route('data-gaji.index') }}";
-                                });
+                                }).then(() => window.location.href =
+                                    "{{ route('data-gaji.index') }}");
                             },
                             error: function(xhr) {
                                 $('#deleteAllSalariesModal').modal('hide');
                                 Swal.fire({
                                     title: 'Error!',
-                                    text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menghapus data.',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan saat menghapus data.',
                                     icon: 'error'
                                 });
                             }
@@ -1442,71 +1607,88 @@
                 });
             });
 
-            // ===== HELPER FUNCTIONS =====
+            // =====================================================
+            // HELPER: RESET MODAL
+            // =====================================================
             function resetSalaryModal() {
                 $('#salaryForm')[0].reset();
                 $('#salary_id').val('');
                 $('#modal_field_tgl_na, #modal_field_ket_na').hide();
                 currentSalaryId = null;
 
-                // Reset all number inputs to 0
-                $('#salaryModal input[type="number"]').val(0);
-                // Reset status to AKTIF
-                $('#modal_sts_data_gaji').val('AKTIF');
+                // Reset semua input numerik ke 0
+                $('#salaryModal input[inputmode="numeric"]:not([readonly])').each(function() {
+                    this.value = '0';
+                    this.dataset.rawValue = '0';
+                });
 
+                $('#modal_sts_data_gaji').val('AKTIF');
                 hitungSemua();
             }
 
+            // =====================================================
+            // HELPER: LOAD DATA KE MODAL
+            // =====================================================
             function loadSalaryDataToModal(salaryId) {
                 $.ajax({
                     url: `/data-gaji/salaries/${salaryId}`,
                     type: 'GET',
                     success: function(response) {
                         if (response.success) {
-                            const salary = response.data;
+                            const s = response.data;
 
-                            // Populate all salary fields
-                            $('#salary_id').val(salary.id);
-                            $('#modal_gj_pokok').val(salary.gj_pokok || 0);
-                            $('#modal_tunjab').val(salary.tunjab || 0);
-                            $('#modal_tunkom').val(salary.tunkom || 0);
-                            $('#modal_fot').val(salary.fot || 0);
-                            $('#modal_tunmal').val(salary.tunmal || 0);
+                            const fields = {
+                                'modal_gj_pokok': s.gj_pokok,
+                                'modal_tunjab': s.tunjab,
+                                'modal_tunkom': s.tunkom,
+                                'modal_fot': s.fot,
+                                'modal_tunmal': s.tunmal,
+                                'modal_lbr_harian': s.lbr_harian,
+                                'modal_lbr_perjam': s.lbr_perjam,
+                                'modal_tukin': s.tukin,
+                                'modal_insentif': s.insentif,
+                                'modal_bonus': s.bonus,
+                                'modal_thr': s.thr,
+                                'modal_bpjs_tkj': s.bpjs_tkj,
+                                'modal_bpjs_kes': s.bpjs_kes,
+                                'modal_iuran_koperasi': s.iuran_koperasi,
+                                'modal_tps_kry': s.tps_kry,
+                                'modal_pjk_pkp': s.pjk_pkp,
+                                'modal_pjk_pph': s.pjk_pph,
+                                'modal_ptg_thr': s.ptg_thr,
+                                'modal_pjm_kop': s.pjm_kop,
+                                'modal_dda_sanksi': s.dda_sanksi,
+                                'modal_bpjs_tkj_prs': s.bpjs_tkj_prs,
+                                'modal_bpjs_kes_prs': s.bpjs_kes_prs,
+                                'modal_tps_prs': s.tps_prs,
+                                'modal_askes_prs': s.askes_prs,
+                            };
 
-                            $('#modal_lbr_harian').val(salary.lbr_harian || 0);
-                            $('#modal_lbr_perjam').val(salary.lbr_perjam || 0);
-                            $('#modal_tukin').val(salary.tukin || 0);
-                            $('#modal_insentif').val(salary.insentif || 0);
-                            $('#modal_bonus').val(salary.bonus || 0);
-                            $('#modal_thr').val(salary.thr || 0);
+                            // Set rawValue dan format nilai
+                            $.each(fields, function(id, val) {
+                                const el = document.getElementById(id);
+                                if (!el) return;
+                                const raw = String(Math.round(val || 0));
+                                el.dataset.rawValue = raw;
+                                el.value = raw === '0' ? '0' : new Intl.NumberFormat('id-ID')
+                                    .format(parseInt(raw));
+                            });
 
-                            $('#modal_bpjs_tkj').val(salary.bpjs_tkj || 0);
-                            $('#modal_bpjs_kes').val(salary.bpjs_kes || 0);
-                            $('#modal_iuran_koperasi').val(salary.iuran_koperasi || 0);
-                            $('#modal_tps_kry').val(salary.tps_kry || 0);
-                            $('#modal_pjk_pkp').val(salary.pjk_pkp || 0);
-                            $('#modal_pjk_pph').val(salary.pjk_pph || 0);
-                            $('#modal_ptg_thr').val(salary.ptg_thr || 0);
-                            $('#modal_pjm_kop').val(salary.pjm_kop || 0);
-                            $('#modal_dda_sanksi').val(salary.dda_sanksi || 0);
-
-                            $('#modal_bpjs_tkj_prs').val(salary.bpjs_tkj_prs || 0);
-                            $('#modal_bpjs_kes_prs').val(salary.bpjs_kes_prs || 0);
-                            $('#modal_tps_prs').val(salary.tps_prs || 0);
-                            $('#modal_askes_prs').val(salary.askes_prs || 0);
-
-                            $('#modal_sts_data_gaji').val(salary.sts_data_gaji || 'AKTIF');
-                            $('#modal_tgl_na_gaji').val(salary.tgl_na_gaji || '');
-                            $('#modal_ket_na_gaji').val(salary.ket_na_gaji || '');
-
-                            // Trigger status change
+                            $('#salary_id').val(s.id);
+                            $('#modal_sts_data_gaji').val(s.sts_data_gaji || 'AKTIF');
+                            $('#modal_tgl_na_gaji').val(s.tgl_na_gaji || '');
+                            $('#modal_ket_na_gaji').val(s.ket_na_gaji || '');
                             $('#modal_sts_data_gaji').trigger('change');
 
-                            // Calculate totals
                             hitungSemua();
+
+                            // Re-apply rupiah format ke semua input numerik
+                            applyRupiahFormat(
+                                '#salaryModal input[type="text"][inputmode="numeric"]:not([readonly])'
+                                );
                         }
                     },
-                    error: function(xhr) {
+                    error: function() {
                         Swal.fire({
                             title: 'Error!',
                             text: 'Gagal memuat data gaji.',
@@ -1516,10 +1698,20 @@
                 });
             }
 
-            // Modal reset when hidden
+            // Reset modal saat ditutup
             $('#salaryModal').on('hidden.bs.modal', function() {
                 resetSalaryModal();
             });
+
+            // =====================================================
+            // APPLY FORMAT RUPIAH SAAT MODAL PERTAMA DIBUKA
+            // =====================================================
+            $('#salaryModal').on('shown.bs.modal', function() {
+                applyRupiahFormat(
+                    '#salaryModal input[type="number"], #salaryModal input[type="text"][inputmode="numeric"]'
+                    );
+            });
+
         });
     </script>
 @endpush

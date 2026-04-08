@@ -1127,17 +1127,14 @@
 
         #modal_total_pendapatan_tetap {
             text-align: right;
-            padding-right: 24px !important;
         }
 
         #modal_total_pendapatan_tidak_tetap {
             text-align: right;
-            padding-right: 24px !important;
         }
 
         #modal_total_potongan {
             text-align: right;
-            padding-right: 24px !important;
         }
 
         .employee-photo {

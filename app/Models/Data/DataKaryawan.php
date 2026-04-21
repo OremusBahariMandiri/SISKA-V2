@@ -172,7 +172,7 @@ class DataKaryawan extends Model
      */
     public function wilayahKerjaRelation(): BelongsTo
     {
-        return $this->belongsTo(WilayahKerja::class, 'wilker', 'id');
+        return $this->belongsTo(WilayahKerja::class, 'wilker', 'wilayah_krj');
     }
 
     public function kontrakRelation(): BelongsTo
@@ -470,6 +470,11 @@ class DataKaryawan extends Model
             ->latest('tgl_ttd')
             ->latest('id');
     }
+
+    public function wilayahKerja(): BelongsTo
+{
+    return $this->belongsTo(\App\Models\DataMaster\WilayahKerja::class, 'wilker', 'id');
+}
 
     /**
      * Get all career records for this employee from DataJenjangKarir table

@@ -32,7 +32,8 @@
         },
         "files": [
             "app/Helpers/MenuHelper.php",
-            "app/Helpers/AutoUppercaseHelper.php"
+            "app/Helpers/AutoUppercaseHelper.php",
+              "app/Helpers/FilterHelper.php"
         ]
     },
     "autoload-dev": {

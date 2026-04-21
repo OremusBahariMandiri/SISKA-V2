@@ -13,6 +13,7 @@ use App\Models\DataMaster\Departemen;
 use App\Models\DataMaster\KontrakKerja;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\DataKontrakExport;
+use App\Helpers\FilterHelper;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 
@@ -50,16 +51,52 @@ class DataKontrakController extends Controller
                 ->groupBy('id_data_kry');
         });
 
-        // Apply filters if they exist - SAMA PERSIS DENGAN DATA KARYAWAN
-
-        // Filter by Status Kontrak
+        // ===== APPLY FILTERS MENGGUNAKAN FILTER HELPER =====
         if ($request->has('filter_status') && !empty($request->filter_status)) {
             $query->where('sts_srt_ktr', $request->filter_status);
+        }
+
+        // Filter by Jabatan (specific position)
+        if ($request->has('filter_jabatan') && !empty($request->filter_jabatan)) {
+            $query->where('id_departemen', $request->filter_jabatan);
         }
 
         // Filter by Perusahaan
         if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
             $query->where('id_prsh', $request->filter_perusahaan);
+        }
+
+        // Filter by Jenis Kontrak
+        if ($request->has('filter_kontrak') && !empty($request->filter_kontrak)) {
+            $query->where('id_ktr', $request->filter_kontrak);
+        }
+
+        // Filter by Wilayah Kerja (wilker field stores STRING)
+        if ($request->has('filter_wilker') && !empty($request->filter_wilker)) {
+            $query->whereHas('wilayahKerja', function ($q) use ($request) {
+                $q->where('wilayah_krj', $request->filter_wilker);
+            });
+        }
+
+        // Filter by Jenis Kelamin
+        if ($request->has('filter_jenis_kelamin') && !empty($request->filter_jenis_kelamin)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('sex', $request->filter_jenis_kelamin);
+            });
+        }
+
+        // Filter by Unit Kerja (area_krj)
+        if ($request->has('filter_unit_kerja') && !empty($request->filter_unit_kerja)) {
+            $query->where('id_wilker', $request->filter_unit_kerja);
+        }
+
+        // Filter by Departemen (grouped by nama_dep)
+        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
+            $selectedDepartemen = Departemen::find($request->filter_departemen);
+            if ($selectedDepartemen) {
+                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
+                $query->whereIn('id_departemen', $departemenIds);
+            }
         }
 
         // Filter by Nama Karyawan
@@ -74,44 +111,6 @@ class DataKontrakController extends Controller
             $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('nrk', 'LIKE', '%' . $request->filter_nrk . '%');
             });
-        }
-
-        // Filter by Departemen (grouped by nama_dep)
-        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
-            $selectedDepartemen = Departemen::find($request->filter_departemen);
-            if ($selectedDepartemen) {
-                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
-                $query->whereIn('id_departemen', $departemenIds);
-            }
-        }
-
-        // Filter by Jabatan (specific position)
-        if ($request->has('filter_jabatan') && !empty($request->filter_jabatan)) {
-            $query->where('id_departemen', $request->filter_jabatan);
-        }
-
-        // Filter by Jenis Kontrak
-        if ($request->has('filter_kontrak') && !empty($request->filter_kontrak)) {
-            $query->where('id_ktr', $request->filter_kontrak);
-        }
-
-        // Filter by Jenis Kelamin
-        if ($request->has('filter_jenis_kelamin') && !empty($request->filter_jenis_kelamin)) {
-            $query->whereHas('karyawan', function ($q) use ($request) {
-                $q->where('sex', $request->filter_jenis_kelamin);
-            });
-        }
-
-        // Filter by Wilayah Kerja (wilker field stores STRING)
-        if ($request->has('filter_wilker') && !empty($request->filter_wilker)) {
-            $query->whereHas('wilayahKerja', function ($q) use ($request) {
-                $q->where('wilayah_krj', $request->filter_wilker);
-            });
-        }
-
-        // Filter by Unit Kerja (area_krj)
-        if ($request->has('filter_unit_kerja') && !empty($request->filter_unit_kerja)) {
-            $query->where('id_wilker', $request->filter_unit_kerja);
         }
 
         // Get filtered data
@@ -259,47 +258,6 @@ class DataKontrakController extends Controller
             ->whereRaw("STR_TO_DATE(tgl_pgt_ktr, '%Y-%m-%d') <= DATE_ADD(?, INTERVAL 30 DAY)", [$today])
             ->count();
 
-        // Get master data for filter dropdowns - SAMA DENGAN DATA KARYAWAN
-        $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
-        $kontrakTypes = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
-        $departemens = Departemen::sortByCode()->get();
-        $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
-
-        // Status options
-        $statusOptions = [
-            'AKTIF' => 'AKTIF',
-            'NON-AKTIF' => 'NON-AKTIF',
-        ];
-
-        // Gender options - SAMA DENGAN DATA KARYAWAN
-        $jenisKelaminOptions = [
-            'LAKI-LAKI' => 'Laki-laki',
-            'PEREMPUAN' => 'Perempuan'
-        ];
-
-        // Get unique departemen names for filter dropdown - SAMA DENGAN DATA KARYAWAN
-        $departemenOptions = Departemen::select('nama_dep', 'singkatan_dep', DB::raw('MIN(id) as id'), DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode_dep'))
-            ->groupBy('nama_dep', 'singkatan_dep')
-            ->orderBy('min_kode_dep', 'asc')
-            ->get();
-
-        // Get all jabatan/positions for filter dropdown - SAMA DENGAN DATA KARYAWAN
-        $jabatanOptions = Departemen::sortByCode()->get(['id', 'kode_dep', 'nama_dep', 'nama_jbt', 'singkatan_jbt']);
-
-        // Get contract types for filter dropdown
-        $kontrakOptions = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
-
-        // Get UNIQUE wilayah_krj for filter dropdown - SAMA DENGAN DATA KARYAWAN
-        $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
-            ->groupBy('wilayah_krj')
-            ->orderBy('wilayah_krj', 'asc')
-            ->get();
-
-        // Unit Kerja options - SAMA DENGAN DATA KARYAWAN
-        $unitKerjaOptions = WilayahKerja::select('id', 'area_krj', 'kode_wk')
-            ->orderBy('area_krj')
-            ->get();
-
         // Get user permissions
         $userPermissions = [];
         if (auth()->check()) {
@@ -328,18 +286,21 @@ class DataKontrakController extends Controller
             }
         }
 
-        // Store current filters for view - SAMA DENGAN DATA KARYAWAN
+        // ===== GET FILTER OPTIONS DARI HELPER =====
+        $filterOptions = FilterHelper::getFilterDataOptions();
+
+        // ===== STORE CURRENT FILTERS =====
         $currentFilters = [
             'status' => $request->filter_status ?? '',
+            'jabatan' => $request->filter_jabatan ?? '',
             'perusahaan' => $request->filter_perusahaan ?? '',
+            'kontrak' => $request->filter_kontrak ?? '',
+            'wilker' => $request->filter_wilker ?? '',
+            'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
+            'unit_kerja' => $request->filter_unit_kerja ?? '',
+            'departemen' => $request->filter_departemen ?? '',
             'nama' => $request->filter_nama ?? '',
             'nrk' => $request->filter_nrk ?? '',
-            'departemen' => $request->filter_departemen ?? '',
-            'jabatan' => $request->filter_jabatan ?? '',
-            'kontrak' => $request->filter_kontrak ?? '',
-            'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
-            'wilker' => $request->filter_wilker ?? '',
-            'unit_kerja' => $request->filter_unit_kerja ?? '',
         ];
 
         // Get DataKaryawan collection for summary statistics
@@ -350,26 +311,33 @@ class DataKontrakController extends Controller
             }
         }
 
+        // Get master data untuk summary modal (tetap diperlukan)
+        $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
+        $kontrakTypes = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
+        $departemens = Departemen::sortByCode()->get();
+        $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
+        $jenisKelaminOptions = [
+            'LAKI-LAKI' => 'Laki-laki',
+            'PEREMPUAN' => 'Perempuan'
+        ];
+        $kontrakOptions = KontrakKerja::orderBy('kode_ktr', 'asc')->get();
+
         return view('data.data-kontrak.index', compact(
             'dataKontraks',
             'activeContractsData',
             'contractCounts',
             'userPermissions',
+            'expiredContractsCount',
+            'expiringContractsCount',
+            'dataKaryawans',
             'perusahaans',
             'kontrakTypes',
             'departemens',
             'wilayahKerjas',
-            'statusOptions',
-            'expiredContractsCount',
-            'expiringContractsCount',
             'jenisKelaminOptions',
-            'departemenOptions',
-            'jabatanOptions',
-            'wilayahKerjaOptions',
-            'unitKerjaOptions',
             'kontrakOptions',
-            'currentFilters',
-            'dataKaryawans'
+            'filterOptions',      // ← TAMBAHKAN INI
+            'currentFilters'      // ← SUDAH ADA
         ));
     }
 
@@ -709,8 +677,8 @@ class DataKontrakController extends Controller
         }
     }
 
-    // ================================================ CONTRACT MANAGEMENT METHODS ===================================== //
-    // ========================================================================================================== //
+// ================================================ CONTRACT MANAGEMENT METHODS ===================================== //
+// ========================================================================================================== //
 
     /**
      * Store a new contract for an employee
@@ -991,8 +959,8 @@ class DataKontrakController extends Controller
         }
     }
 
-    // ================================================ LEGACY METHODS ============================================== //
-    // ========================================================================================================== //
+// ================================================ LEGACY METHODS ============================================== //
+// ========================================================================================================== //
 
     /**
      * Add new contract for employee
@@ -1204,7 +1172,13 @@ class DataKontrakController extends Controller
     public function getEmployeeData($id)
     {
         try {
-            $employee = DataKaryawan::findOrFail($id);
+            $employee = DataKaryawan::with([
+                'perusahaanRelation',
+                'kontrakRelation',
+                'departemenRelation',
+                'unitKerjaRelation',
+                'wilayahKerjaRelation'  // ← PASTIKAN INI ADA
+            ])->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -1218,75 +1192,47 @@ class DataKontrakController extends Controller
                     'tgl_lahir' => $employee->tgl_lahir ? $employee->tgl_lahir->format('Y-m-d') : null,
                     'tgl_lahir_formatted' => $employee->tgl_lahir ? $employee->tgl_lahir->format('d-m-Y') : null,
                     'sex' => $employee->sex,
-                    'agama' => $employee->agama,
-                    'kewarganegaraan' => $employee->kewarganegaraan,
-                    'sts_nikah' => $employee->sts_nikah,
-                    'sts_keluarga' => $employee->sts_keluarga,
-                    'jml_anak' => $employee->jml_anak,
-
-                    // Contact info
                     'tlp1' => $employee->tlp1,
-                    'tlp2' => $employee->tlp2,
+                    'sts_nikah' => $employee->sts_nikah,
+                    'jml_anak' => $employee->jml_anak,
                     'email1' => $employee->email1,
-                    'email2' => $employee->email2,
-                    'instagram' => $employee->instagram,
-                    'facebook' => $employee->facebook,
-
-                    // Address info
-                    'alamat_ktp' => $employee->alamat_ktp,
-                    'alamat_dom' => $employee->alamat_dom,
-                    'rt_rw_ktp' => $employee->rt_rw_ktp,
-                    'rt_rw_dom' => $employee->rt_rw_dom,
-                    'kel_ktp' => $employee->kel_ktp,
-                    'kel_dom' => $employee->kel_dom,
-                    'kec_ktp' => $employee->kec_ktp,
-                    'kec_dom' => $employee->kec_dom,
-                    'kota_ktp' => $employee->kota_ktp,
-                    'kota_dom' => $employee->kota_dom,
-                    'prov_ktp' => $employee->prov_ktp,
-                    'prov_dom' => $employee->prov_dom,
-                    'kd_pos_ktp' => $employee->kd_pos_ktp,
-                    'kd_pos_dom' => $employee->kd_pos_dom,
 
                     // Employment info
-                    'nrk' => $employee->nrk,
                     'tgl_masuk' => $employee->tgl_masuk ? $employee->tgl_masuk->format('Y-m-d') : null,
                     'tgl_masuk_formatted' => $employee->tgl_masuk ? $employee->tgl_masuk->format('d-m-Y') : null,
                     'sts_kry' => $employee->sts_kry,
-                    'id_hubin' => $employee->id_hubin,
-                    'tgl_phk' => $employee->tgl_phk ? $employee->tgl_phk->format('Y-m-d') : null,
-                    'tgl_phk_formatted' => $employee->tgl_phk ? $employee->tgl_phk->format('d-m-Y') : null,
-                    'ket_phk' => $employee->ket_phk,
-
-                    // Education info
-                    'jenjang_skl' => $employee->jenjang_skl,
-                    'institusi_skl' => $employee->institusi_skl,
-                    'skt_inst_skl' => $employee->skt_inst_skl,
-                    'kota_skl' => $employee->kota_skl,
-                    'fakultas_skl' => $employee->fakultas_skl,
-                    'jurusan_skl' => $employee->jurusan_skl,
-                    'gelar_skl' => $employee->gelar_skl,
-                    'tgl_lulus_skl' => $employee->tgl_lulus_skl ? $employee->tgl_lulus_skl->format('Y-m-d') : null,
-                    'tgl_lulus_skl_formatted' => $employee->tgl_lulus_skl ? $employee->tgl_lulus_skl->format('d-m-Y') : null,
 
                     // Contract info
                     'perusahaan' => $employee->perusahaan,
+                    'perusahaan_nama' => optional($employee->perusahaanRelation)->nama_prs1,
                     'skt_prs' => $employee->skt_prs,
+                    'sts_ktr' => $employee->sts_ktr,
+                    'kontrak_nama' => optional($employee->kontrakRelation)->nama_ktr,
+                    'skt_sts_ktr' => $employee->skt_sts_ktr,
                     'tgl_awal_ktr' => $employee->tgl_awal_ktr ? $employee->tgl_awal_ktr->format('Y-m-d') : null,
                     'tgl_awal_ktr_formatted' => $employee->tgl_awal_ktr ? $employee->tgl_awal_ktr->format('d-m-Y') : null,
                     'tgl_akhir_ktr' => $employee->tgl_akhir_ktr ? $employee->tgl_akhir_ktr->format('Y-m-d') : null,
                     'tgl_akhir_ktr_formatted' => $employee->tgl_akhir_ktr ? $employee->tgl_akhir_ktr->format('d-m-Y') : null,
                     'durasi_ktr' => $employee->durasi_ktr,
 
-                    // Career info
+                    // Career info - DIPERBAIKI
                     'departemen' => $employee->departemen,
+                    'departemen_nama' => optional($employee->departemenRelation)->nama_dep,
                     'skt_dep' => $employee->skt_dep,
                     'jabatan' => $employee->jabatan,
+                    'jabatan_nama' => optional($employee->departemenRelation)->nama_jbt,
                     'skt_jbt' => $employee->skt_jbt,
                     'wilker' => $employee->wilker,
+                    'wilker_nama' => optional($employee->wilayahKerjaRelation)->wilayah_krj, // ← FIX INI
                     'skt_wil_krj' => $employee->skt_wil_krj,
                     'unit_krj' => $employee->unit_krj,
+                    'unit_krj_nama' => optional($employee->unitKerjaRelation)->area_krj,
                     'tugas' => $employee->tugas,
+
+                    // PHK info
+                    'tgl_phk' => $employee->tgl_phk ? $employee->tgl_phk->format('Y-m-d') : null,
+                    'tgl_phk_formatted' => $employee->tgl_phk ? $employee->tgl_phk->format('d-m-Y') : null,
+                    'ket_phk' => $employee->ket_phk,
                 ]
             ]);
         } catch (\Exception $e) {

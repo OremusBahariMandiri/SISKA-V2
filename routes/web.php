@@ -182,6 +182,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('data-dokumen')->group(function () {
         // Employee validation & data
+        
         Route::get('check-employee/{id}', [DataDokumenController::class, 'checkEmployeeExists']);
         Route::get('get-employee-data/{id}', [DataDokumenController::class, 'getEmployeeData']);
 

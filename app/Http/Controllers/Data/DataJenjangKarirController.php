@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Data;
 
+use App\Helpers\FilterHelper;
 use App\Traits\GenerateIdTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -44,7 +45,7 @@ class DataJenjangKarirController extends Controller
                 ->groupBy('id_karyawan');
         });
 
-        // Apply filters if they exist
+        // ===== APPLY FILTERS MENGGUNAKAN FILTER HELPER =====
 
         // Filter by Nama Karyawan
         if ($request->has('filter_nama') && !empty($request->filter_nama)) {
@@ -138,36 +139,6 @@ class DataJenjangKarirController extends Controller
             }
         }
 
-        // Get master data for filter dropdowns
-        $departemens = Departemen::sortByCode()->get();
-        $wilayahKerjas = WilayahKerja::orderBy('wilayah_krj', 'asc')->get();
-
-        // Gender options
-        $jenisKelaminOptions = [
-            'LAKI-LAKI' => 'Laki-laki',
-            'PEREMPUAN' => 'Perempuan'
-        ];
-
-        // Get unique departemen names for filter dropdown
-        $departemenOptions = Departemen::select('nama_dep', 'singkatan_dep', DB::raw('MIN(id) as id'), DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode_dep'))
-            ->groupBy('nama_dep', 'singkatan_dep')
-            ->orderBy('min_kode_dep', 'asc')
-            ->get();
-
-        // Get all jabatan/positions for filter dropdown
-        $jabatanOptions = Departemen::sortByCode()->get(['id', 'kode_dep', 'nama_dep', 'nama_jbt', 'singkatan_jbt']);
-
-        // Get UNIQUE wilayah_krj for filter dropdown
-        $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
-            ->groupBy('wilayah_krj')
-            ->orderBy('wilayah_krj', 'asc')
-            ->get();
-
-        // Unit Kerja options
-        $unitKerjaOptions = WilayahKerja::select('id', 'area_krj', 'kode_wk')
-            ->orderBy('area_krj')
-            ->get();
-
         // Get user permissions
         $userPermissions = [];
         if (auth()->check()) {
@@ -196,7 +167,10 @@ class DataJenjangKarirController extends Controller
             }
         }
 
-        // Store current filters for view
+        // ===== GET FILTER OPTIONS DARI HELPER =====
+        $filterOptions = FilterHelper::getFilterDataOptions();
+
+        // ===== STORE CURRENT FILTERS =====
         $currentFilters = [
             'nama' => $request->filter_nama ?? '',
             'nrk' => $request->filter_nrk ?? '',
@@ -222,14 +196,8 @@ class DataJenjangKarirController extends Controller
             'dataJenjangKarirs',
             'careerCounts',
             'userPermissions',
-            'departemens',
-            'wilayahKerjas',
-            'jenisKelaminOptions',
-            'departemenOptions',
-            'jabatanOptions',
-            'wilayahKerjaOptions',
-            'unitKerjaOptions',
-            'currentFilters',
+            'filterOptions',      // ← TAMBAHKAN INI (menggantikan semua variabel filter manual)
+            'currentFilters',     // ← SUDAH ADA
             'dataKaryawans'
         ));
     }

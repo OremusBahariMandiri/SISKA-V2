@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dummy Ticket War</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  padding: 20px;
+}
+
+.event {
+  background: #1e293b;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.disabled {
+  background: gray;
+  cursor: not-allowed;
+}
+
+.active {
+  background: gold;
+  color: black;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎫 Event Ticket</h2>
+<p>⏰ Target: 11:19:00 (refresh setelah jam ini untuk aktifkan EXO)</p>
+
+<div id="eventList"></div>
+
+<script>
+
+// ================= CONFIG =================
+const TARGET_TIME = "12:02:00";
+const TARGET_EVENT = "EXO";
+
+// ================= TIME =================
+function getNowMs() {
+  const now = new Date();
+  return now.getHours()*3600000 +
+         now.getMinutes()*60000 +
+         now.getSeconds()*1000;
+}
+
+function getTargetMs() {
+  const [h,m,s] = TARGET_TIME.split(":").map(Number);
+  return h*3600000 + m*60000 + s*1000;
+}
+
+// ================= CHECK SAAT LOAD =================
+const isTimePassed = getNowMs() >= getTargetMs();
+
+// ================= GENERATE EVENTS =================
+const events = [
+  {name: "EXO Planet Tour", active: false},
+  {name: "aespa Live", active: true},
+  {name: "NCT Wish", active: true}
+];
+
+const container = document.getElementById("eventList");
+
+events.forEach(e => {
+
+  const isEXO = e.name.includes(TARGET_EVENT);
+
+  // logic: EXO aktif hanya jika waktu sudah lewat (saat reload)
+  const isActive = e.active || (isEXO && isTimePassed);
+
+  const div = document.createElement("div");
+  div.className = "event";
+
+  div.innerHTML = `
+    <h3>${e.name}</h3>
+    <button class="${isActive ? "active" : "disabled"}"
+            ${isActive ? "" : "disabled"}>
+      View Event
+    </button>
+  `;
+
+  container.appendChild(div);
+});
+
+// ================= CLICK HANDLER =================
+document.addEventListener("click", function(e) {
+
+  if (e.target.tagName === "BUTTON" && !e.target.disabled) {
+
+    const eventName = e.target.closest(".event").innerText;
+
+    console.log("➡️ Masuk event:", eventName);
+
+    // redirect ke halaman captcha
+    setTimeout(() => {
+      showCaptchaPage(eventName);
+    }, 200);
+  }
+
+});
+
+// ================= CAPTCHA PAGE =================
+function showCaptchaPage(name) {
+  document.body.innerHTML = `
+    <h2>🔐 Verifikasi</h2>
+    <p>${name}</p>
+    <button id="captcha">I'm not a robot</button>
+  `;
+
+  document.getElementById("captcha").onclick = () => {
+    showTicketPage();
+  };
+}
+
+// ================= TICKET PAGE =================
+function showTicketPage() {
+  document.body.innerHTML = `
+    <h2>🎟️ Pilih Tiket</h2>
+    <button id="buy">Buy Ticket</button>
+  `;
+
+  document.getElementById("buy").onclick = () => {
+    alert("🎉 Berhasil masuk checkout!");
+  };
+}
+
+</script>
+
+</body>
+</html>

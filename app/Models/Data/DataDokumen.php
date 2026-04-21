@@ -99,6 +99,11 @@ class DataDokumen extends Model
         return $this->belongsTo(User::class, 'updated_by', 'id_kode');
     }
 
+    public function wilayahKerja(): BelongsTo
+{
+    return $this->belongsTo(\App\Models\DataMaster\WilayahKerja::class, 'id_wilker', 'id');
+}
+
     /**
      * Get all documents for the same employee
      */

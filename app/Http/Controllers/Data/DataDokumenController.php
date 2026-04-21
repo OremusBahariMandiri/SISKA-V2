@@ -10,6 +10,7 @@ use App\Models\Data\DataKaryawan;
 use App\Models\DataMaster\DokumenKaryawan;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\DataDokumenExport;
+use App\Helpers\FilterHelper;
 use App\Models\DataMaster\Departemen;
 use App\Models\DataMaster\KontrakKerja;
 use App\Models\DataMaster\Perusahaan;
@@ -33,14 +34,12 @@ class DataDokumenController extends Controller
 
     public function index(Request $request)
     {
-        // Initialize query with relationships
         $query = DataDokumen::with([
             'karyawan',
             'dokumenKaryawan',
             'creator',
             'updater'
         ]);
-
 
         // Get latest document per employee first
         $query->whereIn('id', function ($subquery) {
@@ -49,84 +48,82 @@ class DataDokumenController extends Controller
                 ->groupBy('id_data_kry');
         });
 
-        // Apply filters if they exist
-
-        // Filter by Status Dokumen
+        // ✅ Filter Status — kolom sts_dok ada di tabel dokumen
         if ($request->has('filter_status') && !empty($request->filter_status)) {
-            $query->where('sts_dok', $request->filter_status);
+            $query->where('sts_dok', $request->filter_status); // BUKAN sts_srt_ktr
         }
 
-        // Filter by Jenis Dokumen
-        if ($request->has('filter_jenis_dokumen') && !empty($request->filter_jenis_dokumen)) {
-            $query->where('id_dokumen', $request->filter_jenis_dokumen);
-        }
-
-        // Filter by Nama Karyawan
-        if ($request->has('filter_nama') && !empty($request->filter_nama)) {
-            $query->whereHas('karyawan', function ($q) use ($request) {
-                $q->where('nama', 'LIKE', '%' . $request->filter_nama . '%');
-            });
-        }
-
-        // Filter by NRK
-        if ($request->has('filter_nrk') && !empty($request->filter_nrk)) {
-            $query->whereHas('karyawan', function ($q) use ($request) {
-                $q->where('nrk', 'LIKE', '%' . $request->filter_nrk . '%');
-            });
-        }
-
-        // Filter by No Dokumen
-        if ($request->has('filter_no_dokumen') && !empty($request->filter_no_dokumen)) {
-            $query->where('no_dok', 'LIKE', '%' . $request->filter_no_dokumen . '%');
-        }
-
-        // Filter by Departemen (grouped by nama_dep)
-        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
-            $selectedDepartemen = Departemen::find($request->filter_departemen);
-            if ($selectedDepartemen) {
-                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
-                $query->whereHas('karyawan', function ($q) use ($departemenIds) {
-                    $q->whereIn('departemen', $departemenIds);
-                });
-            }
-        }
-
-        // Filter by Jabatan (specific position)
+        // ✅ Filter Jabatan — id_departemen ada di tabel dokumen? Kalau tidak, pakai whereHas karyawan
         if ($request->has('filter_jabatan') && !empty($request->filter_jabatan)) {
             $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('departemen', $request->filter_jabatan);
             });
         }
 
-        // Filter by Perusahaan
+        // ✅ Filter Perusahaan — via karyawan
         if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
             $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('perusahaan', $request->filter_perusahaan);
             });
         }
 
-        // Filter by Jenis Kelamin
-        if ($request->has('filter_jenis_kelamin') && !empty($request->filter_jenis_kelamin)) {
-            $query->whereHas('karyawan', function ($q) use ($request) {
-                $q->where('sex', $request->filter_jenis_kelamin);
-            });
+        // ✅ Filter Kontrak — id_ktr TIDAK ADA di tabel dokumen, ambil via DataKontrak
+        if ($request->has('filter_kontrak') && !empty($request->filter_kontrak)) {
+            $karyawanIds = \App\Models\Data\DataKontrak::where('id_ktr', $request->filter_kontrak)
+                ->pluck('id_data_kry')
+                ->toArray();
+            $query->whereIn('id_data_kry', $karyawanIds);
         }
 
-        // Filter by Wilayah Kerja (wilker field stores ID that references wilayah_krj STRING)
+        // ✅ Filter Wilayah Kerja — via relasi wilayahKerja
         if ($request->has('filter_wilker') && !empty($request->filter_wilker)) {
             $query->whereHas('karyawan.wilayahKerjaRelation', function ($q) use ($request) {
                 $q->where('wilayah_krj', $request->filter_wilker);
             });
         }
 
-        // Filter by Unit Kerja (area_krj)
+        // ✅ Filter Jenis Kelamin — via karyawan
+        if ($request->has('filter_jenis_kelamin') && !empty($request->filter_jenis_kelamin)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('sex', $request->filter_jenis_kelamin);
+            });
+        }
+
+        // ✅ Filter Unit Kerja — cek apakah kolom id_wilker ada di tabel dokumen
+        // Kalau ada pakai where langsung, kalau tidak pakai whereHas karyawan
         if ($request->has('filter_unit_kerja') && !empty($request->filter_unit_kerja)) {
             $query->whereHas('karyawan', function ($q) use ($request) {
                 $q->where('unit_krj', $request->filter_unit_kerja);
             });
         }
 
-        // Get filtered data
+        // ✅ Filter Departemen — via karyawan
+        if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
+            $selectedDepartemen = Departemen::find($request->filter_departemen);
+            if ($selectedDepartemen) {
+                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)
+                    ->pluck('id')
+                    ->toArray();
+                $query->whereHas('karyawan', function ($q) use ($departemenIds) {
+                    $q->whereIn('departemen', $departemenIds);
+                });
+            }
+        }
+
+        // ✅ Filter Nama — via karyawan
+        if ($request->has('filter_nama') && !empty($request->filter_nama)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('nama', 'LIKE', '%' . $request->filter_nama . '%');
+            });
+        }
+
+        // ✅ Filter NRK — via karyawan
+        if ($request->has('filter_nrk') && !empty($request->filter_nrk)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('nrk', 'LIKE', '%' . $request->filter_nrk . '%');
+            });
+        }
+
         $dataDokumens = $query->orderBy('created_at', 'desc')->get();
 
         // Handle export
@@ -336,19 +333,21 @@ class DataDokumenController extends Controller
             }
         }
 
-        // Store current filters for view
+        // ===== GET FILTER OPTIONS DARI HELPER =====
+        $filterOptions = FilterHelper::getFilterDataOptions();
+
+        // ===== STORE CURRENT FILTERS =====
         $currentFilters = [
             'status' => $request->filter_status ?? '',
-            'jenis_dokumen' => $request->filter_jenis_dokumen ?? '',
-            'nama' => $request->filter_nama ?? '',
-            'nrk' => $request->filter_nrk ?? '',
-            'no_dokumen' => $request->filter_no_dokumen ?? '',
-            'departemen' => $request->filter_departemen ?? '',
             'jabatan' => $request->filter_jabatan ?? '',
             'perusahaan' => $request->filter_perusahaan ?? '',
-            'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
+            'kontrak' => $request->filter_kontrak ?? '',
             'wilker' => $request->filter_wilker ?? '',
+            'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
             'unit_kerja' => $request->filter_unit_kerja ?? '',
+            'departemen' => $request->filter_departemen ?? '',
+            'nama' => $request->filter_nama ?? '',
+            'nrk' => $request->filter_nrk ?? '',
         ];
 
 
@@ -377,6 +376,7 @@ class DataDokumenController extends Controller
             'wilayahKerjaOptions',
             'unitKerjaOptions',
             'currentFilters',
+            'filterOptions',
             'dataKaryawans'
         ));
     }
@@ -464,7 +464,7 @@ class DataDokumenController extends Controller
             $extension = $file->getClientOriginalExtension();
 
             // Create new filename: jenisdokumen_namakaryawan_nrk.ext
-            $fileName = $jenisDokumen . '_' .$nrk . '_' . $namaKaryawan . '.' . $extension;
+            $fileName = $jenisDokumen . '_' . $nrk . '_' . $namaKaryawan . '.' . $extension;
 
             // Store in dokumen/dokumen-karyawan folder
             $file->storeAs('public/dokumen/dokumen-karyawan', $fileName);
@@ -611,7 +611,7 @@ class DataDokumenController extends Controller
             $extension = $file->getClientOriginalExtension();
 
             // Create new filename: jenisdokumen_namakaryawan_nrk.ext
-            $fileName = $jenisDokumen . '_' .$nrk . '_' . $namaKaryawan . '.' . $extension;
+            $fileName = $jenisDokumen . '_' . $nrk . '_' . $namaKaryawan . '.' . $extension;
 
             // Store in dokumen/dokumen-karyawan folder
             $file->storeAs('public/dokumen/dokumen-karyawan', $fileName);
@@ -779,7 +779,7 @@ class DataDokumenController extends Controller
                 $extension = $file->getClientOriginalExtension();
 
                 // Create new filename: jenisdokumen_namakaryawan_nrk.ext
-                $fileName = $jenisDokumen . '_' .$nrk . '_' . $namaKaryawan . '.' . $extension;
+                $fileName = $jenisDokumen . '_' . $nrk . '_' . $namaKaryawan . '.' . $extension;
 
                 // Store in dokumen/dokumen-karyawan folder
                 $file->storeAs('public/dokumen/dokumen-karyawan', $fileName);
@@ -943,7 +943,7 @@ class DataDokumenController extends Controller
                 $extension = $file->getClientOriginalExtension();
 
                 // Create new filename: jenisdokumen_namakaryawan_nrk.ext
-                $fileName = $jenisDokumen . '_' .$nrk . '_' . $namaKaryawan . '.' . $extension;
+                $fileName = $jenisDokumen . '_' . $nrk . '_' . $namaKaryawan . '.' . $extension;
 
                 // Store in dokumen/dokumen-karyawan folder
                 $file->storeAs('public/dokumen/dokumen-karyawan', $fileName);
@@ -1196,6 +1196,9 @@ class DataDokumenController extends Controller
      * Get employee data for AJAX call (enhanced version)
      */
 
+    /**
+     * Get employee data for AJAX call (enhanced version)
+     */
     public function getEmployeeData($id)
     {
         try {
@@ -1204,8 +1207,16 @@ class DataDokumenController extends Controller
                 'kontrakRelation',
                 'departemenRelation',
                 'unitKerjaRelation',
-                'wilayahKerjaRelation'
+                'wilayahKerjaRelation'  // ✅ Pastikan ini dimuat
             ])->findOrFail($id);
+
+            // ✅ TAMBAHKAN LOGGING UNTUK DEBUG
+            \Log::info('DataDokumen - Employee Wilker Debug:', [
+                'wilker_raw' => $employee->wilker,
+                'wilayahKerjaRelation_exists' => $employee->wilayahKerjaRelation ? 'YES' : 'NO',
+                'wilker_nama' => optional($employee->wilayahKerjaRelation)->wilayah_krj,
+            ]);
+
 
             return response()->json([
                 'success' => true,
@@ -1242,18 +1253,23 @@ class DataDokumenController extends Controller
                     'tgl_akhir_ktr_formatted' => $employee->tgl_akhir_ktr ? $employee->tgl_akhir_ktr->format('d-m-Y') : null,
                     'durasi_ktr' => $employee->durasi_ktr,
 
-                    // Career info
+                    // Career info - CRITICAL SECTION
                     'departemen' => $employee->departemen,
                     'departemen_nama' => optional($employee->departemenRelation)->nama_dep,
                     'skt_dep' => $employee->skt_dep,
                     'jabatan' => $employee->jabatan,
                     'jabatan_nama' => optional($employee->departemenRelation)->nama_jbt,
                     'skt_jbt' => $employee->skt_jbt,
+
+                    // WILAYAH KERJA - INI YANG PENTING
                     'wilker' => $employee->wilker,
                     'wilker_nama' => optional($employee->wilayahKerjaRelation)->wilayah_krj,
                     'skt_wil_krj' => $employee->skt_wil_krj,
+
+                    // UNIT KERJA
                     'unit_krj' => $employee->unit_krj,
                     'unit_krj_nama' => optional($employee->unitKerjaRelation)->area_krj,
+
                     'tugas' => $employee->tugas,
 
                     // PHK info
@@ -1263,6 +1279,12 @@ class DataDokumenController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
+            \Log::error('DataDokumen - GetEmployeeData Error:', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Data karyawan tidak ditemukan: ' . $e->getMessage()

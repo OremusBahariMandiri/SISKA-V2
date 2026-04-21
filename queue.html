@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Queue Tiket</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    .box {
+      border: 2px solid #ddd;
+      padding: 30px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h1>⏳ Anda dalam antrian</h1>
+    <p id="queueText">Memproses...</p>
+  </div>
+
+  <script>
+    let number = Math.floor(Math.random() * 1000) + 1;
+
+    const text = document.getElementById("queueText");
+
+    setInterval(() => {
+      number -= Math.floor(Math.random() * 10);
+
+      if (number <= 0) {
+        text.innerText = "🎉 Giliran Anda! Silakan lanjut pembayaran.";
+      } else {
+        text.innerText = "Nomor antrian Anda: " + number;
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>

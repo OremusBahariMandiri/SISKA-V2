@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Data;
 
+use App\Helpers\FilterHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Data\DataDokumen;
@@ -10,6 +11,7 @@ use App\Models\DataMaster\Perusahaan;
 use App\Models\DataMaster\WilayahKerja;
 use App\Models\DataMaster\Departemen;
 use App\Models\DataMaster\DokumenKaryawan;
+use App\Models\DataMaster\KontrakKerja;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -41,57 +43,80 @@ class DataDokumenLaporanController extends Controller
         ->orderBy('karyawan.nama', 'asc')
         ->orderBy('dok_kry.kode_dok_kry', 'asc');
 
-        // Apply filters
+        // Apply filters - SAMA SEPERTI DATA KONTRAK LAPORAN
         if ($request->has('filter_status') && !empty($request->filter_status)) {
-            $query->where('203_dm_data_dokumen.sts_dok', $request->filter_status);
+            $query->where('sts_dok', $request->filter_status); // BUKAN sts_srt_ktr
         }
 
-        if ($request->has('filter_jenis_dokumen') && !empty($request->filter_jenis_dokumen)) {
-            $query->where('203_dm_data_dokumen.id_dokumen', $request->filter_jenis_dokumen);
+        // ✅ Filter Jabatan — id_departemen ada di tabel dokumen? Kalau tidak, pakai whereHas karyawan
+        if ($request->has('filter_jabatan') && !empty($request->filter_jabatan)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('departemen', $request->filter_jabatan);
+            });
         }
 
-        if ($request->has('filter_kategori_dokumen') && !empty($request->filter_kategori_dokumen)) {
-            $query->where('dok_kry.ktg_dok_kry', $request->filter_kategori_dokumen);
-        }
-
-        if ($request->has('filter_nama') && !empty($request->filter_nama)) {
-            $query->where('karyawan.nama', 'LIKE', '%' . $request->filter_nama . '%');
-        }
-
-        if ($request->has('filter_nrk') && !empty($request->filter_nrk)) {
-            $query->where('karyawan.nrk', 'LIKE', '%' . $request->filter_nrk . '%');
-        }
-
-        if ($request->has('filter_no_dokumen') && !empty($request->filter_no_dokumen)) {
-            $query->where('203_dm_data_dokumen.no_dok', 'LIKE', '%' . $request->filter_no_dokumen . '%');
-        }
-
+        // ✅ Filter Perusahaan — via karyawan
         if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
-            $query->where('karyawan.perusahaan', $request->filter_perusahaan);
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('perusahaan', $request->filter_perusahaan);
+            });
         }
 
+        // ✅ Filter Kontrak — id_ktr TIDAK ADA di tabel dokumen, ambil via DataKontrak
+        if ($request->has('filter_kontrak') && !empty($request->filter_kontrak)) {
+            $karyawanIds = \App\Models\Data\DataKontrak::where('id_ktr', $request->filter_kontrak)
+                ->pluck('id_data_kry')
+                ->toArray();
+            $query->whereIn('id_data_kry', $karyawanIds);
+        }
+
+        // ✅ Filter Wilayah Kerja — via relasi wilayahKerja
+        if ($request->has('filter_wilker') && !empty($request->filter_wilker)) {
+            $query->whereHas('karyawan.wilayahKerjaRelation', function ($q) use ($request) {
+                $q->where('wilayah_krj', $request->filter_wilker);
+            });
+        }
+
+        // ✅ Filter Jenis Kelamin — via karyawan
+        if ($request->has('filter_jenis_kelamin') && !empty($request->filter_jenis_kelamin)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('sex', $request->filter_jenis_kelamin);
+            });
+        }
+
+        // ✅ Filter Unit Kerja — cek apakah kolom id_wilker ada di tabel dokumen
+        // Kalau ada pakai where langsung, kalau tidak pakai whereHas karyawan
+        if ($request->has('filter_unit_kerja') && !empty($request->filter_unit_kerja)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('unit_krj', $request->filter_unit_kerja);
+            });
+        }
+
+        // ✅ Filter Departemen — via karyawan
         if ($request->has('filter_departemen') && !empty($request->filter_departemen)) {
             $selectedDepartemen = Departemen::find($request->filter_departemen);
             if ($selectedDepartemen) {
-                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)->pluck('id')->toArray();
-                $query->whereIn('karyawan.departemen', $departemenIds);
+                $departemenIds = Departemen::where('nama_dep', $selectedDepartemen->nama_dep)
+                    ->pluck('id')
+                    ->toArray();
+                $query->whereHas('karyawan', function ($q) use ($departemenIds) {
+                    $q->whereIn('departemen', $departemenIds);
+                });
             }
         }
 
-        if ($request->has('filter_jabatan') && !empty($request->filter_jabatan)) {
-            $query->where('karyawan.departemen', $request->filter_jabatan);
+        // ✅ Filter Nama — via karyawan
+        if ($request->has('filter_nama') && !empty($request->filter_nama)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('nama', 'LIKE', '%' . $request->filter_nama . '%');
+            });
         }
 
-        if ($request->has('filter_jenis_kelamin') && !empty($request->filter_jenis_kelamin)) {
-            $query->where('karyawan.sex', $request->filter_jenis_kelamin);
-        }
-
-        if ($request->has('filter_wilker') && !empty($request->filter_wilker)) {
-            $query->where('karyawan.wilker', $request->filter_wilker);
-        }
-
-        if ($request->has('filter_unit_kerja') && !empty($request->filter_unit_kerja)) {
-            $query->where('karyawan.unit_krj', $request->filter_unit_kerja);
+        // ✅ Filter NRK — via karyawan
+        if ($request->has('filter_nrk') && !empty($request->filter_nrk)) {
+            $query->whereHas('karyawan', function ($q) use ($request) {
+                $q->where('nrk', 'LIKE', '%' . $request->filter_nrk . '%');
+            });
         }
 
         // Get data
@@ -156,21 +181,23 @@ class DataDokumenLaporanController extends Controller
             }
         }
 
-        // Current filters
-        $currentFilters = [
-            'status' => $request->filter_status,
-            'jenis_dokumen' => $request->filter_jenis_dokumen,
-            'kategori_dokumen' => $request->filter_kategori_dokumen,
-            'perusahaan' => $request->filter_perusahaan,
-            'nama' => $request->filter_nama,
-            'nrk' => $request->filter_nrk,
-            'no_dokumen' => $request->filter_no_dokumen,
-            'departemen' => $request->filter_departemen,
-            'jabatan' => $request->filter_jabatan,
-            'jenis_kelamin' => $request->filter_jenis_kelamin,
-            'wilker' => $request->filter_wilker,
-            'unit_kerja' => $request->filter_unit_kerja,
-        ];
+         // ===== GET FILTER OPTIONS DARI HELPER =====
+         $filterOptions = FilterHelper::getFilterDataOptions();
+
+         // ===== STORE CURRENT FILTERS =====
+         $currentFilters = [
+             'status' => $request->filter_status ?? '',
+             'jabatan' => $request->filter_jabatan ?? '',
+             'perusahaan' => $request->filter_perusahaan ?? '',
+             'kontrak' => $request->filter_kontrak ?? '',
+             'wilker' => $request->filter_wilker ?? '',
+             'jenis_kelamin' => $request->filter_jenis_kelamin ?? '',
+             'unit_kerja' => $request->filter_unit_kerja ?? '',
+             'departemen' => $request->filter_departemen ?? '',
+             'nama' => $request->filter_nama ?? '',
+             'nrk' => $request->filter_nrk ?? '',
+         ];
+
 
         // Handle export
         if ($request->has('export')) {
@@ -227,6 +254,7 @@ class DataDokumenLaporanController extends Controller
             'currentFilters',
             'totalDokumen',
             'totalAktif',
+            'filterOptions',
             'totalNonAktif',
             'totalKaryawan',
             'totalPerusahaan',
@@ -234,6 +262,8 @@ class DataDokumenLaporanController extends Controller
             'expiringDocumentsCount'
         ));
     }
+
+
 
     public function show($id)
     {

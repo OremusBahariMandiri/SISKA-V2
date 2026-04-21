@@ -10,12 +10,14 @@ use App\Http\Controllers\Data\DataKaryawanController;
 use App\Http\Controllers\Data\DataKontrakController;
 use App\Http\Controllers\Data\DataKontrakPelaporanController;
 use App\Http\Controllers\DataMaster\DepartemenController;
+use App\Http\Controllers\DataMaster\DokumenHrdController;
 use App\Http\Controllers\DataMaster\DokumenKaryawanController;
 use App\Http\Controllers\DataMaster\KontrakKerjaController;
 use App\Http\Controllers\DataMaster\PerusahaanController;
 use App\Http\Controllers\DataMaster\UserAccessController;
 use App\Http\Controllers\DataMaster\UserController;
 use App\Http\Controllers\DataMaster\WilayahKerjaController;
+use App\Models\DataMaster\DokumenHrd;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,6 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('departemen', DepartemenController::class);
     Route::resource('kontrak-kerja', KontrakKerjaController::class);
     Route::resource('dokumen-karyawan', DokumenKaryawanController::class);
+    Route::resource('dokumen-hrd', DokumenHrdController::class);
 
     // ================================================ MANAJEMEN DATA ROUTE ======================================== //
     // ============================================================================================================== //
@@ -182,7 +185,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('data-dokumen')->group(function () {
         // Employee validation & data
-        
+
         Route::get('check-employee/{id}', [DataDokumenController::class, 'checkEmployeeExists']);
         Route::get('get-employee-data/{id}', [DataDokumenController::class, 'getEmployeeData']);
 

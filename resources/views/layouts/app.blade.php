@@ -325,6 +325,7 @@
                             'departemen*',
                             'kontrak-kerja*',
                             'dokumen-karyawan*',
+                            'dokumen-hrd*',
                         ]);
 
                         $hasDataMasterAccess = hasMenuAccess([
@@ -334,6 +335,7 @@
                             'departemen',
                             'kontrak-kerja',
                             'dokumen-karyawan',
+                            'dokumen-hrd',
                         ]);
 
                         // Dokumen Access Management
@@ -426,6 +428,16 @@
                                         </a>
                                     </li>
                                 @endif
+
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('dokumen-hrd'))
+                                <li class="submenu-item">
+                                    <a class="sidebar-menu-link {{ request()->is('dokumen-hrd*') ? 'active' : '' }}"
+                                        href="{{ route('dokumen-hrd.index') }}">
+                                        <i class="fas fa-file-pdf"></i>
+                                        <span class="sidebar-menu-text">Dokumen Hrd</span>
+                                    </a>
+                                </li>
+                            @endif
                             </ul>
                         </li>
                     @endif

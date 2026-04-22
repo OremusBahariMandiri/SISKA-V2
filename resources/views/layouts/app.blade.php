@@ -346,6 +346,7 @@
                             'data-dokumen-laporan*',
                             'data-jenjang-karir*',
                             'data-jenjang-gaji*',
+                            'data-dokumen-hrd*',
                         ]);
 
                         $hasManajemenDataAccess = hasMenuAccess([
@@ -355,6 +356,7 @@
                             'data-dokumen-laporan',
                             'data-jenjang-karir',
                             'data-gaji',
+                            'data-dokumen-hrd',
                         ]);
                     @endphp
 
@@ -430,14 +432,14 @@
                                 @endif
 
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('dokumen-hrd'))
-                                <li class="submenu-item">
-                                    <a class="sidebar-menu-link {{ request()->is('dokumen-hrd*') ? 'active' : '' }}"
-                                        href="{{ route('dokumen-hrd.index') }}">
-                                        <i class="fas fa-file-pdf"></i>
-                                        <span class="sidebar-menu-text">Dokumen Hrd</span>
-                                    </a>
-                                </li>
-                            @endif
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('dokumen-hrd*') ? 'active' : '' }}"
+                                            href="{{ route('dokumen-hrd.index') }}">
+                                            <i class="fas fa-file-pdf"></i>
+                                            <span class="sidebar-menu-text">Dokumen Hrd</span>
+                                        </a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif
@@ -579,6 +581,39 @@
                                                     <span class="sidebar-menu-text">Laporan</span>
                                                 </a>
                                             </li>
+                                        </ul>
+                                    </li>
+                                @endif
+
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-dokumen-hrd'))
+                                    <!-- Data Gaji with nested submenu -->
+                                    <li class="submenu-item has-nested-submenu">
+                                        <a class="sidebar-menu-link menu-dropdown {{ request()->is('data-dokumen-hrd*') ? 'active' : '' }}"
+                                            href="#" data-menu="dataDokumenHrdSub">
+                                            <i class="fas fa-folder-open"></i>
+                                            <span class="sidebar-menu-text">Data Dokumen Hrd</span>
+                                            <i class="fas fa-chevron-down submenu-indicator {{ request()->is('data-dokumen-hrd*') ? 'rotated' : '' }}"></i>
+                                        </a>
+
+                                        <ul class="sidebar-nested-submenu {{ request()->is('data-dokumen-hrd*') ? 'show' : '' }}"
+                                            id="dataDokumenHrdSub">
+
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-dokumen-hrd') || request()->is('data-dokumen-hrd/create') || request()->is('data-gaji/*/edit') ? 'active' : '' }}"
+                                                    href="{{ route('data-dokumen-hrd.index') }}">
+                                                    <i class="fas fa-edit"></i>
+                                                    <span class="sidebar-menu-text">Pencatatan</span>
+                                                </a>
+                                            </li>
+
+                                            <li class="nested-submenu-item">
+                                                <a class="sidebar-menu-link {{ request()->is('data-dokumen-hrd-laporan') ? 'active' : '' }}"
+                                                    href="{{ route('data-dokumen-hrd-laporan.index') }}">
+                                                    <i class="fas fa-chart-bar"></i>
+                                                    <span class="sidebar-menu-text">Laporan</span>
+                                                </a>
+                                            </li>
+
                                         </ul>
                                     </li>
                                 @endif

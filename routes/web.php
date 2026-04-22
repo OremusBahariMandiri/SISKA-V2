@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Data\DataDokumenController;
+use App\Http\Controllers\Data\DataDokumenHrdController;
+use App\Http\Controllers\Data\DataDokumenHrdLaporanController;
 use App\Http\Controllers\Data\DataGajiController;
 use App\Http\Controllers\Data\DataGajiPelaporanController;
 use App\Http\Controllers\Data\DataJenjangKarirController;
@@ -180,7 +182,6 @@ Route::middleware('auth')->group(function () {
 
     // ================================================ DATA DOKUMEN ROUTES ========================================= //
     // ============================================================================================================== //
-    // ===== DATA DOKUMEN ROUTES =====
     Route::resource('data-dokumen', DataDokumenController::class);
 
     Route::prefix('data-dokumen')->group(function () {
@@ -209,9 +210,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}', [App\Http\Controllers\Data\DataDokumenLaporanController::class, 'show'])->name('show');
     });
 
-    // ================================================ DATA DOKUMEN ROUTES ========================================= //
-    // ============================================================================================================== //
-    // ===== DATA DOKUMEN ROUTES =====
     // ================================================ DATA JENJANG KARIR ROUTES ==================================== //
     // ============================================================================================================== //
 
@@ -274,4 +272,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [DataGajiPelaporanController::class, 'index'])->name('index');
         Route::get('{id}', [DataGajiPelaporanController::class, 'show'])->name('show');
     });
+
+    // ================================================ DATA DOKUMEN HRD ROUTES ========================================= //
+    // ============================================================================================================== //
+    Route::resource('data-dokumen-hrd', DataDokumenHrdController::class);
+    Route::resource('data-dokumen-hrd-laporan', DataDokumenHrdLaporanController::class)->only(['index', 'show']);
 });

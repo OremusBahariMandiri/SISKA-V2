@@ -162,12 +162,14 @@
     <script>
         $(document).ready(function() {
             if (!$.fn.DataTable.isDataTable('#dokumenHrdTable')) {
-                $('#dokumenHrdTable').DataTable({
+                $('#dokumenHrdTable').DataTable(
+                    {
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.25/i18n/Indonesian.json"
                     }
-                });
+                }
+            );
             }
 
             // Initialize tooltips

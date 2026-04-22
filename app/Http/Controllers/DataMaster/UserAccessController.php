@@ -46,6 +46,8 @@ class UserAccessController extends Controller
             'data-dokumen' => 'Data Dokumen',
             'data-dokumen-laporan' => 'Data Dokumen Pelaporan',
             'data-jenjang-karir' => 'Data Jenjang Karir',
+            'data-dokumen-hrd' => 'Data Dokumen HRD',
+            'data-dokumen-hrd-laporan' => 'Data Dokumen Hrd Laporan',
 
         ];
 

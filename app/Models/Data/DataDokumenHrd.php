@@ -38,6 +38,7 @@ class DataDokumenHrd extends Model
         'tgl_prt_dok',
         'durasi_pgt',
         'file_dok',
+        'file_dok_2',
         'sts_dok',
         'tgl_dok_na',
         'ket_dok_na',

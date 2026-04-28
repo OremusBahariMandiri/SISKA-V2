@@ -66,7 +66,8 @@
                                                             @foreach ($perusahaans as $perusahaan)
                                                                 <option value="{{ $perusahaan->id }}"
                                                                     {{ old('id_perusahaan') == $perusahaan->id ? 'selected' : '' }}>
-                                                                    {{ $perusahaan->nama_prs2 }} - {{ $perusahaan->nama_prs1 }}
+                                                                    {{ $perusahaan->nama_prs2 }} -
+                                                                    {{ $perusahaan->nama_prs1 }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -140,6 +141,14 @@
                                         <input type="hidden" id="id_dokumen_hrd" name="id_dokumen_hrd"
                                             value="{{ old('id_dokumen_hrd') }}">
 
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
+                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
+                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd') }}</textarea>
+                                            </div>
+                                        </div>
+
 
                                         <!-- Tanggal TTD -->
                                         <div class="col-md-6">
@@ -151,14 +160,28 @@
                                             </div>
                                         </div>
                                         <!-- File Dokumen -->
+                                        <!-- File Dokumen PDF -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="file_dok" class="form-label fw-bold">File Dokumen</label>
+                                                <label for="file_dok" class="form-label fw-bold">File Dokumen
+                                                    (PDF)</label>
                                                 <input type="file" class="form-control" id="file_dok"
-                                                    name="file_dok" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                    name="file_dok" accept=".pdf">
                                                 <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Format: PDF, DOC, DOCX, JPG,
-                                                    PNG
+                                                    <i class="fas fa-info-circle me-1"></i>Format: PDF
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- File Dokumen 2 (DOC/Excel) -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="file_dok_2" class="form-label fw-bold">File Dokumen
+                                                    (DOC/Excel)</label>
+                                                <input type="file" class="form-control" id="file_dok_2"
+                                                    name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
+                                                <div class="form-text text-muted">
+                                                    <i class="fas fa-info-circle me-1"></i>Format: DOC, DOCX, XLS, XLSX
                                                 </div>
                                             </div>
                                         </div>
@@ -296,13 +319,6 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group mb-3">
-                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
-                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
-                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd') }}</textarea>
                                             </div>
                                         </div>
 

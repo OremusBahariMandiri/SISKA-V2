@@ -75,7 +75,8 @@
                                                             @foreach ($perusahaans as $perusahaan)
                                                                 <option value="{{ $perusahaan->id }}"
                                                                     {{ old('id_perusahaan', $dataDokumenHrd->id_perusahaan) == $perusahaan->id ? 'selected' : '' }}>
-                                                                    {{ $perusahaan->nama_prs2 }} - {{ $perusahaan->nama_prs1 }}
+                                                                    {{ $perusahaan->nama_prs2 }} -
+                                                                    {{ $perusahaan->nama_prs1 }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
@@ -155,34 +156,68 @@
                                         <input type="hidden" id="id_dokumen_hrd" name="id_dokumen_hrd"
                                             value="{{ old('id_dokumen_hrd', $dataDokumenHrd->id_dokumen_hrd) }}">
 
+                                        <!-- Keterangan -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
+                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
+                                                >{{ old('ket_dok_hrd', $dataDokumenHrd->ket_dok_hrd) }}</textarea>
+                                            </div>
+                                        </div>
+
 
                                         <!-- Tanggal TTD -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="tgl_ttd" class="form-label fw-bold">Tanggal TTD/Terbit</label>
+                                                <label for="tgl_ttd" class="form-label fw-bold">Tanggal
+                                                    TTD/Terbit</label>
                                                 <input type="date" class="form-control" id="tgl_ttd" name="tgl_ttd"
                                                     value="{{ old('tgl_ttd', $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('Y-m-d') : '') }}">
                                             </div>
                                         </div>
 
                                         <!-- File Dokumen -->
+                                        <!-- File Dokumen PDF -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="file_dok" class="form-label fw-bold">File Dokumen</label>
+                                                <label for="file_dok" class="form-label fw-bold">File Dokumen
+                                                    (PDF)</label>
                                                 @if ($dataDokumenHrd->file_dok)
                                                     <div class="mb-2">
                                                         <small class="text-muted">File saat ini: </small>
                                                         <a href="{{ asset('storage/' . $dataDokumenHrd->file_dok) }}"
                                                             target="_blank" class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-file-pdf me-1"></i>Lihat File
+                                                            <i class="fas fa-file-pdf me-1"></i>Lihat PDF
                                                         </a>
                                                     </div>
                                                 @endif
                                                 <input type="file" class="form-control" id="file_dok"
-                                                    name="file_dok" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                                    name="file_dok" accept=".pdf">
                                                 <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Format: PDF, DOC, DOCX, JPG,
-                                                    PNG. Kosongkan jika tidak ingin mengubah file.
+                                                    <i class="fas fa-info-circle me-1"></i>Format: PDF.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- File Dokumen 2 (DOC/Excel) -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="file_dok_2" class="form-label fw-bold">File Dokumen
+                                                    (DOC/Excel)</label>
+                                                @if ($dataDokumenHrd->file_dok_2)
+                                                    <div class="mb-2">
+                                                        <small class="text-muted">File saat ini: </small>
+                                                        <a href="{{ asset('storage/' . $dataDokumenHrd->file_dok_2) }}"
+                                                            target="_blank" class="btn btn-sm btn-outline-success">
+                                                            <i class="fas fa-file-word me-1"></i>Lihat Dokumen
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                                <input type="file" class="form-control" id="file_dok_2"
+                                                    name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
+                                                <div class="form-text text-muted">
+                                                    <i class="fas fa-info-circle me-1"></i>Format: DOC, DOCX, XLS, XLSX
+                                                    Kosongkan jika tidak ingin mengubah.
                                                 </div>
                                             </div>
                                         </div>
@@ -331,15 +366,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Keterangan -->
-                                        <div class="col-md-12">
-                                            <div class="form-group mb-3">
-                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
-                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
-                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd', $dataDokumenHrd->ket_dok_hrd) }}</textarea>
-                                            </div>
-                                        </div>
-
                                         <!-- Tanggal Non Aktif (conditional) -->
                                         <div class="col-md-6" id="field_tgl_dok_na" style="display: none;">
                                             <div class="form-group mb-3">
@@ -442,38 +468,38 @@
 
 
             // Cascading: Kategori → Jenis → Kode
-// Cascading: Kategori → Jenis → Kode
-$('#ktg_dok_hrd').on('change', function() {
-    const kategori = $(this).val();
+            // Cascading: Kategori → Jenis → Kode
+            $('#ktg_dok_hrd').on('change', function() {
+                const kategori = $(this).val();
 
-    $('#jns_dok_hrd')
-        .empty()
-        .append('<option value="">Pilih Jenis Dokumen</option>')
-        .prop('disabled', true);
+                $('#jns_dok_hrd')
+                    .empty()
+                    .append('<option value="">Pilih Jenis Dokumen</option>')
+                    .prop('disabled', true);
 
-    if (kategori && groupedData[kategori]) {
-        // ✅ Data sudah otomatis terurut karena di controller sudah orderBy('kode_dok_hrd')
-        groupedData[kategori].forEach(item => {
-            $('#jns_dok_hrd').append(
-                `<option value="${item.jns_dok_hrd}"
+                if (kategori && groupedData[kategori]) {
+                    // ✅ Data sudah otomatis terurut karena di controller sudah orderBy('kode_dok_hrd')
+                    groupedData[kategori].forEach(item => {
+                        $('#jns_dok_hrd').append(
+                            `<option value="${item.jns_dok_hrd}"
                     data-id="${item.id}"
                     data-kode="${item.kode_dok_hrd}">
                     ${item.jns_dok_hrd}
                 </option>`
-            );
-        });
+                        );
+                    });
 
-        $('#jns_dok_hrd').prop('disabled', false);
-    }
-});
+                    $('#jns_dok_hrd').prop('disabled', false);
+                }
+            });
 
-// ✅ Trigger change jenis dokumen saat dipilih
-$('#jns_dok_hrd').on('change', function() {
-    const selected = $(this).find(':selected');
+            // ✅ Trigger change jenis dokumen saat dipilih
+            $('#jns_dok_hrd').on('change', function() {
+                const selected = $(this).find(':selected');
 
-    $('#kode_dok_hrd_display').val(selected.data('kode') || '');
-    $('#id_dokumen_hrd').val(selected.data('id') || '');
-});
+                $('#kode_dok_hrd_display').val(selected.data('kode') || '');
+                $('#id_dokumen_hrd').val(selected.data('id') || '');
+            });
             // Conditional field visibility
             function handleStatusDokumenChange() {
                 const stsDok = $('#sts_dok').val();

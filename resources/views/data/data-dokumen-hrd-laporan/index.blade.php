@@ -75,16 +75,16 @@
                                         <th width="1%" class="text-center">NO</th>
                                         <th width="4%" class="text-center">KATEGORI</th>
                                         <th width="5%" class="text-center">JENIS DOK</th>
+                                        <th width="5%" class="text-center">KET. DOK</th>
                                         <th width="3%" class="text-center">PERUSAHAAN</th>
                                         <th width="4%" class="text-center">NO DOK</th>
                                         <th width="3%" class="text-center">TGL TTD</th>
                                         <th width="2%" class="text-center">JENIS MSB</th>
                                         <th width="3%" class="text-center">TGL AKHIR</th>
-                                        <th width="2%" class="text-center">MSB (BLN)</th>
                                         <th width="3%" class="text-center">TGL PERINGATAN</th>
                                         <th width="2%" class="text-center">DURASI PGT</th>
-                                        <th width="4%" class="text-center">KETERANGAN</th>
                                         <th width="2%" class="text-center">STATUS</th>
+                                        <th width="2%" class="text-center">FILE</th>
                                         <th width="3%" class="text-center no-wrap">AKSI</th>
                                     </tr>
                                 </thead>
@@ -111,6 +111,8 @@
                                             <td>{{ $dokumen->dokumenHrd->ktg_dok_hrd ?? '-' }}</td>
 
                                             <td>{{ $dokumen->dokumenHrd->jns_dok_hrd ?? '-' }}</td>
+
+                                            <td>{{ $dokumen->ket_dok_hrd ?? '-' }}</td>
 
                                             <td>{{ $dokumen->perusahaan->nama_prs2 ?? '-' }}</td>
 
@@ -147,10 +149,6 @@
                                             </td>
 
                                             <td class="text-center">
-                                                {{ $dokumen->msb_dok ? $dokumen->msb_dok . ' bln' : '-' }}
-                                            </td>
-
-                                            <td class="text-center">
                                                 @if ($dokumen->tgl_prt_dok)
                                                     {{ $dokumen->tgl_prt_dok->format('d-m-Y') }}
                                                     @if ($reminderStatus)
@@ -167,17 +165,36 @@
                                             <td class="text-center">
                                                 {{ $dokumen->durasi_pgt ? $dokumen->durasi_pgt . ' hari' : '-' }}
                                             </td>
-
-                                            <td>
-                                                <small>{{ $dokumen->ket_dok_hrd ?? '-' }}</small>
-                                            </td>
-
                                             <td class="text-center">
                                                 @if ($dokumen->sts_dok == 'AKTIF')
                                                     <span class="badge bg-success">AKTIF</span>
                                                 @else
                                                     <span class="badge bg-secondary">NON-AKTIF</span>
                                                 @endif
+                                            </td>
+
+                                            <td class="text-center">
+                                                <div class="d-flex gap-1 justify-content-center">
+                                                    @if ($dokumen->file_dok)
+                                                        <a href="{{ asset('storage/' . $dokumen->file_dok) }}" target="_blank"
+                                                            class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip"
+                                                            title="Lihat File PDF">
+                                                            <i class="fas fa-file-pdf"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    @if ($dokumen->file_dok_2)
+                                                        <a href="{{ asset('storage/' . $dokumen->file_dok_2) }}" target="_blank"
+                                                            class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip"
+                                                            title="Lihat File DOC/Excel">
+                                                            <i class="fas fa-file-word"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    @if (!$dokumen->file_dok && !$dokumen->file_dok_2)
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </div>
                                             </td>
 
                                             <td class="text-center no-wrap">
@@ -188,18 +205,6 @@
                                                             title="Detail">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                    @endif
-                                                    @if ($dokumen->file_dok)
-                                                        <a href="{{ asset('storage/' . $dokumen->file_dok) }}"
-                                                            target="_blank" class="btn btn-sm btn-success"
-                                                            data-bs-toggle="tooltip" title="Lihat File">
-                                                            <i class="fas fa-file-alt"></i>
-                                                        </a>
-                                                    @else
-                                                        <button type="button" class="btn btn-sm btn-danger"
-                                                            data-bs-toggle="tooltip" title="File tidak tersedia" disabled>
-                                                            <i class="fas fa-file-alt"></i>
-                                                        </button>
                                                     @endif
                                                 </div>
                                             </td>

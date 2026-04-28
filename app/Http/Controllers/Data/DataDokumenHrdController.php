@@ -158,20 +158,20 @@ class DataDokumenHrdController extends Controller
             ->orderBy('kode_dok_hrd')
             ->get();
 
-        // 🔥 grouping kategori → jenis
+        // grouping kategori → jenis
         $grouped = $dokumenTypes->groupBy('ktg_dok_hrd');
 
         // jika ada kebutuhan id baru
         $newId = DokumenHrd::max('id') + 1;
 
-        // 🔥 Tambahkan data perusahaan
+        // Tambahkan data perusahaan
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
 
         return view('data.data-dokumen-hrd.create', compact(
             'dokumenTypes',
             'grouped',
             'newId',
-            'perusahaans'  // tambahkan ini
+            'perusahaans'
         ));
     }
 
@@ -191,7 +191,8 @@ class DataDokumenHrdController extends Controller
             'sts_dok' => 'required|in:AKTIF,NON-AKTIF,EXPIRED,PENDING',
             'tgl_dok_na' => 'nullable|date',
             'ket_dok_na' => 'nullable|string|max:255',
-            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
+            'file_dok' => 'nullable|file|mimes:pdf',
+            'file_dok_2' => 'nullable|file|mimes:doc,docx,xls,xlsx',
         ]);
 
         // Generate ID
@@ -199,7 +200,7 @@ class DataDokumenHrdController extends Controller
             ? $this->generateId('206', '206_dm_data_dok_hrd')
             : $request->id_kode;
 
-        // Handle file upload
+        // Handle file_dok upload (PDF only)
         $fileDok = null;
         if ($request->hasFile('file_dok')) {
             $file = $request->file('file_dok');
@@ -209,10 +210,26 @@ class DataDokumenHrdController extends Controller
             $noDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $request->no_dok_hrd ?? 'NoDoc'));
             $extension = $file->getClientOriginalExtension();
 
-            $fileName = $jenisDokumen . '_' . $noDokumen . '_' . time() . '.' . $extension;
+            $fileName = $jenisDokumen . '_' . $noDokumen . '_PDF_' . time() . '.' . $extension;
 
             $file->storeAs('public/dokumen/dokumen-hrd', $fileName);
             $fileDok = 'dokumen/dokumen-hrd/' . $fileName;
+        }
+
+        // Handle file_dok_2 upload (DOC/DOCX/XLS/XLSX only)
+        $fileDok2 = null;
+        if ($request->hasFile('file_dok_2')) {
+            $file2 = $request->file('file_dok_2');
+            $dokumenType = DokumenHrd::findOrFail($request->id_dokumen_hrd);
+
+            $jenisDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $dokumenType->jns_dok_hrd ?? 'Dokumen'));
+            $noDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $request->no_dok_hrd ?? 'NoDoc'));
+            $extension = $file2->getClientOriginalExtension();
+
+            $fileName2 = $jenisDokumen . '_' . $noDokumen . '_DOC_' . time() . '.' . $extension;
+
+            $file2->storeAs('public/dokumen/dokumen-hrd', $fileName2);
+            $fileDok2 = 'dokumen/dokumen-hrd/' . $fileName2;
         }
 
         // Calculate masa berlaku (months)
@@ -223,12 +240,12 @@ class DataDokumenHrdController extends Controller
             $msb_dok = $signatureDate->diffInMonths($expiryDate);
         }
 
-        // Calculate durasi peringatan (days) - dari hari ini ke tanggal peringatan
+        // Calculate durasi peringatan (days)
         $durasi_pgt = $request->durasi_pgt;
         if (!$durasi_pgt && $request->tgl_prt_dok) {
             $today = \Carbon\Carbon::now()->startOfDay();
             $reminderDate = \Carbon\Carbon::parse($request->tgl_prt_dok)->startOfDay();
-            $durasi_pgt = $today->diffInDays($reminderDate, false); // false = bisa negatif jika sudah lewat
+            $durasi_pgt = $today->diffInDays($reminderDate, false);
         }
 
         DataDokumenHrd::create([
@@ -243,6 +260,7 @@ class DataDokumenHrdController extends Controller
             'tgl_prt_dok' => $request->tgl_prt_dok,
             'durasi_pgt' => $durasi_pgt,
             'file_dok' => $fileDok,
+            'file_dok_2' => $fileDok2,
             'sts_dok' => $request->sts_dok,
             'ket_dok_hrd' => $request->ket_dok_hrd,
             'tgl_dok_na' => $request->tgl_dok_na,
@@ -300,7 +318,6 @@ class DataDokumenHrdController extends Controller
             'updater'
         ])->findOrFail($id);
 
-        // ✅ Ambil data dan urutkan berdasarkan kode_dok_hrd
         $dokumenTypes = DokumenHrd::select(
             'id',
             'ktg_dok_hrd',
@@ -310,7 +327,6 @@ class DataDokumenHrdController extends Controller
             ->orderBy('kode_dok_hrd')
             ->get();
 
-        // ✅ Group berdasarkan kategori (urutan sudah benar dari query)
         $grouped = $dokumenTypes->groupBy('ktg_dok_hrd');
 
         $perusahaans = Perusahaan::orderBy('nama_prs1', 'asc')->get();
@@ -368,10 +384,11 @@ class DataDokumenHrdController extends Controller
             'sts_dok' => 'required|in:AKTIF,NON-AKTIF,EXPIRED,PENDING',
             'tgl_dok_na' => 'nullable|date',
             'ket_dok_na' => 'nullable|string|max:255',
-            'file_dok' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
+            'file_dok' => 'nullable|file|mimes:pdf',
+            'file_dok_2' => 'nullable|file|mimes:doc,docx,xls,xlsx',
         ]);
 
-        // Handle file upload
+        // Handle file_dok upload (PDF only)
         $fileDok = $dataDokumenHrd->file_dok;
         if ($request->hasFile('file_dok')) {
             // Delete old file
@@ -386,10 +403,31 @@ class DataDokumenHrdController extends Controller
             $noDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $request->no_dok_hrd ?? 'NoDoc'));
             $extension = $file->getClientOriginalExtension();
 
-            $fileName = $jenisDokumen . '_' . $noDokumen . '_' . time() . '.' . $extension;
+            $fileName = $jenisDokumen . '_' . $noDokumen . '_PDF_' . time() . '.' . $extension;
 
             $file->storeAs('public/dokumen/dokumen-hrd', $fileName);
             $fileDok = 'dokumen/dokumen-hrd/' . $fileName;
+        }
+
+        // Handle file_dok_2 upload (DOC/DOCX/XLS/XLSX only)
+        $fileDok2 = $dataDokumenHrd->file_dok_2;
+        if ($request->hasFile('file_dok_2')) {
+            // Delete old file
+            if ($dataDokumenHrd->file_dok_2 && Storage::exists('public/' . $dataDokumenHrd->file_dok_2)) {
+                Storage::delete('public/' . $dataDokumenHrd->file_dok_2);
+            }
+
+            $file2 = $request->file('file_dok_2');
+            $dokumenType = DokumenHrd::findOrFail($request->id_dokumen_hrd);
+
+            $jenisDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $dokumenType->jns_dok_hrd ?? 'Dokumen'));
+            $noDokumen = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '', $request->no_dok_hrd ?? 'NoDoc'));
+            $extension = $file2->getClientOriginalExtension();
+
+            $fileName2 = $jenisDokumen . '_' . $noDokumen . '_DOC_' . time() . '.' . $extension;
+
+            $file2->storeAs('public/dokumen/dokumen-hrd', $fileName2);
+            $fileDok2 = 'dokumen/dokumen-hrd/' . $fileName2;
         }
 
         // Calculate masa berlaku (months)
@@ -400,12 +438,12 @@ class DataDokumenHrdController extends Controller
             $msb_dok = $signatureDate->diffInMonths($expiryDate);
         }
 
-        // Calculate durasi peringatan (days) - dari hari ini ke tanggal peringatan
+        // Calculate durasi peringatan (days)
         $durasi_pgt = $request->durasi_pgt;
         if (!$durasi_pgt && $request->tgl_prt_dok) {
             $today = \Carbon\Carbon::now()->startOfDay();
             $reminderDate = \Carbon\Carbon::parse($request->tgl_prt_dok)->startOfDay();
-            $durasi_pgt = $today->diffInDays($reminderDate, false); // false = bisa negatif jika sudah lewat
+            $durasi_pgt = $today->diffInDays($reminderDate, false);
         }
 
         $dataDokumenHrd->update([
@@ -419,6 +457,7 @@ class DataDokumenHrdController extends Controller
             'tgl_prt_dok' => $request->tgl_prt_dok,
             'durasi_pgt' => $durasi_pgt,
             'file_dok' => $fileDok,
+            'file_dok_2' => $fileDok2,
             'sts_dok' => $request->sts_dok,
             'ket_dok_hrd' => $request->ket_dok_hrd,
             'tgl_dok_na' => $request->tgl_dok_na,
@@ -437,9 +476,14 @@ class DataDokumenHrdController extends Controller
 
             $dataDokumenHrd = DataDokumenHrd::findOrFail($id);
 
-            // Delete file if exists
+            // Delete file_dok if exists
             if ($dataDokumenHrd->file_dok && Storage::exists('public/' . $dataDokumenHrd->file_dok)) {
                 Storage::delete('public/' . $dataDokumenHrd->file_dok);
+            }
+
+            // Delete file_dok_2 if exists
+            if ($dataDokumenHrd->file_dok_2 && Storage::exists('public/' . $dataDokumenHrd->file_dok_2)) {
+                Storage::delete('public/' . $dataDokumenHrd->file_dok_2);
             }
 
             $dataDokumenHrd->delete();

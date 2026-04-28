@@ -11,7 +11,8 @@
                         <span class="fw-bold"><i class="fas fa-file-contract me-2"></i>Detail Data Dokumen HRD</span>
                         <div>
                             @if (auth()->user()->is_admin || (isset($userPermissions['ubah']) && $userPermissions['ubah']))
-                                <a href="{{ route('data-dokumen-hrd.edit', $dataDokumenHrd->id) }}" class="btn btn-warning btn-sm me-2">
+                                <a href="{{ route('data-dokumen-hrd.edit', $dataDokumenHrd->id) }}"
+                                    class="btn btn-warning btn-sm me-2">
                                     <i class="fas fa-edit me-1"></i>Edit
                                 </a>
                             @endif
@@ -69,7 +70,16 @@
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label fw-bold text-muted">Kode Dokumen</label>
                                         <p class="form-control-plaintext border-bottom">
-                                            <span class="badge bg-primary">{{ $dataDokumenHrd->dokumenHrd->kode_dok_hrd ?? '-' }}</span>
+                                            <span
+                                                class="badge bg-primary">{{ $dataDokumenHrd->dokumenHrd->kode_dok_hrd ?? '-' }}</span>
+                                        </p>
+                                    </div>
+
+                                    <!-- Keterangan -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-muted">Keterangan</label>
+                                        <p class="form-control-plaintext border-bottom">
+                                            {{ $dataDokumenHrd->ket_dok_hrd ?? '-' }}
                                         </p>
                                     </div>
 
@@ -87,8 +97,20 @@
                                         <p class="form-control-plaintext border-bottom">
                                             @if ($dataDokumenHrd->file_dok)
                                                 <a href="{{ asset('storage/' . $dataDokumenHrd->file_dok) }}"
-                                                   target="_blank"
-                                                   class="btn btn-sm btn-outline-primary">
+                                                    target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-file-pdf me-1"></i>Lihat File
+                                                </a>
+                                            @else
+                                                <span class="text-muted">Tidak ada file</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-muted">File Dokumen</label>
+                                        <p class="form-control-plaintext border-bottom">
+                                            @if ($dataDokumenHrd->file_dok_2)
+                                                <a href="{{ asset('storage/' . $dataDokumenHrd->file_dok_2) }}"
+                                                    target="_blank" class="btn btn-sm btn-outline-primary">
                                                     <i class="fas fa-file-pdf me-1"></i>Lihat File
                                                 </a>
                                             @else
@@ -146,7 +168,8 @@
                                             {{ $dataDokumenHrd->tgl_prt_dok ? $dataDokumenHrd->tgl_prt_dok->format('d-m-Y') : '-' }}
                                             @if ($dataDokumenHrd->tgl_prt_dok && $dataDokumenHrd->document_reminder_status)
                                                 <br>
-                                                <span class="badge bg-{{ $dataDokumenHrd->document_reminder_status['class'] }} mt-1">
+                                                <span
+                                                    class="badge bg-{{ $dataDokumenHrd->document_reminder_status['class'] }} mt-1">
                                                     {{ $dataDokumenHrd->document_reminder_status['message'] }}
                                                 </span>
                                             @endif
@@ -184,14 +207,6 @@
                                             @else
                                                 <span class="badge bg-secondary">{{ $dataDokumenHrd->sts_dok }}</span>
                                             @endif
-                                        </p>
-                                    </div>
-
-                                    <!-- Keterangan -->
-                                    <div class="col-md-12 mb-3">
-                                        <label class="form-label fw-bold text-muted">Keterangan</label>
-                                        <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->ket_dok_hrd ?? '-' }}
                                         </p>
                                     </div>
 
@@ -276,7 +291,8 @@
                                 <i class="fas fa-arrow-left me-2"></i> Kembali
                             </a>
                             @if (auth()->user()->is_admin || (isset($userPermissions['ubah']) && $userPermissions['ubah']))
-                                <a href="{{ route('data-dokumen-hrd.edit', $dataDokumenHrd->id) }}" class="btn btn-warning btn-lg">
+                                <a href="{{ route('data-dokumen-hrd.edit', $dataDokumenHrd->id) }}"
+                                    class="btn btn-warning btn-lg">
                                     <i class="fas fa-edit me-2"></i> Edit Data
                                 </a>
                             @endif

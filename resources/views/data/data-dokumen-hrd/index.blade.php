@@ -87,6 +87,7 @@
 
                                         <th width="4%" class="text-center">KATEGORI</th>
                                         <th width="5%" class="text-center">JENIS DOKUMEN</th>
+                                        <th width="2%" class="text-center">KET. DOK</th>
                                         <th width="3%" class="text-center">NO. DOKUMEN</th>
                                         <th width="3%" class="text-center">PERUSAHAAN</th>
                                         <th width="2%" class="text-center">TGL TTD</th>
@@ -122,6 +123,8 @@
 
                                             <!-- JENIS DOKUMEN -->
                                             <td>{{ $dokumen->dokumenHrd->jns_dok_hrd ?? '-' }}</td>
+
+                                            <td>{{ $dokumen->ket_dok_hrd ?? '-' }}</td>
 
                                             <!-- NO DOKUMEN -->
                                             <td class="text-center">{{ $dokumen->no_dok_hrd ?? '-' }}</td>
@@ -174,15 +177,27 @@
 
                                             <!-- FILE -->
                                             <td class="text-center">
-                                                @if ($dokumen->file_dok)
-                                                    <a href="{{ asset('storage/' . $dokumen->file_dok) }}" target="_blank"
-                                                        class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip"
-                                                        title="Lihat File">
-                                                        <i class="fas fa-file-pdf"></i>
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
+                                                <div class="d-flex gap-1 justify-content-center">
+                                                    @if ($dokumen->file_dok)
+                                                        <a href="{{ asset('storage/' . $dokumen->file_dok) }}" target="_blank"
+                                                            class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip"
+                                                            title="Lihat File PDF">
+                                                            <i class="fas fa-file-pdf"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    @if ($dokumen->file_dok_2)
+                                                        <a href="{{ asset('storage/' . $dokumen->file_dok_2) }}" target="_blank"
+                                                            class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip"
+                                                            title="Lihat File DOC/Excel">
+                                                            <i class="fas fa-file-word"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    @if (!$dokumen->file_dok && !$dokumen->file_dok_2)
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </div>
                                             </td>
 
                                             <!-- AKSI -->

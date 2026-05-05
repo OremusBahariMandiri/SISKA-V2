@@ -58,11 +58,12 @@
                                         </p>
                                     </div>
 
-                                    <!-- Keterangan -->
+
+                                    <!-- Perusahaan -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">Keterangan</label>
+                                        <label class="form-label fw-bold text-muted">Perusahaan</label>
                                         <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->ket_dok_hrd ?? '-' }}
+                                            {{ $dataDokumenHrd->perusahaan->nama_prs1 ?? '-' }}
                                         </p>
                                     </div>
 
@@ -91,13 +92,14 @@
                                         </p>
                                     </div>
 
-                                    <!-- Perusahaan -->
+                                    <!-- Keterangan -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">No. Dokumen</label>
+                                        <label class="form-label fw-bold text-muted">Keterangan</label>
                                         <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->perusahaan->nama_prs1 ?? '-' }}
+                                            {{ $dataDokumenHrd->ket_dok_hrd ?? '-' }}
                                         </p>
                                     </div>
+
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold text-muted">File Dokumen</label>
@@ -236,7 +238,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    
+
 
                                     <!-- Dibuat Oleh -->
                                     <div class="col-md-6 mb-3">

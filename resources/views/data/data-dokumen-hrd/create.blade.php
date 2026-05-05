@@ -92,18 +92,33 @@
                                         </div>
 
 
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="id_perusahaan" class="form-label fw-bold">Perusahaan</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                                    <div style="flex: 1">
+                                                        <select class="form-select select2" id="id_perusahaan"
+                                                            name="id_perusahaan">
+                                                            <option value="">Pilih Perusahaan</option>
+                                                            @foreach ($perusahaans as $perusahaan)
+                                                                <option value="{{ $perusahaan->id }}"
+                                                                    {{ old('id_perusahaan') == $perusahaan->id ? 'selected' : '' }}>
+                                                                    {{ $perusahaan->nama_prs2 }} -
+                                                                    {{ $perusahaan->nama_prs1 }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <!-- Hidden field for id_dokumen_hrd -->
                                         <input type="hidden" id="id_dokumen_hrd" name="id_dokumen_hrd"
                                             value="{{ old('id_dokumen_hrd') }}">
 
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
-                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
-                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd') }}</textarea>
-                                            </div>
-                                        </div>
+
 
                                         <!-- Jenis Dokumen -->
                                         <div class="col-md-6">
@@ -127,8 +142,8 @@
                                             <div class="form-group mb-3">
                                                 <label for="file_dok" class="form-label fw-bold">File Dokumen
                                                     (PDF)</label>
-                                                <input type="file" class="form-control" id="file_dok" name="file_dok"
-                                                    accept=".pdf">
+                                                <input type="file" class="form-control" id="file_dok"
+                                                    name="file_dok" accept=".pdf">
                                                 <div class="form-text text-muted">
                                                     <i class="fas fa-info-circle me-1"></i>Format: PDF
                                                 </div>
@@ -136,28 +151,15 @@
                                         </div>
 
 
+
+
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="id_perusahaan" class="form-label fw-bold">Perusahaan</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-building"></i></span>
-                                                    <div style="flex: 1">
-                                                        <select class="form-select select2" id="id_perusahaan"
-                                                            name="id_perusahaan">
-                                                            <option value="">Pilih Perusahaan</option>
-                                                            @foreach ($perusahaans as $perusahaan)
-                                                                <option value="{{ $perusahaan->id }}"
-                                                                    {{ old('id_perusahaan') == $perusahaan->id ? 'selected' : '' }}>
-                                                                    {{ $perusahaan->nama_prs2 }} -
-                                                                    {{ $perusahaan->nama_prs1 }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
+                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
+                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd') }}</textarea>
                                             </div>
                                         </div>
-                                        <!-- File Dokumen -->
 
 
                                         <!-- File Dokumen 2 (DOC/Excel) -->

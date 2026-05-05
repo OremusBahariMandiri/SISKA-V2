@@ -83,20 +83,19 @@
                             <table id="dataDokumenHrdTable" class="table table-bordered table-striped data-table">
                                 <thead class="table-light">
                                     <tr>
-                                        <th width="1%" class="text-center">NO</th>
-
-                                        <th width="4%" class="text-center">KATEGORI</th>
-                                        <th width="5%" class="text-center">JENIS DOKUMEN</th>
-                                        <th width="2%" class="text-center">KET. DOK</th>
-                                        <th width="3%" class="text-center">NO. DOKUMEN</th>
-                                        <th width="3%" class="text-center">PERUSAHAAN</th>
-                                        <th width="2%" class="text-center">TGL TTD</th>
-                                        <th width="2%" class="text-center">MSB</th>
-                                        <th width="2%" class="text-center">TGL AKHIR</th>
-                                        <th width="2%" class="text-center">TGL PERINGATAN</th>
-                                        <th width="2%" class="text-center">STATUS</th>
-                                        <th width="2%" class="text-center">FILE</th>
-                                        <th width="3%" class="text-center no-wrap">AKSI</th>
+                                        <th class="text-center col-no">NO</th>
+                                        <th class="text-center col-kategori">KATEGORI</th>
+                                        <th class="text-center col-jenis">JENIS DOKUMEN</th>
+                                        <th class="text-center col-ket">KET. DOK</th>
+                                        <th class="text-center col-no-dok">NO. DOKUMEN</th>
+                                        <th class="text-center col-perusahaan">PERUSAHAAN</th>
+                                        <th class="text-center col-tgl">TGL TTD</th>
+                                        <th class="text-center col-msb">MSB</th>
+                                        <th class="text-center col-tgl">TGL AKHIR</th>
+                                        <th class="text-center col-tgl">TGL PERINGATAN</th>
+                                        <th class="text-center col-status">STATUS</th>
+                                        <th class="text-center col-file">FILE</th>
+                                        <th class="text-center col-aksi">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -432,9 +431,66 @@
             font-size: 0.75rem;
         }
 
+        /* Pengaturan lebar kolom yang lebih presisi */
+        .col-no {
+            width: 40px !important;
+            min-width: 40px !important;
+            max-width: 40px !important;
+        }
+
+        .col-kategori {
+            width: 120px !important;
+            min-width: 120px !important;
+        }
+
+        .col-jenis {
+            width: 150px !important;
+            min-width: 150px !important;
+        }
+
+        .col-ket {
+            width: 300px !important;
+            min-width: 300px !important;
+            white-space: normal !important;
+        }
+
+        .col-no-dok {
+            width: 120px !important;
+            min-width: 120px !important;
+        }
+
+        .col-perusahaan {
+            width: 130px !important;
+            min-width: 130px !important;
+        }
+
+        .col-tgl {
+            width: 95px !important;
+            min-width: 95px !important;
+        }
+
+        .col-msb {
+            width: 70px !important;
+            min-width: 70px !important;
+        }
+
+        .col-status {
+            width: 70px !important;
+            min-width: 70px !important;
+        }
+
+        .col-file {
+            width: 80px !important;
+            min-width: 80px !important;
+        }
+
+        .col-aksi {
+            width: 120px !important;
+            min-width: 120px !important;
+        }
+
         .no-wrap {
             white-space: nowrap !important;
-            min-width: 120px !important;
         }
 
         .document-status-summary {
@@ -483,8 +539,10 @@
 
     <script>
         $(document).ready(function() {
-            // Initialize DataTable
-            $('#dataDokumenHrdTable').DataTable();
+            // Initialize DataTable dengan autoWidth false
+            $('#dataDokumenHrdTable').DataTable(
+
+        );
 
             // Filter button
             $('#filterButton').on('click', function() {

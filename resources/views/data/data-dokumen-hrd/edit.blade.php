@@ -62,32 +62,18 @@
                                             </div>
                                         </div>
 
-                                        <!-- Perusahaan - FIXED -->
+                                        <!-- Tanggal TTD -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="id_perusahaan" class="form-label fw-bold">Perusahaan</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-building"></i></span>
-                                                    <div style="flex: 1">
-                                                        <select class="form-select select2" id="id_perusahaan"
-                                                            name="id_perusahaan">
-                                                            <option value="">Pilih Perusahaan</option>
-                                                            @foreach ($perusahaans as $perusahaan)
-                                                                <option value="{{ $perusahaan->id }}"
-                                                                    {{ old('id_perusahaan', $dataDokumenHrd->id_perusahaan) == $perusahaan->id ? 'selected' : '' }}>
-                                                                    {{ $perusahaan->nama_prs2 }} -
-                                                                    {{ $perusahaan->nama_prs1 }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                                <label for="tgl_ttd" class="form-label fw-bold">Tanggal
+                                                    TTD/Terbit</label>
+                                                <input type="date" class="form-control" id="tgl_ttd" name="tgl_ttd"
+                                                    value="{{ old('tgl_ttd', $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('Y-m-d') : '') }}">
                                             </div>
                                         </div>
 
-
                                         <!-- Kategori Dokumen -->
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group mb-3">
                                                 <label for="ktg_dok_hrd" class="form-label fw-bold">Kategori Dokumen
                                                     <span class="text-danger">*</span></label>
@@ -116,8 +102,19 @@
                                             </div>
                                         </div>
 
+
+
+                                        <!-- Keterangan -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
+                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3">{{ old('ket_dok_hrd', $dataDokumenHrd->ket_dok_hrd) }}</textarea>
+                                            </div>
+                                        </div>
+
+
                                         <!-- Jenis Dokumen -->
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group mb-3">
                                                 <label for="jns_dok_hrd" class="form-label fw-bold">Jenis Dokumen
                                                     <span class="text-danger">*</span></label>
@@ -133,48 +130,12 @@
                                             </div>
                                         </div>
 
-                                        <!-- Kode Dokumen Display -->
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-3">
-                                                <label for="kode_dok_hrd_display" class="form-label fw-bold">Kode Dokumen
-                                                    <span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-barcode"></i></span>
-                                                    <input type="text" class="form-control bg-light"
-                                                        id="kode_dok_hrd_display"
-                                                        value="{{ old('kode_dok_hrd', optional($dataDokumenHrd->dokumenHrd)->kode_dok_hrd) }}"
-                                                        placeholder="Otomatis terisi" readonly>
-                                                </div>
-                                                <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Kode otomatis berdasarkan
-                                                    jenis dokumen
-                                                </div>
-                                            </div>
-                                        </div>
 
                                         <!-- Hidden field for id_dokumen_hrd -->
                                         <input type="hidden" id="id_dokumen_hrd" name="id_dokumen_hrd"
                                             value="{{ old('id_dokumen_hrd', $dataDokumenHrd->id_dokumen_hrd) }}">
 
-                                        <!-- Keterangan -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
-                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
-                                                >{{ old('ket_dok_hrd', $dataDokumenHrd->ket_dok_hrd) }}</textarea>
-                                            </div>
-                                        </div>
 
-
-                                        <!-- Tanggal TTD -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="tgl_ttd" class="form-label fw-bold">Tanggal
-                                                    TTD/Terbit</label>
-                                                <input type="date" class="form-control" id="tgl_ttd" name="tgl_ttd"
-                                                    value="{{ old('tgl_ttd', $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('Y-m-d') : '') }}">
-                                            </div>
-                                        </div>
 
                                         <!-- File Dokumen -->
                                         <!-- File Dokumen PDF -->
@@ -195,6 +156,29 @@
                                                     name="file_dok" accept=".pdf">
                                                 <div class="form-text text-muted">
                                                     <i class="fas fa-info-circle me-1"></i>Format: PDF.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Perusahaan - FIXED -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="id_perusahaan" class="form-label fw-bold">Perusahaan</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                                    <div style="flex: 1">
+                                                        <select class="form-select select2" id="id_perusahaan"
+                                                            name="id_perusahaan">
+                                                            <option value="">Pilih Perusahaan</option>
+                                                            @foreach ($perusahaans as $perusahaan)
+                                                                <option value="{{ $perusahaan->id }}"
+                                                                    {{ old('id_perusahaan', $dataDokumenHrd->id_perusahaan) == $perusahaan->id ? 'selected' : '' }}>
+                                                                    {{ $perusahaan->nama_prs2 }} -
+                                                                    {{ $perusahaan->nama_prs1 }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

@@ -39,46 +39,41 @@
                                         </p>
                                     </div>
 
+                                    <!-- Tanggal TTD -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">No. Dokumen</label>
+                                        <label class="form-label fw-bold text-muted">Tanggal TTD/Terbit</label>
                                         <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->perusahaan->nama_prs2 ?? '-' }}
+                                            {{ $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('d-m-Y') : '-' }}
                                         </p>
                                     </div>
 
 
 
                                     <!-- Kategori Dokumen -->
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold text-muted">Kategori Dokumen</label>
                                         <p class="form-control-plaintext border-bottom">
                                             {{ $dataDokumenHrd->dokumenHrd->ktg_dok_hrd ?? '-' }}
                                         </p>
                                     </div>
 
+                                    <!-- Keterangan -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-muted">Keterangan</label>
+                                        <p class="form-control-plaintext border-bottom">
+                                            {{ $dataDokumenHrd->ket_dok_hrd ?? '-' }}
+                                        </p>
+                                    </div>
+
                                     <!-- Jenis Dokumen -->
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold text-muted">Jenis Dokumen</label>
                                         <p class="form-control-plaintext border-bottom">
                                             {{ $dataDokumenHrd->dokumenHrd->jns_dok_hrd ?? '-' }}
                                         </p>
                                     </div>
 
-                                    <!-- Kode Dokumen -->
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label fw-bold text-muted">Kode Dokumen</label>
-                                        <p class="form-control-plaintext border-bottom">
-                                            <span class="badge bg-primary">{{ $dataDokumenHrd->dokumenHrd->kode_dok_hrd ?? '-' }}</span>
-                                        </p>
-                                    </div>
 
-                                     <!-- Tanggal TTD -->
-                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">Tanggal TTD/Terbit</label>
-                                        <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('d-m-Y') : '-' }}
-                                        </p>
-                                    </div>
 
                                     <!-- File Dokumen -->
                                     <div class="col-md-6 mb-3">
@@ -86,8 +81,29 @@
                                         <p class="form-control-plaintext border-bottom">
                                             @if ($dataDokumenHrd->file_dok)
                                                 <a href="{{ asset('storage/' . $dataDokumenHrd->file_dok) }}"
-                                                   target="_blank"
-                                                   class="btn btn-sm btn-outline-primary">
+                                                    target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-file-pdf me-1"></i>Lihat File
+                                                </a>
+                                            @else
+                                                <span class="text-muted">Tidak ada file</span>
+                                            @endif
+                                        </p>
+                                    </div>
+
+                                    <!-- Perusahaan -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-muted">No. Dokumen</label>
+                                        <p class="form-control-plaintext border-bottom">
+                                            {{ $dataDokumenHrd->perusahaan->nama_prs1 ?? '-' }}
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-muted">File Dokumen</label>
+                                        <p class="form-control-plaintext border-bottom">
+                                            @if ($dataDokumenHrd->file_dok_2)
+                                                <a href="{{ asset('storage/' . $dataDokumenHrd->file_dok_2) }}"
+                                                    target="_blank" class="btn btn-sm btn-outline-primary">
                                                     <i class="fas fa-file-pdf me-1"></i>Lihat File
                                                 </a>
                                             @else
@@ -226,13 +242,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <!-- ID Kode -->
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">ID Kode</label>
-                                        <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->id_kode ?? '-' }}
-                                        </p>
-                                    </div>
+                              
 
                                     <!-- Dibuat Oleh -->
                                     <div class="col-md-6 mb-3">

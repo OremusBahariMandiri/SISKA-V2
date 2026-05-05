@@ -87,6 +87,7 @@
                                         <th class="text-center col-kategori">KATEGORI</th>
                                         <th class="text-center col-jenis">JENIS DOKUMEN</th>
                                         <th class="text-center col-ket">KET. DOK</th>
+                                        <th class="text-center col-ket">CATATAN</th>
                                         <th class="text-center col-no-dok">NO. DOKUMEN</th>
                                         <th class="text-center col-perusahaan">PERUSAHAAN</th>
                                         <th class="text-center col-tgl">TGL TTD</th>
@@ -124,6 +125,8 @@
                                             <td>{{ $dokumen->dokumenHrd->jns_dok_hrd ?? '-' }}</td>
 
                                             <td>{{ $dokumen->ket_dok_hrd ?? '-' }}</td>
+
+                                            <td>{{ $dokumen->catatan_dok_hrd ?? '-' }}</td>
 
                                             <!-- NO DOKUMEN -->
                                             <td class="text-center">{{ $dokumen->no_dok_hrd ?? '-' }}</td>

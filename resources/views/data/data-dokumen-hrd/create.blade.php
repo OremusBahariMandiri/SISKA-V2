@@ -41,93 +41,8 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <!-- No Dokumen -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="no_dok_hrd" class="form-label fw-bold">No. Dokumen</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                                                    <input type="text" class="form-control auto-uppercase"
-                                                        id="no_dok_hrd" name="no_dok_hrd" value="{{ old('no_dok_hrd') }}"
-                                                        placeholder="Masukkan nomor dokumen">
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
-                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
-                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd') }}</textarea>
-                                            </div>
-                                        </div>
-
-                                            <!-- Kategori Dokumen -->
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="ktg_dok_hrd" class="form-label fw-bold">Kategori Dokumen
-                                                        <span class="text-danger">*</span></label>
-                                                    <div class="input-group">
-                                                        <span class="input-group-text"><i class="fas fa-folder"></i></span>
-                                                        <div style="flex: 1">
-                                                            <select class="form-select select2" id="ktg_dok_hrd"
-                                                                name="ktg_dok_hrd" data-required="true">
-                                                                <option value="">Pilih Kategori</option>
-                                                                @php
-                                                                    $categories = collect($grouped)->keys();
-                                                                @endphp
-                                                                @foreach ($categories as $category)
-                                                                    <option value="{{ $category }}"
-                                                                        {{ old('ktg_dok_hrd') == $category ? 'selected' : '' }}>
-                                                                        {{ $category }}
-                                                                    </option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                             <!-- File Dokumen PDF -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="file_dok" class="form-label fw-bold">File Dokumen
-                                                    (PDF)</label>
-                                                <input type="file" class="form-control" id="file_dok"
-                                                    name="file_dok" accept=".pdf">
-
-                                            </div>
-                                        </div>
-
-                                         <!-- Jenis Dokumen -->
-                                         <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="jns_dok_hrd" class="form-label fw-bold">Jenis Dokumen
-                                                    <span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                                    <div style="flex: 1">
-                                                        <select class="form-select select2" id="jns_dok_hrd"
-                                                            name="jns_dok_hrd" data-required="true" disabled>
-                                                            <option value="">Pilih Jenis Dokumen</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- File Dokumen 2 (DOC/Excel) -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="file_dok_2" class="form-label fw-bold">File Dokumen
-                                                    (DOC/Excel)</label>
-                                                <input type="file" class="form-control" id="file_dok_2"
-                                                    name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
+                                        <!-- Perusahaan - Col 12 -->
+                                        <div class="col-md-12">
                                             <div class="form-group mb-3">
                                                 <label for="id_perusahaan" class="form-label fw-bold">Perusahaan</label>
                                                 <div class="input-group">
@@ -149,8 +64,20 @@
                                             </div>
                                         </div>
 
+                                        <!-- No Dokumen - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="no_dok_hrd" class="form-label fw-bold">No. Dokumen</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                                                    <input type="text" class="form-control auto-uppercase"
+                                                        id="no_dok_hrd" name="no_dok_hrd" value="{{ old('no_dok_hrd') }}"
+                                                        placeholder="Masukkan nomor dokumen">
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                        <!-- Tanggal TTD -->
+                                        <!-- Tanggal TTD - Col 6 -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
                                                 <label for="tgl_ttd" class="form-label fw-bold">Tanggal
@@ -160,16 +87,90 @@
                                             </div>
                                         </div>
 
+                                        <!-- Kategori Dokumen - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="ktg_dok_hrd" class="form-label fw-bold">Kategori Dokumen
+                                                    <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-folder"></i></span>
+                                                    <div style="flex: 1">
+                                                        <select class="form-select select2" id="ktg_dok_hrd"
+                                                            name="ktg_dok_hrd" data-required="true">
+                                                            <option value="">Pilih Kategori</option>
+                                                            @php
+                                                                $categories = collect($grouped)->keys();
+                                                            @endphp
+                                                            @foreach ($categories as $category)
+                                                                <option value="{{ $category }}"
+                                                                    {{ old('ktg_dok_hrd') == $category ? 'selected' : '' }}>
+                                                                    {{ $category }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                        <!-- Jenis Dokumen - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="jns_dok_hrd" class="form-label fw-bold">Jenis Dokumen
+                                                    <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                                    <div style="flex: 1">
+                                                        <select class="form-select select2" id="jns_dok_hrd"
+                                                            name="jns_dok_hrd" data-required="true" disabled>
+                                                            <option value="">Pilih Jenis Dokumen</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
+                                        <!-- Keterangan - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
+                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
+                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd') }}</textarea>
+                                            </div>
+                                        </div>
+
+                                        <!-- Catatan - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="catatan_dok_hrd" class="form-label fw-bold">Catatan</label>
+                                                <textarea class="form-control auto-uppercase" id="catatan_dok_hrd" name="catatan_dok_hrd" rows="3"
+                                                    placeholder="Catatan dokumen HRD">{{ old('catatan_dok_hrd') }}</textarea>
+                                            </div>
+                                        </div>
+
+                                        <!-- File Dokumen PDF - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="file_dok" class="form-label fw-bold">File Dokumen
+                                                    (PDF)</label>
+                                                <input type="file" class="form-control" id="file_dok"
+                                                    name="file_dok" accept=".pdf">
+                                            </div>
+                                        </div>
+
+                                        <!-- File Dokumen 2 (DOC/Excel) - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="file_dok_2" class="form-label fw-bold">File Dokumen
+                                                    (DOC/Excel)</label>
+                                                <input type="file" class="form-control" id="file_dok_2"
+                                                    name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
+                                            </div>
+                                        </div>
 
                                         <!-- Hidden field for id_dokumen_hrd -->
                                         <input type="hidden" id="id_dokumen_hrd" name="id_dokumen_hrd"
                                             value="{{ old('id_dokumen_hrd') }}">
-
-
-
-
                                     </div>
                                 </div>
                             </div>
@@ -277,12 +278,11 @@
                             <div class="card border-primary mb-4">
                                 <div class="card-header bg-primary bg-opacity-25">
                                     <h5 class="mb-0 text-white">
-                                        <i class="fas fa-comment-alt me-2"></i>Keterangan Tambahan
+                                        <i class="fas fa-comment-alt me-2"></i>Status Dokumen
                                     </h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <!-- Keterangan -->
                                         <!-- Status Dokumen -->
                                         <div class="col-md-12">
                                             <div class="form-group mb-3">
@@ -394,6 +394,9 @@
         const groupedData = @json($grouped);
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Select2
+           
+
             // Auto-uppercase functionality
             document.querySelectorAll('input.auto-uppercase, textarea.auto-uppercase').forEach(function(element) {
                 if (element.type === 'text' || element.tagName.toLowerCase() === 'textarea') {
@@ -403,9 +406,8 @@
                 }
             });
 
-            $('#ktg_dok_hrd').on('change', function() {
-                const kategori = $(this).val();
-
+            // Function to populate Jenis Dokumen dropdown
+            function populateJenisDokumen(kategori, selectedValue = '') {
                 $('#jns_dok_hrd')
                     .empty()
                     .append('<option value="">Pilih Jenis Dokumen</option>')
@@ -413,25 +415,59 @@
 
                 if (kategori && groupedData[kategori]) {
                     groupedData[kategori].forEach(item => {
+                        const isSelected = selectedValue && item.jns_dok_hrd === selectedValue ? 'selected' : '';
                         $('#jns_dok_hrd').append(
-                            `<option value="${item.jns_dok_hrd}" data-id="${item.id}" data-kode="${item.kode_dok_hrd}">
-                    ${item.jns_dok_hrd}
-                </option>`
+                            `<option value="${item.jns_dok_hrd}" data-id="${item.id}" data-kode="${item.kode_dok_hrd}" ${isSelected}>
+                                ${item.jns_dok_hrd}
+                            </option>`
                         );
                     });
 
                     $('#jns_dok_hrd').prop('disabled', false);
+
+                    // Trigger select2 to refresh
+                    $('#jns_dok_hrd').trigger('change.select2');
                 }
+            }
+
+            // Event handler for Kategori Dokumen change
+            $('#ktg_dok_hrd').on('change', function() {
+                const kategori = $(this).val();
+                populateJenisDokumen(kategori);
             });
 
+            // Event handler for Jenis Dokumen change
             $('#jns_dok_hrd').on('change', function() {
                 const selected = $(this).find(':selected');
-
-                $('#kode_dok_hrd_display').val(selected.data('kode') || '');
                 $('#id_dokumen_hrd').val(selected.data('id') || '');
             });
 
-            // Conditional field visibility
+            // Restore old values when there's validation error
+            function restoreOldValues() {
+                const oldKategori = "{{ old('ktg_dok_hrd') }}";
+                const oldJenisDokumen = "{{ old('jns_dok_hrd') }}";
+                const oldIdDokumenHrd = "{{ old('id_dokumen_hrd') }}";
+
+                if (oldKategori) {
+                    // Set kategori value
+                    $('#ktg_dok_hrd').val(oldKategori).trigger('change.select2');
+
+                    // Populate and set jenis dokumen
+                    populateJenisDokumen(oldKategori, oldJenisDokumen);
+
+                    // Set id_dokumen_hrd
+                    if (oldIdDokumenHrd) {
+                        $('#id_dokumen_hrd').val(oldIdDokumenHrd);
+                    }
+                }
+            }
+
+            // Call restore function after select2 initialization
+            setTimeout(function() {
+                restoreOldValues();
+            }, 100);
+
+            // Conditional field visibility - Status Dokumen
             function handleStatusDokumenChange() {
                 const stsDok = $('#sts_dok').val();
                 if (stsDok === 'NON-AKTIF') {
@@ -442,6 +478,7 @@
                 }
             }
 
+            // Conditional field visibility - Jenis Masa Berlaku
             function handleJenisMasaBerlakuChange() {
                 const jnsMsbDok = $('#jns_msb_dok').val();
                 const fields = $('#tgl_akr_dok, #msb_dok, #tgl_prt_dok, #durasi_pgt');
@@ -451,11 +488,11 @@
                     fields.closest('.form-group').addClass('opacity-50');
                 } else {
                     fields.prop('disabled', false);
-                    $('.form-group').removeClass('opacity-50');
+                    fields.closest('.form-group').removeClass('opacity-50');
                 }
             }
 
-            // Date calculations
+            // Calculate Masa Berlaku (months)
             function calculateValidityPeriod() {
                 if ($('#jns_msb_dok').val() === 'TETAP') return;
 
@@ -470,10 +507,13 @@
                         const months = (end.getFullYear() - start.getFullYear()) * 12 +
                             (end.getMonth() - start.getMonth());
                         $('#msb_dok').val(months > 0 ? months : '');
+                    } else {
+                        $('#msb_dok').val('');
                     }
                 }
             }
 
+            // Calculate Durasi Peringatan (days)
             function calculateReminderDuration() {
                 const reminderDate = $('#tgl_prt_dok').val();
 
@@ -488,6 +528,8 @@
                     const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
                     $('#durasi_pgt').val(daysDiff);
+                } else {
+                    $('#durasi_pgt').val('');
                 }
             }
 
@@ -495,25 +537,30 @@
             $('#jns_msb_dok').on('change', handleJenisMasaBerlakuChange);
             $('#sts_dok').on('change', handleStatusDokumenChange);
             $('#tgl_ttd').on('change', calculateValidityPeriod);
-            $('#tgl_akr_dok').on('change', function() {
-                calculateValidityPeriod();
-            });
+            $('#tgl_akr_dok').on('change', calculateValidityPeriod);
             $('#tgl_prt_dok').on('change', calculateReminderDuration);
 
-            // Form validation
+            // Form validation on submit
             $('#dokumenHrdForm').on('submit', function(e) {
                 e.preventDefault();
 
                 const requiredFields = this.querySelectorAll('[data-required="true"]:not(:disabled)');
                 let missingFields = [];
 
+                // Remove previous invalid states
                 requiredFields.forEach(function(field) {
                     field.classList.remove('is-invalid');
+                });
+
+                // Check for empty required fields
+                requiredFields.forEach(function(field) {
                     if (!field.value.trim()) {
                         field.classList.add('is-invalid');
                         const label = field.closest('.form-group')?.querySelector('label')
                             ?.textContent?.replace('*', '').trim();
-                        missingFields.push(label);
+                        if (label) {
+                            missingFields.push(label);
+                        }
                     }
                 });
 
@@ -521,24 +568,44 @@
                     Swal.fire({
                         icon: 'warning',
                         title: 'Data Belum Lengkap',
-                        html: '<p>Mohon lengkapi field berikut:</p><ul>' +
+                        html: '<p class="mb-2">Mohon lengkapi field berikut:</p><ul class="text-start">' +
                             missingFields.map(f => '<li>' + f + '</li>').join('') + '</ul>',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#3085d6'
                     });
+
+                    // Scroll to first invalid field
+                    const firstInvalid = this.querySelector('.is-invalid');
+                    if (firstInvalid) {
+                        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstInvalid.focus();
+                    }
+
                     return false;
                 }
 
+                // Show loading state
                 $('#submitBtn').html('<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan...').prop(
                     'disabled', true);
+
+                // Submit the form
                 this.submit();
             });
 
-
-
+            // Initialize conditional fields on page load
             setTimeout(function() {
                 handleJenisMasaBerlakuChange();
                 handleStatusDokumenChange();
-            }, 100);
+                calculateValidityPeriod();
+                calculateReminderDuration();
+            }, 150);
+
+            // Remove invalid class on input change
+            $('input[data-required="true"], select[data-required="true"], textarea[data-required="true"]').on('change input', function() {
+                if ($(this).val().trim()) {
+                    $(this).removeClass('is-invalid');
+                }
+            });
         });
     </script>
 @endpush

@@ -54,43 +54,78 @@
                                             </div>
                                         </div>
 
-                                        <!-- Tanggal TTD -->
+
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="tgl_ttd" class="form-label fw-bold">Tanggal
-                                                    TTD/Terbit</label>
-                                                <input type="date" class="form-control" id="tgl_ttd" name="tgl_ttd"
-                                                    value="{{ old('tgl_ttd') }}">
+                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
+                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
+                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd') }}</textarea>
                                             </div>
                                         </div>
 
+                                            <!-- Kategori Dokumen -->
+                                            <div class="col-md-6">
+                                                <div class="form-group mb-3">
+                                                    <label for="ktg_dok_hrd" class="form-label fw-bold">Kategori Dokumen
+                                                        <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i class="fas fa-folder"></i></span>
+                                                        <div style="flex: 1">
+                                                            <select class="form-select select2" id="ktg_dok_hrd"
+                                                                name="ktg_dok_hrd" data-required="true">
+                                                                <option value="">Pilih Kategori</option>
+                                                                @php
+                                                                    $categories = collect($grouped)->keys();
+                                                                @endphp
+                                                                @foreach ($categories as $category)
+                                                                    <option value="{{ $category }}"
+                                                                        {{ old('ktg_dok_hrd') == $category ? 'selected' : '' }}>
+                                                                        {{ $category }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                        <!-- Kategori Dokumen -->
+                                             <!-- File Dokumen PDF -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="ktg_dok_hrd" class="form-label fw-bold">Kategori Dokumen
+                                                <label for="file_dok" class="form-label fw-bold">File Dokumen
+                                                    (PDF)</label>
+                                                <input type="file" class="form-control" id="file_dok"
+                                                    name="file_dok" accept=".pdf">
+
+                                            </div>
+                                        </div>
+
+                                         <!-- Jenis Dokumen -->
+                                         <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="jns_dok_hrd" class="form-label fw-bold">Jenis Dokumen
                                                     <span class="text-danger">*</span></label>
                                                 <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-folder"></i></span>
+                                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                                     <div style="flex: 1">
-                                                        <select class="form-select select2" id="ktg_dok_hrd"
-                                                            name="ktg_dok_hrd" data-required="true">
-                                                            <option value="">Pilih Kategori</option>
-                                                            @php
-                                                                $categories = collect($grouped)->keys();
-                                                            @endphp
-                                                            @foreach ($categories as $category)
-                                                                <option value="{{ $category }}"
-                                                                    {{ old('ktg_dok_hrd') == $category ? 'selected' : '' }}>
-                                                                    {{ $category }}
-                                                                </option>
-                                                            @endforeach
+                                                        <select class="form-select select2" id="jns_dok_hrd"
+                                                            name="jns_dok_hrd" data-required="true" disabled>
+                                                            <option value="">Pilih Jenis Dokumen</option>
                                                         </select>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
+                                        <!-- File Dokumen 2 (DOC/Excel) -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="file_dok_2" class="form-label fw-bold">File Dokumen
+                                                    (DOC/Excel)</label>
+                                                <input type="file" class="form-control" id="file_dok_2"
+                                                    name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
@@ -114,66 +149,27 @@
                                             </div>
                                         </div>
 
+
+                                        <!-- Tanggal TTD -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="tgl_ttd" class="form-label fw-bold">Tanggal
+                                                    TTD/Terbit</label>
+                                                <input type="date" class="form-control" id="tgl_ttd" name="tgl_ttd"
+                                                    value="{{ old('tgl_ttd') }}">
+                                            </div>
+                                        </div>
+
+
+
+
                                         <!-- Hidden field for id_dokumen_hrd -->
                                         <input type="hidden" id="id_dokumen_hrd" name="id_dokumen_hrd"
                                             value="{{ old('id_dokumen_hrd') }}">
 
 
 
-                                        <!-- Jenis Dokumen -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="jns_dok_hrd" class="form-label fw-bold">Jenis Dokumen
-                                                    <span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
-                                                    <div style="flex: 1">
-                                                        <select class="form-select select2" id="jns_dok_hrd"
-                                                            name="jns_dok_hrd" data-required="true" disabled>
-                                                            <option value="">Pilih Jenis Dokumen</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <!-- File Dokumen PDF -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="file_dok" class="form-label fw-bold">File Dokumen
-                                                    (PDF)</label>
-                                                <input type="file" class="form-control" id="file_dok"
-                                                    name="file_dok" accept=".pdf">
-                                                <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Format: PDF
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
-                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
-                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd') }}</textarea>
-                                            </div>
-                                        </div>
-
-
-                                        <!-- File Dokumen 2 (DOC/Excel) -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="file_dok_2" class="form-label fw-bold">File Dokumen
-                                                    (DOC/Excel)</label>
-                                                <input type="file" class="form-control" id="file_dok_2"
-                                                    name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
-                                                <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Format: DOC, DOCX, XLS, XLSX
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

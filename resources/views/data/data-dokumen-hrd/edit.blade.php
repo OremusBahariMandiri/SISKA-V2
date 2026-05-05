@@ -168,10 +168,6 @@
                                                 </label>
                                                 <input type="file" class="form-control" id="file_dok"
                                                     name="file_dok" accept=".pdf">
-                                                <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Format: PDF. Kosongkan jika
-                                                    tidak ingin mengubah.
-                                                </div>
                                             </div>
                                         </div>
 
@@ -202,10 +198,6 @@
                                                 </label>
                                                 <input type="file" class="form-control" id="file_dok_2"
                                                     name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
-                                                <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Format: DOC, DOCX, XLS, XLSX.
-                                                    Kosongkan jika tidak ingin mengubah.
-                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -83,17 +83,18 @@
                                     <tr>
                                         <th class="text-center col-no">NO</th>
                                         <th class="text-center col-kategori">KATEGORI</th>
-                                        <th class="text-center col-jenis">JENIS DOKUMEN</th>
+                                        <th class="text-center col-jenis">JNS DOK</th>
                                         <th class="text-center col-ket">KET. DOK</th>
                                         <th class="text-center col-ket">CATATAN</th>
-                                        <th class="text-center col-no-dok">NO. DOKUMEN</th>
-                                        <th class="text-center col-perusahaan">PERUSAHAAN</th>
+                                        <th class="text-center col-file">FILE</th>
+                                        <th class="text-center col-no-dok">NO. DOK</th>
+                                        <th class="text-center col-perusahaan">PRSH</th>
                                         <th class="text-center col-tgl">TGL TTD</th>
                                         <th class="text-center col-msb">MSB</th>
                                         <th class="text-center col-tgl">TGL AKHIR</th>
                                         <th class="text-center col-tgl">TGL PERINGATAN</th>
                                         <th class="text-center col-status">STATUS</th>
-                                        <th class="text-center col-file">FILE</th>
+
                                         <th class="text-center col-aksi">AKSI</th>
                                     </tr>
                                 </thead>
@@ -126,10 +127,35 @@
 
                                             <td>{{ $dokumen->catatan_dok_hrd ?? '-' }}</td>
 
+                                            <!-- FILE -->
+                                            <td class="text-center">
+                                                <div class="d-flex gap-1 justify-content-center">
+                                                    @if ($dokumen->file_dok)
+                                                        <a href="{{ asset('storage/' . $dokumen->file_dok) }}"
+                                                            target="_blank" class="btn btn-sm btn-outline-primary"
+                                                            data-bs-toggle="tooltip" title="Lihat File PDF">
+                                                            <i class="fas fa-file-pdf"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    @if ($dokumen->file_dok_2)
+                                                        <a href="{{ asset('storage/' . $dokumen->file_dok_2) }}"
+                                                            target="_blank" class="btn btn-sm btn-outline-success"
+                                                            data-bs-toggle="tooltip" title="Lihat File DOC/Excel">
+                                                            <i class="fas fa-file-word"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    @if (!$dokumen->file_dok && !$dokumen->file_dok_2)
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </div>
+                                            </td>
+
                                             <!-- NO DOKUMEN -->
                                             <td class="text-center">{{ $dokumen->no_dok_hrd ?? '-' }}</td>
 
-                                            <!-- PERUSAHAAN -->
+                                            <!-- NO DOKUMEN -->
                                             <td class="text-center">{{ $dokumen->perusahaan->nama_prs2 ?? '-' }}</td>
 
                                             <!-- TGL TTD -->
@@ -175,40 +201,33 @@
                                                 @endif
                                             </td>
 
-                                            <!-- FILE -->
-                                            <td class="text-center">
-                                                <div class="d-flex gap-1 justify-content-center">
-                                                    @if ($dokumen->file_dok)
-                                                        <a href="{{ asset('storage/' . $dokumen->file_dok) }}" target="_blank"
-                                                            class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip"
-                                                            title="Lihat File PDF">
-                                                            <i class="fas fa-file-pdf"></i>
-                                                        </a>
-                                                    @endif
 
-                                                    @if ($dokumen->file_dok_2)
-                                                        <a href="{{ asset('storage/' . $dokumen->file_dok_2) }}" target="_blank"
-                                                            class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip"
-                                                            title="Lihat File DOC/Excel">
-                                                            <i class="fas fa-file-word"></i>
-                                                        </a>
-                                                    @endif
-
-                                                    @if (!$dokumen->file_dok && !$dokumen->file_dok_2)
-                                                        <span class="text-muted">-</span>
-                                                    @endif
-                                                </div>
-                                            </td>
 
                                             <!-- AKSI -->
                                             <td class="text-center no-wrap">
                                                 <div class="btn-group" role="group">
                                                     @if (auth()->user()->is_admin || ($userPermissions['detail'] ?? false))
-                                                        <a href="{{ route('data-dokumen-hrd-laporan.show', $dokumen->id) }}"
+                                                        <a href="{{ route('data-dokumen-hrd.show', $dokumen->id) }}"
                                                             class="btn btn-sm btn-info" data-bs-toggle="tooltip"
                                                             title="Detail">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
+                                                    @endif
+
+                                                    @if (auth()->user()->is_admin || ($userPermissions['ubah'] ?? false))
+                                                        <a href="{{ route('data-dokumen-hrd.edit', $dokumen->id) }}"
+                                                            class="btn btn-sm btn-warning" data-bs-toggle="tooltip"
+                                                            title="Edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    @if (auth()->user()->is_admin || ($userPermissions['hapus'] ?? false))
+                                                        <button type="button" class="btn btn-sm btn-danger delete-btn"
+                                                            data-id="{{ $dokumen->id }}" data-bs-toggle="tooltip"
+                                                            title="Hapus">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
                                                     @endif
                                                 </div>
                                             </td>
@@ -454,34 +473,34 @@
         }
 
         .col-kategori {
-            width: 120px !important;
-            min-width: 120px !important;
+            width: 80px !important;
+            min-width: 80px !important;
         }
 
         .col-jenis {
-            width: 150px !important;
-            min-width: 150px !important;
+            width: 80px !important;
+            min-width: 80px !important;
         }
 
         .col-ket {
-            width: 300px !important;
-            min-width: 300px !important;
+            width: 250px !important;
+            min-width: 250px !important;
             white-space: normal !important;
         }
 
         .col-no-dok {
-            width: 120px !important;
-            min-width: 120px !important;
+            width: 70px !important;
+            min-width: 70px !important;
         }
 
         .col-perusahaan {
-            width: 130px !important;
-            min-width: 130px !important;
+            width: 30px !important;
+            min-width: 30px !important;
         }
 
         .col-tgl {
-            width: 95px !important;
-            min-width: 95px !important;
+            width: 50px !important;
+            min-width: 50px !important;
         }
 
         .col-msb {

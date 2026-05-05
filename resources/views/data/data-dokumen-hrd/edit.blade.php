@@ -48,62 +48,8 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <!-- No Dokumen -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="no_dok_hrd" class="form-label fw-bold">No. Dokumen</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
-                                                    <input type="text" class="form-control auto-uppercase"
-                                                        id="no_dok_hrd" name="no_dok_hrd"
-                                                        value="{{ old('no_dok_hrd', $dataDokumenHrd->no_dok_hrd) }}"
-                                                        placeholder="Masukkan nomor dokumen">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Tanggal TTD -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="tgl_ttd" class="form-label fw-bold">Tanggal
-                                                    TTD/Terbit</label>
-                                                <input type="date" class="form-control" id="tgl_ttd" name="tgl_ttd"
-                                                    value="{{ old('tgl_ttd', $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('Y-m-d') : '') }}">
-                                            </div>
-                                        </div>
-
-                                        <!-- Kategori Dokumen -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="ktg_dok_hrd" class="form-label fw-bold">Kategori Dokumen
-                                                    <span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-folder"></i></span>
-                                                    <div style="flex: 1">
-                                                        <select class="form-select select2" id="ktg_dok_hrd"
-                                                            name="ktg_dok_hrd" data-required="true">
-                                                            <option value="">Pilih Kategori</option>
-                                                            @php
-                                                                $categories = collect($grouped)->keys(); // ✅ Sorting kategori
-                                                                $selectedKategori = old(
-                                                                    'ktg_dok_hrd',
-                                                                    optional($dataDokumenHrd->dokumenHrd)->ktg_dok_hrd,
-                                                                );
-                                                            @endphp
-                                                            @foreach ($categories as $category)
-                                                                <option value="{{ $category }}"
-                                                                    {{ $selectedKategori == $category ? 'selected' : '' }}>
-                                                                    {{ $category }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-md-6">
+                                        <!-- Perusahaan - Col 12 -->
+                                        <div class="col-md-12">
                                             <div class="form-group mb-3">
                                                 <label for="id_perusahaan" class="form-label fw-bold">Perusahaan</label>
                                                 <div class="input-group">
@@ -125,8 +71,61 @@
                                             </div>
                                         </div>
 
+                                        <!-- No Dokumen - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="no_dok_hrd" class="form-label fw-bold">No. Dokumen</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                                                    <input type="text" class="form-control auto-uppercase"
+                                                        id="no_dok_hrd" name="no_dok_hrd"
+                                                        value="{{ old('no_dok_hrd', $dataDokumenHrd->no_dok_hrd) }}"
+                                                        placeholder="Masukkan nomor dokumen">
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                        <!-- Jenis Dokumen -->
+                                        <!-- Tanggal TTD - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="tgl_ttd" class="form-label fw-bold">Tanggal
+                                                    TTD/Terbit</label>
+                                                <input type="date" class="form-control" id="tgl_ttd" name="tgl_ttd"
+                                                    value="{{ old('tgl_ttd', $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('Y-m-d') : '') }}">
+                                            </div>
+                                        </div>
+
+                                        <!-- Kategori Dokumen - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="ktg_dok_hrd" class="form-label fw-bold">Kategori Dokumen
+                                                    <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-folder"></i></span>
+                                                    <div style="flex: 1">
+                                                        <select class="form-select select2" id="ktg_dok_hrd"
+                                                            name="ktg_dok_hrd" data-required="true">
+                                                            <option value="">Pilih Kategori</option>
+                                                            @php
+                                                                $categories = collect($grouped)->keys();
+                                                                $selectedKategori = old(
+                                                                    'ktg_dok_hrd',
+                                                                    optional($dataDokumenHrd->dokumenHrd)->ktg_dok_hrd,
+                                                                );
+                                                            @endphp
+                                                            @foreach ($categories as $category)
+                                                                <option value="{{ $category }}"
+                                                                    {{ $selectedKategori == $category ? 'selected' : '' }}>
+                                                                    {{ $category }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Jenis Dokumen - Col 6 -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
                                                 <label for="jns_dok_hrd" class="form-label fw-bold">Jenis Dokumen
@@ -135,7 +134,7 @@
                                                     <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                                     <div style="flex: 1">
                                                         <select class="form-select select2" id="jns_dok_hrd"
-                                                            name="jns_dok_hrd" data-required="true">
+                                                            name="jns_dok_hrd" data-required="true" disabled>
                                                             <option value="">Pilih Jenis Dokumen</option>
                                                         </select>
                                                     </div>
@@ -143,16 +142,25 @@
                                             </div>
                                         </div>
 
+                                        <!-- Keterangan - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
+                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3"
+                                                    placeholder="Keterangan tambahan dokumen">{{ old('ket_dok_hrd', $dataDokumenHrd->ket_dok_hrd) }}</textarea>
+                                            </div>
+                                        </div>
 
-                                        <!-- Hidden field for id_dokumen_hrd -->
-                                        <input type="hidden" id="id_dokumen_hrd" name="id_dokumen_hrd"
-                                            value="{{ old('id_dokumen_hrd', $dataDokumenHrd->id_dokumen_hrd) }}">
+                                        <!-- Catatan - Col 6 -->
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="catatan_dok_hrd" class="form-label fw-bold">Catatan</label>
+                                                <textarea class="form-control auto-uppercase" id="catatan_dok_hrd" name="catatan_dok_hrd" rows="3"
+                                                    placeholder="Catatan dokumen HRD">{{ old('catatan_dok_hrd', $dataDokumenHrd->catatan_dok_hrd) }}</textarea>
+                                            </div>
+                                        </div>
 
-
-
-                                        <!-- File Dokumen -->
-                                        <!-- File Dokumen PDF -->
-                                        <!-- File Dokumen PDF -->
+                                        <!-- File Dokumen PDF - Col 6 -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
                                                 <label for="file_dok" class="form-label fw-bold">
@@ -171,18 +179,7 @@
                                             </div>
                                         </div>
 
-
-
-                                        <!-- Keterangan -->
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-3">
-                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
-                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3">{{ old('ket_dok_hrd', $dataDokumenHrd->ket_dok_hrd) }}</textarea>
-                                            </div>
-                                        </div>
-
-
-                                        <!-- File Dokumen 2 (DOC/Excel) -->
+                                        <!-- File Dokumen 2 (DOC/Excel) - Col 6 -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
                                                 <label for="file_dok_2" class="form-label fw-bold">
@@ -200,6 +197,10 @@
                                                     name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
                                             </div>
                                         </div>
+
+                                        <!-- Hidden field for id_dokumen_hrd -->
+                                        <input type="hidden" id="id_dokumen_hrd" name="id_dokumen_hrd"
+                                            value="{{ old('id_dokumen_hrd', $dataDokumenHrd->id_dokumen_hrd) }}">
                                     </div>
                                 </div>
                             </div>

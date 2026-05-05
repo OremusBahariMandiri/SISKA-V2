@@ -40,38 +40,21 @@
                                         </p>
                                     </div>
 
-                                    <!-- Perusahaan -->
+                                    <!-- Tanggal TTD -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">No. Dokumen</label>
+                                        <label class="form-label fw-bold text-muted">Tanggal TTD/Terbit</label>
                                         <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->perusahaan->nama_prs1 ?? '-' }}
+                                            {{ $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('d-m-Y') : '-' }}
                                         </p>
                                     </div>
 
 
 
                                     <!-- Kategori Dokumen -->
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold text-muted">Kategori Dokumen</label>
                                         <p class="form-control-plaintext border-bottom">
                                             {{ $dataDokumenHrd->dokumenHrd->ktg_dok_hrd ?? '-' }}
-                                        </p>
-                                    </div>
-
-                                    <!-- Jenis Dokumen -->
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label fw-bold text-muted">Jenis Dokumen</label>
-                                        <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->dokumenHrd->jns_dok_hrd ?? '-' }}
-                                        </p>
-                                    </div>
-
-                                    <!-- Kode Dokumen -->
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label fw-bold text-muted">Kode Dokumen</label>
-                                        <p class="form-control-plaintext border-bottom">
-                                            <span
-                                                class="badge bg-primary">{{ $dataDokumenHrd->dokumenHrd->kode_dok_hrd ?? '-' }}</span>
                                         </p>
                                     </div>
 
@@ -83,13 +66,15 @@
                                         </p>
                                     </div>
 
-                                    <!-- Tanggal TTD -->
+                                    <!-- Jenis Dokumen -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">Tanggal TTD/Terbit</label>
+                                        <label class="form-label fw-bold text-muted">Jenis Dokumen</label>
                                         <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->tgl_ttd ? $dataDokumenHrd->tgl_ttd->format('d-m-Y') : '-' }}
+                                            {{ $dataDokumenHrd->dokumenHrd->jns_dok_hrd ?? '-' }}
                                         </p>
                                     </div>
+
+
 
                                     <!-- File Dokumen -->
                                     <div class="col-md-6 mb-3">
@@ -105,6 +90,15 @@
                                             @endif
                                         </p>
                                     </div>
+
+                                    <!-- Perusahaan -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold text-muted">No. Dokumen</label>
+                                        <p class="form-control-plaintext border-bottom">
+                                            {{ $dataDokumenHrd->perusahaan->nama_prs1 ?? '-' }}
+                                        </p>
+                                    </div>
+
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold text-muted">File Dokumen</label>
                                         <p class="form-control-plaintext border-bottom">
@@ -242,13 +236,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <!-- ID Kode -->
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">ID Kode</label>
-                                        <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->id_kode ?? '-' }}
-                                        </p>
-                                    </div>
+                                    
 
                                     <!-- Dibuat Oleh -->
                                     <div class="col-md-6 mb-3">

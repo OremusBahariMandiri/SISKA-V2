@@ -57,11 +57,12 @@
                                         </p>
                                     </div>
 
-                                    <!-- Keterangan -->
+
+                                    <!-- Perusahaan -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">Keterangan</label>
+                                        <label class="form-label fw-bold text-muted">Perusahaan</label>
                                         <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->ket_dok_hrd ?? '-' }}
+                                            {{ $dataDokumenHrd->perusahaan->nama_prs1 ?? '-' }}
                                         </p>
                                     </div>
 
@@ -90,13 +91,14 @@
                                         </p>
                                     </div>
 
-                                    <!-- Perusahaan -->
+                                    <!-- Keterangan -->
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold text-muted">No. Dokumen</label>
+                                        <label class="form-label fw-bold text-muted">Keterangan</label>
                                         <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->perusahaan->nama_prs1 ?? '-' }}
+                                            {{ $dataDokumenHrd->ket_dok_hrd ?? '-' }}
                                         </p>
                                     </div>
+
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold text-muted">File Dokumen</label>
@@ -161,7 +163,8 @@
                                             {{ $dataDokumenHrd->tgl_prt_dok ? $dataDokumenHrd->tgl_prt_dok->format('d-m-Y') : '-' }}
                                             @if ($dataDokumenHrd->tgl_prt_dok && $dataDokumenHrd->document_reminder_status)
                                                 <br>
-                                                <span class="badge bg-{{ $dataDokumenHrd->document_reminder_status['class'] }} mt-1">
+                                                <span
+                                                    class="badge bg-{{ $dataDokumenHrd->document_reminder_status['class'] }} mt-1">
                                                     {{ $dataDokumenHrd->document_reminder_status['message'] }}
                                                 </span>
                                             @endif
@@ -202,14 +205,6 @@
                                         </p>
                                     </div>
 
-                                    <!-- Keterangan -->
-                                    <div class="col-md-12 mb-3">
-                                        <label class="form-label fw-bold text-muted">Keterangan</label>
-                                        <p class="form-control-plaintext border-bottom">
-                                            {{ $dataDokumenHrd->ket_dok_hrd ?? '-' }}
-                                        </p>
-                                    </div>
-
                                     <!-- Tanggal Non Aktif -->
                                     @if ($dataDokumenHrd->sts_dok === 'NON-AKTIF' && $dataDokumenHrd->tgl_dok_na)
                                         <div class="col-md-6 mb-3">
@@ -242,7 +237,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                              
+
 
                                     <!-- Dibuat Oleh -->
                                     <div class="col-md-6 mb-3">
@@ -285,7 +280,8 @@
                                 <i class="fas fa-arrow-left me-2"></i> Kembali
                             </a>
                             @if (auth()->user()->is_admin || (isset($userPermissions['ubah']) && $userPermissions['ubah']))
-                                <a href="{{ route('data-dokumen-hrd.edit', $dataDokumenHrd->id) }}" class="btn btn-warning btn-lg">
+                                <a href="{{ route('data-dokumen-hrd.edit', $dataDokumenHrd->id) }}"
+                                    class="btn btn-warning btn-lg">
                                     <i class="fas fa-edit me-2"></i> Edit Data
                                 </a>
                             @endif

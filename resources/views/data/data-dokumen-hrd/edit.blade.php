@@ -103,12 +103,25 @@
                                         </div>
 
 
-
-                                        <!-- Keterangan -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
-                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3">{{ old('ket_dok_hrd', $dataDokumenHrd->ket_dok_hrd) }}</textarea>
+                                                <label for="id_perusahaan" class="form-label fw-bold">Perusahaan</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                                    <div style="flex: 1">
+                                                        <select class="form-select select2" id="id_perusahaan"
+                                                            name="id_perusahaan">
+                                                            <option value="">Pilih Perusahaan</option>
+                                                            @foreach ($perusahaans as $perusahaan)
+                                                                <option value="{{ $perusahaan->id }}"
+                                                                    {{ old('id_perusahaan', $dataDokumenHrd->id_perusahaan) == $perusahaan->id ? 'selected' : '' }}>
+                                                                    {{ $perusahaan->nama_prs2 }} -
+                                                                    {{ $perusahaan->nama_prs1 }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -139,68 +152,58 @@
 
                                         <!-- File Dokumen -->
                                         <!-- File Dokumen PDF -->
+                                        <!-- File Dokumen PDF -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="file_dok" class="form-label fw-bold">File Dokumen
-                                                    (PDF)</label>
-                                                @if ($dataDokumenHrd->file_dok)
-                                                    <div class="mb-2">
-                                                        <small class="text-muted">File saat ini: </small>
+                                                <label for="file_dok" class="form-label fw-bold">
+                                                    File Dokumen (PDF)
+                                                    @if ($dataDokumenHrd->file_dok)
                                                         <a href="{{ asset('storage/' . $dataDokumenHrd->file_dok) }}"
-                                                            target="_blank" class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-file-pdf me-1"></i>Lihat PDF
+                                                            target="_blank"
+                                                            class="badge bg-primary text-decoration-none ms-2"
+                                                            title="Lihat file saat ini">
+                                                            <i class="fas fa-file-pdf me-1"></i>Lihat File Saat Ini
                                                         </a>
-                                                    </div>
-                                                @endif
+                                                    @endif
+                                                </label>
                                                 <input type="file" class="form-control" id="file_dok"
                                                     name="file_dok" accept=".pdf">
                                                 <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Format: PDF.
+                                                    <i class="fas fa-info-circle me-1"></i>Format: PDF. Kosongkan jika
+                                                    tidak ingin mengubah.
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <!-- Perusahaan - FIXED -->
+
+
+                                        <!-- Keterangan -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="id_perusahaan" class="form-label fw-bold">Perusahaan</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-text"><i class="fas fa-building"></i></span>
-                                                    <div style="flex: 1">
-                                                        <select class="form-select select2" id="id_perusahaan"
-                                                            name="id_perusahaan">
-                                                            <option value="">Pilih Perusahaan</option>
-                                                            @foreach ($perusahaans as $perusahaan)
-                                                                <option value="{{ $perusahaan->id }}"
-                                                                    {{ old('id_perusahaan', $dataDokumenHrd->id_perusahaan) == $perusahaan->id ? 'selected' : '' }}>
-                                                                    {{ $perusahaan->nama_prs2 }} -
-                                                                    {{ $perusahaan->nama_prs1 }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                                <label for="ket_dok_hrd" class="form-label fw-bold">Keterangan</label>
+                                                <textarea class="form-control auto-uppercase" id="ket_dok_hrd" name="ket_dok_hrd" rows="3">{{ old('ket_dok_hrd', $dataDokumenHrd->ket_dok_hrd) }}</textarea>
                                             </div>
                                         </div>
+
 
                                         <!-- File Dokumen 2 (DOC/Excel) -->
                                         <div class="col-md-6">
                                             <div class="form-group mb-3">
-                                                <label for="file_dok_2" class="form-label fw-bold">File Dokumen
-                                                    (DOC/Excel)</label>
-                                                @if ($dataDokumenHrd->file_dok_2)
-                                                    <div class="mb-2">
-                                                        <small class="text-muted">File saat ini: </small>
+                                                <label for="file_dok_2" class="form-label fw-bold">
+                                                    File Dokumen (DOC/Excel)
+                                                    @if ($dataDokumenHrd->file_dok_2)
                                                         <a href="{{ asset('storage/' . $dataDokumenHrd->file_dok_2) }}"
-                                                            target="_blank" class="btn btn-sm btn-outline-success">
-                                                            <i class="fas fa-file-word me-1"></i>Lihat Dokumen
+                                                            target="_blank"
+                                                            class="badge bg-success text-decoration-none ms-2"
+                                                            title="Lihat file saat ini">
+                                                            <i class="fas fa-file-excel me-1"></i>Lihat File Saat Ini
                                                         </a>
-                                                    </div>
-                                                @endif
+                                                    @endif
+                                                </label>
                                                 <input type="file" class="form-control" id="file_dok_2"
                                                     name="file_dok_2" accept=".doc,.docx,.xls,.xlsx">
                                                 <div class="form-text text-muted">
-                                                    <i class="fas fa-info-circle me-1"></i>Format: DOC, DOCX, XLS, XLSX
+                                                    <i class="fas fa-info-circle me-1"></i>Format: DOC, DOCX, XLS, XLSX.
                                                     Kosongkan jika tidak ingin mengubah.
                                                 </div>
                                             </div>

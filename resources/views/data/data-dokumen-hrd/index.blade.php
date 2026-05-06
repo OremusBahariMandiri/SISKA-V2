@@ -88,14 +88,15 @@
                                         <th class="text-center col-jenis">JNS DOK</th>
                                         <th class="text-center col-ket">KET. DOK</th>
                                         <th class="text-center col-ket">CATATAN</th>
-                                        <th class="text-center col-file">FILE</th>
-                                        <th class="text-center col-no-dok">NO. DOK</th>
                                         <th class="text-center col-perusahaan">PRSH</th>
                                         <th class="text-center col-tgl">TGL TTD</th>
+                                        <th class="text-center col-no-dok">NO. DOK</th>
+                                        <th class="text-center col-file">FILE</th>
+                                        <th class="text-center col-status">STATUS</th>
                                         <th class="text-center col-msb">MSB</th>
                                         <th class="text-center col-tgl">TGL AKHIR</th>
                                         <th class="text-center col-tgl">TGL PERINGATAN</th>
-                                        <th class="text-center col-status">STATUS</th>
+
 
                                         <th class="text-center col-aksi">AKSI</th>
                                     </tr>
@@ -129,6 +130,16 @@
 
                                             <td>{{ $dokumen->catatan_dok_hrd ?? '-' }}</td>
 
+                                            <td class="text-center">{{ $dokumen->perusahaan->nama_prs2 ?? '-' }}</td>
+
+                                            <!-- TGL TTD -->
+                                            <td class="text-center">
+                                                {{ $dokumen->tgl_ttd ? $dokumen->tgl_ttd->format('d-m-Y') : '-' }}
+                                            </td>
+
+                                            <!-- NO DOKUMEN -->
+                                            <td class="text-center">{{ $dokumen->no_dok_hrd ?? '-' }}</td>
+
                                             <!-- FILE -->
                                             <td class="text-center">
                                                 <div class="d-flex gap-1 justify-content-center">
@@ -154,15 +165,13 @@
                                                 </div>
                                             </td>
 
-                                            <!-- NO DOKUMEN -->
-                                            <td class="text-center">{{ $dokumen->no_dok_hrd ?? '-' }}</td>
-
-                                            <!-- NO DOKUMEN -->
-                                            <td class="text-center">{{ $dokumen->perusahaan->nama_prs2 ?? '-' }}</td>
-
-                                            <!-- TGL TTD -->
-                                            <td class="text-center">
-                                                {{ $dokumen->tgl_ttd ? $dokumen->tgl_ttd->format('d-m-Y') : '-' }}
+                                             <!-- STATUS -->
+                                             <td class="text-center">
+                                                @if ($dokumen->sts_dok === 'AKTIF')
+                                                    <span class="badge bg-success">AKTIF</span>
+                                                @else
+                                                    <span class="badge bg-secondary">{{ $dokumen->sts_dok }}</span>
+                                                @endif
                                             </td>
 
                                             <!-- MASA BERLAKU -->
@@ -193,16 +202,6 @@
                                                     -
                                                 @endif
                                             </td>
-
-                                            <!-- STATUS -->
-                                            <td class="text-center">
-                                                @if ($dokumen->sts_dok === 'AKTIF')
-                                                    <span class="badge bg-success">AKTIF</span>
-                                                @else
-                                                    <span class="badge bg-secondary">{{ $dokumen->sts_dok }}</span>
-                                                @endif
-                                            </td>
-
 
 
                                             <!-- AKSI -->

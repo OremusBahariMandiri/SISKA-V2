@@ -59,6 +59,11 @@
                                 <i class="fas fa-filter me-2"></i>
                                 <strong>Filter Aktif:</strong>
                                 <div class="mt-2">
+                                    @if ($currentFilters['perusahaan'])
+                                        <span class="badge bg-primary me-1">Perusahaan:
+                                            {{ $perusahaanOptions[$currentFilters['perusahaan']] ?? $currentFilters['perusahaan'] }}
+                                        </span>
+                                    @endif
                                     @if ($currentFilters['status'])
                                         <span class="badge bg-primary me-1">Status: {{ $currentFilters['status'] }}</span>
                                     @endif
@@ -68,6 +73,14 @@
                                     @endif
                                     @if ($currentFilters['jenis'])
                                         <span class="badge bg-primary me-1">Jenis: {{ $currentFilters['jenis'] }}</span>
+                                    @endif
+                                    @if ($currentFilters['keterangan'])
+                                        <span class="badge bg-primary me-1">Keterangan:
+                                            {{ Str::limit($currentFilters['keterangan'], 30) }}</span>
+                                    @endif
+                                    @if ($currentFilters['catatan'])
+                                        <span class="badge bg-primary me-1">Catatan:
+                                            {{ Str::limit($currentFilters['catatan'], 30) }}</span>
                                     @endif
                                     @if ($currentFilters['no_dokumen'])
                                         <span class="badge bg-primary me-1">No. Dokumen:
@@ -165,8 +178,8 @@
                                                 </div>
                                             </td>
 
-                                             <!-- STATUS -->
-                                             <td class="text-center">
+                                            <!-- STATUS -->
+                                            <td class="text-center">
                                                 @if ($dokumen->sts_dok === 'AKTIF')
                                                     <span class="badge bg-success">AKTIF</span>
                                                 @else
@@ -245,7 +258,7 @@
 
     <!-- Filter Modal -->
     <div class="modal fade" id="filterModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title"><i class="fas fa-filter me-2"></i>Filter Data Dokumen HRD</h5>
@@ -254,9 +267,28 @@
                 <form action="{{ route('data-dokumen-hrd.index') }}" method="GET" id="filterForm">
                     <div class="modal-body">
                         <div class="row">
+                            <!-- Filter Perusahaan -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Status Dokumen</label>
-                                <select class="form-select" name="filter_status">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-building me-1 text-primary"></i>Perusahaan
+                                </label>
+                                <select class="form-select select2" name="filter_perusahaan">
+                                    <option value="">Semua Perusahaan</option>
+                                    @foreach ($perusahaanOptions as $id => $nama)
+                                        <option value="{{ $id }}"
+                                            {{ $currentFilters['perusahaan'] == $id ? 'selected' : '' }}>
+                                            {{ $nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Filter Status Dokumen -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-toggle-on me-1 text-success"></i>Status Dokumen
+                                </label>
+                                <select class="form-select select2" name="filter_status">
                                     <option value="">Semua Status</option>
                                     @foreach ($statusOptions as $key => $value)
                                         <option value="{{ $key }}"
@@ -267,9 +299,12 @@
                                 </select>
                             </div>
 
+                            <!-- Filter Kategori Dokumen -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Kategori Dokumen</label>
-                                <select class="form-select" name="filter_kategori">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-folder me-1 text-warning"></i>Kategori Dokumen
+                                </label>
+                                <select class="form-select select2" name="filter_kategori">
                                     <option value="">Semua Kategori</option>
                                     @foreach ($kategoriOptions as $kategori)
                                         <option value="{{ $kategori }}"
@@ -280,9 +315,12 @@
                                 </select>
                             </div>
 
+                            <!-- Filter Jenis Dokumen -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Jenis Dokumen</label>
-                                <select class="form-select" name="filter_jenis">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-file-alt me-1 text-info"></i>Jenis Dokumen
+                                </label>
+                                <select class="form-select select2" name="filter_jenis">
                                     <option value="">Semua Jenis</option>
                                     @foreach ($jenisOptions as $jenis)
                                         <option value="{{ $jenis }}"
@@ -293,10 +331,54 @@
                                 </select>
                             </div>
 
+                            <!-- Filter Keterangan Dokumen -->
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">No. Dokumen</label>
-                                <input type="text" class="form-control" name="filter_no_dokumen"
-                                    value="{{ $currentFilters['no_dokumen'] }}" placeholder="Cari nomor dokumen...">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-comment-dots me-1 text-secondary"></i>Keterangan Dokumen
+                                </label>
+                                <select class="form-select select2" name="filter_keterangan">
+                                    <option value="">Semua Keterangan</option>
+                                    @foreach ($keteranganOptions as $keterangan)
+                                        <option value="{{ $keterangan }}"
+                                            {{ $currentFilters['keterangan'] == $keterangan ? 'selected' : '' }}>
+                                            {{ Str::limit($keterangan, 50) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+
+
+                            <!-- Filter Catatan -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-sticky-note me-1 text-danger"></i>Catatan
+                                </label>
+                                <select class="form-select select2" name="filter_catatan">
+                                    <option value="">Semua Catatan</option>
+                                    @foreach ($catatanOptions as $catatan)
+                                        <option value="{{ $catatan }}"
+                                            {{ $currentFilters['catatan'] == $catatan ? 'selected' : '' }}>
+                                            {{ Str::limit($catatan, 50) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Filter No. Dokumen -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fas fa-hashtag me-1 text-primary"></i>No. Dokumen
+                                </label>
+                                <select class="form-select select2" name="filter_no_dokumen">
+                                    <option value="">Semua No. Dokumen</option>
+                                    @foreach ($noDokumenOptions as $noDok)
+                                        <option value="{{ $noDok }}"
+                                            {{ $currentFilters['no_dokumen'] == $noDok ? 'selected' : '' }}>
+                                            {{ $noDok }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -411,6 +493,9 @@
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+        rel="stylesheet" />
 
     <style>
         .dataDokumenHrdPage .card {
@@ -519,6 +604,10 @@
             visibility: visible !important;
         }
 
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px;
+        }
+
         @media (max-width: 768px) {
             .table-responsive {
                 font-size: 0.7rem;
@@ -541,21 +630,77 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         $(document).ready(function() {
-            // Initialize DataTable dengan autoWidth false
+
+            // Function to initialize Select2 in Filter Modal
+            function initializeSelect2InModal() {
+                $('#filterModal .select2').each(function() {
+                    // Destroy existing Select2 instance if any
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+
+                    // Initialize Select2 with proper configuration
+                    $(this).select2({
+                        theme: 'bootstrap-5',
+                        dropdownParent: $('#filterModal'),
+                        width: '100%',
+                        placeholder: $(this).find('option:first').text() || 'Pilih...',
+                        allowClear: true,
+                        language: {
+                            noResults: function() {
+                                return "Tidak ada hasil ditemukan";
+                            },
+                            searching: function() {
+                                return "Mencari...";
+                            },
+                            inputTooShort: function() {
+                                return "Ketik untuk mencari...";
+                            }
+                        }
+                    });
+                });
+            }
+
+            // Initialize DataTable
             $('#dataDokumenHrdTable').DataTable(
 
             );
 
-            // Filter button
+            // Filter button - Initialize Select2 when modal is shown
             $('#filterButton').on('click', function() {
                 $('#filterModal').modal('show');
+                // Initialize Select2 after modal is fully shown
+                setTimeout(function() {
+                    initializeSelect2InModal();
+                }, 150);
+            });
+
+            // Re-initialize Select2 when modal is shown (backup)
+            $('#filterModal').on('shown.bs.modal', function() {
+                initializeSelect2InModal();
+            });
+
+            // Destroy Select2 when modal is hidden to prevent memory leaks
+            $('#filterModal').on('hidden.bs.modal', function() {
+                $('#filterModal .select2').each(function() {
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+                });
             });
 
             // Reset filter
             $('#resetFilter').on('click', function() {
+                // Destroy Select2 before reset
+                $('#filterModal .select2').each(function() {
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).select2('destroy');
+                    }
+                });
                 window.location.href = "{{ route('data-dokumen-hrd.index') }}";
             });
 

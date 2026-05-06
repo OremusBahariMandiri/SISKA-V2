@@ -34,6 +34,11 @@ class DataDokumenHrdController extends Controller
             'updater'
         ]);
 
+        // Filter Perusahaan
+        if ($request->has('filter_perusahaan') && !empty($request->filter_perusahaan)) {
+            $query->where('id_perusahaan', $request->filter_perusahaan);
+        }
+
         // Filter Status
         if ($request->has('filter_status') && !empty($request->filter_status)) {
             $query->where('sts_dok', $request->filter_status);
@@ -53,9 +58,19 @@ class DataDokumenHrdController extends Controller
             });
         }
 
+        // Filter Keterangan Dokumen
+        if ($request->has('filter_keterangan') && !empty($request->filter_keterangan)) {
+            $query->where('ket_dok_hrd', $request->filter_keterangan);
+        }
+
+        // Filter Catatan - ubah dari LIKE menjadi exact match
+        if ($request->has('filter_catatan') && !empty($request->filter_catatan)) {
+            $query->where('catatan_dok_hrd', $request->filter_catatan);
+        }
+
         // Filter Nomor Dokumen
         if ($request->has('filter_no_dokumen') && !empty($request->filter_no_dokumen)) {
-            $query->where('no_dok_hrd', 'LIKE', '%' . $request->filter_no_dokumen . '%');
+            $query->where('no_dok_hrd', $request->filter_no_dokumen);
         }
 
         // Search
@@ -82,6 +97,11 @@ class DataDokumenHrdController extends Controller
         // Get master data for filter dropdowns
         $dokumenTypes = DokumenHrd::orderBy('kode_dok_hrd', 'asc')->get();
 
+        // Get all perusahaan for dropdown
+        $perusahaanOptions = Perusahaan::orderBy('nama_prs1', 'asc')
+            ->get()
+            ->pluck('nama_prs1', 'id');
+
         // Status options
         $statusOptions = [
             'AKTIF' => 'AKTIF',
@@ -91,14 +111,40 @@ class DataDokumenHrdController extends Controller
         // Get unique categories
         $kategoriOptions = DokumenHrd::select('ktg_dok_hrd')
             ->distinct()
+            ->whereNotNull('ktg_dok_hrd')
             ->orderBy('ktg_dok_hrd')
             ->pluck('ktg_dok_hrd', 'ktg_dok_hrd');
 
         // Get unique jenis
         $jenisOptions = DokumenHrd::select('jns_dok_hrd')
             ->distinct()
+            ->whereNotNull('jns_dok_hrd')
             ->orderBy('jns_dok_hrd')
             ->pluck('jns_dok_hrd', 'jns_dok_hrd');
+
+        // Get unique keterangan (no duplicates)
+        $keteranganOptions = DataDokumenHrd::select('ket_dok_hrd')
+            ->distinct()
+            ->whereNotNull('ket_dok_hrd')
+            ->where('ket_dok_hrd', '!=', '')
+            ->orderBy('ket_dok_hrd')
+            ->pluck('ket_dok_hrd', 'ket_dok_hrd');
+
+        // Get unique catatan (no duplicates)
+        $catatanOptions = DataDokumenHrd::select('catatan_dok_hrd')
+            ->distinct()
+            ->whereNotNull('catatan_dok_hrd')
+            ->where('catatan_dok_hrd', '!=', '')
+            ->orderBy('catatan_dok_hrd')
+            ->pluck('catatan_dok_hrd', 'catatan_dok_hrd');
+
+        // Get unique nomor dokumen (no duplicates)
+        $noDokumenOptions = DataDokumenHrd::select('no_dok_hrd')
+            ->distinct()
+            ->whereNotNull('no_dok_hrd')
+            ->where('no_dok_hrd', '!=', '')
+            ->orderBy('no_dok_hrd')
+            ->pluck('no_dok_hrd', 'no_dok_hrd');
 
         // Get user permissions
         $userPermissions = [];
@@ -128,9 +174,12 @@ class DataDokumenHrdController extends Controller
 
         // Store current filters
         $currentFilters = [
+            'perusahaan' => $request->filter_perusahaan ?? '',
             'status' => $request->filter_status ?? '',
             'kategori' => $request->filter_kategori ?? '',
             'jenis' => $request->filter_jenis ?? '',
+            'keterangan' => $request->filter_keterangan ?? '',
+            'catatan' => $request->filter_catatan ?? '',
             'no_dokumen' => $request->filter_no_dokumen ?? '',
         ];
 
@@ -138,9 +187,13 @@ class DataDokumenHrdController extends Controller
             'dataDokumenHrds',
             'userPermissions',
             'dokumenTypes',
+            'perusahaanOptions',
             'statusOptions',
             'kategoriOptions',
             'jenisOptions',
+            'keteranganOptions',
+            'catatanOptions',
+            'noDokumenOptions',
             'expiredDocumentsCount',
             'expiringDocumentsCount',
             'currentFilters'

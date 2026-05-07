@@ -501,7 +501,7 @@
                                         <a class="sidebar-menu-link menu-dropdown {{ request()->is('data-dokumen*') ? 'active' : '' }}"
                                             href="#" data-menu="dataDokumenSub">
                                             <i class="fas fa-file-alt"></i>
-                                            <span class="sidebar-menu-text">Data Dokumen</span>
+                                            <span class="sidebar-menu-text">Dokumen Karyawan</span>
                                             <i
                                                 class="fas fa-chevron-down submenu-indicator {{ request()->is('data-dokumen*') ? 'rotated' : '' }}"></i>
                                         </a>

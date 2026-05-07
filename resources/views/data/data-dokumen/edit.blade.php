@@ -209,6 +209,7 @@
                                                         <th width="8%" class="text-center">Tgl Pgt</th>
                                                         <th width="8%" class="text-center">Peringatan</th>
                                                         <th width="8%" class="text-center">Status</th>
+                                                        <th width="8%" class="text-center">File</th>
                                                         <th width="6%" class="text-center">Create</th>
                                                         <th width="6%" class="text-center">Update</th>
                                                         <th width="10%" class="text-center no-wrap">Aksi</th>
@@ -257,6 +258,22 @@
                                                                     class="badge {{ $document->sts_dok === 'AKTIF' ? 'bg-success' : 'bg-secondary' }}">
                                                                     {{ $document->sts_dok }}
                                                                 </span>
+                                                            </td>
+                                                            {{-- file --}}
+                                                            <td class="text-center">
+                                                                <div class="d-flex gap-1 justify-content-center">
+                                                                    @if ($document->file_dok)
+                                                                        <a href="{{ asset('storage/' . $document->file_dok) }}"
+                                                                            target="_blank" class="btn btn-sm btn-outline-primary"
+                                                                            data-bs-toggle="tooltip" title="Lihat File PDF">
+                                                                            <i class="fas fa-file-pdf"></i>
+                                                                        </a>
+                                                                    @endif
+
+                                                                    @if (!$document->file_dok && !$document->file_dok)
+                                                                        <span class="text-muted">-</span>
+                                                                    @endif
+                                                                </div>
                                                             </td>
                                                             <td class="text-center">
                                                                 <small>{{ $document->creator ? $document->creator->nama_kry : '-' }}</small>

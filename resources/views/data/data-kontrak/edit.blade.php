@@ -1967,8 +1967,6 @@
             }
 
             function loadContractDataToModal(contractId) {
-                console.log('Loading contract data for ID:', contractId);
-
                 $.ajax({
                     url: `/data-kontrak/contracts/${contractId}`,
                     type: 'GET',
@@ -1976,23 +1974,49 @@
                         if (response.success) {
                             const contract = response.data;
 
-                            // Populate all fields
+                            // Sama persis dengan show.blade.php - hindari new Date()
+                            function toDateInput(val) {
+                                if (!val) return '';
+                                var str = String(val);
+                                // Jika ada timezone (Z atau +offset), parse sebagai UTC lalu konversi ke WIB
+                                if (str.includes('T') || str.includes('Z')) {
+                                    var date = new Date(str);
+                                    // Tambah 7 jam untuk WIB (UTC+7)
+                                    date.setHours(date.getHours() + 7);
+                                    var y = date.getUTCFullYear();
+                                    var m = String(date.getUTCMonth() + 1).padStart(2, '0');
+                                    var d = String(date.getUTCDate()).padStart(2, '0');
+                                    var result = y + '-' + m + '-' + d;
+                                    console.log('toDateInput:', val, '->', result);
+                                    return result;
+                                }
+                                // Jika sudah plain date (YYYY-MM-DD atau YYYY-MM-DD HH:mm:ss), ambil bagian tanggal saja
+                                return str.split(' ')[0];
+                            }
+
                             $('#contract_id').val(contract.id);
                             $('#modal_no_srt_ktr').val(contract.no_srt_ktr || '');
-                            $('#modal_tgl_srt_ktr').val(contract.tgl_srt_ktr || '');
-                            $('#modal_id_ktr').val(contract.id_ktr || '');
-                            $('#modal_id_prsh').val(contract.id_prsh || '');
-                            $('#modal_tgl_awl_ktr').val(contract.tgl_awl_ktr || '');
-                            $('#modal_tgl_akhir_ktr').val(contract.tgl_akhir_ktr || '');
-                            $('#modal_ktg_ktk').val(contract.ktg_ktk || '');
-                            $('#modal_tgl_pgt_ktr').val(contract.tgl_pgt_ktr || '');
-                            $('#modal_sts_srt_ktr').val(contract.sts_srt_ktr || '');
-                            $('#modal_tgl_sr_na').val(contract.tgl_sr_na || '');
+                            $('#modal_tgl_srt_ktr').val(toDateInput(contract.tgl_srt_ktr));
                             $('#modal_ket_sr_na').val(contract.ket_sr_na || '');
                             $('#modal_durasi_ktr').val(contract.durasi_ktr || '');
                             $('#modal_durasi_pgt').val(contract.durasi_pgt || '');
 
-                            // Show existing file info
+                            // Trigger ktg_ktk dulu (bisa disable/enable tgl_akhir)
+                            $('#modal_ktg_ktk').val(contract.ktg_ktk || '').trigger('change');
+
+                            // Set tanggal SETELAH trigger change agar tidak ter-reset
+                            $('#modal_tgl_awl_ktr').val(toDateInput(contract.tgl_awl_ktr));
+                            $('#modal_tgl_akhir_ktr').prop('disabled', false).val(toDateInput(contract
+                                .tgl_akhir_ktr));
+                            $('#modal_tgl_pgt_ktr').val(toDateInput(contract.tgl_pgt_ktr));
+                            $('#modal_tgl_sr_na').val(toDateInput(contract.tgl_sr_na));
+
+                            // Select2
+                            $('#modal_id_ktr').val(contract.id_ktr || '').trigger('change');
+                            $('#modal_id_prsh').val(contract.id_prsh || '').trigger('change');
+                            $('#modal_sts_srt_ktr').val(contract.sts_srt_ktr || '').trigger('change');
+
+                            // File
                             if (contract.file_doc_ktr) {
                                 $('#existing_file_info').show();
                                 $('#existing_file_link').attr('href', '/storage/' + contract
@@ -2001,17 +2025,15 @@
                                 $('#existing_file_info').hide();
                             }
 
-                            // Populate audit trail (for view mode)
+                            // Audit trail
                             $('#created_by_display').val(contract.creator?.nama_kry || '-');
-                            $('#created_at_display').val(contract.created_at ? moment(contract
-                                .created_at).format('DD/MM/YY HH:mm') : '-');
                             $('#updated_by_display').val(contract.updater?.nama_kry || '-');
-                            $('#updated_at_display').val(contract.updated_at ? moment(contract
-                                .updated_at).format('DD/MM/YY HH:mm') : '-');
-
-                            // Trigger changes for conditional fields
-                            $('#modal_ktg_ktk').trigger('change');
-                            $('#modal_sts_srt_ktr').trigger('change');
+                            if (typeof moment !== 'undefined') {
+                                $('#created_at_display').val(contract.created_at ? moment(contract
+                                    .created_at).format('DD/MM/YY HH:mm') : '-');
+                                $('#updated_at_display').val(contract.updated_at ? moment(contract
+                                    .updated_at).format('DD/MM/YY HH:mm') : '-');
+                            }
                         }
                     },
                     error: function(xhr) {

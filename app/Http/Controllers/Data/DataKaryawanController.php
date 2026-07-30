@@ -644,7 +644,7 @@ class DataKaryawanController extends Controller
 
     private function getFilteredData($filters)
     {
-        $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'kontrakRelation']);
+        $query = DataKaryawan::with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'kontrakRelation','unitKerjaRelation',]);
 
         // Apply filters
         if (!empty($filters['filter_status'])) {
@@ -682,6 +682,10 @@ class DataKaryawanController extends Controller
         // Filter by Wilayah Kerja - PERBAIKAN: langsung filter string
         if (!empty($filters['filter_wilker'])) {
             $query->where('wilker', $filters['filter_wilker']);
+        }
+
+        if (!empty($filters['filter_unit_kerja'])) {
+            $query->where('unit_krj', $filters['filter_unit_kerja']);
         }
 
         $dataKaryawans = $query->orderBy('nama', 'asc')->get();

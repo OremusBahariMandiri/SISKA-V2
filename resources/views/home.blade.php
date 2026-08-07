@@ -21,6 +21,70 @@
         </div>
     </div>
 
+        {{-- AI Chat Section --}}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="ai-card">
+
+                    {{-- Header --}}
+                    <div class="ai-header">
+                        <div class="ai-header-left">
+                            <div class="ai-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div>
+                                <div class="ai-title">Asisten SISKA</div>
+                                <div class="ai-subtitle">Tanya seputar data karyawan</div>
+                            </div>
+                        </div>
+                        <div class="ai-status">
+                            <span class="status-dot"></span>
+                            <span class="status-text">Online</span>
+                        </div>
+                    </div>
+
+                    {{-- Shortcut Buttons --}}
+                    <div class="ai-shortcuts">
+                        @foreach ($shortcuts as $s)
+                            <button class="shortcut-btn" data-tanya="{{ $s['tanya'] }}">
+                                <i class="fas fa-{{ $s['icon'] }}"></i>
+                                {{ $s['label'] }}
+                            </button>
+                        @endforeach
+                    </div>
+
+                    {{-- Chat Area --}}
+                    <div class="ai-chat-area" id="aiChatArea">
+                        {{-- Pesan default --}}
+                        <div class="chat-bubble bot-bubble intro-bubble">
+                            <div class="bubble-avatar"><i class="fas fa-robot"></i></div>
+                            <div class="bubble-content">
+                                Halo! Saya asisten SISKA. Kamu bisa tanya saya tentang data karyawan,
+                                jumlah per departemen, wilayah kerja, jenis kontrak, dan lainnya.
+                                Silakan klik shortcut di atas atau ketik pertanyaanmu.
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Input Area --}}
+                    <div class="ai-input-area">
+                        <input
+                            type="text"
+                            id="aiInput"
+                            class="ai-input"
+                            placeholder="Contoh: Berapa total karyawan aktif?"
+                            maxlength="500"
+                            autocomplete="off"
+                        />
+                        <button class="ai-send-btn" id="aiSendBtn" title="Kirim">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     {{-- Clock Section --}}
     <div class="row mb-4">
         <div class="col-12">
@@ -30,70 +94,6 @@
                     <div class="time-display" id="timeDisplay"></div>
                     <div class="day-display" id="dayDisplay"></div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- AI Chat Section --}}
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="ai-card">
-
-                {{-- Header --}}
-                <div class="ai-header">
-                    <div class="ai-header-left">
-                        <div class="ai-avatar">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div>
-                            <div class="ai-title">Asisten SISKA</div>
-                            <div class="ai-subtitle">Tanya seputar data karyawan</div>
-                        </div>
-                    </div>
-                    <div class="ai-status">
-                        <span class="status-dot"></span>
-                        <span class="status-text">Online</span>
-                    </div>
-                </div>
-
-                {{-- Shortcut Buttons --}}
-                <div class="ai-shortcuts">
-                    @foreach ($shortcuts as $s)
-                        <button class="shortcut-btn" data-tanya="{{ $s['tanya'] }}">
-                            <i class="fas fa-{{ $s['icon'] }}"></i>
-                            {{ $s['label'] }}
-                        </button>
-                    @endforeach
-                </div>
-
-                {{-- Chat Area --}}
-                <div class="ai-chat-area" id="aiChatArea">
-                    {{-- Pesan default --}}
-                    <div class="chat-bubble bot-bubble intro-bubble">
-                        <div class="bubble-avatar"><i class="fas fa-robot"></i></div>
-                        <div class="bubble-content">
-                            Halo! Saya asisten SISKA. Kamu bisa tanya saya tentang data karyawan,
-                            jumlah per departemen, wilayah kerja, jenis kontrak, dan lainnya.
-                            Silakan klik shortcut di atas atau ketik pertanyaanmu.
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Input Area --}}
-                <div class="ai-input-area">
-                    <input
-                        type="text"
-                        id="aiInput"
-                        class="ai-input"
-                        placeholder="Contoh: Berapa total karyawan aktif?"
-                        maxlength="500"
-                        autocomplete="off"
-                    />
-                    <button class="ai-send-btn" id="aiSendBtn" title="Kirim">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-
             </div>
         </div>
     </div>
@@ -264,8 +264,7 @@
 /* Chat Area */
 .ai-chat-area {
     padding: 1.25rem 1.5rem;
-    min-height: 160px;
-    max-height: 340px;
+    height: 400px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Data\DataDokumenController;
 use App\Http\Controllers\Data\DataDokumenHrdController;
@@ -48,6 +49,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 });
+
+Route::middleware('auth')->post('/ai/tanya', [AiController::class, 'tanya'])->name('ai.tanya');
 
 Route::middleware('auth')->group(function () {
 

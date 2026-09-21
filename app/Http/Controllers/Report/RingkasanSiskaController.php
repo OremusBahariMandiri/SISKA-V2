@@ -20,28 +20,12 @@ class RingkasanSiskaController extends Controller
     }
 
     // ================================================================
-    // HELPER: Resolve wilker IDs dari filter
-    // filter_wilker  = nama wilayah_krj  (mis. "Jawa Timur")
-    // filter_area    = ID WilayahKerja   (mis. 5)
-    // Kalau filter_wilker aktif → ambil semua ID yang punya wilayah_krj tsb
-    // Kalau filter_area  aktif → pakai ID itu langsung
-    // ================================================================
-    private function resolveWilkerIds(Request $request): ?array
-    {
-        if ($request->filter_area) {
-            // Filter area kerja (ID spesifik)
-            return [$request->filter_area];
-        }
-        if ($request->filter_wilker) {
-            // Filter wilayah kerja → semua ID dengan nama wilayah_krj tersebut
-            return WilayahKerja::where('wilayah_krj', $request->filter_wilker)
-                ->pluck('id')->toArray();
-        }
-        return null; // tidak ada filter wilker
-    }
-
-    // ================================================================
-    // HELPER: Base query dengan semua filter global
+    // MAPPING FIELD (konfirmasi via tinker):
+    // DataKaryawan.wilker   = nama wilayah_krj langsung (mis. "JAWA TIMUR")
+    // DataKaryawan.unit_krj = ID dari 102_dm_wilker     (mis. 15 → SURABAYA)
+    //
+    // filter_wilker = nama wilayah → where('wilker', nama)
+    // filter_area   = ID unit_krj  → where('unit_krj', id)
     // ================================================================
     private function baseQuery(Request $request)
     {
@@ -51,10 +35,14 @@ class RingkasanSiskaController extends Controller
         if ($request->filter_perusahaan) $q->where('perusahaan', $request->filter_perusahaan);
         if ($request->filter_kontrak)    $q->where('sts_ktr',     $request->filter_kontrak);
 
-        // Wilker: gunakan whereIn karena satu wilayah_krj bisa punya banyak ID
-        $wilkerIds = $this->resolveWilkerIds($request);
-        if ($wilkerIds !== null) {
-            $q->whereIn('wilker', $wilkerIds);
+        // wilker menyimpan nama wilayah langsung ("JAWA TIMUR")
+        if ($request->filter_wilker) {
+            $q->where('wilker', $request->filter_wilker);
+        }
+
+        // filter_area menyimpan ID WilayahKerja → filter unit_krj
+        if ($request->filter_area) {
+            $q->where('unit_krj', $request->filter_area);
         }
 
         // Filter departemen: satu nama_dep bisa punya banyak ID (per jabatan)
@@ -108,43 +96,32 @@ class RingkasanSiskaController extends Controller
             ->values();
 
         // ---- Pusat & Cabang (per Wilayah Kerja) ----
-        // wilker field di DataKaryawan = ID dari WilayahKerja
+        // wilker di karyawan = nama wilayah_krj langsung ("JAWA TIMUR")
         $perPusatCabang = (clone $base)
             ->select('wilker', DB::raw('COUNT(*) as jumlah'))
             ->whereNotNull('wilker')
             ->groupBy('wilker')
             ->get()
-            ->map(function ($r) {
-                $wk = WilayahKerja::find($r->wilker);
-                return [
-                    'id'          => (int) $r->wilker,
-                    'wilayah_krj' => $wk?->wilayah_krj ?? 'Tidak Diketahui',
-                    'jumlah'      => (int) $r->jumlah,
-                ];
-            })
-            // Gabungkan per nama wilayah_krj
-            ->groupBy('wilayah_krj')
-            ->map(fn($g, $key) => [
-                'id'     => $g->first()['id'],
-                'label'  => $key,
-                'jumlah' => $g->sum('jumlah'),
+            ->map(fn($r) => [
+                'id'     => $r->wilker,   // nama wilayah sebagai identifier
+                'label'  => $r->wilker,
+                'jumlah' => (int) $r->jumlah,
             ])
-            ->values()
             ->sortByDesc('jumlah')
             ->values();
 
-        // ---- Unit Kerja (per Area Kerja) ----
+        // ---- Area Kerja (unit_krj = ID WilayahKerja) ----
         $perUnitKerja = (clone $base)
-            ->select('wilker', DB::raw('COUNT(*) as jumlah'))
-            ->whereNotNull('wilker')
-            ->groupBy('wilker')
+            ->select('unit_krj', DB::raw('COUNT(*) as jumlah'))
+            ->whereNotNull('unit_krj')
+            ->groupBy('unit_krj')
             ->get()
             ->map(function ($r) {
-                $wk = WilayahKerja::find($r->wilker);
+                $wk   = WilayahKerja::find($r->unit_krj);
                 $area = $wk?->area_krj ?? 'Tidak Diketahui';
                 $skt  = $wk?->singkatan_wk ? ' (' . $wk->singkatan_wk . ')' : '';
                 return [
-                    'id'      => (int) $r->wilker,
+                    'id'      => (int) $r->unit_krj,
                     'label'   => $area . $skt,
                     'wilayah' => $wk?->wilayah_krj ?? '-',
                     'jumlah'  => (int) $r->jumlah,
@@ -223,15 +200,11 @@ class RingkasanSiskaController extends Controller
         $depWilayahMatrix = collect();
         $depPTMatrix      = collect();
 
-        // Semua wilayah_krj unik yang ada di hasil query
-        $wilkerIdsInQuery = (clone $base)
+        // Semua wilayah unik dalam hasil query — wilker = nama wilayah_krj langsung
+        $allWilayah = (clone $base)
             ->select('wilker')->whereNotNull('wilker')
-            ->distinct()->pluck('wilker');
-
-        $allWilayah = WilayahKerja::whereIn('id', $wilkerIdsInQuery)
-            ->select('wilayah_krj')->distinct()
-            ->orderBy('wilayah_krj')
-            ->pluck('wilayah_krj');
+            ->distinct()->orderBy('wilker')
+            ->pluck('wilker');
 
         // Semua PT unik
         $allPT = (clone $base)
@@ -255,11 +228,10 @@ class RingkasanSiskaController extends Controller
             $row    = ['departemen' => $depNama, 'total' => 0, 'wilayah' => []];
 
             foreach ($allWilayah as $wNama) {
-                // Cari semua ID WilayahKerja dengan wilayah_krj = $wNama
-                $wkIds = WilayahKerja::where('wilayah_krj', $wNama)->pluck('id');
+                // wilker = nama wilayah langsung, query langsung pakai where
                 $cnt   = (clone $base)
                     ->whereIn('departemen', $depIds)
-                    ->whereIn('wilker', $wkIds)
+                    ->where('wilker', $wNama)
                     ->count();
                 $row['wilayah'][$wNama] = (int) $cnt;
                 $row['total'] += $cnt;
@@ -359,11 +331,12 @@ class RingkasanSiskaController extends Controller
         if ($request->filter_perusahaan) $q->where('perusahaan', $request->filter_perusahaan);
         if ($request->filter_kontrak)    $q->where('sts_ktr',     $request->filter_kontrak);
 
+        // wilker = nama wilayah langsung; unit_krj = ID area kerja
+        if ($request->filter_wilker) {
+            $q->where('wilker', $request->filter_wilker);
+        }
         if ($request->filter_area) {
-            $q->where('wilker', $request->filter_area);
-        } elseif ($request->filter_wilker) {
-            $wkIds = WilayahKerja::where('wilayah_krj', $request->filter_wilker)->pluck('id');
-            $q->whereIn('wilker', $wkIds);
+            $q->where('unit_krj', $request->filter_area);
         }
 
         if ($request->filter_departemen) {
@@ -378,14 +351,13 @@ class RingkasanSiskaController extends Controller
                 $title = 'Karyawan — ' . (Perusahaan::find($value)?->nama_prs1 ?? $value);
                 break;
             case 'wilker':
-                // $value = nama wilayah_krj
-                $wkIds = WilayahKerja::where('wilayah_krj', $value)->pluck('id');
-                $q->whereIn('wilker', $wkIds);
+                // value = nama wilayah_krj langsung
+                $q->where('wilker', $value);
                 $title = 'Karyawan — Wilayah: ' . $value;
                 break;
             case 'unit_kerja':
-                // $value = ID WilayahKerja
-                $q->where('wilker', $value);
+                // value = ID WilayahKerja → filter unit_krj
+                $q->where('unit_krj', $value);
                 $wk    = WilayahKerja::find($value);
                 $title = 'Karyawan — ' . ($wk?->area_krj ?? $value) . ($wk?->wilayah_krj ? ' (' . $wk->wilayah_krj . ')' : '');
                 break;
@@ -418,8 +390,8 @@ class RingkasanSiskaController extends Controller
             case 'dep_wilayah':
                 [$depNama, $wNama] = explode('||', $value, 2);
                 $depIds = Departemen::where('nama_dep', $depNama)->pluck('id');
-                $wkIds  = WilayahKerja::where('wilayah_krj', $wNama)->pluck('id');
-                $q->whereIn('departemen', $depIds)->whereIn('wilker', $wkIds);
+                // wilker = nama wilayah langsung
+                $q->whereIn('departemen', $depIds)->where('wilker', $wNama);
                 $title = $depNama . ' — ' . $wNama;
                 break;
             case 'dep_pt':
@@ -435,8 +407,7 @@ class RingkasanSiskaController extends Controller
 
         $karyawans = $q->orderBy('nama')->get()->map(function ($k) {
             $dep = Departemen::find($k->departemen);
-            $wk  = WilayahKerja::find($k->wilker);
-            $uk  = WilayahKerja::find($k->unit_krj);
+            $uk  = WilayahKerja::find($k->unit_krj);   // unit_krj = ID area kerja
             return [
                 'id'         => $k->id,
                 'nrk'        => $k->nrk ?? '-',
@@ -445,8 +416,8 @@ class RingkasanSiskaController extends Controller
                 'perusahaan' => $k->perusahaanRelation?->nama_prs2 ?? $k->perusahaanRelation?->nama_prs1 ?? '-',
                 'departemen' => $dep?->nama_dep ?? '-',
                 'jabatan'    => $dep?->nama_jbt ?? '-',
-                'wilker'     => $wk?->wilayah_krj ?? '-',
-                'unit_kerja' => $uk?->area_krj ?? $wk?->area_krj ?? '-',
+                'wilker'     => $k->wilker ?? '-',          // sudah nama wilayah langsung
+                'unit_kerja' => $uk?->area_krj ?? '-',      // area kerja dari unit_krj ID
                 'kontrak'    => $k->kontrakRelation?->singkatan_ktr ?? $k->kontrakRelation?->kode_ktr ?? '-',
                 'sts_kry'    => $k->sts_kry ?? '-',
                 'tgl_masuk'  => $k->tgl_masuk ? $k->tgl_masuk->format('d/m/Y') : '-',

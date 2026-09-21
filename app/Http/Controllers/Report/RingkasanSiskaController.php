@@ -19,230 +19,385 @@ class RingkasanSiskaController extends Controller
         $this->middleware('check.access:ringkasan-siska')->only('index');
     }
 
+    // ================================================================
+    // HELPER: Base query dengan semua filter global termasuk departemen
+    // ================================================================
+    private function baseQuery(Request $request)
+    {
+        $q = DataKaryawan::query();
+
+        if ($request->filter_status)     $q->where('sts_kry',    $request->filter_status);
+        if ($request->filter_perusahaan) $q->where('perusahaan', $request->filter_perusahaan);
+        if ($request->filter_wilker)     $q->where('wilker',      $request->filter_wilker);
+        if ($request->filter_kontrak)    $q->where('sts_ktr',     $request->filter_kontrak);
+
+        // Filter departemen: satu nama_dep bisa punya banyak ID (per jabatan)
+        if ($request->filter_departemen) {
+            $depIds = Departemen::where('nama_dep', $request->filter_departemen)->pluck('id');
+            $q->whereIn('departemen', $depIds);
+        }
+
+        return $q;
+    }
+
+    // ================================================================
+    // INDEX
+    // ================================================================
     public function index(Request $request)
     {
-        // === FILTERS ===
-        $filterPerusahaan = $request->filter_perusahaan;
-        $filterWilker     = $request->filter_wilker;
-        $filterStatus     = $request->filter_status;
-        $filterKontrak    = $request->filter_kontrak;
+        $base = $this->baseQuery($request);
 
-        // Base query
-        $baseQuery = DataKaryawan::query()
-            ->with(['perusahaanRelation', 'departemenRelation', 'wilayahKerjaRelation', 'kontrakRelation', 'unitKerjaRelation']);
+        $totalKaryawan = (clone $base)->count();
+        $statAktif     = (clone $base)->where('sts_kry', 'AKTIF')->count();
+        $statNonAktif  = (clone $base)->where('sts_kry', 'NON-AKTIF')->count();
+        $statCalon     = (clone $base)->where('sts_kry', 'CALON')->count();
+        $statLakiLaki  = (clone $base)->where('sex', 'LAKI-LAKI')->count();
+        $statPerempuan = (clone $base)->where('sex', 'PEREMPUAN')->count();
 
-        if ($filterStatus) {
-            $baseQuery->where('sts_kry', $filterStatus);
-        }
-        if ($filterPerusahaan) {
-            $baseQuery->where('perusahaan', $filterPerusahaan);
-        }
-        if ($filterWilker) {
-            $baseQuery->where('wilker', $filterWilker);
-        }
-        if ($filterKontrak) {
-            $baseQuery->where('sts_ktr', $filterKontrak);
-        }
-
-        // Total
-        $totalKaryawan = (clone $baseQuery)->count();
-
-        // =========================================================
-        // 1. JUMLAH KARYAWAN PER PT (Perusahaan)
-        // =========================================================
-        $perPT = (clone $baseQuery)
+        // ---- Per PT ----
+        $perPT = (clone $base)
             ->select('perusahaan', DB::raw('COUNT(*) as jumlah'))
-            ->groupBy('perusahaan')
-            ->with('perusahaanRelation')
-            ->get()
-            ->map(function ($item) {
+            ->whereNotNull('perusahaan')->groupBy('perusahaan')->get()
+            ->map(function ($r) {
+                $p = Perusahaan::find($r->perusahaan);
                 return [
-                    'label' => $item->perusahaanRelation->nama_prs1 ?? 'Tidak Diketahui',
-                    'singkatan' => $item->perusahaanRelation->nama_prs2 ?? '-',
-                    'jumlah' => $item->jumlah,
-                    'bidang' => $item->perusahaanRelation->bidang_ush ?? '-',
+                    'id'        => $r->perusahaan,
+                    'label'     => $p->nama_prs1 ?? 'Tidak Diketahui',
+                    'singkatan' => $p->nama_prs2 ?? '-',
+                    'bidang'    => $p->bidang_ush ?? '-',
+                    'jumlah'    => $r->jumlah,
                 ];
             });
 
-        // =========================================================
-        // 2. PEMBAGIAN: PUSAT & CABANG (berdasarkan wilayah_krj)
-        // =========================================================
-        $perPusatCabang = (clone $baseQuery)
+        // ---- Bidang Usaha ----
+        $perBidangUsaha = (clone $base)
+            ->select('perusahaan', DB::raw('COUNT(*) as jumlah'))
+            ->whereNotNull('perusahaan')->groupBy('perusahaan')->get()
+            ->map(fn($r) => [
+                'label'  => Perusahaan::find($r->perusahaan)->bidang_ush ?? 'Tidak Diketahui',
+                'jumlah' => $r->jumlah,
+            ])
+            ->groupBy('label')
+            ->map(fn($g) => ['label' => $g->first()['label'], 'jumlah' => $g->sum('jumlah')])
+            ->values()->sortByDesc('jumlah')->values();
+
+        // ---- Pusat & Cabang ----
+        $perPusatCabang = (clone $base)
             ->select('wilker', DB::raw('COUNT(*) as jumlah'))
-            ->whereNotNull('wilker')
-            ->groupBy('wilker')
-            ->get()
-            ->map(function ($item) {
-                $wilker = WilayahKerja::find($item->wilker);
+            ->whereNotNull('wilker')->groupBy('wilker')->get()
+            ->map(function ($r) {
+                $wk = WilayahKerja::find($r->wilker);
                 return [
-                    'label'    => $wilker->wilayah_krj ?? $item->wilker ?? 'Tidak Diketahui',
-                    'area'     => $wilker->area_krj ?? '-',
-                    'jumlah'   => $item->jumlah,
-                    'kode'     => $wilker->kode_wk ?? '-',
+                    'id'     => $r->wilker,
+                    'label'  => $wk->wilayah_krj ?? $r->wilker ?? 'Tidak Diketahui',
+                    'jumlah' => $r->jumlah,
                 ];
             })
             ->groupBy('label')
-            ->map(function ($group) {
-                return [
-                    'label'  => $group->first()['label'],
-                    'jumlah' => $group->sum('jumlah'),
-                    'cabang' => $group->toArray(),
-                ];
-            })
+            ->map(fn($g) => ['id' => $g->first()['id'], 'label' => $g->first()['label'], 'jumlah' => $g->sum('jumlah')])
             ->values();
 
-        // Unit kerja breakdown (area_krj)
-        $perUnitKerja = (clone $baseQuery)
+        // ---- Unit Kerja ----
+        $perUnitKerja = (clone $base)
             ->select('unit_krj', DB::raw('COUNT(*) as jumlah'))
-            ->whereNotNull('unit_krj')
-            ->groupBy('unit_krj')
-            ->get()
-            ->map(function ($item) {
-                $wk = WilayahKerja::find($item->unit_krj);
+            ->whereNotNull('unit_krj')->groupBy('unit_krj')->get()
+            ->map(function ($r) {
+                $wk = WilayahKerja::find($r->unit_krj);
                 return [
+                    'id'      => $r->unit_krj,
                     'label'   => ($wk->area_krj ?? 'Tidak Diketahui') . ' (' . ($wk->singkatan_wk ?? '-') . ')',
                     'wilayah' => $wk->wilayah_krj ?? '-',
-                    'jumlah'  => $item->jumlah,
+                    'jumlah'  => $r->jumlah,
                 ];
             });
 
-        // =========================================================
-        // 3. PEMBAGIAN: DEPARTEMEN → JABATAN
-        // =========================================================
-        $perDepartemen = (clone $baseQuery)
+        // ---- Departemen ----
+        $perDepartemen = (clone $base)
             ->select('departemen', DB::raw('COUNT(*) as jumlah'))
-            ->whereNotNull('departemen')
-            ->groupBy('departemen')
-            ->get()
-            ->map(function ($item) {
-                $dep = Departemen::find($item->departemen);
+            ->whereNotNull('departemen')->groupBy('departemen')->get()
+            ->map(function ($r) {
+                $dep = Departemen::find($r->departemen);
                 return [
-                    'label'  => $dep->nama_dep ?? 'Tidak Diketahui',
+                    'id'        => $r->departemen,
+                    'label'     => $dep->nama_dep ?? 'Tidak Diketahui',
                     'singkatan' => $dep->singkatan_dep ?? '-',
-                    'jumlah' => $item->jumlah,
-                    'dep_id' => $item->departemen,
+                    'jumlah'    => $r->jumlah,
                 ];
             })
             ->groupBy('label')
-            ->map(function ($group) {
-                return [
-                    'label'     => $group->first()['label'],
-                    'singkatan' => $group->first()['singkatan'],
-                    'jumlah'    => $group->sum('jumlah'),
-                ];
-            })
-            ->values()
-            ->sortByDesc('jumlah')
-            ->values();
+            ->map(fn($g) => [
+                'id'        => $g->first()['id'],
+                'label'     => $g->first()['label'],
+                'singkatan' => $g->first()['singkatan'],
+                'jumlah'    => $g->sum('jumlah'),
+            ])
+            ->values()->sortByDesc('jumlah')->values();
 
-        // Per Jabatan
-        $perJabatan = (clone $baseQuery)
+        // ---- Per Jabatan ----
+        $perJabatan = (clone $base)
             ->select('departemen', DB::raw('COUNT(*) as jumlah'))
-            ->whereNotNull('departemen')
-            ->groupBy('departemen')
-            ->get()
-            ->map(function ($item) {
-                $dep = Departemen::find($item->departemen);
+            ->whereNotNull('departemen')->groupBy('departemen')->get()
+            ->map(function ($r) {
+                $dep = Departemen::find($r->departemen);
                 return [
+                    'id'         => $r->departemen,
                     'label'      => $dep->nama_jbt ?? 'Tidak Diketahui',
                     'singkatan'  => $dep->singkatan_jbt ?? '-',
                     'departemen' => $dep->nama_dep ?? '-',
-                    'jumlah'     => $item->jumlah,
+                    'jumlah'     => $r->jumlah,
                 ];
             })
-            ->sortByDesc('jumlah')
-            ->values();
+            ->sortByDesc('jumlah')->values();
 
-        // =========================================================
-        // 4. PEMBAGIAN: BIDANG USAHA
-        // =========================================================
-        $perBidangUsaha = (clone $baseQuery)
-            ->select('perusahaan', DB::raw('COUNT(*) as jumlah'))
-            ->whereNotNull('perusahaan')
-            ->groupBy('perusahaan')
-            ->get()
-            ->map(function ($item) {
-                $prs = Perusahaan::find($item->perusahaan);
-                return [
-                    'label'  => $prs->bidang_ush ?? 'Tidak Diketahui',
-                    'jumlah' => $item->jumlah,
-                ];
-            })
-            ->groupBy('label')
-            ->map(function ($group) {
-                return [
-                    'label'  => $group->first()['label'],
-                    'jumlah' => $group->sum('jumlah'),
-                ];
-            })
-            ->values()
-            ->sortByDesc('jumlah')
-            ->values();
-
-        // =========================================================
-        // 5. PEMBAGIAN: PKWT / PKWTT / SPKK (Tipe Kontrak Kerja)
-        // =========================================================
-        $perKontrak = (clone $baseQuery)
+        // ---- Kontrak ----
+        $perKontrak = (clone $base)
             ->select('sts_ktr', DB::raw('COUNT(*) as jumlah'))
-            ->whereNotNull('sts_ktr')
-            ->groupBy('sts_ktr')
-            ->get()
-            ->map(function ($item) {
-                $ktr = KontrakKerja::find($item->sts_ktr);
+            ->whereNotNull('sts_ktr')->groupBy('sts_ktr')->get()
+            ->map(function ($r) {
+                $ktr = KontrakKerja::find($r->sts_ktr);
                 return [
-                    'label'      => $ktr->nama_ktr ?? 'Tidak Diketahui',
-                    'singkatan'  => $ktr->singkatan_ktr ?? ($ktr->kode_ktr ?? '-'),
-                    'kode'       => $ktr->kode_ktr ?? '-',
-                    'jumlah'     => $item->jumlah,
+                    'id'        => $r->sts_ktr,
+                    'label'     => $ktr->nama_ktr ?? 'Tidak Diketahui',
+                    'singkatan' => $ktr->singkatan_ktr ?? ($ktr->kode_ktr ?? '-'),
+                    'kode'      => $ktr->kode_ktr ?? '-',
+                    'jumlah'    => $r->jumlah,
                 ];
             })
-            ->sortByDesc('jumlah')
+            ->sortByDesc('jumlah')->values();
+
+        // ================================================================
+        // CROSS ANALYSIS: Departemen × Wilayah
+        // Hanya dihitung jika ada filter departemen, ATAU ambil top 5 dep
+        // ================================================================
+        $filterDep        = $request->filter_departemen;
+        $depWilayahMatrix = collect();
+        $depPTMatrix      = collect();
+
+        // Daftar nama_dep unik yang ada di hasil query
+        $activeDeps = (clone $base)
+            ->select('departemen')->whereNotNull('departemen')
+            ->distinct()->pluck('departemen')
+            ->map(fn($id) => Departemen::find($id)?->nama_dep)
+            ->filter()->unique()->values();
+
+        // Semua wilayah unik
+        $allWilayah = (clone $base)
+            ->select('wilker')->whereNotNull('wilker')
+            ->distinct()->pluck('wilker')
+            ->map(fn($w) => WilayahKerja::find($w)?->wilayah_krj ?? $w)
+            ->filter()->unique()->sort()->values();
+
+        // Semua PT unik
+        $allPT = (clone $base)
+            ->select('perusahaan')->whereNotNull('perusahaan')
+            ->distinct()->pluck('perusahaan')
+            ->map(fn($id) => [
+                'id'        => $id,
+                'singkatan' => Perusahaan::find($id)?->nama_prs2 ?? Perusahaan::find($id)?->nama_prs1 ?? '-',
+                'nama'      => Perusahaan::find($id)?->nama_prs1 ?? '-',
+            ])
             ->values();
 
-        // =========================================================
-        // STATISTIK TAMBAHAN
-        // =========================================================
-        $statAktif    = (clone $baseQuery)->where('sts_kry', 'AKTIF')->count();
-        $statNonAktif = (clone $baseQuery)->where('sts_kry', 'NON-AKTIF')->count();
-        $statCalon    = (clone $baseQuery)->where('sts_kry', 'CALON')->count();
-        $statLakiLaki = (clone $baseQuery)->where('sex', 'LAKI-LAKI')->count();
-        $statPerempuan= (clone $baseQuery)->where('sex', 'PEREMPUAN')->count();
+        // Scope dep yang dimunculkan di matrix: jika filter aktif hanya 1, else top 8
+        $depsForMatrix = $filterDep
+            ? collect([$filterDep])
+            : $perDepartemen->take(8)->pluck('label');
 
-        // =========================================================
-        // MASTER DATA UNTUK FILTER
-        // =========================================================
-        $perusahaans = Perusahaan::orderBy('nama_prs1')->get();
-        $kontrakOptions = KontrakKerja::orderBy('kode_ktr')->get();
-        $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
-            ->groupBy('wilayah_krj')
-            ->orderBy('wilayah_krj')
-            ->get();
+        // Matrix Dep × Wilayah
+        foreach ($depsForMatrix as $depNama) {
+            $depIds = Departemen::where('nama_dep', $depNama)->pluck('id');
+            $row    = ['departemen' => $depNama, 'total' => 0, 'wilayah' => []];
+
+            foreach ($allWilayah as $wNama) {
+                // cari semua wilker ID dengan wilayah_krj = $wNama
+                $wkIds = WilayahKerja::where('wilayah_krj', $wNama)->pluck('id');
+                $cnt = (clone $base)
+                    ->whereIn('departemen', $depIds)
+                    ->whereIn('wilker', $wkIds)
+                    ->count();
+                $row['wilayah'][$wNama] = $cnt;
+                $row['total'] += $cnt;
+            }
+            $depWilayahMatrix->push($row);
+        }
+
+        // Matrix Dep × PT
+        foreach ($depsForMatrix as $depNama) {
+            $depIds = Departemen::where('nama_dep', $depNama)->pluck('id');
+            $row    = ['departemen' => $depNama, 'total' => 0, 'pt' => []];
+
+            foreach ($allPT as $pt) {
+                $cnt = (clone $base)
+                    ->whereIn('departemen', $depIds)
+                    ->where('perusahaan', $pt['id'])
+                    ->count();
+                $row['pt'][$pt['singkatan']] = [
+                    'jumlah' => $cnt,
+                    'nama'   => $pt['nama'],
+                    'id'     => $pt['id'],
+                ];
+                $row['total'] += $cnt;
+            }
+            $depPTMatrix->push($row);
+        }
+
+        // ---- Master data filter ----
+        $perusahaans         = Perusahaan::orderBy('nama_prs1')->get();
+        $kontrakOptions      = KontrakKerja::orderBy('kode_ktr')->get();
+        $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')->groupBy('wilayah_krj')->orderBy('wilayah_krj')->get();
+        // Departemen options: nama unik
+        $departemenOptions   = Departemen::select('nama_dep', 'singkatan_dep',
+                                    DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode'))
+                                ->groupBy('nama_dep', 'singkatan_dep')
+                                ->orderBy('min_kode')->get();
 
         $currentFilters = [
-            'perusahaan' => $filterPerusahaan,
-            'wilker'     => $filterWilker,
-            'status'     => $filterStatus,
-            'kontrak'    => $filterKontrak,
+            'perusahaan'  => $request->filter_perusahaan,
+            'wilker'      => $request->filter_wilker,
+            'status'      => $request->filter_status,
+            'kontrak'     => $request->filter_kontrak,
+            'departemen'  => $request->filter_departemen,
         ];
 
         return view('reports.index', compact(
-            'totalKaryawan',
-            'statAktif',
-            'statNonAktif',
-            'statCalon',
-            'statLakiLaki',
-            'statPerempuan',
-            'perPT',
-            'perPusatCabang',
-            'perUnitKerja',
-            'perDepartemen',
-            'perJabatan',
-            'perBidangUsaha',
-            'perKontrak',
-            'perusahaans',
-            'kontrakOptions',
-            'wilayahKerjaOptions',
-            'currentFilters'
+            'totalKaryawan','statAktif','statNonAktif','statCalon','statLakiLaki','statPerempuan',
+            'perPT','perPusatCabang','perUnitKerja','perDepartemen','perJabatan','perBidangUsaha','perKontrak',
+            'depWilayahMatrix','depPTMatrix','allWilayah','allPT','depsForMatrix',
+            'perusahaans','kontrakOptions','wilayahKerjaOptions','departemenOptions','currentFilters'
         ));
+    }
+
+    // ================================================================
+    // AJAX: Detail karyawan drill-down
+    // ================================================================
+    public function detail(Request $request)
+    {
+        $type  = $request->type;
+        $value = $request->value;
+
+        $q = DataKaryawan::with(['perusahaanRelation','departemenRelation','wilayahKerjaRelation','kontrakRelation','unitKerjaRelation']);
+
+        if ($request->filter_status)     $q->where('sts_kry',    $request->filter_status);
+        if ($request->filter_perusahaan) $q->where('perusahaan', $request->filter_perusahaan);
+        if ($request->filter_wilker)     $q->where('wilker',      $request->filter_wilker);
+        if ($request->filter_kontrak)    $q->where('sts_ktr',     $request->filter_kontrak);
+        if ($request->filter_departemen) {
+            $depIds = Departemen::where('nama_dep', $request->filter_departemen)->pluck('id');
+            $q->whereIn('departemen', $depIds);
+        }
+
+        switch ($type) {
+            case 'pt':
+                $q->where('perusahaan', $value);
+                $title = 'Karyawan — ' . (Perusahaan::find($value)?->nama_prs1 ?? $value);
+                break;
+            case 'wilker':
+                $wkIds = WilayahKerja::where('wilayah_krj', $value)->pluck('id');
+                $q->whereIn('wilker', $wkIds);
+                $title = 'Karyawan — Wilayah: ' . $value;
+                break;
+            case 'unit_kerja':
+                $q->where('unit_krj', $value);
+                $title = 'Karyawan — Unit Kerja: ' . (WilayahKerja::find($value)?->area_krj ?? $value);
+                break;
+            case 'departemen':
+                $depIds = Departemen::where('nama_dep', $value)->pluck('id');
+                $q->whereIn('departemen', $depIds);
+                $title = 'Karyawan — Departemen: ' . $value;
+                break;
+            case 'jabatan':
+                $q->where('departemen', $value);
+                $title = 'Karyawan — Jabatan: ' . (Departemen::find($value)?->nama_jbt ?? $value);
+                break;
+            case 'bidang':
+                $prsIds = Perusahaan::where('bidang_ush', $value)->pluck('id');
+                $q->whereIn('perusahaan', $prsIds);
+                $title = 'Karyawan — Bidang Usaha: ' . $value;
+                break;
+            case 'kontrak':
+                $q->where('sts_ktr', $value);
+                $title = 'Karyawan — Kontrak: ' . (KontrakKerja::find($value)?->nama_ktr ?? $value);
+                break;
+            case 'status':
+                if ($value !== '') $q->where('sts_kry', $value);
+                $title = $value ? 'Karyawan — Status: ' . $value : 'Semua Karyawan';
+                break;
+            case 'gender':
+                $q->where('sex', $value);
+                $title = 'Karyawan — ' . ($value === 'LAKI-LAKI' ? 'Laki-laki' : 'Perempuan');
+                break;
+            // Cross drill-down: dep × wilayah
+            case 'dep_wilayah':
+                [$depNama, $wNama] = explode('||', $value, 2);
+                $depIds = Departemen::where('nama_dep', $depNama)->pluck('id');
+                $wkIds  = WilayahKerja::where('wilayah_krj', $wNama)->pluck('id');
+                $q->whereIn('departemen', $depIds)->whereIn('wilker', $wkIds);
+                $title = $depNama . ' — ' . $wNama;
+                break;
+            // Cross drill-down: dep × pt
+            case 'dep_pt':
+                [$depNama, $ptId] = explode('||', $value, 2);
+                $depIds = Departemen::where('nama_dep', $depNama)->pluck('id');
+                $q->whereIn('departemen', $depIds)->where('perusahaan', $ptId);
+                $pt    = Perusahaan::find($ptId);
+                $title = $depNama . ' — ' . ($pt?->nama_prs2 ?? $pt?->nama_prs1 ?? $ptId);
+                break;
+            default:
+                $title = 'Detail Karyawan';
+        }
+
+        $karyawans = $q->orderBy('nama')->get()->map(function ($k) {
+            $dep = Departemen::find($k->departemen);
+            $wk  = WilayahKerja::find($k->unit_krj);
+            return [
+                'id'         => $k->id,
+                'nrk'        => $k->nrk ?? '-',
+                'nama'       => $k->nama,
+                'sex'        => $k->sex ?? '-',
+                'perusahaan' => $k->perusahaanRelation?->nama_prs2 ?? $k->perusahaanRelation?->nama_prs1 ?? '-',
+                'departemen' => $dep?->nama_dep ?? '-',
+                'jabatan'    => $dep?->nama_jbt ?? '-',
+                'wilker'     => $k->wilker ?? '-',
+                'unit_kerja' => $wk?->area_krj ?? '-',
+                'kontrak'    => $k->kontrakRelation?->singkatan_ktr ?? $k->kontrakRelation?->kode_ktr ?? '-',
+                'sts_kry'    => $k->sts_kry ?? '-',
+                'tgl_masuk'  => $k->tgl_masuk ? $k->tgl_masuk->format('d/m/Y') : '-',
+            ];
+        });
+
+        return response()->json([
+            'title' => $title,
+            'total' => $karyawans->count(),
+            'data'  => $karyawans,
+        ]);
+    }
+
+    // ================================================================
+    // AJAX: Breakdown jabatan dalam satu departemen
+    // ================================================================
+    public function jabatanByDepartemen(Request $request, $namaDep)
+    {
+        $base   = $this->baseQuery($request);
+        $depIds = Departemen::where('nama_dep', $namaDep)->pluck('id');
+
+        $rows = (clone $base)
+            ->whereIn('departemen', $depIds)
+            ->select('departemen', DB::raw('COUNT(*) as jumlah'))
+            ->groupBy('departemen')->get()
+            ->map(function ($r) {
+                $dep = Departemen::find($r->departemen);
+                return [
+                    'id'        => $r->departemen,
+                    'jabatan'   => $dep?->nama_jbt ?? '-',
+                    'singkatan' => $dep?->singkatan_jbt ?? '-',
+                    'jumlah'    => $r->jumlah,
+                ];
+            })
+            ->sortByDesc('jumlah')->values();
+
+        return response()->json([
+            'departemen' => $namaDep,
+            'data'       => $rows,
+        ]);
     }
 }

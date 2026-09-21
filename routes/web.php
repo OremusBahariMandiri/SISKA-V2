@@ -285,8 +285,16 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('reports')->name('reports.')->group(function () {
 
-        // Ringkasan SISKA
+        // Ringkasan SISKA — halaman utama
         Route::get('/ringkasan-siska', [RingkasanSiskaController::class, 'index'])
             ->name('ringkasan-siska.index');
+
+        // AJAX: drill-down daftar karyawan per kategori
+        Route::get('/ringkasan-siska/detail', [RingkasanSiskaController::class, 'detail'])
+            ->name('ringkasan-siska.detail');
+
+        // AJAX: breakdown jabatan per nama departemen
+        Route::get('/ringkasan-siska/jabatan/{namaDep}', [RingkasanSiskaController::class, 'jabatanByDepartemen'])
+            ->name('ringkasan-siska.jabatan');
     });
 });

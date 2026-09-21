@@ -20,6 +20,7 @@ use App\Http\Controllers\DataMaster\PerusahaanController;
 use App\Http\Controllers\DataMaster\UserAccessController;
 use App\Http\Controllers\DataMaster\UserController;
 use App\Http\Controllers\DataMaster\WilayahKerjaController;
+use App\Http\Controllers\Report\RingkasanSiskaController;
 use App\Models\DataMaster\DokumenHrd;
 use Illuminate\Support\Facades\Route;
 
@@ -280,4 +281,12 @@ Route::middleware('auth')->group(function () {
     // ============================================================================================================== //
     Route::resource('data-dokumen-hrd', DataDokumenHrdController::class);
     Route::resource('data-dokumen-hrd-laporan', DataDokumenHrdLaporanController::class)->only(['index', 'show']);
+
+
+    Route::prefix('reports')->name('reports.')->group(function () {
+
+        // Ringkasan SISKA
+        Route::get('/ringkasan-siska', [RingkasanSiskaController::class, 'index'])
+            ->name('ringkasan-siska.index');
+    });
 });

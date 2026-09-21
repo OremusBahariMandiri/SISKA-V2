@@ -358,6 +358,11 @@
                             'data-gaji',
                             'data-dokumen-hrd',
                         ]);
+
+                        // Reports Access Management
+                        $reportsActive = isMenuActive(['reports*']);
+
+                        $hasReportsAccess = Auth::user()->is_admin || hasMenuAccess(['ringkasan-siska']);
                     @endphp
 
                     <!-- DATA MASTER DROPDOWN MENU -->
@@ -586,18 +591,17 @@
                                 @endif
 
                                 @if (Auth::user()->is_admin || Auth::user()->hasAccess('data-dokumen-hrd'))
-                                    <!-- Data Gaji with nested submenu -->
+                                    <!-- Data Dokumen HRD with nested submenu -->
                                     <li class="submenu-item has-nested-submenu">
                                         <a class="sidebar-menu-link menu-dropdown {{ request()->is('data-dokumen-hrd*') ? 'active' : '' }}"
                                             href="#" data-menu="dataDokumenHrdSub">
                                             <i class="fas fa-folder-open"></i>
                                             <span class="sidebar-menu-text">Data Dokumen Hrd</span>
-                                            <i class="fas fa-chevron-down submenu-indicator {{ request()->is('data-dokumen-hrd*') ? 'rotated' : '' }}"></i>
+                                            <i
+                                                class="fas fa-chevron-down submenu-indicator {{ request()->is('data-dokumen-hrd*') ? 'rotated' : '' }}"></i>
                                         </a>
-
                                         <ul class="sidebar-nested-submenu {{ request()->is('data-dokumen-hrd*') ? 'show' : '' }}"
                                             id="dataDokumenHrdSub">
-
                                             <li class="nested-submenu-item">
                                                 <a class="sidebar-menu-link {{ request()->is('data-dokumen-hrd') || request()->is('data-dokumen-hrd/create') || request()->is('data-gaji/*/edit') ? 'active' : '' }}"
                                                     href="{{ route('data-dokumen-hrd.index') }}">
@@ -605,7 +609,6 @@
                                                     <span class="sidebar-menu-text">Pencatatan</span>
                                                 </a>
                                             </li>
-
                                             <li class="nested-submenu-item">
                                                 <a class="sidebar-menu-link {{ request()->is('data-dokumen-hrd-laporan') ? 'active' : '' }}"
                                                     href="{{ route('data-dokumen-hrd-laporan.index') }}">
@@ -613,8 +616,31 @@
                                                     <span class="sidebar-menu-text">Laporan</span>
                                                 </a>
                                             </li>
-
                                         </ul>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+
+                    <!-- RINGKASAN DROPDOWN MENU -->
+                    @if ($hasReportsAccess)
+                        <li class="sidebar-menu-item has-submenu" data-tooltip="Ringkasan">
+                            <a class="sidebar-menu-link menu-dropdown {{ $reportsActive ? 'active' : '' }}"
+                                href="#" data-menu="ringkasanMenu">
+                                <i class="fas fa-chart-pie"></i>
+                                <span class="sidebar-menu-text">Ringkasan</span>
+                                <i
+                                    class="fas fa-chevron-down submenu-indicator {{ $reportsActive ? 'rotated' : '' }}"></i>
+                            </a>
+                            <ul class="sidebar-submenu {{ $reportsActive ? 'show' : '' }}" id="ringkasanMenu">
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('ringkasan-siska'))
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('reports/ringkasan-siska*') ? 'active' : '' }}"
+                                            href="{{ route('reports.ringkasan-siska.index') }}">
+                                            <i class="fas fa-chart-bar"></i>
+                                            <span class="sidebar-menu-text">Ringkasan SISKA</span>
+                                        </a>
                                     </li>
                                 @endif
                             </ul>

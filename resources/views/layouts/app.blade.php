@@ -643,6 +643,15 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('turnover'))
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('reports/turnover*') ? 'active' : '' }}"
+                                            href="{{ route('reports.turnover.index') }}">
+                                            <i class="fas fa-chart-bar"></i>
+                                            <span class="sidebar-menu-text">Ringkasan Turnover</span>
+                                        </a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

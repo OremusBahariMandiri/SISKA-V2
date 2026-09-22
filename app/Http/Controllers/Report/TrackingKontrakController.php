@@ -22,7 +22,6 @@ class TrackingKontrakController extends Controller
 
     // ================================================================
     // Urutan hierarki kontrak berdasarkan kode numerik ascending
-    // Semakin kecil kode = semakin rendah jenjang (SPKK=103, PKWT=102, PKWTT=101)
     // ================================================================
     private function getKontrakOrder(): array
     {
@@ -34,29 +33,26 @@ class TrackingKontrakController extends Controller
     private function getArahPerubahan(?string $kodeAwal, ?string $kodeBaru, array $urutan): string
     {
         if (!$kodeAwal || !$kodeBaru) return 'baru';
-
-        $urutanValues = array_values($urutan);
-        $posAwal = array_search($kodeAwal, $urutanValues);
-        $posBaru = array_search($kodeBaru, $urutanValues);
-
-        if ($posAwal === false || $posBaru === false) return 'perubahan';
-        if ($posBaru < $posAwal)  return 'upgrade';
-        if ($posBaru > $posAwal)  return 'downgrade';
+        $vals   = array_values($urutan);
+        $posA   = array_search($kodeAwal, $vals);
+        $posB   = array_search($kodeBaru, $vals);
+        if ($posA === false || $posB === false) return 'perubahan';
+        if ($posB < $posA) return 'upgrade';
+        if ($posB > $posA) return 'downgrade';
         return 'perpanjangan';
     }
 
     // ================================================================
-    // Base query karyawan
+    // Base query karyawan — dipakai untuk statistik DAN listing
     // ================================================================
     private function baseQuery(Request $request)
     {
-        $q = DataKaryawan::query()
-            ->whereHas('allContracts');
+        $q = DataKaryawan::query()->whereHas('allContracts');
 
         if ($request->filter_perusahaan) $q->where('perusahaan', $request->filter_perusahaan);
-        if ($request->filter_wilker)     $q->where('wilker', $request->filter_wilker);
-        if ($request->filter_area)       $q->where('unit_krj', $request->filter_area);
-        if ($request->filter_status)     $q->where('sts_kry', $request->filter_status);
+        if ($request->filter_wilker)     $q->where('wilker',     $request->filter_wilker);
+        if ($request->filter_area)       $q->where('unit_krj',   $request->filter_area);
+        if ($request->filter_status)     $q->where('sts_kry',    $request->filter_status);
 
         if ($request->filter_departemen) {
             $depIds = Departemen::where('nama_dep', $request->filter_departemen)->pluck('id');
@@ -67,21 +63,17 @@ class TrackingKontrakController extends Controller
             $q->where('sts_ktr', $request->filter_kontrak_aktif);
         }
 
-        // Filter: karyawan yang punya transisi dari kontrak A ke kontrak B
-        // filter_dari_kontrak = id kontrak awal
-        // filter_ke_kontrak   = id kontrak tujuan
+        // Filter transisi: dari kontrak A ke kontrak B
         if ($request->filter_dari_kontrak || $request->filter_ke_kontrak) {
-            $dariId = $request->filter_dari_kontrak;
-            $keId   = $request->filter_ke_kontrak;
-
-            $q->whereHas('allContracts', function ($sq) use ($dariId) {
-                if ($dariId) $sq->where('id_ktr', $dariId);
-            });
-
-            if ($keId) {
-                $q->whereHas('allContracts', function ($sq) use ($keId) {
-                    $sq->where('id_ktr', $keId);
-                });
+            if ($request->filter_dari_kontrak) {
+                $q->whereHas('allContracts', fn($sq) =>
+                    $sq->where('id_ktr', $request->filter_dari_kontrak)
+                );
+            }
+            if ($request->filter_ke_kontrak) {
+                $q->whereHas('allContracts', fn($sq) =>
+                    $sq->where('id_ktr', $request->filter_ke_kontrak)
+                );
             }
         }
 
@@ -113,11 +105,13 @@ class TrackingKontrakController extends Controller
     public function index(Request $request)
     {
         $kontrakOrder    = $this->getKontrakOrder();
-        $kontrakMaster   = KontrakKerja::orderByRaw('CAST(kode_ktr AS UNSIGNED) ASC')->get();
         $kontrakKodeById = KontrakKerja::pluck('kode_ktr', 'id')->toArray();
         $kontrakNamaById = KontrakKerja::pluck('singkatan_ktr', 'id')->toArray();
 
-        // ── Statistik global transisi ──
+        // ── Ambil ID karyawan yang lolos filter ──────────────────────
+        $filteredIds = $this->baseQuery($request)->pluck('id');
+
+        // ── Statistik transisi berdasarkan karyawan terfilter ────────
         $statUpgrade    = 0;
         $statDowngrade  = 0;
         $statPerpanjang = 0;
@@ -125,6 +119,7 @@ class TrackingKontrakController extends Controller
         $transitionCount = [];
 
         $allTransitions = DataKontrak::select('id_data_kry', 'id_ktr', 'tgl_awl_ktr')
+            ->whereIn('id_data_kry', $filteredIds)
             ->whereNotNull('id_ktr')
             ->orderBy('id_data_kry')
             ->orderBy('tgl_awl_ktr')
@@ -142,8 +137,8 @@ class TrackingKontrakController extends Controller
                 $namaBaru = $kontrakNamaById[$curr->id_ktr] ?? $kodeBaru;
                 $arah     = $this->getArahPerubahan($kodeAwal, $kodeBaru, $kontrakOrder);
 
-                if ($arah === 'upgrade')       $statUpgrade++;
-                elseif ($arah === 'downgrade') $statDowngrade++;
+                if ($arah === 'upgrade')          $statUpgrade++;
+                elseif ($arah === 'downgrade')    $statDowngrade++;
                 elseif ($arah === 'perpanjangan') $statPerpanjang++;
 
                 if ($namaAwal && $namaBaru && $namaAwal !== $namaBaru) {
@@ -159,8 +154,10 @@ class TrackingKontrakController extends Controller
             ->map(fn($v, $k) => ['label' => $k, 'jumlah' => $v])
             ->values()->take(10);
 
-        // ── Distribusi kontrak aktif ──
+        // ── Distribusi kontrak aktif — IKUT FILTER ───────────────────
+        // Berdasarkan sts_ktr di DataKaryawan yang lolos filter
         $perKontrakAktif = DataKaryawan::select('sts_ktr', DB::raw('COUNT(*) as jumlah'))
+            ->whereIn('id', $filteredIds)
             ->whereNotNull('sts_ktr')
             ->groupBy('sts_ktr')
             ->get()
@@ -172,16 +169,24 @@ class TrackingKontrakController extends Controller
                     'jumlah' => (int) $r->jumlah,
                 ];
             })
-            ->sortByDesc('jumlah')->values();
+            ->sortByDesc('jumlah')
+            ->values();
 
-        // ── Paginate + transform via ->through() ──
-        $perPage = $request->input('per_page', 20);
-        $search  = $request->input('search', '');
+        // ── Paginate + transform via ->through() ─────────────────────
+        $perPage           = $request->input('per_page', 20);
+        $search            = $request->input('search', '');
+        $filterDariKontrak = $request->filter_dari_kontrak;
+        $filterKeKontrak   = $request->filter_ke_kontrak;
 
         $karyawanQuery = $this->baseQuery($request)
-            ->with(['allContracts.kontrakKerja', 'allContracts.perusahaan',
-                    'perusahaanRelation', 'departemenRelation',
-                    'unitKerjaRelation', 'kontrakRelation']);
+            ->with([
+                'allContracts.kontrakKerja',
+                'allContracts.perusahaan',
+                'perusahaanRelation',
+                'departemenRelation',
+                'unitKerjaRelation',
+                'kontrakRelation',
+            ]);
 
         if ($search) {
             $karyawanQuery->where(function ($q) use ($search) {
@@ -189,9 +194,6 @@ class TrackingKontrakController extends Controller
                   ->orWhere('nrk',  'like', '%' . $search . '%');
             });
         }
-
-        $filterDariKontrak = $request->filter_dari_kontrak;
-        $filterKeKontrak   = $request->filter_ke_kontrak;
 
         $karyawans = $karyawanQuery->orderBy('nama')
             ->paginate($perPage)
@@ -216,73 +218,65 @@ class TrackingKontrakController extends Controller
                         : 'baru';
 
                     return [
-                        'id'        => $ktr->id,
-                        'no_surat'  => $ktr->no_srt_ktr ?? '-',
-                        'tgl_surat' => $ktr->tgl_srt_ktr
+                        'id'         => $ktr->id,
+                        'id_ktr'     => $ktr->id_ktr,
+                        'no_surat'   => $ktr->no_srt_ktr ?? '-',
+                        'tgl_surat'  => $ktr->tgl_srt_ktr
                             ? Carbon::parse($ktr->tgl_srt_ktr)->format('d/m/Y') : '-',
-                        'id_ktr'    => $ktr->id_ktr,
-                        'nama_ktr'  => $ktr->kontrakKerja?->nama_ktr ?? '-',
-                        'singkatan' => $ktr->kontrakKerja?->singkatan_ktr ?? '-',
-                        'kode_ktr'  => $ktr->kontrakKerja?->kode_ktr ?? '-',
-                        'tgl_mulai' => $ktr->tgl_awl_ktr
+                        'nama_ktr'   => $ktr->kontrakKerja?->nama_ktr ?? '-',
+                        'singkatan'  => $ktr->kontrakKerja?->singkatan_ktr ?? '-',
+                        'kode_ktr'   => $ktr->kontrakKerja?->kode_ktr ?? '-',
+                        'tgl_mulai'  => $ktr->tgl_awl_ktr
                             ? Carbon::parse($ktr->tgl_awl_ktr)->format('d/m/Y') : '-',
-                        'tgl_akhir' => $ktr->tgl_akhir_ktr
+                        'tgl_akhir'  => $ktr->tgl_akhir_ktr
                             ? Carbon::parse($ktr->tgl_akhir_ktr)->format('d/m/Y') : '-',
-                        'durasi'    => $ktr->durasi_ktr ? $ktr->durasi_ktr . ' bln' : '-',
-                        'status'    => $ktr->sts_srt_ktr ?? '-',
-                        'arah'      => $arah,
-                        'perusahaan'=> $ktr->perusahaan?->nama_prs2
-                                    ?? $ktr->perusahaan?->nama_prs1 ?? '-',
+                        'durasi'     => $ktr->durasi_ktr ? $ktr->durasi_ktr . ' bln' : '-',
+                        'status'     => $ktr->sts_srt_ktr ?? '-',
+                        'arah'       => $arah,
+                        'perusahaan' => $ktr->perusahaan?->nama_prs2
+                                     ?? $ktr->perusahaan?->nama_prs1 ?? '-',
+                        'highlighted' => false,
                     ];
                 });
 
-                // Jika ada filter dari→ke, tandai node yang relevan
+                // Tandai node yang sesuai filter transisi
                 if ($filterDariKontrak || $filterKeKontrak) {
                     $timeline = $timeline->map(function ($t, $i) use (
                         $timeline, $filterDariKontrak, $filterKeKontrak
                     ) {
                         $prev = $i > 0 ? $timeline[$i - 1] : null;
-                        $t['highlighted'] = false;
-
                         if ($prev && $filterDariKontrak && $filterKeKontrak) {
                             $t['highlighted'] = (
-                                $prev['id_ktr'] == $filterDariKontrak &&
-                                $t['id_ktr']    == $filterKeKontrak
+                                (string)$prev['id_ktr'] === (string)$filterDariKontrak &&
+                                (string)$t['id_ktr']   === (string)$filterKeKontrak
                             );
                         } elseif ($filterDariKontrak && !$filterKeKontrak) {
-                            $t['highlighted'] = $t['id_ktr'] == $filterDariKontrak;
+                            $t['highlighted'] = (string)$t['id_ktr'] === (string)$filterDariKontrak;
                         } elseif ($filterKeKontrak && !$filterDariKontrak) {
-                            $t['highlighted'] = $t['id_ktr'] == $filterKeKontrak;
+                            $t['highlighted'] = (string)$t['id_ktr'] === (string)$filterKeKontrak;
                         }
                         return $t;
                     });
                 }
 
-                $jumlahUpgrade    = $timeline->where('arah', 'upgrade')->count();
-                $jumlahDowngrade  = $timeline->where('arah', 'downgrade')->count();
-                $jumlahPerpanjang = $timeline->where('arah', 'perpanjangan')->count();
-
                 return [
-                    'id'                => $k->id,
-                    'nrk'               => $k->nrk ?? '-',
-                    'nama'              => $k->nama,
-                    'perusahaan'        => $k->perusahaanRelation?->nama_prs2
-                                        ?? $k->perusahaanRelation?->nama_prs1 ?? '-',
-                    'departemen'        => $dep?->nama_dep ?? '-',
-                    'jabatan'           => $dep?->nama_jbt ?? '-',
-                    'unit_kerja'        => $uk?->area_krj ?? '-',
-                    'kontrak_aktif'     => $k->kontrakRelation?->singkatan_ktr ?? '-',
-                    'sts_kry'           => $k->sts_kry ?? '-',
-                    'tgl_masuk'         => $k->tgl_masuk?->format('d/m/Y') ?? '-',
-                    'total_kontrak'     => $kontrakList->count(),
-                    'jumlah_upgrade'    => $jumlahUpgrade,
-                    'jumlah_downgrade'  => $jumlahDowngrade,
-                    'jumlah_perpanjang' => $jumlahPerpanjang,
-                    'timeline'          => $timeline,
+                    'id'            => $k->id,
+                    'nrk'           => $k->nrk ?? '-',
+                    'nama'          => $k->nama,
+                    'perusahaan'    => $k->perusahaanRelation?->nama_prs2
+                                    ?? $k->perusahaanRelation?->nama_prs1 ?? '-',
+                    'departemen'    => $dep?->nama_dep ?? '-',
+                    'jabatan'       => $dep?->nama_jbt ?? '-',
+                    'unit_kerja'    => $uk?->area_krj ?? '-',
+                    'kontrak_aktif' => $k->kontrakRelation?->singkatan_ktr ?? '-',
+                    'sts_kry'       => $k->sts_kry ?? '-',
+                    'tgl_masuk'     => $k->tgl_masuk?->format('d/m/Y') ?? '-',
+                    'total_kontrak' => $kontrakList->count(),
+                    'timeline'      => $timeline,
                 ];
             });
 
-        // ── Master filter ──
+        // ── Master filter ─────────────────────────────────────────────
         $perusahaans         = Perusahaan::orderBy('nama_prs1')->get();
         $kontrakOptions      = KontrakKerja::orderByRaw('CAST(kode_ktr AS UNSIGNED) ASC')->get();
         $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
@@ -290,25 +284,27 @@ class TrackingKontrakController extends Controller
         $areaKerjaOptions    = WilayahKerja::orderBy('area_krj')
             ->when($request->filter_wilker, fn($q) => $q->where('wilayah_krj', $request->filter_wilker))
             ->get();
-        $departemenOptions   = Departemen::select('nama_dep', 'singkatan_dep',
-                DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode'))
+        $departemenOptions   = Departemen::select(
+                'nama_dep', 'singkatan_dep',
+                DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode')
+            )
             ->groupBy('nama_dep', 'singkatan_dep')
             ->orderBy('min_kode')->get();
 
         $currentFilters = [
-            'perusahaan'        => $request->filter_perusahaan     ?? '',
-            'wilker'            => $request->filter_wilker         ?? '',
-            'area'              => $request->filter_area           ?? '',
-            'status'            => $request->filter_status         ?? '',
-            'departemen'        => $request->filter_departemen     ?? '',
-            'kontrak_aktif'     => $request->filter_kontrak_aktif  ?? '',
-            'dari_kontrak'      => $request->filter_dari_kontrak   ?? '',
-            'ke_kontrak'        => $request->filter_ke_kontrak     ?? '',
-            'tgl_dari'          => $request->filter_tgl_dari       ?? '',
-            'tgl_sampai'        => $request->filter_tgl_sampai     ?? '',
-            'include_top_mgmt'  => $request->input('filter_include_top_mgmt', '0'),
-            'per_page'          => $perPage,
-            'search'            => $search,
+            'perusahaan'       => $request->filter_perusahaan    ?? '',
+            'wilker'           => $request->filter_wilker        ?? '',
+            'area'             => $request->filter_area          ?? '',
+            'status'           => $request->filter_status        ?? '',
+            'departemen'       => $request->filter_departemen    ?? '',
+            'kontrak_aktif'    => $request->filter_kontrak_aktif ?? '',
+            'dari_kontrak'     => $request->filter_dari_kontrak  ?? '',
+            'ke_kontrak'       => $request->filter_ke_kontrak    ?? '',
+            'tgl_dari'         => $request->filter_tgl_dari      ?? '',
+            'tgl_sampai'       => $request->filter_tgl_sampai    ?? '',
+            'include_top_mgmt' => $request->input('filter_include_top_mgmt', '0'),
+            'per_page'         => $perPage,
+            'search'           => $search,
         ];
 
         return view('reports.tracking-kontrak.index', compact(
@@ -319,7 +315,6 @@ class TrackingKontrakController extends Controller
             'statBaru',
             'topTransisi',
             'perKontrakAktif',
-            'kontrakMaster',
             'kontrakOptions',
             'perusahaans',
             'wilayahKerjaOptions',
@@ -346,18 +341,19 @@ class TrackingKontrakController extends Controller
     // ================================================================
     public function detail(Request $request, $id)
     {
-        $k = DataKaryawan::with(['allContracts.kontrakKerja', 'allContracts.perusahaan',
-                                 'perusahaanRelation'])
-            ->findOrFail($id);
+        $k = DataKaryawan::with([
+            'allContracts.kontrakKerja',
+            'allContracts.perusahaan',
+            'perusahaanRelation',
+        ])->findOrFail($id);
 
         $kontrakOrder    = $this->getKontrakOrder();
         $kontrakKodeById = KontrakKerja::pluck('kode_ktr', 'id')->toArray();
-        $kontrakNamaById = KontrakKerja::pluck('singkatan_ktr', 'id')->toArray();
 
         $kontrakList = $k->allContracts->sortBy('tgl_awl_ktr')->values();
 
         $timeline = $kontrakList->map(function ($ktr, $i) use (
-            $kontrakList, $kontrakOrder, $kontrakKodeById, $kontrakNamaById
+            $kontrakList, $kontrakOrder, $kontrakKodeById
         ) {
             $prev     = $i > 0 ? $kontrakList[$i - 1] : null;
             $kodeAwal = $prev ? ($kontrakKodeById[$prev->id_ktr] ?? null) : null;
@@ -372,24 +368,24 @@ class TrackingKontrakController extends Controller
             }
 
             return [
-                'id'           => $ktr->id,
-                'no_surat'     => $ktr->no_srt_ktr ?? '-',
-                'tgl_surat'    => $ktr->tgl_srt_ktr
+                'id'          => $ktr->id,
+                'id_ktr'      => $ktr->id_ktr,
+                'no_surat'    => $ktr->no_srt_ktr ?? '-',
+                'tgl_surat'   => $ktr->tgl_srt_ktr
                     ? Carbon::parse($ktr->tgl_srt_ktr)->format('d/m/Y') : '-',
-                'id_ktr'       => $ktr->id_ktr,
-                'nama_ktr'     => $ktr->kontrakKerja?->nama_ktr ?? '-',
-                'singkatan'    => $ktr->kontrakKerja?->singkatan_ktr ?? '-',
-                'kode_ktr'     => $ktr->kontrakKerja?->kode_ktr ?? '-',
-                'tgl_mulai'    => $ktr->tgl_awl_ktr
+                'nama_ktr'    => $ktr->kontrakKerja?->nama_ktr ?? '-',
+                'singkatan'   => $ktr->kontrakKerja?->singkatan_ktr ?? '-',
+                'kode_ktr'    => $ktr->kontrakKerja?->kode_ktr ?? '-',
+                'tgl_mulai'   => $ktr->tgl_awl_ktr
                     ? Carbon::parse($ktr->tgl_awl_ktr)->format('d/m/Y') : '-',
-                'tgl_akhir'    => $ktr->tgl_akhir_ktr
+                'tgl_akhir'   => $ktr->tgl_akhir_ktr
                     ? Carbon::parse($ktr->tgl_akhir_ktr)->format('d/m/Y') : '-',
-                'durasi'       => $ktr->durasi_ktr ? $ktr->durasi_ktr . ' bulan' : '-',
-                'status'       => $ktr->sts_srt_ktr ?? '-',
-                'arah'         => $arah,
-                'sisa_bulan'   => $sisaBulan,
-                'perusahaan'   => $ktr->perusahaan?->nama_prs2
-                               ?? $ktr->perusahaan?->nama_prs1 ?? '-',
+                'durasi'      => $ktr->durasi_ktr ? $ktr->durasi_ktr . ' bulan' : '-',
+                'status'      => $ktr->sts_srt_ktr ?? '-',
+                'arah'        => $arah,
+                'sisa_bulan'  => $sisaBulan,
+                'perusahaan'  => $ktr->perusahaan?->nama_prs2
+                              ?? $ktr->perusahaan?->nama_prs1 ?? '-',
             ];
         });
 

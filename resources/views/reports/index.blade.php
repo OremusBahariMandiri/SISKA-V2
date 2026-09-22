@@ -27,7 +27,11 @@
             data-filter-perusahaan="{{ $currentFilters['perusahaan'] }}"
             data-filter-wilker="{{ $currentFilters['wilker'] }}" data-filter-area="{{ $currentFilters['area'] }}"
             data-filter-status="{{ $currentFilters['status'] }}" data-filter-kontrak="{{ $currentFilters['kontrak'] }}"
-            data-filter-departemen="{{ $currentFilters['departemen'] }}">
+            data-filter-departemen="{{ $currentFilters['departemen'] }}"
+            data-filter-tgl-masuk-dari="{{ $currentFilters['tgl_masuk_dari'] }}"
+            data-filter-tgl-masuk-sampai="{{ $currentFilters['tgl_masuk_sampai'] }}"
+            data-filter-tgl-phk-dari="{{ $currentFilters['tgl_phk_dari'] }}"
+            data-filter-tgl-phk-sampai="{{ $currentFilters['tgl_phk_sampai'] }}">
             <div class="card-header d-flex justify-content-between align-items-center"
                 style="background:#f8fafc;border-bottom:1px solid #e2e8f0;border-left:4px solid #1a6fcf;">
                 <span class="fw-semibold" style="color:#1e293b;font-size:.875rem;">
@@ -132,6 +136,48 @@
                                     <i class="fas fa-undo"></i>
                                 </a>
                             </div>
+
+                            {{-- di dalam <div class="row g-3"> yang sudah ada, setelah col Tombol --}}
+
+                            {{-- ── Periode Masuk ── --}}
+                            <div class="col-md-3">
+                                <label class="form-label siska-label">
+                                    <i class="fas fa-sign-in-alt me-1" style="color:#059669;"></i>
+                                    Periode Masuk (Tgl Masuk)
+                                </label>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <input type="date" name="filter_tgl_masuk_dari"
+                                        class="form-control form-control-sm siska-date-input"
+                                        value="{{ $currentFilters['tgl_masuk_dari'] }}" title="Tanggal masuk dari">
+                                    <span class="text-muted small">–</span>
+                                    <input type="date" name="filter_tgl_masuk_sampai"
+                                        class="form-control form-control-sm siska-date-input"
+                                        value="{{ $currentFilters['tgl_masuk_sampai'] }}" title="Tanggal masuk sampai">
+                                </div>
+                                <div class="siska-filter-hint">
+                                    <i class="fas fa-info-circle me-1"></i>Karyawan yang mulai bekerja pada rentang ini
+                                </div>
+                            </div>
+
+                            {{-- ── Periode Keluar ── --}}
+                            <div class="col-md-3">
+                                <label class="form-label siska-label">
+                                    <i class="fas fa-sign-out-alt me-1" style="color:#dc2626;"></i>
+                                    Periode Keluar (Tgl PHK)
+                                </label>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <input type="date" name="filter_tgl_phk_dari"
+                                        class="form-control form-control-sm siska-date-input"
+                                        value="{{ $currentFilters['tgl_phk_dari'] }}" title="Tanggal PHK dari">
+                                    <span class="text-muted small">–</span>
+                                    <input type="date" name="filter_tgl_phk_sampai"
+                                        class="form-control form-control-sm siska-date-input"
+                                        value="{{ $currentFilters['tgl_phk_sampai'] }}" title="Tanggal PHK sampai">
+                                </div>
+                                <div class="siska-filter-hint">
+                                    <i class="fas fa-info-circle me-1"></i>Karyawan yang keluar/resign pada rentang ini
+                                </div>
+                            </div>
                         </div>
 
                         {{-- Active filter chips --}}
@@ -183,6 +229,49 @@
                                         <i
                                             class="fas fa-file-contract me-1"></i>{{ $ktrChip?->singkatan_ktr ?? $ktrChip?->kode_ktr }}
                                         <a href="{{ route('reports.ringkasan-siska.index', array_merge($currentFilters, ['filter_kontrak' => ''])) }}"
+                                            class="ms-1 text-inherit">×</a>
+                                    </span>
+                                @endif
+                                @if ($currentFilters['tgl_masuk_dari'] || $currentFilters['tgl_masuk_sampai'])
+                                    <span class="siska-chip siska-chip-green">
+                                        <i class="fas fa-sign-in-alt me-1"></i>
+                                        Masuk:
+                                        {{ $currentFilters['tgl_masuk_dari']
+                                            ? \Carbon\Carbon::parse($currentFilters['tgl_masuk_dari'])->format('d/m/Y')
+                                            : '…' }}
+                                        –
+                                        {{ $currentFilters['tgl_masuk_sampai']
+                                            ? \Carbon\Carbon::parse($currentFilters['tgl_masuk_sampai'])->format('d/m/Y')
+                                            : '…' }}
+                                        <a href="{{ route(
+                                            'reports.ringkasan-siska.index',
+                                            array_merge($currentFilters, [
+                                                'filter_tgl_masuk_dari' => '',
+                                                'filter_tgl_masuk_sampai' => '',
+                                            ]),
+                                        ) }}"
+                                            class="ms-1 text-inherit">×</a>
+                                    </span>
+                                @endif
+
+                                @if ($currentFilters['tgl_phk_dari'] || $currentFilters['tgl_phk_sampai'])
+                                    <span class="siska-chip siska-chip-red">
+                                        <i class="fas fa-sign-out-alt me-1"></i>
+                                        Keluar:
+                                        {{ $currentFilters['tgl_phk_dari']
+                                            ? \Carbon\Carbon::parse($currentFilters['tgl_phk_dari'])->format('d/m/Y')
+                                            : '…' }}
+                                        –
+                                        {{ $currentFilters['tgl_phk_sampai']
+                                            ? \Carbon\Carbon::parse($currentFilters['tgl_phk_sampai'])->format('d/m/Y')
+                                            : '…' }}
+                                        <a href="{{ route(
+                                            'reports.ringkasan-siska.index',
+                                            array_merge($currentFilters, [
+                                                'filter_tgl_phk_dari' => '',
+                                                'filter_tgl_phk_sampai' => '',
+                                            ]),
+                                        ) }}"
                                             class="ms-1 text-inherit">×</a>
                                     </span>
                                 @endif
@@ -1400,6 +1489,20 @@
                 min-width: 80px;
             }
         }
+
+        .siska-date-input {
+            font-size: .78rem;
+            padding: .25rem .4rem;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .siska-filter-hint {
+            font-size: .65rem;
+            color: #94a3b8;
+            margin-top: 3px;
+            line-height: 1.3;
+        }
     </style>
 @endpush
 
@@ -1420,6 +1523,10 @@
                 filter_status: filterEl.dataset.filterStatus || '',
                 filter_kontrak: filterEl.dataset.filterKontrak || '',
                 filter_departemen: filterEl.dataset.filterDepartemen || '',
+                filter_tgl_masuk_dari: filterEl.dataset.filterTglMasukDari || '',
+                filter_tgl_masuk_sampai: filterEl.dataset.filterTglMasukSampai || '',
+                filter_tgl_phk_dari: filterEl.dataset.filterTglPhkDari || '',
+                filter_tgl_phk_sampai: filterEl.dataset.filterTglPhkSampai || '',
             };
 
             // ---- Dropdown Area Kerja: dinamis saat Wilayah Kerja berubah ----

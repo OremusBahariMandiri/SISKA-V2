@@ -21,6 +21,7 @@ use App\Http\Controllers\DataMaster\UserAccessController;
 use App\Http\Controllers\DataMaster\UserController;
 use App\Http\Controllers\DataMaster\WilayahKerjaController;
 use App\Http\Controllers\Report\RingkasanSiskaController;
+use App\Http\Controllers\Report\TrackingKontrakController;
 use App\Http\Controllers\Report\TurnoverController;
 use App\Models\DataMaster\DokumenHrd;
 use Illuminate\Support\Facades\Route;
@@ -310,5 +311,14 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/turnover/chart-bulanan', [TurnoverController::class, 'chartBulanan'])
             ->name('turnover.chart-bulanan');
+
+        Route::get('/tracking-kontrak', [TrackingKontrakController::class, 'index'])
+            ->name('tracking-kontrak.index');
+
+        Route::get('/tracking-kontrak/detail/{id}', [TrackingKontrakController::class, 'detail'])
+            ->name('tracking-kontrak.detail');
+
+        Route::get('/tracking-kontrak/area-by-wilker', [TrackingKontrakController::class, 'areaByWilker'])
+            ->name('tracking-kontrak.area-by-wilker');
     });
 });

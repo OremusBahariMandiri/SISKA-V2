@@ -639,7 +639,7 @@
                                         <a class="sidebar-menu-link {{ request()->is('reports/ringkasan-siska*') ? 'active' : '' }}"
                                             href="{{ route('reports.ringkasan-siska.index') }}">
                                             <i class="fas fa-chart-bar"></i>
-                                            <span class="sidebar-menu-text">Ringkasan SISKA</span>
+                                            <span class="sidebar-menu-text">Ringkasan General</span>
                                         </a>
                                     </li>
                                 @endif
@@ -649,6 +649,15 @@
                                             href="{{ route('reports.turnover.index') }}">
                                             <i class="fas fa-chart-bar"></i>
                                             <span class="sidebar-menu-text">Ringkasan Turnover</span>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (Auth::user()->is_admin || Auth::user()->hasAccess('tracking-kontrak'))
+                                    <li class="submenu-item">
+                                        <a class="sidebar-menu-link {{ request()->is('reports/tracking-kontrak*') ? 'active' : '' }}"
+                                            href="{{ route('reports.tracking-kontrak.index') }}">
+                                            <i class="fas fa-chart-bar"></i>
+                                            <span class="sidebar-menu-text">Ringkasan Kontrak</span>
                                         </a>
                                     </li>
                                 @endif

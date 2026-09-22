@@ -19,14 +19,6 @@ class RingkasanSiskaController extends Controller
         $this->middleware('check.access:ringkasan-siska')->only('index');
     }
 
-    // ================================================================
-    // MAPPING FIELD (konfirmasi via tinker):
-    // DataKaryawan.wilker   = nama wilayah_krj langsung (mis. "JAWA TIMUR")
-    // DataKaryawan.unit_krj = ID dari 102_dm_wilker     (mis. 15 → SURABAYA)
-    //
-    // filter_wilker = nama wilayah → where('wilker', nama)
-    // filter_area   = ID unit_krj  → where('unit_krj', id)
-    // ================================================================
     private function baseQuery(Request $request)
     {
         $q = DataKaryawan::query();
@@ -46,20 +38,27 @@ class RingkasanSiskaController extends Controller
             $q->whereIn('departemen', $depIds);
         }
 
-        // ── BARU: Filter periode tanggal masuk ──────────────────────────
         if ($request->filter_tgl_masuk_dari) {
             $q->whereDate('tgl_masuk', '>=', $request->filter_tgl_masuk_dari);
         }
         if ($request->filter_tgl_masuk_sampai) {
             $q->whereDate('tgl_masuk', '<=', $request->filter_tgl_masuk_sampai);
         }
-
-        // ── BARU: Filter periode tanggal PHK/keluar ──────────────────────
         if ($request->filter_tgl_phk_dari) {
             $q->whereDate('tgl_phk', '>=', $request->filter_tgl_phk_dari);
         }
         if ($request->filter_tgl_phk_sampai) {
             $q->whereDate('tgl_phk', '<=', $request->filter_tgl_phk_sampai);
+        }
+
+        // ── BARU: Exclude TOP MANAJEMENT jika checkbox tidak dicentang ──
+        // Default: TIDAK dicentang = exclude (nilai '0' atau null)
+        // Dicentang = include (nilai '1')
+        if ($request->input('filter_include_top_mgmt', '0') !== '1') {
+            $topMgmtIds = Departemen::where('nama_dep', 'TOP MANAJEMENT')->pluck('id');
+            if ($topMgmtIds->isNotEmpty()) {
+                $q->whereNotIn('departemen', $topMgmtIds);
+            }
         }
 
         return $q;
@@ -311,6 +310,8 @@ class RingkasanSiskaController extends Controller
             'tgl_masuk_sampai'    => $request->filter_tgl_masuk_sampai,
             'tgl_phk_dari'        => $request->filter_tgl_phk_dari,
             'tgl_phk_sampai'      => $request->filter_tgl_phk_sampai,
+            // BARU
+            'include_top_mgmt'    => $request->input('filter_include_top_mgmt', '0'),
         ];
 
         return view('reports.index', compact(

@@ -31,7 +31,8 @@
             data-filter-tgl-masuk-dari="{{ $currentFilters['tgl_masuk_dari'] }}"
             data-filter-tgl-masuk-sampai="{{ $currentFilters['tgl_masuk_sampai'] }}"
             data-filter-tgl-phk-dari="{{ $currentFilters['tgl_phk_dari'] }}"
-            data-filter-tgl-phk-sampai="{{ $currentFilters['tgl_phk_sampai'] }}">
+            data-filter-tgl-phk-sampai="{{ $currentFilters['tgl_phk_sampai'] }}"
+            data-filter-include-top-mgmt="{{ $currentFilters['include_top_mgmt'] }}">
             <div class="card-header d-flex justify-content-between align-items-center"
                 style="background:#f8fafc;border-bottom:1px solid #e2e8f0;border-left:4px solid #1a6fcf;">
                 <span class="fw-semibold" style="color:#1e293b;font-size:.875rem;">
@@ -41,9 +42,10 @@
             <div class="collapse show" id="filterCollapse">
                 <div class="card-body">
                     <form method="GET" action="{{ route('reports.ringkasan-siska.index') }}" id="filterForm">
-                        <div class="row g-3">
-                            {{-- PT --}}
-                            <div class="col-md-2">
+                        <div class="row g-3 align-items-end">
+
+                            {{-- ── BARIS 1: 4 select utama ── --}}
+                            <div class="col-md-3">
                                 <label class="form-label siska-label">Perusahaan (PT)</label>
                                 <select name="filter_perusahaan" class="form-select form-select-sm">
                                     <option value="">— Semua PT —</option>
@@ -56,8 +58,7 @@
                                 </select>
                             </div>
 
-                            {{-- Wilayah Kerja --}}
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label class="form-label siska-label">Wilayah Kerja</label>
                                 <select name="filter_wilker" class="form-select form-select-sm" id="filterWilker">
                                     <option value="">— Semua Wilayah —</option>
@@ -70,8 +71,7 @@
                                 </select>
                             </div>
 
-                            {{-- Area Kerja (dinamis berdasarkan wilker) --}}
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label class="form-label siska-label">Area Kerja</label>
                                 <select name="filter_area" class="form-select form-select-sm" id="filterArea">
                                     <option value="">— Semua Area —</option>
@@ -84,8 +84,7 @@
                                 </select>
                             </div>
 
-                            {{-- Departemen --}}
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <label class="form-label siska-label">Departemen</label>
                                 <select name="filter_departemen" class="form-select form-select-sm" id="filterDepartemen">
                                     <option value="">— Semua Departemen —</option>
@@ -98,8 +97,8 @@
                                 </select>
                             </div>
 
-                            {{-- Kontrak --}}
-                            <div class="col-md-2">
+                            {{-- ── BARIS 2: Kontrak + Status + Top Mgmt + spacer ── --}}
+                            <div class="col-md-3">
                                 <label class="form-label siska-label">Tipe Kontrak</label>
                                 <select name="filter_kontrak" class="form-select form-select-sm">
                                     <option value="">— Semua Kontrak —</option>
@@ -112,11 +111,10 @@
                                 </select>
                             </div>
 
-                            {{-- Status --}}
-                            <div class="col-md-1">
+                            <div class="col-md-3">
                                 <label class="form-label siska-label">Status</label>
                                 <select name="filter_status" class="form-select form-select-sm">
-                                    <option value="">— Semua —</option>
+                                    <option value="">— Semua Status —</option>
                                     <option value="AKTIF" {{ $currentFilters['status'] == 'AKTIF' ? 'selected' : '' }}>
                                         Aktif</option>
                                     <option value="NON-AKTIF"
@@ -126,58 +124,92 @@
                                 </select>
                             </div>
 
-                            {{-- Tombol --}}
-                            <div class="col-md-1 d-flex align-items-end gap-1">
-                                <button type="submit" class="btn btn-primary btn-sm w-100">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                                <a href="{{ route('reports.ringkasan-siska.index') }}"
-                                    class="btn btn-outline-secondary btn-sm w-100">
-                                    <i class="fas fa-undo"></i>
-                                </a>
-                            </div>
-
-                            {{-- di dalam <div class="row g-3"> yang sudah ada, setelah col Tombol --}}
-
-                            {{-- ── Periode Masuk ── --}}
                             <div class="col-md-3">
                                 <label class="form-label siska-label">
-                                    <i class="fas fa-sign-in-alt me-1" style="color:#059669;"></i>
-                                    Periode Masuk (Tgl Masuk)
+                                    <i class="fas fa-crown me-1" style="color:#b45309;"></i>Top Manajement
                                 </label>
-                                <div class="d-flex gap-1 align-items-center">
-                                    <input type="date" name="filter_tgl_masuk_dari"
-                                        class="form-control form-control-sm siska-date-input"
-                                        value="{{ $currentFilters['tgl_masuk_dari'] }}" title="Tanggal masuk dari">
-                                    <span class="text-muted small">–</span>
-                                    <input type="date" name="filter_tgl_masuk_sampai"
-                                        class="form-control form-control-sm siska-date-input"
-                                        value="{{ $currentFilters['tgl_masuk_sampai'] }}" title="Tanggal masuk sampai">
-                                </div>
-                                <div class="siska-filter-hint">
-                                    <i class="fas fa-info-circle me-1"></i>Karyawan yang mulai bekerja pada rentang ini
+                                <div class="siska-topmgmt-toggle">
+                                    <input type="hidden" name="filter_include_top_mgmt" value="0">
+                                    <input type="checkbox" name="filter_include_top_mgmt" id="filterIncludeTopMgmt"
+                                        value="1" class="siska-toggle-input"
+                                        {{ ($currentFilters['include_top_mgmt'] ?? '0') === '1' ? 'checked' : '' }}>
+                                    <label for="filterIncludeTopMgmt" class="siska-toggle-label" id="toggleTopMgmtLabel">
+                                        <span class="siska-toggle-thumb"></span>
+                                        <span class="siska-toggle-text">
+                                            {{ ($currentFilters['include_top_mgmt'] ?? '0') === '1' ? 'Disertakan' : 'Dikecualikan' }}
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
 
-                            {{-- ── Periode Keluar ── --}}
-                            <div class="col-md-3">
-                                <label class="form-label siska-label">
-                                    <i class="fas fa-sign-out-alt me-1" style="color:#dc2626;"></i>
-                                    Periode Keluar (Tgl PHK)
-                                </label>
-                                <div class="d-flex gap-1 align-items-center">
-                                    <input type="date" name="filter_tgl_phk_dari"
-                                        class="form-control form-control-sm siska-date-input"
-                                        value="{{ $currentFilters['tgl_phk_dari'] }}" title="Tanggal PHK dari">
-                                    <span class="text-muted small">–</span>
-                                    <input type="date" name="filter_tgl_phk_sampai"
-                                        class="form-control form-control-sm siska-date-input"
-                                        value="{{ $currentFilters['tgl_phk_sampai'] }}" title="Tanggal PHK sampai">
-                                </div>
-                                <div class="siska-filter-hint">
-                                    <i class="fas fa-info-circle me-1"></i>Karyawan yang keluar/resign pada rentang ini
+                            {{-- spacer baris 2 --}}
+                            <div class="col-md-3"></div>
+
+                            {{-- ── DIVIDER ── --}}
+                            <div class="col-12">
+                                <hr class="siska-filter-divider">
+                            </div>
+
+                            {{-- ── BARIS 3: Periode + Tombol dalam satu flex row ── --}}
+                            <div class="col-12">
+                                <div class="d-flex align-items-end gap-3">
+
+                                    {{-- Periode Masuk --}}
+                                    <div class="flex-grow-1">
+                                        <label class="form-label siska-label">
+                                            <i class="fas fa-sign-in-alt me-1" style="color:#059669;"></i>Periode Masuk
+                                            Kerja
+                                        </label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text siska-ig-green">Dari</span>
+                                            <input type="date" name="filter_tgl_masuk_dari"
+                                                class="form-control form-control-sm"
+                                                value="{{ $currentFilters['tgl_masuk_dari'] }}">
+                                            <span class="input-group-text siska-ig-green">S/d</span>
+                                            <input type="date" name="filter_tgl_masuk_sampai"
+                                                class="form-control form-control-sm"
+                                                value="{{ $currentFilters['tgl_masuk_sampai'] }}">
+                                        </div>
+                                        <div class="siska-filter-hint mt-1">
+                                            <i class="fas fa-info-circle me-1"></i>Berdasarkan tanggal mulai bekerja
+                                        </div>
+                                    </div>
+
+                                    {{-- Periode Keluar --}}
+                                    <div class="flex-grow-1">
+                                        <label class="form-label siska-label">
+                                            <i class="fas fa-sign-out-alt me-1" style="color:#dc2626;"></i>Periode Keluar
+                                            / PHK
+                                        </label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text siska-ig-red">Dari</span>
+                                            <input type="date" name="filter_tgl_phk_dari"
+                                                class="form-control form-control-sm"
+                                                value="{{ $currentFilters['tgl_phk_dari'] }}">
+                                            <span class="input-group-text siska-ig-red">S/d</span>
+                                            <input type="date" name="filter_tgl_phk_sampai"
+                                                class="form-control form-control-sm"
+                                                value="{{ $currentFilters['tgl_phk_sampai'] }}">
+                                        </div>
+                                        <div class="siska-filter-hint mt-1">
+                                            <i class="fas fa-info-circle me-1"></i>Berdasarkan tanggal PHK / resign
+                                        </div>
+                                    </div>
+
+                                    {{-- Tombol rata bawah dengan input-group --}}
+                                    <div class="d-flex gap-2 flex-shrink-0" style="padding-bottom:1.25rem;">
+                                        <a href="{{ route('reports.ringkasan-siska.index') }}"
+                                            class="btn btn-outline-secondary btn-sm px-3">
+                                            <i class="fas fa-undo me-1"></i>Reset
+                                        </a>
+                                        <button type="submit" class="btn btn-primary btn-sm px-4">
+                                            <i class="fas fa-search me-1"></i>Terapkan
+                                        </button>
+                                    </div>
+
                                 </div>
                             </div>
+
                         </div>
 
                         {{-- Active filter chips --}}
@@ -229,6 +261,13 @@
                                         <i
                                             class="fas fa-file-contract me-1"></i>{{ $ktrChip?->singkatan_ktr ?? $ktrChip?->kode_ktr }}
                                         <a href="{{ route('reports.ringkasan-siska.index', array_merge($currentFilters, ['filter_kontrak' => ''])) }}"
+                                            class="ms-1 text-inherit">×</a>
+                                    </span>
+                                @endif
+                                @if (($currentFilters['include_top_mgmt'] ?? '0') === '1')
+                                    <span class="siska-chip siska-chip-orange">
+                                        <i class="fas fa-crown me-1"></i>Termasuk Top Manajement
+                                        <a href="{{ route('reports.ringkasan-siska.index', array_merge($currentFilters, ['filter_include_top_mgmt' => '0'])) }}"
                                             class="ms-1 text-inherit">×</a>
                                     </span>
                                 @endif
@@ -1503,6 +1542,128 @@
             margin-top: 3px;
             line-height: 1.3;
         }
+
+        /* ── Filter divider baris 2 ── */
+        .siska-filter-divider {
+            margin: 4px 0 0;
+            border-color: #e2e8f0;
+        }
+
+        /* ── Input group text kecil ── */
+        .siska-ig-text {
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .25rem .45rem;
+            border-radius: 0;
+        }
+
+        /* ── Toggle switch Top Mgmt ── */
+        .siska-topmgmt-toggle {
+            position: relative;
+            height: 31px;
+            /* sama tinggi dengan form-select-sm */
+            display: flex;
+            align-items: center;
+        }
+
+        /* Input group warna */
+        .siska-ig-green {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #166534;
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .25rem .5rem;
+        }
+
+        .siska-ig-red {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #991b1b;
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .25rem .5rem;
+        }
+
+        /* Divider */
+        .siska-filter-divider {
+            margin: 4px 0 0;
+            border-color: #e2e8f0;
+        }
+
+        /* Hint teks */
+        .siska-filter-hint {
+            font-size: .65rem;
+            color: #94a3b8;
+            line-height: 1.3;
+        }
+
+        /* Toggle Top Manajement */
+        .siska-topmgmt-toggle {
+            position: relative;
+        }
+
+        .siska-toggle-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .siska-toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+            padding: 0 12px 0 6px;
+            height: 31px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #f8fafc;
+            font-size: .78rem;
+            font-weight: 600;
+            color: #64748b;
+            transition: background .2s, border-color .2s, color .2s;
+            width: 100%;
+        }
+
+        .siska-toggle-thumb {
+            flex-shrink: 0;
+            width: 32px;
+            height: 18px;
+            border-radius: 10px;
+            background: #cbd5e1;
+            position: relative;
+            transition: background .2s;
+        }
+
+        .siska-toggle-thumb::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+            transition: transform .2s;
+        }
+
+        .siska-toggle-input:checked+.siska-toggle-label {
+            background: #fffbeb;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        .siska-toggle-input:checked+.siska-toggle-label .siska-toggle-thumb {
+            background: #f59e0b;
+        }
+
+        .siska-toggle-input:checked+.siska-toggle-label .siska-toggle-thumb::after {
+            transform: translateX(14px);
+        }
     </style>
 @endpush
 
@@ -1527,6 +1688,7 @@
                 filter_tgl_masuk_sampai: filterEl.dataset.filterTglMasukSampai || '',
                 filter_tgl_phk_dari: filterEl.dataset.filterTglPhkDari || '',
                 filter_tgl_phk_sampai: filterEl.dataset.filterTglPhkSampai || '',
+                filter_include_top_mgmt: filterEl.dataset.filterIncludeTopMgmt || '0',
             };
 
             // ---- Dropdown Area Kerja: dinamis saat Wilayah Kerja berubah ----

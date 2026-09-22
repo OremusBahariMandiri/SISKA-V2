@@ -25,10 +25,8 @@
         {{-- ====== FILTER PANEL ====== --}}
         <div class="card shadow-sm mb-4 siska-filter-card" id="activeFilters"
             data-filter-perusahaan="{{ $currentFilters['perusahaan'] }}"
-            data-filter-wilker="{{ $currentFilters['wilker'] }}"
-            data-filter-area="{{ $currentFilters['area'] }}"
-            data-filter-status="{{ $currentFilters['status'] }}"
-            data-filter-kontrak="{{ $currentFilters['kontrak'] }}"
+            data-filter-wilker="{{ $currentFilters['wilker'] }}" data-filter-area="{{ $currentFilters['area'] }}"
+            data-filter-status="{{ $currentFilters['status'] }}" data-filter-kontrak="{{ $currentFilters['kontrak'] }}"
             data-filter-departemen="{{ $currentFilters['departemen'] }}">
             <div class="card-header d-flex justify-content-between align-items-center"
                 style="background:#f8fafc;border-bottom:1px solid #e2e8f0;border-left:4px solid #1a6fcf;">
@@ -115,9 +113,12 @@
                                 <label class="form-label siska-label">Status</label>
                                 <select name="filter_status" class="form-select form-select-sm">
                                     <option value="">— Semua —</option>
-                                    <option value="AKTIF" {{ $currentFilters['status'] == 'AKTIF' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="NON-AKTIF" {{ $currentFilters['status'] == 'NON-AKTIF' ? 'selected' : '' }}>Non-Aktif</option>
-                                    <option value="CALON" {{ $currentFilters['status'] == 'CALON' ? 'selected' : '' }}>Calon</option>
+                                    <option value="AKTIF" {{ $currentFilters['status'] == 'AKTIF' ? 'selected' : '' }}>
+                                        Aktif</option>
+                                    <option value="NON-AKTIF"
+                                        {{ $currentFilters['status'] == 'NON-AKTIF' ? 'selected' : '' }}>Non-Aktif</option>
+                                    <option value="CALON" {{ $currentFilters['status'] == 'CALON' ? 'selected' : '' }}>
+                                        Calon</option>
                                 </select>
                             </div>
 
@@ -147,7 +148,8 @@
                                 @if ($currentFilters['perusahaan'])
                                     @php $prsChip = $perusahaans->find($currentFilters['perusahaan']); @endphp
                                     <span class="siska-chip siska-chip-blue">
-                                        <i class="fas fa-building me-1"></i>{{ $prsChip?->nama_prs2 ?? $prsChip?->nama_prs1 }}
+                                        <i
+                                            class="fas fa-building me-1"></i>{{ $prsChip?->nama_prs2 ?? $prsChip?->nama_prs1 }}
                                         <a href="{{ route('reports.ringkasan-siska.index', array_merge($currentFilters, ['filter_perusahaan' => ''])) }}"
                                             class="ms-1 text-inherit">×</a>
                                     </span>
@@ -162,7 +164,8 @@
                                 @if ($currentFilters['area'])
                                     @php $areaChip = $areaKerjaOptions->firstWhere('id', $currentFilters['area']); @endphp
                                     <span class="siska-chip siska-chip-cyan">
-                                        <i class="fas fa-map-marker-alt me-1"></i>{{ $areaChip?->area_krj ?? $currentFilters['area'] }}
+                                        <i
+                                            class="fas fa-map-marker-alt me-1"></i>{{ $areaChip?->area_krj ?? $currentFilters['area'] }}
                                         <a href="{{ route('reports.ringkasan-siska.index', array_merge($currentFilters, ['filter_area' => ''])) }}"
                                             class="ms-1 text-inherit">×</a>
                                     </span>
@@ -177,7 +180,8 @@
                                 @if ($currentFilters['kontrak'])
                                     @php $ktrChip = $kontrakOptions->find($currentFilters['kontrak']); @endphp
                                     <span class="siska-chip siska-chip-red">
-                                        <i class="fas fa-file-contract me-1"></i>{{ $ktrChip?->singkatan_ktr ?? $ktrChip?->kode_ktr }}
+                                        <i
+                                            class="fas fa-file-contract me-1"></i>{{ $ktrChip?->singkatan_ktr ?? $ktrChip?->kode_ktr }}
                                         <a href="{{ route('reports.ringkasan-siska.index', array_merge($currentFilters, ['filter_kontrak' => ''])) }}"
                                             class="ms-1 text-inherit">×</a>
                                     </span>
@@ -193,18 +197,60 @@
         <div class="row g-3 mb-4">
             @php
                 $stats = [
-                    ['icon'=>'fa-users',      'num'=>$totalKaryawan, 'lbl'=>'Total Karyawan', 'cls'=>'siska-stat-total',    'type'=>'status', 'val'=>''],
-                    ['icon'=>'fa-user-check', 'num'=>$statAktif,     'lbl'=>'Aktif',          'cls'=>'siska-stat-aktif',    'type'=>'status', 'val'=>'AKTIF'],
-                    ['icon'=>'fa-user-times', 'num'=>$statNonAktif,  'lbl'=>'Non-Aktif',      'cls'=>'siska-stat-nonaktif', 'type'=>'status', 'val'=>'NON-AKTIF'],
-                    ['icon'=>'fa-user-clock', 'num'=>$statCalon,     'lbl'=>'Calon',          'cls'=>'siska-stat-calon',   'type'=>'status', 'val'=>'CALON'],
-                    ['icon'=>'fa-mars',       'num'=>$statLakiLaki,  'lbl'=>'Laki-laki',      'cls'=>'siska-stat-laki',    'type'=>'gender', 'val'=>'LAKI-LAKI'],
-                    ['icon'=>'fa-venus',      'num'=>$statPerempuan, 'lbl'=>'Perempuan',      'cls'=>'siska-stat-perempuan','type'=>'gender', 'val'=>'PEREMPUAN'],
+                    [
+                        'icon' => 'fa-users',
+                        'num' => $totalKaryawan,
+                        'lbl' => 'Total Karyawan',
+                        'cls' => 'siska-stat-total',
+                        'type' => 'status',
+                        'val' => '',
+                    ],
+                    [
+                        'icon' => 'fa-user-check',
+                        'num' => $statAktif,
+                        'lbl' => 'Aktif',
+                        'cls' => 'siska-stat-aktif',
+                        'type' => 'status',
+                        'val' => 'AKTIF',
+                    ],
+                    [
+                        'icon' => 'fa-user-times',
+                        'num' => $statNonAktif,
+                        'lbl' => 'Non-Aktif',
+                        'cls' => 'siska-stat-nonaktif',
+                        'type' => 'status',
+                        'val' => 'NON-AKTIF',
+                    ],
+                    [
+                        'icon' => 'fa-user-clock',
+                        'num' => $statCalon,
+                        'lbl' => 'Calon',
+                        'cls' => 'siska-stat-calon',
+                        'type' => 'status',
+                        'val' => 'CALON',
+                    ],
+                    [
+                        'icon' => 'fa-mars',
+                        'num' => $statLakiLaki,
+                        'lbl' => 'Laki-laki',
+                        'cls' => 'siska-stat-laki',
+                        'type' => 'gender',
+                        'val' => 'LAKI-LAKI',
+                    ],
+                    [
+                        'icon' => 'fa-venus',
+                        'num' => $statPerempuan,
+                        'lbl' => 'Perempuan',
+                        'cls' => 'siska-stat-perempuan',
+                        'type' => 'gender',
+                        'val' => 'PEREMPUAN',
+                    ],
                 ];
             @endphp
             @foreach ($stats as $s)
                 <div class="col-6 col-md-2">
-                    <div class="siska-stat-card {{ $s['cls'] }} drill-trigger"
-                        data-type="{{ $s['type'] }}" data-value="{{ $s['val'] }}" data-label="{{ $s['lbl'] }}">
+                    <div class="siska-stat-card {{ $s['cls'] }} drill-trigger" data-type="{{ $s['type'] }}"
+                        data-value="{{ $s['val'] }}" data-label="{{ $s['lbl'] }}">
                         <div class="siska-stat-top">
                             <div class="siska-stat-icon"><i class="fas {{ $s['icon'] }}"></i></div>
                         </div>
@@ -258,8 +304,8 @@
                                                 </td>
                                                 @foreach ($allWilayah as $wNama)
                                                     @php $cnt = $row['wilayah'][$wNama] ?? 0; @endphp
-                                                    <td class="text-center siska-matrix-cell {{ $cnt > 0 ? 'has-data' : 'no-data' }}"
-                                                        @if ($cnt > 0) style="--heat:{{ round(($cnt / $maxVal) * 100) }}%" @endif>
+                                                    <td
+                                                        class="text-center siska-matrix-cell {{ $cnt > 0 ? 'has-data' : 'no-data' }}">
                                                         @if ($cnt > 0)
                                                             <span class="drill-trigger siska-matrix-num"
                                                                 data-type="dep_wilayah"
@@ -282,7 +328,8 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="{{ $allWilayah->count() + 2 }}" class="text-center text-muted py-3">
+                                                <td colspan="{{ $allWilayah->count() + 2 }}"
+                                                    class="text-center text-muted py-3">
                                                     Tidak ada data
                                                 </td>
                                             </tr>
@@ -306,7 +353,8 @@
                                                         @endif
                                                     </td>
                                                 @endforeach
-                                                <td class="text-center">{{ number_format($depWilayahMatrix->sum('total')) }}</td>
+                                                <td class="text-center">
+                                                    {{ number_format($depWilayahMatrix->sum('total')) }}</td>
                                             </tr>
                                         </tfoot>
                                     @endif
@@ -334,7 +382,8 @@
                                         <tr class="table-info">
                                             <th class="siska-matrix-dep-col">Departemen</th>
                                             @foreach ($allPT as $pt)
-                                                <th class="text-center" title="{{ $pt['nama'] }}">{{ $pt['singkatan'] }}</th>
+                                                <th class="text-center" title="{{ $pt['nama'] }}">
+                                                    {{ $pt['singkatan'] }}</th>
                                             @endforeach
                                             <th class="text-center siska-matrix-total-col">Total</th>
                                         </tr>
@@ -343,7 +392,7 @@
                                         @forelse($depPTMatrix as $row)
                                             @php
                                                 $ptVals = collect($row['pt'])->pluck('jumlah')->toArray();
-                                                $maxPT  = count($ptVals) ? max($ptVals ?: [1]) : 1;
+                                                $maxPT = count($ptVals) ? max($ptVals ?: [1]) : 1;
                                             @endphp
                                             <tr>
                                                 <td class="fw-semibold siska-matrix-dep-col">
@@ -355,11 +404,14 @@
                                                 </td>
                                                 @foreach ($allPT as $pt)
                                                     @php
-                                                        $cell = $row['pt'][$pt['singkatan']] ?? ['jumlah' => 0, 'id' => $pt['id']];
-                                                        $cnt  = $cell['jumlah'];
+                                                        $cell = $row['pt'][$pt['singkatan']] ?? [
+                                                            'jumlah' => 0,
+                                                            'id' => $pt['id'],
+                                                        ];
+                                                        $cnt = $cell['jumlah'];
                                                     @endphp
-                                                    <td class="text-center siska-matrix-cell {{ $cnt > 0 ? 'has-data' : 'no-data' }}"
-                                                        @if ($cnt > 0 && $maxPT > 0) style="--heat:{{ round(($cnt / $maxPT) * 100) }}%" @endif>
+                                                    <td
+                                                        class="text-center siska-matrix-cell {{ $cnt > 0 ? 'has-data' : 'no-data' }}">
                                                         @if ($cnt > 0)
                                                             <span class="drill-trigger siska-matrix-num"
                                                                 data-type="dep_pt"
@@ -382,7 +434,8 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="{{ $allPT->count() + 2 }}" class="text-center text-muted py-3">
+                                                <td colspan="{{ $allPT->count() + 2 }}"
+                                                    class="text-center text-muted py-3">
                                                     Tidak ada data
                                                 </td>
                                             </tr>
@@ -406,7 +459,8 @@
                                                         @endif
                                                     </td>
                                                 @endforeach
-                                                <td class="text-center">{{ number_format($depPTMatrix->sum('total')) }}</td>
+                                                <td class="text-center">{{ number_format($depPTMatrix->sum('total')) }}
+                                                </td>
                                             </tr>
                                         </tfoot>
                                     @endif
@@ -449,7 +503,8 @@
                                             </td>
                                             <td><small>{{ $item['bidang'] }}</small></td>
                                             <td class="text-end">
-                                                <span class="siska-num-badge bg-primary">{{ number_format($item['jumlah']) }}</span>
+                                                <span
+                                                    class="siska-num-badge bg-primary">{{ number_format($item['jumlah']) }}</span>
                                             </td>
                                             <td class="text-end">
                                                 <span class="badge bg-primary bg-opacity-75">
@@ -458,7 +513,9 @@
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="4" class="text-center text-muted py-3">Tidak ada data</td></tr>
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-3">Tidak ada data</td>
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -489,7 +546,8 @@
                                             data-value="{{ $item['label'] }}" data-label="{{ $item['label'] }}">
                                             <td>{{ $item['label'] }}</td>
                                             <td class="text-end">
-                                                <span class="siska-num-badge bg-success">{{ number_format($item['jumlah']) }}</span>
+                                                <span
+                                                    class="siska-num-badge bg-success">{{ number_format($item['jumlah']) }}</span>
                                             </td>
                                             <td class="text-end">
                                                 <span class="badge bg-success bg-opacity-75">
@@ -498,7 +556,9 @@
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="3" class="text-center text-muted py-3">Tidak ada data</td></tr>
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted py-3">Tidak ada data</td>
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -533,7 +593,8 @@
                                             data-value="{{ $item['label'] }}" data-label="{{ $item['label'] }}">
                                             <td class="fw-semibold">{{ $item['label'] }}</td>
                                             <td class="text-end">
-                                                <span class="siska-num-badge" style="background:#4c6ef5">{{ number_format($item['jumlah']) }}</span>
+                                                <span class="siska-num-badge"
+                                                    style="background:#4c6ef5">{{ number_format($item['jumlah']) }}</span>
                                             </td>
                                             <td class="text-end">
                                                 <span class="badge" style="background:#4c6ef5">
@@ -542,7 +603,9 @@
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="3" class="text-center text-muted py-3">Tidak ada data</td></tr>
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted py-3">Tidak ada data</td>
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -574,11 +637,14 @@
                                             <td class="fw-semibold">{{ $item['label'] }}</td>
                                             <td><small class="text-muted">{{ $item['wilayah'] }}</small></td>
                                             <td class="text-end">
-                                                <span class="siska-num-badge" style="background:#0891b2">{{ number_format($item['jumlah']) }}</span>
+                                                <span class="siska-num-badge"
+                                                    style="background:#0891b2">{{ number_format($item['jumlah']) }}</span>
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="3" class="text-center text-muted py-3">Tidak ada data</td></tr>
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted py-3">Tidak ada data</td>
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -595,7 +661,8 @@
                     <div class="card-header siska-section-header"
                         style="background:linear-gradient(135deg,#b45309 0%,#d97706 100%);color:#fff;">
                         <i class="fas fa-layer-group me-2" style="opacity:.85;"></i>Per Departemen
-                        <small class="ms-2" style="opacity:.7;font-weight:400;">(klik <i class="fas fa-sitemap"></i> untuk lihat jabatan)</small>
+                        <small class="ms-2" style="opacity:.7;font-weight:400;">(klik <i class="fas fa-sitemap"></i>
+                            untuk lihat jabatan)</small>
                     </div>
                     <div class="card-body">
                         <canvas id="chartDepartemen" height="230"></canvas>
@@ -641,7 +708,9 @@
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="4" class="text-center text-muted py-3">Tidak ada data</td></tr>
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-3">Tidak ada data</td>
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -677,7 +746,8 @@
                                                     <small>{{ $item['label'] }}</small>
                                                 </td>
                                                 <td class="text-end">
-                                                    <span class="siska-num-badge bg-danger">{{ number_format($item['jumlah']) }}</span>
+                                                    <span
+                                                        class="siska-num-badge bg-danger">{{ number_format($item['jumlah']) }}</span>
                                                 </td>
                                                 <td class="text-end">
                                                     <span class="badge bg-danger bg-opacity-75">
@@ -686,7 +756,9 @@
                                                 </td>
                                             </tr>
                                         @empty
-                                            <tr><td colspan="3" class="text-center text-muted py-3">Tidak ada data</td></tr>
+                                            <tr>
+                                                <td colspan="3" class="text-center text-muted py-3">Tidak ada data</td>
+                                            </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
@@ -734,7 +806,8 @@
                 <div class="modal-header siska-modal-header">
                     <div class="d-flex flex-column">
                         <h5 class="modal-title mb-0" id="drillModalTitle">Detail Karyawan</h5>
-                        <small id="drillModalSubtitle" style="color:rgba(255,255,255,.7);font-size:.75rem;margin-top:2px;"></small>
+                        <small id="drillModalSubtitle"
+                            style="color:rgba(255,255,255,.7);font-size:.75rem;margin-top:2px;"></small>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -744,7 +817,8 @@
                         <div class="mt-2 text-muted small">Memuat data karyawan...</div>
                     </div>
                     <div id="drillContent" style="display:none;">
-                        <div class="px-3 pt-2 pb-2 d-flex justify-content-between align-items-center border-bottom" style="background:#f8fafc;">
+                        <div class="px-3 pt-2 pb-2 d-flex justify-content-between align-items-center border-bottom"
+                            style="background:#f8fafc;">
                             <div class="d-flex align-items-center gap-2">
                                 <i class="fas fa-search" style="color:#94a3b8;font-size:.8rem;"></i>
                                 <input type="text" id="drillSearch"
@@ -752,7 +826,8 @@
                                     placeholder="Cari nama, NRK, jabatan, departemen..."
                                     style="width:280px;box-shadow:none;font-size:.83rem;">
                             </div>
-                            <span id="drillCount" class="badge" style="background:#e2e8f0;color:#475569;font-weight:600;font-size:.72rem;"></span>
+                            <span id="drillCount" class="badge"
+                                style="background:#e2e8f0;color:#475569;font-weight:600;font-size:.72rem;"></span>
                         </div>
                         <div class="table-responsive" style="max-height:460px;">
                             <table class="table table-sm table-hover table-striped mb-0" id="drillTable">
@@ -779,7 +854,8 @@
                         <i class="fas fa-inbox fa-2x mb-2 d-block"></i>Tidak ada data karyawan
                     </div>
                 </div>
-                <div class="modal-footer justify-content-between py-2" style="background:#f8fafc;border-top:1px solid #e2e8f0;">
+                <div class="modal-footer justify-content-between py-2"
+                    style="background:#f8fafc;border-top:1px solid #e2e8f0;">
                     <small class="text-muted" id="drillFooterInfo" style="font-size:.75rem;"></small>
                     <button type="button" class="btn btn-sm px-4"
                         style="background:#1a6fcf;color:#fff;border:none;border-radius:6px;"
@@ -823,7 +899,8 @@
                         </table>
                     </div>
                 </div>
-                <div class="modal-footer justify-content-between py-2" style="background:#f8fafc;border-top:1px solid #e2e8f0;">
+                <div class="modal-footer justify-content-between py-2"
+                    style="background:#f8fafc;border-top:1px solid #e2e8f0;">
                     <small class="text-muted" id="jabatanFooterInfo" style="font-size:.75rem;"></small>
                     <button type="button" class="btn btn-sm px-4"
                         style="background:#7c3aed;color:#fff;border:none;border-radius:6px;"
@@ -836,316 +913,798 @@
 @endsection
 
 @push('styles')
-<style>
-    .ringkasan-siska-page {
-        --sk-blue: #1a6fcf; --sk-teal: #0d9488; --sk-indigo: #4c6ef5;
-        --sk-cyan: #0891b2; --sk-orange: #d97706; --sk-red: #dc2626;
-        --sk-purple: #7c3aed; --sk-green: #059669;
-        font-family: 'Segoe UI', sans-serif;
-    }
-    .siska-title { font-size:1.3rem; font-weight:700; color:#1e293b; letter-spacing:-.3px; }
-    .siska-badge-total { background:#1e293b; color:#fff; border-radius:8px; }
-    .siska-filter-card { border:none; border-left:4px solid var(--sk-blue); border-radius:8px; }
-    .siska-label { font-size:.73rem; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px; }
-    .siska-chip { display:inline-flex; align-items:center; padding:3px 10px; border-radius:12px; font-size:.75rem; font-weight:600; }
-    .siska-chip a { text-decoration:none; opacity:.7; }
-    .siska-chip a:hover { opacity:1; }
-    .siska-chip-orange { background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; }
-    .siska-chip-blue   { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
-    .siska-chip-indigo { background:#eef2ff; color:#4338ca; border:1px solid #c7d2fe; }
-    .siska-chip-cyan   { background:#ecfeff; color:#0e7490; border:1px solid #a5f3fc; }
-    .siska-chip-green  { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
-    .siska-chip-red    { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
-    /* Stat cards */
-    .siska-stat-card { border-radius:12px; padding:1.1rem 1rem; color:#fff; cursor:pointer; min-height:100px; display:flex; flex-direction:column; justify-content:space-between; transition:transform .18s, box-shadow .18s; position:relative; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.12); }
-    .siska-stat-card::before { content:''; position:absolute; top:-18px; right:-18px; width:70px; height:70px; border-radius:50%; background:rgba(255,255,255,.1); }
-    .siska-stat-card::after  { content:''; position:absolute; bottom:-28px; right:10px; width:90px; height:90px; border-radius:50%; background:rgba(255,255,255,.07); }
-    .siska-stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 22px rgba(0,0,0,.2); }
-    .siska-stat-icon { font-size:1.25rem; opacity:.75; background:rgba(255,255,255,.15); width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
-    .siska-stat-num  { font-size:2rem; font-weight:800; line-height:1; letter-spacing:-1px; margin-top:.35rem; }
-    .siska-stat-lbl  { font-size:.72rem; font-weight:500; opacity:.85; margin-top:.2rem; }
-    .siska-stat-hint { font-size:.62rem; opacity:0; transition:opacity .2s; margin-top:.15rem; }
-    .siska-stat-card:hover .siska-stat-hint { opacity:.75; }
-    .siska-stat-total    { background:linear-gradient(145deg,#1e293b,#334155); }
-    .siska-stat-aktif    { background:linear-gradient(145deg,#047857,#10b981); }
-    .siska-stat-nonaktif { background:linear-gradient(145deg,#b91c1c,#ef4444); }
-    .siska-stat-calon    { background:linear-gradient(145deg,#b45309,#f59e0b); }
-    .siska-stat-laki     { background:linear-gradient(145deg,#1d4ed8,#3b82f6); }
-    .siska-stat-perempuan{ background:linear-gradient(145deg,#7e22ce,#a855f7); }
-    /* Section cards */
-    .siska-section-card { border:1px solid #e9eef5 !important; border-radius:12px !important; overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.04); }
-    .siska-section-card.flush-table>.card-body { padding:0 !important; }
-    .siska-section-header { font-weight:600; font-size:.875rem; padding:.7rem 1.1rem; color:#fff; letter-spacing:.1px; }
-    /* Tables */
-    .siska-table-mini { max-height:200px; overflow-y:auto; }
-    .siska-table-mini::-webkit-scrollbar { width:4px; }
-    .siska-table-mini::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:4px; }
-    .siska-row-clickable { cursor:pointer; }
-    .siska-row-clickable:hover { background:#f0f4ff !important; }
-    .siska-link { cursor:pointer; color:inherit; text-decoration:underline; text-underline-offset:3px; }
-    .siska-link:hover { color:var(--sk-blue); }
-    .siska-num-badge { display:inline-block; color:#fff; padding:2px 10px; border-radius:12px; font-weight:700; font-size:.82rem; cursor:pointer; transition:transform .15s; }
-    .siska-num-badge:hover { transform:scale(1.1); }
-    .siska-dep-badge { background:#f1f5f9; color:#475569; font-size:.65rem; padding:2px 6px; border-radius:4px; }
-    .siska-ktr-badge { background:#fef2f2; color:#991b1b; font-size:.65rem; padding:2px 6px; border-radius:4px; }
-    /* Matrix */
-    .siska-matrix-table   { font-size:.82rem; }
-    .siska-matrix-dep-col { min-width:160px; background:#f8fafc; }
-    .siska-matrix-total-col { min-width:80px; background:#f0f4ff; }
-    .siska-matrix-cell    { padding:6px 10px !important; vertical-align:middle; }
-    .siska-matrix-cell.has-data { background-color:color-mix(in srgb,#3b82f6 calc(var(--heat,0) * 0.35),transparent); }
-    .siska-matrix-cell.no-data  { background:#fafafa; }
-    .siska-matrix-num { cursor:pointer; font-weight:700; color:#1e40af; font-size:.82rem; }
-    .siska-matrix-num:hover { text-decoration:underline; color:#1d4ed8; }
-    /* Jabatan */
-    .siska-jabatan-list { padding:.4rem 0; }
-    .siska-jabatan-row  { display:flex; align-items:center; gap:10px; padding:.4rem 1rem; border-bottom:1px solid #f1f5f9; cursor:pointer; transition:background .15s; }
-    .siska-jabatan-row:last-child { border-bottom:none; }
-    .siska-jabatan-row:hover { background:#f5f0ff; }
-    .siska-jabatan-rank { width:22px; height:22px; background:var(--sk-purple); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.68rem; font-weight:700; flex-shrink:0; }
-    .siska-jabatan-info { min-width:130px; flex:0 0 auto; }
-    .siska-jabatan-info .fw-semibold { font-size:.82rem; }
-    .siska-jabatan-bar-wrap { flex:1; height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden; }
-    .siska-jabatan-bar { height:100%; background:linear-gradient(90deg,#7c3aed,#c084fc); border-radius:4px; transition:width .8s ease; }
-    .siska-jabatan-count { font-size:.82rem; font-weight:700; color:#374151; min-width:32px; text-align:right; }
-    /* Modal */
-    #drillModal .modal-header, .siska-modal-header     { background:var(--sk-blue)   !important; color:#fff !important; border-bottom:none !important; padding:.9rem 1.25rem !important; }
-    #jabatanModal .modal-header, .siska-modal-header-purple { background:var(--sk-purple) !important; color:#fff !important; border-bottom:none !important; padding:.9rem 1.25rem !important; }
-    #drillModal .modal-title, #jabatanModal .modal-title { color:#fff !important; font-size:1rem; font-weight:700; }
-    #drillTable tbody tr td { padding:.55rem .75rem !important; vertical-align:middle; font-size:.82rem; }
-    #drillTable thead th   { font-size:.75rem; padding:.55rem .75rem !important; font-weight:600; letter-spacing:.3px; }
-    #drillTable tbody tr:hover { background:#f0f4ff !important; }
-    .siska-btn-jabatan { background:#f0eaff; border:none; color:#7c3aed; border-radius:6px; padding:2px 7px; font-size:.7rem; transition:all .15s; }
-    .siska-btn-jabatan:hover { background:#7c3aed; color:#fff; }
-    .btn-xs { padding:.15rem .4rem; font-size:.72rem; }
-    .sts-aktif    { background:#d1fae5; color:#065f46; padding:2px 8px; border-radius:10px; font-size:.72rem; font-weight:600; }
-    .sts-nonaktif { background:#fee2e2; color:#991b1b; padding:2px 8px; border-radius:10px; font-size:.72rem; font-weight:600; }
-    .sts-calon    { background:#fef3c7; color:#92400e; padding:2px 8px; border-radius:10px; font-size:.72rem; font-weight:600; }
-    @media(max-width:768px) { .siska-stat-num { font-size:1.4rem; } .siska-jabatan-info { min-width:80px; } }
-</style>
+    <style>
+        .ringkasan-siska-page {
+            --sk-blue: #1a6fcf;
+            --sk-teal: #0d9488;
+            --sk-indigo: #4c6ef5;
+            --sk-cyan: #0891b2;
+            --sk-orange: #d97706;
+            --sk-red: #dc2626;
+            --sk-purple: #7c3aed;
+            --sk-green: #059669;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .siska-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: -.3px;
+        }
+
+        .siska-badge-total {
+            background: #1e293b;
+            color: #fff;
+            border-radius: 8px;
+        }
+
+        .siska-filter-card {
+            border: none;
+            border-left: 4px solid var(--sk-blue);
+            border-radius: 8px;
+        }
+
+        .siska-label {
+            font-size: .73rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 4px;
+        }
+
+        .siska-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+        .siska-chip a {
+            text-decoration: none;
+            opacity: .7;
+        }
+
+        .siska-chip a:hover {
+            opacity: 1;
+        }
+
+        .siska-chip-orange {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .siska-chip-blue {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .siska-chip-indigo {
+            background: #eef2ff;
+            color: #4338ca;
+            border: 1px solid #c7d2fe;
+        }
+
+        .siska-chip-cyan {
+            background: #ecfeff;
+            color: #0e7490;
+            border: 1px solid #a5f3fc;
+        }
+
+        .siska-chip-green {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .siska-chip-red {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Stat cards */
+        .siska-stat-card {
+            border-radius: 12px;
+            padding: 1.1rem 1rem;
+            color: #fff;
+            cursor: pointer;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform .18s, box-shadow .18s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+        }
+
+        .siska-stat-card::before {
+            content: '';
+            position: absolute;
+            top: -18px;
+            right: -18px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .siska-stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: -28px;
+            right: 10px;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .07);
+        }
+
+        .siska-stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, .2);
+        }
+
+        .siska-stat-icon {
+            font-size: 1.25rem;
+            opacity: .75;
+            background: rgba(255, 255, 255, .15);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .siska-stat-num {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -1px;
+            margin-top: .35rem;
+        }
+
+        .siska-stat-lbl {
+            font-size: .72rem;
+            font-weight: 500;
+            opacity: .85;
+            margin-top: .2rem;
+        }
+
+        .siska-stat-hint {
+            font-size: .62rem;
+            opacity: 0;
+            transition: opacity .2s;
+            margin-top: .15rem;
+        }
+
+        .siska-stat-card:hover .siska-stat-hint {
+            opacity: .75;
+        }
+
+        .siska-stat-total {
+            background: linear-gradient(145deg, #1e293b, #334155);
+        }
+
+        .siska-stat-aktif {
+            background: linear-gradient(145deg, #047857, #10b981);
+        }
+
+        .siska-stat-nonaktif {
+            background: linear-gradient(145deg, #b91c1c, #ef4444);
+        }
+
+        .siska-stat-calon {
+            background: linear-gradient(145deg, #b45309, #f59e0b);
+        }
+
+        .siska-stat-laki {
+            background: linear-gradient(145deg, #1d4ed8, #3b82f6);
+        }
+
+        .siska-stat-perempuan {
+            background: linear-gradient(145deg, #7e22ce, #a855f7);
+        }
+
+        /* Section cards */
+        .siska-section-card {
+            border: 1px solid #e9eef5 !important;
+            border-radius: 12px !important;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, .06), 0 4px 14px rgba(0, 0, 0, .04);
+        }
+
+        .siska-section-card.flush-table>.card-body {
+            padding: 0 !important;
+        }
+
+        .siska-section-header {
+            font-weight: 600;
+            font-size: .875rem;
+            padding: .7rem 1.1rem;
+            color: #fff;
+            letter-spacing: .1px;
+        }
+
+        /* Tables */
+        .siska-table-mini {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .siska-table-mini::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .siska-table-mini::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .siska-row-clickable {
+            cursor: pointer;
+        }
+
+        .siska-row-clickable:hover {
+            background: #f0f4ff !important;
+        }
+
+        .siska-link {
+            cursor: pointer;
+            color: inherit;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .siska-link:hover {
+            color: var(--sk-blue);
+        }
+
+        .siska-num-badge {
+            display: inline-block;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: .82rem;
+            cursor: pointer;
+            transition: transform .15s;
+        }
+
+        .siska-num-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .siska-dep-badge {
+            background: #f1f5f9;
+            color: #475569;
+            font-size: .65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .siska-ktr-badge {
+            background: #fef2f2;
+            color: #991b1b;
+            font-size: .65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Matrix */
+        .siska-matrix-table {
+            font-size: .82rem;
+        }
+
+        .siska-matrix-dep-col {
+            min-width: 160px;
+            background: #f8fafc;
+        }
+
+        .siska-matrix-total-col {
+            min-width: 80px;
+            background: #f0f4ff;
+        }
+
+        .siska-matrix-cell {
+            padding: 6px 10px !important;
+            vertical-align: middle;
+        }
+
+        .siska-matrix-cell.no-data {
+            background: #fafafa;
+        }
+
+        .siska-matrix-num {
+            cursor: pointer;
+            font-weight: 700;
+            color: #1e40af;
+            font-size: .82rem;
+        }
+
+        .siska-matrix-num:hover {
+            text-decoration: underline;
+            color: #1d4ed8;
+        }
+
+        /* Jabatan */
+        .siska-jabatan-list {
+            padding: .4rem 0;
+        }
+
+        .siska-jabatan-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: .4rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .siska-jabatan-row:last-child {
+            border-bottom: none;
+        }
+
+        .siska-jabatan-row:hover {
+            background: #f5f0ff;
+        }
+
+        .siska-jabatan-rank {
+            width: 22px;
+            height: 22px;
+            background: var(--sk-purple);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .68rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .siska-jabatan-info {
+            min-width: 130px;
+            flex: 0 0 auto;
+        }
+
+        .siska-jabatan-info .fw-semibold {
+            font-size: .82rem;
+        }
+
+        .siska-jabatan-bar-wrap {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .siska-jabatan-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #c084fc);
+            border-radius: 4px;
+            transition: width .8s ease;
+        }
+
+        .siska-jabatan-count {
+            font-size: .82rem;
+            font-weight: 700;
+            color: #374151;
+            min-width: 32px;
+            text-align: right;
+        }
+
+        /* Modal */
+        #drillModal .modal-header,
+        .siska-modal-header {
+            background: var(--sk-blue) !important;
+            color: #fff !important;
+            border-bottom: none !important;
+            padding: .9rem 1.25rem !important;
+        }
+
+        #jabatanModal .modal-header,
+        .siska-modal-header-purple {
+            background: var(--sk-purple) !important;
+            color: #fff !important;
+            border-bottom: none !important;
+            padding: .9rem 1.25rem !important;
+        }
+
+        #drillModal .modal-title,
+        #jabatanModal .modal-title {
+            color: #fff !important;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        #drillTable tbody tr td {
+            padding: .55rem .75rem !important;
+            vertical-align: middle;
+            font-size: .82rem;
+        }
+
+        #drillTable thead th {
+            font-size: .75rem;
+            padding: .55rem .75rem !important;
+            font-weight: 600;
+            letter-spacing: .3px;
+        }
+
+        #drillTable tbody tr:hover {
+            background: #f0f4ff !important;
+        }
+
+        .siska-btn-jabatan {
+            background: #f0eaff;
+            border: none;
+            color: #7c3aed;
+            border-radius: 6px;
+            padding: 2px 7px;
+            font-size: .7rem;
+            transition: all .15s;
+        }
+
+        .siska-btn-jabatan:hover {
+            background: #7c3aed;
+            color: #fff;
+        }
+
+        .btn-xs {
+            padding: .15rem .4rem;
+            font-size: .72rem;
+        }
+
+        .sts-aktif {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: .72rem;
+            font-weight: 600;
+        }
+
+        .sts-nonaktif {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: .72rem;
+            font-weight: 600;
+        }
+
+        .sts-calon {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: .72rem;
+            font-weight: 600;
+        }
+
+        @media(max-width:768px) {
+            .siska-stat-num {
+                font-size: 1.4rem;
+            }
+
+            .siska-jabatan-info {
+                min-width: 80px;
+            }
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-    const DETAIL_URL  = '{{ route('reports.ringkasan-siska.detail') }}';
-    const JABATAN_URL = '{{ route('reports.ringkasan-siska.jabatan', ':dep') }}';
-    const AREA_URL    = '{{ route('reports.ringkasan-siska.area-by-wilker') }}';
+            const DETAIL_URL = '{{ route('reports.ringkasan-siska.detail') }}';
+            const JABATAN_URL = '{{ route('reports.ringkasan-siska.jabatan', ':dep') }}';
+            const AREA_URL = '{{ route('reports.ringkasan-siska.area-by-wilker') }}';
 
-    const filterEl = document.getElementById('activeFilters');
-    const gFilters = {
-        filter_perusahaan : filterEl.dataset.filterPerusahaan || '',
-        filter_wilker     : filterEl.dataset.filterWilker     || '',
-        filter_area       : filterEl.dataset.filterArea       || '',
-        filter_status     : filterEl.dataset.filterStatus     || '',
-        filter_kontrak    : filterEl.dataset.filterKontrak    || '',
-        filter_departemen : filterEl.dataset.filterDepartemen || '',
-    };
+            const filterEl = document.getElementById('activeFilters');
+            const gFilters = {
+                filter_perusahaan: filterEl.dataset.filterPerusahaan || '',
+                filter_wilker: filterEl.dataset.filterWilker || '',
+                filter_area: filterEl.dataset.filterArea || '',
+                filter_status: filterEl.dataset.filterStatus || '',
+                filter_kontrak: filterEl.dataset.filterKontrak || '',
+                filter_departemen: filterEl.dataset.filterDepartemen || '',
+            };
 
-    // ---- Dropdown Area Kerja: dinamis saat Wilayah Kerja berubah ----
-    const filterWilker = document.getElementById('filterWilker');
-    const filterArea   = document.getElementById('filterArea');
-    if (filterWilker && filterArea) {
-        filterWilker.addEventListener('change', function () {
-            const wilker = this.value;
-            const params = wilker ? '?wilker=' + encodeURIComponent(wilker) : '';
-            fetch(AREA_URL + params)
-                .then(r => r.json())
-                .then(data => {
-                    filterArea.innerHTML = '<option value="">— Semua Area —</option>';
-                    data.forEach(function (ak) {
-                        const label = ak.area_krj + (ak.singkatan_wk ? ' (' + ak.singkatan_wk + ')' : '');
-                        filterArea.innerHTML += `<option value="${ak.id}">${label}</option>`;
-                    });
+            // ---- Dropdown Area Kerja: dinamis saat Wilayah Kerja berubah ----
+            const filterWilker = document.getElementById('filterWilker');
+            const filterArea = document.getElementById('filterArea');
+            if (filterWilker && filterArea) {
+                filterWilker.addEventListener('change', function() {
+                    const wilker = this.value;
+                    const params = wilker ? '?wilker=' + encodeURIComponent(wilker) : '';
+                    fetch(AREA_URL + params)
+                        .then(r => r.json())
+                        .then(data => {
+                            filterArea.innerHTML = '<option value="">— Semua Area —</option>';
+                            data.forEach(function(ak) {
+                                const label = ak.area_krj + (ak.singkatan_wk ? ' (' + ak
+                                    .singkatan_wk + ')' : '');
+                                filterArea.innerHTML +=
+                                    `<option value="${ak.id}">${label}</option>`;
+                            });
+                        });
                 });
-        });
-    }
-
-    /* ---- Chart helpers ---- */
-    const PAL = ['#1a6fcf','#0d9488','#4c6ef5','#0891b2','#d97706','#dc2626',
-                 '#7c3aed','#059669','#f59e0b','#6366f1','#14b8a6','#ec4899'];
-    Chart.defaults.font.family = "'Segoe UI',sans-serif";
-    Chart.defaults.font.size   = 11;
-    Chart.defaults.color       = '#64748b';
-
-    const TTP = {
-        backgroundColor: '#1e293b',
-        padding: 10,
-        cornerRadius: 6,
-        callbacks: {
-            label: c => {
-                // Bar chart: c.parsed.y (vertical) or c.parsed.x (horizontal)
-                // Pie/doughnut: c.parsed
-                const v = typeof c.parsed === 'object'
-                    ? (c.parsed.y ?? c.parsed.x ?? c.parsed)
-                    : c.parsed;
-                return ` ${c.label}: ${Number(v || 0).toLocaleString('id-ID')} karyawan`;
             }
-        }
-    };
 
-    function mkBar(id, labels, data, horiz, color, onClickFn) {
-        const ctx = document.getElementById(id);
-        if (!ctx) return null;
-        return new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels,
-                datasets: [{
-                    label: 'Karyawan',
-                    data,
-                    backgroundColor: color || data.map((_, i) => PAL[i % PAL.length]),
-                    borderRadius: 5,
-                }]
-            },
-            options: {
-                indexAxis: horiz ? 'y' : 'x',
-                responsive: true,
-                plugins: { legend: { display: false }, tooltip: TTP },
-                scales: {
-                    x: { grid: { color: horiz ? '#f1f5f9' : 'transparent' }, ticks: { maxRotation: 30 } },
-                    y: { grid: { color: horiz ? 'transparent' : '#f1f5f9' } },
+            /* ---- Chart helpers ---- */
+            const PAL = ['#1a6fcf', '#0d9488', '#4c6ef5', '#0891b2', '#d97706', '#dc2626',
+                '#7c3aed', '#059669', '#f59e0b', '#6366f1', '#14b8a6', '#ec4899'
+            ];
+            Chart.defaults.font.family = "'Segoe UI',sans-serif";
+            Chart.defaults.font.size = 11;
+            Chart.defaults.color = '#64748b';
+
+            const TTP = {
+                backgroundColor: '#1e293b',
+                padding: 10,
+                cornerRadius: 6,
+                callbacks: {
+                    label: c => {
+                        // Bar chart: c.parsed.y (vertical) or c.parsed.x (horizontal)
+                        // Pie/doughnut: c.parsed
+                        const v = typeof c.parsed === 'object' ?
+                            (c.parsed.y ?? c.parsed.x ?? c.parsed) :
+                            c.parsed;
+                        return ` ${c.label}: ${Number(v || 0).toLocaleString('id-ID')} karyawan`;
+                    }
+                }
+            };
+
+            function mkBar(id, labels, data, horiz, color, onClickFn) {
+                const ctx = document.getElementById(id);
+                if (!ctx) return null;
+                return new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Karyawan',
+                            data,
+                            backgroundColor: color || data.map((_, i) => PAL[i % PAL.length]),
+                            borderRadius: 5,
+                        }]
+                    },
+                    options: {
+                        indexAxis: horiz ? 'y' : 'x',
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: TTP
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: horiz ? '#f1f5f9' : 'transparent'
+                                },
+                                ticks: {
+                                    maxRotation: 30
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: horiz ? 'transparent' : '#f1f5f9'
+                                }
+                            },
+                        },
+                        onClick: (e, els) => {
+                            if (els.length && onClickFn) onClickFn(els[0].index);
+                        }
+                    }
+                });
+            }
+
+            /* ---- Build Charts ----
+               PENTING: $perPT dll adalah Collection of arrays, bukan objects.
+               Kita output sebagai JSON array-of-objects lalu map di JS. */
+            const perPTData = @json($perPT->values());
+            const perBUData = @json($perBidangUsaha->values());
+            const perPCData = @json($perPusatCabang->values());
+            const perUKData = @json($perUnitKerja->values());
+            const perDepData = @json($perDepartemen->values());
+            const perKtrData = @json($perKontrak->values());
+
+            // Per PT
+            mkBar('chartPerPT',
+                perPTData.map(r => r.singkatan),
+                perPTData.map(r => r.jumlah),
+                true, null,
+                i => openDrill('pt', perPTData[i].id, perPTData[i].label)
+            );
+
+            // Bidang Usaha (doughnut)
+            new Chart(document.getElementById('chartBidangUsaha'), {
+                type: 'doughnut',
+                data: {
+                    labels: perBUData.map(r => r.label),
+                    datasets: [{
+                        data: perBUData.map(r => r.jumlah),
+                        backgroundColor: PAL,
+                        borderWidth: 2,
+                        borderColor: '#fff',
+                        hoverOffset: 8
+                    }]
                 },
-                onClick: (e, els) => { if (els.length && onClickFn) onClickFn(els[0].index); }
-            }
-        });
-    }
-
-    /* ---- Build Charts ----
-       PENTING: $perPT dll adalah Collection of arrays, bukan objects.
-       Kita output sebagai JSON array-of-objects lalu map di JS. */
-    const perPTData      = @json($perPT->values());
-    const perBUData      = @json($perBidangUsaha->values());
-    const perPCData      = @json($perPusatCabang->values());
-    const perUKData      = @json($perUnitKerja->values());
-    const perDepData     = @json($perDepartemen->values());
-    const perKtrData     = @json($perKontrak->values());
-
-    // Per PT
-    mkBar('chartPerPT',
-        perPTData.map(r => r.singkatan),
-        perPTData.map(r => r.jumlah),
-        true, null,
-        i => openDrill('pt', perPTData[i].id, perPTData[i].label)
-    );
-
-    // Bidang Usaha (doughnut)
-    new Chart(document.getElementById('chartBidangUsaha'), {
-        type: 'doughnut',
-        data: {
-            labels: perBUData.map(r => r.label),
-            datasets: [{ data: perBUData.map(r => r.jumlah), backgroundColor: PAL, borderWidth: 2, borderColor: '#fff', hoverOffset: 8 }]
-        },
-        options: {
-            cutout: '60%', responsive: true,
-            plugins: {
-                tooltip: TTP,
-                legend: { position: 'bottom', labels: { padding: 10, boxWidth: 12 } }
-            },
-            onClick: (e, els) => { if (els.length) openDrill('bidang', perBUData[els[0].index].label, perBUData[els[0].index].label); }
-        }
-    });
-
-    // Wilayah Kerja (pie)
-    new Chart(document.getElementById('chartPusatCabang'), {
-        type: 'pie',
-        data: {
-            labels: perPCData.map(r => r.label),
-            datasets: [{ data: perPCData.map(r => r.jumlah), backgroundColor: ['#4c6ef5','#6366f1','#818cf8','#a5b4fc','#c7d2fe'], borderWidth: 2, borderColor: '#fff', hoverOffset: 8 }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                tooltip: TTP,
-                legend: { position: 'bottom', labels: { padding: 10, boxWidth: 12 } }
-            },
-            onClick: (e, els) => { if (els.length) openDrill('wilker', perPCData[els[0].index].label, perPCData[els[0].index].label); }
-        }
-    });
-
-    // Area Kerja (bar)
-    mkBar('chartUnitKerja',
-        perUKData.map(r => r.label),
-        perUKData.map(r => r.jumlah),
-        false, '#0891b2',
-        i => openDrill('unit_kerja', perUKData[i].id, perUKData[i].label)
-    );
-
-    // Departemen (bar)
-    mkBar('chartDepartemen',
-        perDepData.map(r => r.singkatan),
-        perDepData.map(r => r.jumlah),
-        true, null,
-        i => openDrill('departemen', perDepData[i].label, 'Departemen: ' + perDepData[i].label)
-    );
-
-    // Kontrak (doughnut)
-    new Chart(document.getElementById('chartKontrak'), {
-        type: 'doughnut',
-        data: {
-            labels: perKtrData.map(r => r.kode),
-            datasets: [{ data: perKtrData.map(r => r.jumlah), backgroundColor: ['#dc2626','#d97706','#059669','#1a6fcf','#7c3aed'], borderWidth: 2, borderColor: '#fff', hoverOffset: 8 }]
-        },
-        options: {
-            cutout: '55%', responsive: true,
-            plugins: {
-                tooltip: TTP,
-                legend: { position: 'bottom', labels: { padding: 10, boxWidth: 12 } }
-            },
-            onClick: (e, els) => {
-                if (!els.length) return;
-                const r = perKtrData[els[0].index];
-                openDrill('kontrak', r.id, 'Kontrak: ' + r.label);
-            }
-        }
-    });
-
-    /* ---- Delegation ---- */
-    document.addEventListener('click', function (e) {
-        const dt = e.target.closest('.drill-trigger');
-        if (dt) { e.stopPropagation(); openDrill(dt.dataset.type, dt.dataset.value, dt.dataset.label); return; }
-        const bj = e.target.closest('.siska-btn-jabatan');
-        if (bj) { e.stopPropagation(); openJabatan(bj.dataset.namaDep); }
-    });
-
-    /* ---- DRILL MODAL ---- */
-    function openDrill(type, value, label) {
-        const modal = new bootstrap.Modal(document.getElementById('drillModal'));
-        document.getElementById('drillModalTitle').textContent    = label || 'Detail Karyawan';
-        document.getElementById('drillModalSubtitle').textContent = '';
-        document.getElementById('drillLoading').style.display     = 'block';
-        document.getElementById('drillContent').style.display     = 'none';
-        document.getElementById('drillEmpty').style.display       = 'none';
-        document.getElementById('drillSearch').value              = '';
-        modal.show();
-
-        const params = new URLSearchParams({ type, value, ...gFilters });
-        fetch(DETAIL_URL + '?' + params)
-            .then(r => r.json())
-            .then(res => {
-                document.getElementById('drillLoading').style.display = 'none';
-                document.getElementById('drillModalSubtitle').textContent = res.total + ' karyawan';
-                document.getElementById('drillFooterInfo').textContent    = 'Total: ' + res.total.toLocaleString('id-ID') + ' karyawan';
-                document.getElementById('drillCount').textContent         = res.total + ' karyawan';
-                if (!res.data?.length) { document.getElementById('drillEmpty').style.display = 'block'; return; }
-                renderDrillRows(res.data);
-                document.getElementById('drillContent').style.display = 'block';
-            })
-            .catch(() => {
-                document.getElementById('drillLoading').style.display = 'none';
-                document.getElementById('drillEmpty').style.display   = 'block';
+                options: {
+                    cutout: '60%',
+                    responsive: true,
+                    plugins: {
+                        tooltip: TTP,
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    onClick: (e, els) => {
+                        if (els.length) openDrill('bidang', perBUData[els[0].index].label, perBUData[
+                            els[0].index].label);
+                    }
+                }
             });
-    }
 
-    function renderDrillRows(data) {
-        const stsClass = s => s === 'AKTIF' ? 'sts-aktif' : s === 'NON-AKTIF' ? 'sts-nonaktif' : 'sts-calon';
-        const gIcon    = s => s === 'LAKI-LAKI'
-            ? '<span style="color:#3b82f6;font-size:.8rem;">♂ L</span>'
-            : '<span style="color:#a855f7;font-size:.8rem;">♀ P</span>';
+            // Wilayah Kerja (pie)
+            new Chart(document.getElementById('chartPusatCabang'), {
+                type: 'pie',
+                data: {
+                    labels: perPCData.map(r => r.label),
+                    datasets: [{
+                        data: perPCData.map(r => r.jumlah),
+                        backgroundColor: ['#4c6ef5', '#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe'],
+                        borderWidth: 2,
+                        borderColor: '#fff',
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: TTP,
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    onClick: (e, els) => {
+                        if (els.length) openDrill('wilker', perPCData[els[0].index].label, perPCData[
+                            els[0].index].label);
+                    }
+                }
+            });
 
-        document.getElementById('drillTableBody').innerHTML = data.map((k, i) => `
+            // Area Kerja (bar)
+            mkBar('chartUnitKerja',
+                perUKData.map(r => r.label),
+                perUKData.map(r => r.jumlah),
+                false, '#0891b2',
+                i => openDrill('unit_kerja', perUKData[i].id, perUKData[i].label)
+            );
+
+            // Departemen (bar)
+            mkBar('chartDepartemen',
+                perDepData.map(r => r.singkatan),
+                perDepData.map(r => r.jumlah),
+                true, null,
+                i => openDrill('departemen', perDepData[i].label, 'Departemen: ' + perDepData[i].label)
+            );
+
+            // Kontrak (doughnut)
+            new Chart(document.getElementById('chartKontrak'), {
+                type: 'doughnut',
+                data: {
+                    labels: perKtrData.map(r => r.kode),
+                    datasets: [{
+                        data: perKtrData.map(r => r.jumlah),
+                        backgroundColor: ['#dc2626', '#d97706', '#059669', '#1a6fcf', '#7c3aed'],
+                        borderWidth: 2,
+                        borderColor: '#fff',
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    cutout: '55%',
+                    responsive: true,
+                    plugins: {
+                        tooltip: TTP,
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    onClick: (e, els) => {
+                        if (!els.length) return;
+                        const r = perKtrData[els[0].index];
+                        openDrill('kontrak', r.id, 'Kontrak: ' + r.label);
+                    }
+                }
+            });
+
+            /* ---- Delegation ---- */
+            document.addEventListener('click', function(e) {
+                const dt = e.target.closest('.drill-trigger');
+                if (dt) {
+                    e.stopPropagation();
+                    openDrill(dt.dataset.type, dt.dataset.value, dt.dataset.label);
+                    return;
+                }
+                const bj = e.target.closest('.siska-btn-jabatan');
+                if (bj) {
+                    e.stopPropagation();
+                    openJabatan(bj.dataset.namaDep);
+                }
+            });
+
+            /* ---- DRILL MODAL ---- */
+            function openDrill(type, value, label) {
+                const modal = new bootstrap.Modal(document.getElementById('drillModal'));
+                document.getElementById('drillModalTitle').textContent = label || 'Detail Karyawan';
+                document.getElementById('drillModalSubtitle').textContent = '';
+                document.getElementById('drillLoading').style.display = 'block';
+                document.getElementById('drillContent').style.display = 'none';
+                document.getElementById('drillEmpty').style.display = 'none';
+                document.getElementById('drillSearch').value = '';
+                modal.show();
+
+                const params = new URLSearchParams({
+                    type,
+                    value,
+                    ...gFilters
+                });
+                fetch(DETAIL_URL + '?' + params)
+                    .then(r => r.json())
+                    .then(res => {
+                        document.getElementById('drillLoading').style.display = 'none';
+                        document.getElementById('drillModalSubtitle').textContent = res.total + ' karyawan';
+                        document.getElementById('drillFooterInfo').textContent = 'Total: ' + res.total
+                            .toLocaleString('id-ID') + ' karyawan';
+                        document.getElementById('drillCount').textContent = res.total + ' karyawan';
+                        if (!res.data?.length) {
+                            document.getElementById('drillEmpty').style.display = 'block';
+                            return;
+                        }
+                        renderDrillRows(res.data);
+                        document.getElementById('drillContent').style.display = 'block';
+                    })
+                    .catch(() => {
+                        document.getElementById('drillLoading').style.display = 'none';
+                        document.getElementById('drillEmpty').style.display = 'block';
+                    });
+            }
+
+            function renderDrillRows(data) {
+                const stsClass = s => s === 'AKTIF' ? 'sts-aktif' : s === 'NON-AKTIF' ? 'sts-nonaktif' :
+                    'sts-calon';
+                const gIcon = s => s === 'LAKI-LAKI' ?
+                    '<span style="color:#3b82f6;font-size:.8rem;">♂ L</span>' :
+                    '<span style="color:#a855f7;font-size:.8rem;">♀ P</span>';
+
+                document.getElementById('drillTableBody').innerHTML = data.map((k, i) => `
             <tr>
                 <td class="text-muted">${i + 1}</td>
                 <td><code style="font-size:.75rem;color:#64748b;background:#f1f5f9;padding:1px 5px;border-radius:4px;">${k.nrk}</code></td>
@@ -1159,36 +1718,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td><span class="${stsClass(k.sts_kry)}">${k.sts_kry}</span></td>
                 <td style="font-size:.75rem;color:#94a3b8;white-space:nowrap;">${k.tgl_masuk}</td>
             </tr>`).join('');
-    }
+            }
 
-    document.getElementById('drillSearch').addEventListener('input', function () {
-        const q = this.value.toLowerCase();
-        let vis = 0;
-        document.querySelectorAll('#drillTableBody tr').forEach(r => {
-            const show = r.textContent.toLowerCase().includes(q);
-            r.style.display = show ? '' : 'none';
-            if (show) vis++;
-        });
-        document.getElementById('drillCount').textContent = vis + ' karyawan';
-    });
+            document.getElementById('drillSearch').addEventListener('input', function() {
+                const q = this.value.toLowerCase();
+                let vis = 0;
+                document.querySelectorAll('#drillTableBody tr').forEach(r => {
+                    const show = r.textContent.toLowerCase().includes(q);
+                    r.style.display = show ? '' : 'none';
+                    if (show) vis++;
+                });
+                document.getElementById('drillCount').textContent = vis + ' karyawan';
+            });
 
-    /* ---- JABATAN MODAL ---- */
-    function openJabatan(namaDep) {
-        const modal = new bootstrap.Modal(document.getElementById('jabatanModal'));
-        document.getElementById('jabatanModalTitle').textContent  = 'Breakdown Jabatan — ' + namaDep;
-        document.getElementById('jabatanLoading').style.display   = 'block';
-        document.getElementById('jabatanContent').style.display   = 'none';
-        modal.show();
+            /* ---- JABATAN MODAL ---- */
+            function openJabatan(namaDep) {
+                const modal = new bootstrap.Modal(document.getElementById('jabatanModal'));
+                document.getElementById('jabatanModalTitle').textContent = 'Breakdown Jabatan — ' + namaDep;
+                document.getElementById('jabatanLoading').style.display = 'block';
+                document.getElementById('jabatanContent').style.display = 'none';
+                modal.show();
 
-        const url    = JABATAN_URL.replace(':dep', encodeURIComponent(namaDep));
-        const params = new URLSearchParams(gFilters);
-        fetch(url + '?' + params)
-            .then(r => r.json())
-            .then(res => {
-                document.getElementById('jabatanLoading').style.display = 'none';
-                const total = res.data.reduce((s, r) => s + r.jumlah, 0);
-                document.getElementById('jabatanFooterInfo').textContent = 'Total: ' + total.toLocaleString('id-ID') + ' karyawan';
-                document.getElementById('jabatanTableBody').innerHTML = res.data.map((r, i) => `
+                const url = JABATAN_URL.replace(':dep', encodeURIComponent(namaDep));
+                const params = new URLSearchParams(gFilters);
+                fetch(url + '?' + params)
+                    .then(r => r.json())
+                    .then(res => {
+                        document.getElementById('jabatanLoading').style.display = 'none';
+                        const total = res.data.reduce((s, r) => s + r.jumlah, 0);
+                        document.getElementById('jabatanFooterInfo').textContent = 'Total: ' + total
+                            .toLocaleString('id-ID') + ' karyawan';
+                        document.getElementById('jabatanTableBody').innerHTML = res.data.map((r, i) => `
                     <tr>
                         <td class="text-muted">${i + 1}</td>
                         <td class="fw-semibold">${r.jabatan}</td>
@@ -1214,18 +1774,20 @@ document.addEventListener('DOMContentLoaded', function () {
                             </button>
                         </td>
                     </tr>`).join('');
-                document.getElementById('jabatanContent').style.display = 'block';
-            })
-            .catch(() => { document.getElementById('jabatanLoading').style.display = 'none'; });
-    }
+                        document.getElementById('jabatanContent').style.display = 'block';
+                    })
+                    .catch(() => {
+                        document.getElementById('jabatanLoading').style.display = 'none';
+                    });
+            }
 
-    document.getElementById('jabatanModal').addEventListener('click', function (e) {
-        const el = e.target.closest('.drill-trigger');
-        if (!el) return;
-        bootstrap.Modal.getInstance(document.getElementById('jabatanModal'))?.hide();
-        setTimeout(() => openDrill(el.dataset.type, el.dataset.value, el.dataset.label), 350);
-    });
+            document.getElementById('jabatanModal').addEventListener('click', function(e) {
+                const el = e.target.closest('.drill-trigger');
+                if (!el) return;
+                bootstrap.Modal.getInstance(document.getElementById('jabatanModal'))?.hide();
+                setTimeout(() => openDrill(el.dataset.type, el.dataset.value, el.dataset.label), 350);
+            });
 
-});
-</script>
+        });
+    </script>
 @endpush

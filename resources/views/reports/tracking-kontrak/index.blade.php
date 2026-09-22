@@ -155,16 +155,16 @@
                     {{-- Divider --}}
                     <div class="col-12"><hr style="border-color:#e2e8f0;margin:4px 0;"></div>
 
-                    {{-- Baris 3: Filter transisi kontrak --}}
+                    {{-- Filter Transisi --}}
                     <div class="col-12">
                         <label class="form-label tk-label mb-2">
                             <i class="fas fa-random me-1" style="color:#4c6ef5;"></i>
-                            Filter Transisi Kontrak — tampilkan karyawan yang pernah berpindah dari kontrak A ke kontrak B
+                            Filter Transisi — tampilkan karyawan yang pernah berpindah dari kontrak A ke kontrak B
                         </label>
                         <div class="d-flex align-items-center gap-2 flex-wrap">
-                            <div style="flex:1;min-width:180px;">
+                            <div style="flex:1;min-width:200px;">
                                 <select name="filter_dari_kontrak" class="form-select form-select-sm">
-                                    <option value="">— Dari Kontrak —</option>
+                                    <option value="">— Dari Kontrak (opsional) —</option>
                                     @foreach ($kontrakOptions as $ktr)
                                         <option value="{{ $ktr->id }}"
                                             {{ $currentFilters['dari_kontrak'] == $ktr->id ? 'selected' : '' }}>
@@ -173,12 +173,12 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="tk-transisi-arrow">
+                            <span style="color:#4c6ef5;font-size:1.1rem;flex-shrink:0;">
                                 <i class="fas fa-long-arrow-alt-right"></i>
-                            </div>
-                            <div style="flex:1;min-width:180px;">
+                            </span>
+                            <div style="flex:1;min-width:200px;">
                                 <select name="filter_ke_kontrak" class="form-select form-select-sm">
-                                    <option value="">— Ke Kontrak —</option>
+                                    <option value="">— Ke Kontrak (opsional) —</option>
                                     @foreach ($kontrakOptions as $ktr)
                                         <option value="{{ $ktr->id }}"
                                             {{ $currentFilters['ke_kontrak'] == $ktr->id ? 'selected' : '' }}>
@@ -189,14 +189,14 @@
                             </div>
                         </div>
                         <div class="tk-hint mt-1">
-                            Isi salah satu atau keduanya. Contoh: Dari <strong>SPKK</strong> → Ke <strong>PKWT</strong> akan menampilkan karyawan yang pernah naik dari SPKK ke PKWT.
+                            Contoh: Dari <strong>SPKK</strong> → Ke <strong>PKWT</strong> = tampilkan karyawan yang pernah naik dari SPKK ke PKWT.
                         </div>
                     </div>
 
                     {{-- Divider --}}
                     <div class="col-12"><hr style="border-color:#e2e8f0;margin:4px 0;"></div>
 
-                    {{-- Baris 4: Periode + Cari + Tombol --}}
+                    {{-- Baris bawah: Periode + Cari + Tombol --}}
                     <div class="col-12">
                         <div class="d-flex align-items-end gap-3 flex-wrap">
 
@@ -224,7 +224,8 @@
                                 <label class="form-label tk-label">
                                     <i class="fas fa-search me-1"></i>Cari Karyawan
                                 </label>
-                                <input type="text" name="search" class="form-control form-control-sm"
+                                <input type="text" name="search"
+                                       class="form-control form-control-sm"
                                        placeholder="Nama atau NRK..."
                                        value="{{ $currentFilters['search'] }}">
                             </div>
@@ -252,10 +253,10 @@
                         ? $kontrakOptions->find($currentFilters['ke_kontrak']) : null;
                     $hasChip = array_filter([
                         $currentFilters['perusahaan'], $currentFilters['wilker'],
-                        $currentFilters['area'], $currentFilters['status'],
-                        $currentFilters['departemen'], $currentFilters['kontrak_aktif'],
-                        $currentFilters['dari_kontrak'], $currentFilters['ke_kontrak'],
-                        $currentFilters['tgl_dari'], $currentFilters['tgl_sampai'],
+                        $currentFilters['area'],        $currentFilters['status'],
+                        $currentFilters['departemen'],  $currentFilters['kontrak_aktif'],
+                        $currentFilters['dari_kontrak'],$currentFilters['ke_kontrak'],
+                        $currentFilters['tgl_dari'],    $currentFilters['tgl_sampai'],
                     ]);
                 @endphp
                 @if ($hasChip || $currentFilters['include_top_mgmt'] === '1')
@@ -265,10 +266,7 @@
                         @if ($currentFilters['dari_kontrak'] || $currentFilters['ke_kontrak'])
                             <span class="tk-chip tk-chip-indigo">
                                 <i class="fas fa-random me-1"></i>
-                                Transisi:
-                                {{ $dariKtrChip?->singkatan_ktr ?? '—' }}
-                                →
-                                {{ $keKtrChip?->singkatan_ktr ?? '—' }}
+                                Transisi: {{ $dariKtrChip?->singkatan_ktr ?? '—' }} → {{ $keKtrChip?->singkatan_ktr ?? '—' }}
                                 <a href="{{ route('reports.tracking-kontrak.index', array_merge($currentFilters, ['filter_dari_kontrak'=>'','filter_ke_kontrak'=>''])) }}"
                                    class="ms-1 text-inherit">×</a>
                             </span>
@@ -284,6 +282,13 @@
                             <span class="tk-chip tk-chip-indigo">
                                 <i class="fas fa-map me-1"></i>{{ $currentFilters['wilker'] }}
                                 <a href="{{ route('reports.tracking-kontrak.index', array_merge($currentFilters, ['filter_wilker'=>'','filter_area'=>''])) }}" class="ms-1 text-inherit">×</a>
+                            </span>
+                        @endif
+                        @if ($currentFilters['area'])
+                            @php $ac = $areaKerjaOptions->firstWhere('id', $currentFilters['area']); @endphp
+                            <span class="tk-chip tk-chip-indigo">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ $ac?->area_krj ?? $currentFilters['area'] }}
+                                <a href="{{ route('reports.tracking-kontrak.index', array_merge($currentFilters, ['filter_area'=>''])) }}" class="ms-1 text-inherit">×</a>
                             </span>
                         @endif
                         @if ($currentFilters['status'])
@@ -331,10 +336,10 @@
     <div class="row g-3 mb-4">
         @php
             $statCards = [
-                ['icon'=>'fa-arrow-circle-up',  'num'=>$statUpgrade,    'lbl'=>'Total Upgrade',       'cls'=>'tk-stat-upgrade'],
-                ['icon'=>'fa-redo-alt',          'num'=>$statPerpanjang, 'lbl'=>'Total Perpanjangan',  'cls'=>'tk-stat-perpanjang'],
-                ['icon'=>'fa-arrow-circle-down', 'num'=>$statDowngrade,  'lbl'=>'Total Downgrade',     'cls'=>'tk-stat-downgrade'],
-                ['icon'=>'fa-user-plus',         'num'=>$statBaru,       'lbl'=>'Karyawan 1 Kontrak',  'cls'=>'tk-stat-baru'],
+                ['icon'=>'fa-arrow-circle-up',  'num'=>$statUpgrade,    'lbl'=>'Total Upgrade',      'cls'=>'tk-stat-upgrade'],
+                ['icon'=>'fa-redo-alt',          'num'=>$statPerpanjang, 'lbl'=>'Total Perpanjangan', 'cls'=>'tk-stat-perpanjang'],
+                ['icon'=>'fa-arrow-circle-down', 'num'=>$statDowngrade,  'lbl'=>'Total Downgrade',    'cls'=>'tk-stat-downgrade'],
+                ['icon'=>'fa-user-plus',         'num'=>$statBaru,       'lbl'=>'Karyawan 1 Kontrak', 'cls'=>'tk-stat-baru'],
             ];
         @endphp
         @foreach ($statCards as $s)
@@ -356,37 +361,45 @@
                 <div class="card-header tk-section-header"
                     style="background:linear-gradient(135deg,#3730a3 0%,#4c6ef5 100%);color:#fff;">
                     <i class="fas fa-chart-pie me-2" style="opacity:.85;"></i>Distribusi Kontrak Aktif
+                    <small class="ms-1 fw-normal" style="opacity:.7;">(sesuai filter)</small>
                 </div>
                 <div class="card-body d-flex flex-column align-items-center">
-                    <canvas id="chartKontrakAktif" height="200"></canvas>
-                    <div class="w-100 mt-3">
-                        <table class="table table-sm table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Tipe</th>
-                                    <th class="text-end">Karyawan</th>
-                                    <th class="text-end">%</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php $totalKtrAktif = $perKontrakAktif->sum('jumlah'); @endphp
-                                @foreach ($perKontrakAktif as $item)
+                    @if ($perKontrakAktif->count() > 0)
+                        <canvas id="chartKontrakAktif" height="200"></canvas>
+                        <div class="w-100 mt-3">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="table-light">
                                     <tr>
-                                        <td>
-                                            <span class="tk-ktr-badge me-1">{{ $item['label'] }}</span>
-                                            <small class="text-muted">{{ $item['nama'] }}</small>
-                                        </td>
-                                        <td class="text-end fw-bold">{{ number_format($item['jumlah']) }}</td>
-                                        <td class="text-end">
-                                            <span class="badge" style="background:#4c6ef5;">
-                                                {{ $totalKtrAktif > 0 ? round($item['jumlah'] / $totalKtrAktif * 100, 1) : 0 }}%
-                                            </span>
-                                        </td>
+                                        <th>Tipe</th>
+                                        <th class="text-end">Karyawan</th>
+                                        <th class="text-end">%</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @php $totalKtrAktif = $perKontrakAktif->sum('jumlah'); @endphp
+                                    @foreach ($perKontrakAktif as $item)
+                                        <tr>
+                                            <td>
+                                                <span class="tk-ktr-badge me-1">{{ $item['label'] }}</span>
+                                                <small class="text-muted">{{ $item['nama'] }}</small>
+                                            </td>
+                                            <td class="text-end fw-bold">{{ number_format($item['jumlah']) }}</td>
+                                            <td class="text-end">
+                                                <span class="badge" style="background:#4c6ef5;">
+                                                    {{ $totalKtrAktif > 0 ? round($item['jumlah'] / $totalKtrAktif * 100, 1) : 0 }}%
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-chart-pie fa-2x mb-2 d-block opacity-25"></i>
+                            Tidak ada data
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -396,7 +409,7 @@
                 <div class="card-header tk-section-header d-flex justify-content-between align-items-center"
                     style="background:linear-gradient(135deg,#0f766e 0%,#0d9488 100%);color:#fff;">
                     <span><i class="fas fa-random me-2" style="opacity:.85;"></i>Pola Transisi Kontrak Terbanyak</span>
-                    <small style="opacity:.7;font-weight:400;">Top 10</small>
+                    <small style="opacity:.7;font-weight:400;">sesuai filter · top 10</small>
                 </div>
                 <div class="card-body p-0">
                     @if ($topTransisi->count() > 0)
@@ -424,7 +437,7 @@
                                                     <i class="fas fa-long-arrow-alt-right" style="color:#4c6ef5;font-size:.75rem;"></i>
                                                     <span class="tk-ktr-badge tk-ktr-badge-new">{{ $parts[1] }}</span>
                                                 @else
-                                                    <span class="fw-semibold" style="font-size:.83rem;">{{ $item['label'] }}</span>
+                                                    <span style="font-size:.83rem;font-weight:600;">{{ $item['label'] }}</span>
                                                 @endif
                                             </div>
                                         </td>
@@ -432,7 +445,7 @@
                                             <span class="tk-num-badge" style="background:#0d9488;">{{ number_format($item['jumlah']) }}</span>
                                         </td>
                                         <td>
-                                            <div style="flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
+                                            <div style="height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
                                                 <div style="width:{{ $maxTransisi > 0 ? round($item['jumlah'] / $maxTransisi * 100) : 0 }}%;height:100%;background:linear-gradient(90deg,#0f766e,#14b8a6);border-radius:4px;"></div>
                                             </div>
                                         </td>
@@ -473,10 +486,9 @@
             @forelse ($karyawans as $k)
                 <div class="tk-row {{ $loop->even ? 'tk-row-even' : '' }}">
 
-                    {{-- ── Kolom Identitas ── --}}
+                    {{-- ── Identitas ── --}}
                     <div class="tk-col-identity">
 
-                        {{-- Nama + Status --}}
                         <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
                             <span class="tk-nama">{{ $k['nama'] }}</span>
                             <span class="tk-sts-badge
@@ -487,7 +499,6 @@
                             </span>
                         </div>
 
-                        {{-- NRK + Dept + Lokasi --}}
                         <div class="tk-identity-sub">
                             <code class="tk-nrk">{{ $k['nrk'] }}</code>
                             <span class="tk-sub-sep">·</span>
@@ -496,23 +507,7 @@
                             <span>{{ $k['unit_kerja'] }}</span>
                         </div>
 
-                        {{-- Pills --}}
                         <div class="d-flex flex-wrap gap-1 mt-2">
-                            @if ($k['jumlah_upgrade'] > 0)
-                                <span class="tk-pill tk-pill-upgrade">
-                                    <i class="fas fa-arrow-up"></i>{{ $k['jumlah_upgrade'] }} upgrade
-                                </span>
-                            @endif
-                            @if ($k['jumlah_perpanjang'] > 0)
-                                <span class="tk-pill tk-pill-perpanjang">
-                                    <i class="fas fa-redo"></i>{{ $k['jumlah_perpanjang'] }} perpanjang
-                                </span>
-                            @endif
-                            @if ($k['jumlah_downgrade'] > 0)
-                                <span class="tk-pill tk-pill-downgrade">
-                                    <i class="fas fa-arrow-down"></i>{{ $k['jumlah_downgrade'] }} downgrade
-                                </span>
-                            @endif
                             <span class="tk-pill tk-pill-neutral">
                                 <i class="fas fa-file-contract"></i>{{ $k['total_kontrak'] }} kontrak
                             </span>
@@ -520,38 +515,29 @@
 
                     </div>
 
-                    {{-- ── Kolom Timeline ── --}}
+                    {{-- ── Timeline ── --}}
                     <div class="tk-col-timeline">
                         <div class="tk-timeline-strip">
                             @foreach ($k['timeline'] as $i => $t)
 
                                 @if ($i > 0)
-                                    <div class="tk-connector
-                                        {{ $t['arah'] === 'upgrade'    ? 'tk-connector-upgrade'    :
-                                           ($t['arah'] === 'downgrade' ? 'tk-connector-downgrade'  :
-                                           'tk-connector-perpanjang') }}">
+                                    <div class="tk-connector">
                                         <i class="fas fa-long-arrow-alt-right"></i>
                                     </div>
                                 @endif
 
                                 <div class="tk-node
                                     {{ $t['status'] === 'AKTIF' ? 'tk-node-aktif' : 'tk-node-lama' }}
-                                    {{ $t['arah'] === 'upgrade'    ? 'tk-node-is-upgrade'   :
-                                       ($t['arah'] === 'downgrade' ? 'tk-node-is-downgrade' : '') }}
                                     {{ isset($t['highlighted']) && $t['highlighted'] ? 'tk-node-highlighted' : '' }}">
 
-                                    {{-- Label arah --}}
-                                    <div class="tk-node-arah
-                                        {{ $i === 0                   ? 'tk-arah-awal'       :
-                                           ($t['arah'] === 'upgrade'  ? 'tk-arah-upgrade'    :
-                                           ($t['arah'] === 'downgrade'? 'tk-arah-downgrade'  :
-                                           'tk-arah-perpanjang')) }}">
-                                        @if ($i === 0) Awal
-                                        @elseif ($t['arah'] === 'upgrade') ↑ Upgrade
-                                        @elseif ($t['arah'] === 'downgrade') ↓ Downgrade
-                                        @else ↺ Perpanjang
-                                        @endif
-                                    </div>
+                                    {{-- Label: hanya Awal atau Aktif --}}
+                                    @if ($t['status'] === 'AKTIF')
+                                        <div class="tk-node-tag tk-tag-aktif">● Aktif</div>
+                                    @elseif ($i === 0)
+                                        <div class="tk-node-tag tk-tag-awal">Awal</div>
+                                    @else
+                                        <div class="tk-node-tag tk-tag-selesai">Selesai</div>
+                                    @endif
 
                                     <div class="tk-node-chip">{{ $t['singkatan'] }}</div>
 
@@ -566,7 +552,7 @@
                         </div>
                     </div>
 
-                    {{-- ── Kolom Aksi ── --}}
+                    {{-- ── Aksi ── --}}
                     <div class="tk-col-action">
                         <button class="tk-btn-detail"
                                 data-id="{{ $k['id'] }}"
@@ -617,7 +603,6 @@
                     <div class="mt-2 text-muted small">Memuat data...</div>
                 </div>
                 <div id="tkDetailContent" style="display:none;">
-
                     <div id="tkModalInfo" class="tk-modal-info mb-4"></div>
 
                     <h6 class="fw-bold mb-3" style="color:#1e293b;">
@@ -633,7 +618,6 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>#</th>
-                                    <th>Perubahan</th>
                                     <th>Tipe Kontrak</th>
                                     <th>No. Surat</th>
                                     <th>Tgl Surat</th>
@@ -663,15 +647,13 @@
 @push('styles')
 <style>
 .tk-page {
-    --tk-indigo: #4c6ef5;
-    --tk-green:  #059669;
-    --tk-red:    #dc2626;
-    --tk-teal:   #0d9488;
     font-family: 'Segoe UI', sans-serif;
+    --tk-indigo: #4c6ef5;
 }
 
-/* Header */
 .tk-title { font-size:1.3rem;font-weight:700;color:#1e293b;letter-spacing:-.3px; }
+
+/* Header badges */
 .tk-badge-upgrade    { background:linear-gradient(135deg,#047857,#10b981);color:#fff;border-radius:8px;font-size:.8rem; }
 .tk-badge-perpanjang { background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border-radius:8px;font-size:.8rem; }
 .tk-badge-downgrade  { background:linear-gradient(135deg,#b91c1c,#dc2626);color:#fff;border-radius:8px;font-size:.8rem; }
@@ -684,12 +666,7 @@
 .tk-btn-apply { background:#4c6ef5;color:#fff;border:none; }
 .tk-btn-apply:hover { background:#3730a3;color:#fff; }
 
-.tk-transisi-arrow {
-    font-size:1.1rem;color:#4c6ef5;flex-shrink:0;
-    padding-bottom:2px;
-}
-
-/* Chips */
+/* Chips aktif filter */
 .tk-chip { display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:.75rem;font-weight:600; }
 .tk-chip a { text-decoration:none;opacity:.7; }
 .tk-chip a:hover { opacity:1; }
@@ -714,48 +691,40 @@
 .tk-stat-downgrade  { background:linear-gradient(145deg,#b91c1c,#ef4444); }
 .tk-stat-baru       { background:linear-gradient(145deg,#1e293b,#334155); }
 
-/* Section card */
+/* Section */
 .tk-section-card { border:1px solid #e9eef5!important;border-radius:12px!important;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.06); }
 .tk-section-header { font-weight:600;font-size:.875rem;padding:.7rem 1.1rem;color:#fff; }
 
-/* Badges */
-.tk-ktr-badge { display:inline-block;padding:2px 8px;border-radius:5px;font-size:.7rem;font-weight:700;background:#e0e7ff;color:#3730a3; }
+/* Misc badges */
+.tk-ktr-badge     { display:inline-block;padding:2px 8px;border-radius:5px;font-size:.7rem;font-weight:700;background:#e0e7ff;color:#3730a3; }
 .tk-ktr-badge-new { background:#d1fae5;color:#065f46; }
-.tk-num-badge { display:inline-block;color:#fff;padding:2px 10px;border-radius:12px;font-weight:700;font-size:.82rem; }
-.tk-rank-badge { display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#0d9488;color:#fff;font-size:.68rem;font-weight:700; }
+.tk-num-badge     { display:inline-block;color:#fff;padding:2px 10px;border-radius:12px;font-weight:700;font-size:.82rem; }
+.tk-rank-badge    { display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#0d9488;color:#fff;font-size:.68rem;font-weight:700; }
 
-/* ── Table header ── */
+/* ── TABLE HEADER ── */
 .tk-table-head {
     display: grid;
-    grid-template-columns: 280px 1fr 90px;
+    grid-template-columns: 270px 1fr 80px;
     background: #f8fafc;
     border-bottom: 2px solid #e2e8f0;
     padding: 8px 20px;
-    gap: 0;
 }
-.tk-th {
-    font-size: .68rem;
-    font-weight: 700;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: .6px;
-}
+.tk-th { font-size:.68rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.6px; }
 
-/* ── Row ── */
+/* ── ROW ── */
 .tk-row {
     display: grid;
-    grid-template-columns: 280px 1fr 90px;
-    gap: 0;
+    grid-template-columns: 270px 1fr 80px;
     align-items: center;
     border-bottom: 1px solid #f1f5f9;
     transition: background .12s;
 }
-.tk-row:last-child { border-bottom: none; }
-.tk-row:hover      { background: #f5f8ff; }
-.tk-row-even       { background: #fdfeff; }
-.tk-row-even:hover { background: #f5f8ff; }
+.tk-row:last-child { border-bottom:none; }
+.tk-row:hover      { background:#f5f8ff; }
+.tk-row-even       { background:#fdfeff; }
+.tk-row-even:hover { background:#f5f8ff; }
 
-/* ── Kolom identitas ── */
+/* ── IDENTITAS ── */
 .tk-col-identity {
     padding: 14px 16px 14px 20px;
     border-right: 1px solid #f1f5f9;
@@ -763,8 +732,7 @@
     flex-direction: column;
     gap: 5px;
 }
-
-.tk-nama { font-size:.92rem;font-weight:700;color:#1e293b; }
+.tk-nama { font-size:.9rem;font-weight:700;color:#1e293b; }
 .tk-nrk  { font-size:.7rem;color:#94a3b8;background:#f1f5f9;padding:1px 6px;border-radius:4px;font-family:monospace; }
 
 .tk-sts-badge { padding:2px 9px;border-radius:10px;font-size:.63rem;font-weight:700;letter-spacing:.3px;flex-shrink:0; }
@@ -772,26 +740,20 @@
 .tk-sts-nonaktif { background:#fee2e2;color:#991b1b; }
 .tk-sts-calon    { background:#fef3c7;color:#92400e; }
 
-.tk-identity-sub {
-    display:flex;align-items:center;flex-wrap:wrap;
-    gap:5px;font-size:.74rem;color:#64748b;
-}
-.tk-sub-sep { color:#cbd5e1; }
+.tk-identity-sub { display:flex;align-items:center;flex-wrap:wrap;gap:5px;font-size:.74rem;color:#64748b; }
+.tk-sub-sep      { color:#cbd5e1; }
 
 .tk-pill { display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:.64rem;font-weight:600; }
 .tk-pill i { font-size:.58rem; }
-.tk-pill-upgrade    { background:#d1fae5;color:#065f46; }
-.tk-pill-perpanjang { background:#dbeafe;color:#1e40af; }
-.tk-pill-downgrade  { background:#fee2e2;color:#991b1b; }
-.tk-pill-neutral    { background:#f1f5f9;color:#475569; }
+.tk-pill-neutral { background:#f1f5f9;color:#475569; }
 
-/* ── Kolom timeline ── */
+/* ── TIMELINE ── */
 .tk-col-timeline {
-    padding: 12px;
+    padding: 12px 14px;
     overflow-x: auto;
     border-right: 1px solid #f1f5f9;
 }
-.tk-col-timeline::-webkit-scrollbar { height:3px; }
+.tk-col-timeline::-webkit-scrollbar       { height:3px; }
 .tk-col-timeline::-webkit-scrollbar-thumb { background:#e2e8f0;border-radius:3px; }
 
 .tk-timeline-strip {
@@ -801,61 +763,91 @@
     min-width: max-content;
 }
 
+/* Konektor — abu netral, tidak berwarna */
 .tk-connector {
-    display:flex;align-items:center;justify-content:center;
-    padding:0 4px;font-size:.7rem;flex-shrink:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    font-size: .68rem;
+    color: #cbd5e1;
+    flex-shrink: 0;
+    margin-top: 18px; /* sejajar chip */
 }
-.tk-connector-upgrade    { color:#10b981; }
-.tk-connector-downgrade  { color:#ef4444; }
-.tk-connector-perpanjang { color:#3b82f6; }
 
+/* Node — hanya border polos, tidak ada warna bermacam */
 .tk-node {
-    display:flex;flex-direction:column;align-items:center;gap:2px;
-    padding:7px 12px 9px;border-radius:10px;border:2px solid #e2e8f0;
-    background:#fff;min-width:106px;text-align:center;
-    transition:box-shadow .15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 7px 12px 9px;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;   /* border abu polos untuk semua node */
+    background: #fff;
+    min-width: 106px;
+    text-align: center;
 }
-.tk-node-lama         { border-color:#e2e8f0;opacity:.72; }
-.tk-node-aktif        { border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.08); }
-.tk-node-is-upgrade   { border-color:#4c6ef5; }
-.tk-node-is-downgrade { border-color:#ef4444; }
-.tk-node-highlighted  { box-shadow:0 0 0 4px rgba(245,158,11,.35)!important;border-color:#f59e0b!important; }
 
-.tk-node-arah {
-    font-size:.57rem;font-weight:700;letter-spacing:.4px;
-    padding:1px 6px;border-radius:6px;text-transform:uppercase;margin-bottom:1px;
+/* Node yang sedang aktif: border hijau */
+.tk-node-aktif {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16,185,129,.08);
 }
-.tk-arah-awal       { background:#f1f5f9;color:#94a3b8; }
-.tk-arah-upgrade    { background:#d1fae5;color:#065f46; }
-.tk-arah-perpanjang { background:#dbeafe;color:#1e40af; }
-.tk-arah-downgrade  { background:#fee2e2;color:#991b1b; }
 
+/* Node lama: opacity sedikit lebih redup */
+.tk-node-lama { opacity: .7; }
+
+/* Node highlighted (sesuai filter transisi) */
+.tk-node-highlighted {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(245,158,11,.15) !important;
+}
+
+/* Tag label di atas node — hanya Awal / Aktif / Selesai */
+.tk-node-tag {
+    font-size: .57rem;
+    font-weight: 700;
+    letter-spacing: .4px;
+    padding: 1px 7px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+.tk-tag-awal    { background:#f1f5f9;color:#94a3b8; }
+.tk-tag-selesai { background:#f1f5f9;color:#94a3b8; }
+.tk-tag-aktif   { background:#d1fae5;color:#065f46; }
+
+/* Chip tipe kontrak dalam node */
 .tk-node-chip {
-    font-size:.75rem;font-weight:800;letter-spacing:.5px;
-    padding:3px 10px;border-radius:6px;
-    background:#e0e7ff;color:#3730a3;white-space:nowrap;
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .5px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: #f1f5f9;   /* abu netral untuk semua */
+    color: #1e293b;
+    white-space: nowrap;
 }
-.tk-node-aktif .tk-node-chip        { background:#d1fae5;color:#065f46; }
-.tk-node-is-downgrade .tk-node-chip { background:#fee2e2;color:#991b1b; }
+/* Chip node aktif: warna hijau */
+.tk-node-aktif .tk-node-chip {
+    background: #d1fae5;
+    color: #065f46;
+}
 
 .tk-node-period { font-size:.61rem;color:#94a3b8;line-height:1.5;white-space:nowrap; }
 .tk-node-dur    { font-size:.64rem;font-weight:700;color:#64748b; }
 
-/* ── Kolom aksi ── */
-.tk-col-action {
-    padding:14px 12px;
-    display:flex;justify-content:center;align-items:center;
-}
+/* ── AKSI ── */
+.tk-col-action { padding:14px 12px;display:flex;justify-content:center;align-items:center; }
 .tk-btn-detail {
-    display:inline-flex;align-items:center;
-    padding:6px 14px;border-radius:8px;
-    border:1px solid #c7d2fe;background:#f0f4ff;
-    color:#4c6ef5;font-size:.75rem;font-weight:600;
-    cursor:pointer;transition:all .15s;white-space:nowrap;
+    display:inline-flex;align-items:center;padding:6px 12px;border-radius:8px;
+    border:1px solid #c7d2fe;background:#f0f4ff;color:#4c6ef5;
+    font-size:.74rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;
 }
 .tk-btn-detail:hover { background:#4c6ef5;color:#fff;border-color:#4c6ef5;box-shadow:0 4px 12px rgba(76,110,245,.25); }
 
-/* ── Modal ── */
+/* ── MODAL ── */
 .tk-modal-info {
     background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;
     padding:.85rem 1rem;display:flex;flex-wrap:wrap;gap:.75rem;font-size:.82rem;
@@ -865,39 +857,34 @@
 .tk-modal-info-item .value { font-weight:600;color:#1e293b; }
 
 .tk-modal-timeline {
-    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
     padding:1rem;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;
 }
 .tk-modal-node {
     display:flex;flex-direction:column;align-items:center;
-    border-radius:12px;padding:10px 16px;border:2px solid;
+    border-radius:12px;padding:10px 16px;
+    border:2px solid #e2e8f0;   /* border polos */
     min-width:130px;text-align:center;background:#fff;
-    box-shadow:0 1px 4px rgba(0,0,0,.08);
+    box-shadow:0 1px 4px rgba(0,0,0,.06);
 }
-.tk-modal-node-baru        { border-color:#94a3b8; }
-.tk-modal-node-upgrade     { border-color:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.1); }
-.tk-modal-node-downgrade   { border-color:#ef4444; }
-.tk-modal-node-perpanjang  { border-color:#3b82f6; }
-.tk-modal-node-aktif       { border-color:#10b981; }
+.tk-modal-node-aktif { border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.1); }
 
 .tk-modal-node-label {
-    font-size:.85rem;font-weight:800;letter-spacing:.5px;
-    padding:3px 10px;border-radius:6px;margin-bottom:6px;
-    background:#e0e7ff;color:#3730a3;
+    font-size:.84rem;font-weight:800;letter-spacing:.5px;
+    padding:3px 10px;border-radius:6px;margin-bottom:5px;
+    background:#f1f5f9;color:#1e293b;
 }
-.tk-modal-node-upgrade   .tk-modal-node-label { background:#d1fae5;color:#065f46; }
-.tk-modal-node-downgrade .tk-modal-node-label { background:#fee2e2;color:#991b1b; }
-.tk-modal-node-perpanjang .tk-modal-node-label { background:#dbeafe;color:#1e40af; }
+.tk-modal-node-aktif .tk-modal-node-label { background:#d1fae5;color:#065f46; }
 
 .tk-modal-arrow {
     display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;
 }
 .tk-modal-arrow-icon {
-    width:28px;height:28px;border-radius:50%;
+    width:26px;height:26px;border-radius:50%;border:2px solid #e2e8f0;
     display:flex;align-items:center;justify-content:center;
-    font-size:.75rem;color:#fff;
+    font-size:.68rem;color:#94a3b8;background:#fff;
 }
-.tk-modal-arrow-label { font-size:.6rem;font-weight:700;color:#64748b;text-transform:uppercase; }
+.tk-modal-arrow-label { font-size:.6rem;font-weight:700;color:#94a3b8;text-transform:uppercase; }
 
 /* Toggle Top Mgmt */
 .siska-topmgmt-toggle { position:relative; }
@@ -912,7 +899,7 @@
 @media(max-width:900px) {
     .tk-row,.tk-table-head { grid-template-columns:1fr; }
     .tk-col-identity { border-right:none;border-bottom:1px solid #f1f5f9; }
-    .tk-col-action { border-left:none;justify-content:flex-start;padding-left:20px; }
+    .tk-col-action   { border-left:none;justify-content:flex-start;padding-left:20px; }
 }
 </style>
 @endpush
@@ -950,9 +937,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Chart distribusi kontrak aktif
+    // Chart distribusi kontrak aktif (ikut filter)
     const ktrData = @json($perKontrakAktif->values());
-    const PAL = ['#4c6ef5','#10b981','#f59e0b','#dc2626','#7c3aed','#0891b2'];
+    const PAL = ['#4c6ef5','#10b981','#f59e0b','#dc2626','#7c3aed','#0891b2','#0d9488'];
     Chart.defaults.font.family = "'Segoe UI',sans-serif";
 
     if (ktrData.length && document.getElementById('chartKontrakAktif')) {
@@ -963,11 +950,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 datasets: [{
                     data: ktrData.map(r => r.jumlah),
                     backgroundColor: PAL,
-                    borderWidth: 3, borderColor: '#fff', hoverOffset: 10
+                    borderWidth: 3,
+                    borderColor: '#fff',
+                    hoverOffset: 10,
                 }]
             },
             options: {
-                cutout: '60%', responsive: true,
+                cutout: '60%',
+                responsive: true,
                 plugins: {
                     tooltip: { backgroundColor:'#1e293b', padding:10, cornerRadius:6 },
                     legend: { position:'bottom', labels:{ padding:14, boxWidth:14 } }
@@ -976,7 +966,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Buka modal detail
+    // ── Modal detail ──
     document.addEventListener('click', function (e) {
         const btn = e.target.closest('.tk-btn-detail');
         if (!btn) return;
@@ -984,9 +974,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const id   = btn.dataset.id;
         const nama = btn.dataset.nama;
 
-        document.getElementById('tkModalTitle').textContent     = 'Timeline Kontrak — ' + nama;
-        document.getElementById('tkModalSub').textContent       = '';
-        document.getElementById('tkLoading').style.display      = 'block';
+        document.getElementById('tkModalTitle').textContent      = 'Timeline Kontrak — ' + nama;
+        document.getElementById('tkModalSub').textContent        = '';
+        document.getElementById('tkLoading').style.display       = 'block';
         document.getElementById('tkDetailContent').style.display = 'none';
 
         const modal = new bootstrap.Modal(document.getElementById('tkModal'));
@@ -1037,33 +1027,34 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 `;
 
-                // Timeline visual modal
+                // Timeline visual modal — border polos, tanpa warna berlebihan
                 const tl = res.timeline;
-                const arrowColor = { upgrade:'#10b981', downgrade:'#ef4444', perpanjangan:'#3b82f6', baru:'#94a3b8' };
-                const arrowIcon  = { upgrade:'fa-arrow-up', downgrade:'fa-arrow-down', perpanjangan:'fa-redo', baru:'fa-plus' };
-                const arrowLabel = { upgrade:'Upgrade', downgrade:'Downgrade', perpanjangan:'Perpanjang', baru:'Awal' };
-                const nodeClass  = { upgrade:'tk-modal-node-upgrade', downgrade:'tk-modal-node-downgrade', perpanjangan:'tk-modal-node-perpanjang', baru:'tk-modal-node-baru' };
-
                 document.getElementById('tkModalTimeline').innerHTML = tl.map((t, i) => {
                     const arrow = i > 0 ? `
                         <div class="tk-modal-arrow">
-                            <div class="tk-modal-arrow-icon" style="background:${arrowColor[t.arah] || '#94a3b8'};">
-                                <i class="fas ${arrowIcon[t.arah] || 'fa-arrow-right'}"></i>
+                            <div class="tk-modal-arrow-icon">
+                                <i class="fas fa-arrow-right"></i>
                             </div>
-                            <div class="tk-modal-arrow-label">${arrowLabel[t.arah] || ''}</div>
                         </div>` : '';
 
-                    const aktifCls  = t.status === 'AKTIF' ? 'tk-modal-node-aktif' : '';
-                    const sisaHtml  = t.sisa_bulan !== null
-                        ? `<div style="font-size:.64rem;color:#10b981;font-weight:700;margin-top:2px;">sisa ${t.sisa_bulan} bln</div>` : '';
+                    const aktifCls = t.status === 'AKTIF' ? 'tk-modal-node-aktif' : '';
+                    const tagHtml  = t.status === 'AKTIF'
+                        ? `<div style="font-size:.58rem;font-weight:700;background:#d1fae5;color:#065f46;padding:1px 7px;border-radius:6px;text-transform:uppercase;margin-bottom:4px;">● Aktif</div>`
+                        : i === 0
+                            ? `<div style="font-size:.58rem;font-weight:700;background:#f1f5f9;color:#94a3b8;padding:1px 7px;border-radius:6px;text-transform:uppercase;margin-bottom:4px;">Awal</div>`
+                            : `<div style="font-size:.58rem;font-weight:700;background:#f1f5f9;color:#94a3b8;padding:1px 7px;border-radius:6px;text-transform:uppercase;margin-bottom:4px;">Selesai</div>`;
+
+                    const sisaHtml = t.sisa_bulan !== null
+                        ? `<div style="font-size:.64rem;color:#10b981;font-weight:700;margin-top:3px;">sisa ${t.sisa_bulan} bln</div>` : '';
 
                     return `${arrow}
-                    <div class="tk-modal-node ${nodeClass[t.arah] || ''} ${aktifCls}">
+                    <div class="tk-modal-node ${aktifCls}">
+                        ${tagHtml}
                         <div class="tk-modal-node-label">${t.singkatan}</div>
                         <div style="font-size:.7rem;color:#64748b;margin-bottom:4px;">${t.nama_ktr}</div>
-                        <div style="font-size:.64rem;color:#94a3b8;">${t.tgl_mulai}</div>
-                        <div style="font-size:.64rem;color:#94a3b8;">→ ${t.tgl_akhir}</div>
-                        <div style="font-size:.66rem;color:#475569;font-weight:700;margin-top:3px;">${t.durasi}</div>
+                        <div style="font-size:.63rem;color:#94a3b8;">${t.tgl_mulai}</div>
+                        <div style="font-size:.63rem;color:#94a3b8;">→ ${t.tgl_akhir}</div>
+                        <div style="font-size:.65rem;color:#475569;font-weight:700;margin-top:3px;">${t.durasi}</div>
                         ${sisaHtml}
                         <span class="badge mt-1 ${t.status === 'AKTIF' ? 'bg-success' : 'bg-secondary'}"
                               style="font-size:.6rem;">${t.status}</span>
@@ -1073,24 +1064,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Tabel detail
                 const stsStyle = s => s === 'AKTIF'
                     ? 'background:#d1fae5;color:#065f46;'
-                    : 'background:#fee2e2;color:#991b1b;';
-                const arahBadge = a => {
-                    const map = {
-                        upgrade:      ['bg-success', 'Upgrade'],
-                        downgrade:    ['bg-danger',  'Downgrade'],
-                        perpanjangan: ['bg-primary', 'Perpanjang'],
-                        baru:         ['bg-secondary','Awal'],
-                    };
-                    const [cls, lbl] = map[a] || ['bg-secondary', a];
-                    return `<span class="badge ${cls}" style="font-size:.65rem;">${lbl}</span>`;
-                };
+                    : 'background:#f1f5f9;color:#475569;';
 
                 document.getElementById('tkDetailBody').innerHTML = tl.map((t, i) => `
                 <tr ${t.status === 'AKTIF' ? 'style="background:#f0fdf4;"' : ''}>
                     <td class="text-center text-muted">${i + 1}</td>
-                    <td>${arahBadge(t.arah)}</td>
                     <td>
-                        <span class="badge" style="background:#e0e7ff;color:#3730a3;font-size:.72rem;font-weight:700;">${t.singkatan}</span>
+                        <span style="display:inline-block;padding:2px 8px;border-radius:5px;font-size:.72rem;font-weight:700;background:#f1f5f9;color:#1e293b;">${t.singkatan}</span>
                         <small class="text-muted d-block" style="font-size:.7rem;">${t.nama_ktr}</small>
                     </td>
                     <td style="font-size:.78rem;">${t.no_surat}</td>
@@ -1115,6 +1095,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('tkDetailContent').style.display = 'block';
             });
     });
+
 });
 </script>
 @endpush

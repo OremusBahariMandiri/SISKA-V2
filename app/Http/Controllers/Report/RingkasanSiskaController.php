@@ -220,7 +220,12 @@ class RingkasanSiskaController extends Controller
         // Scope dep yang dimunculkan di matrix
         $depsForMatrix = $filterDep
             ? collect([$filterDep])
-            : $perDepartemen->take(8)->pluck('label');
+            : Departemen::select('nama_dep', DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode'))
+            ->groupBy('nama_dep')
+            ->orderByRaw('MIN(CAST(kode_dep AS UNSIGNED)) ASC')
+            ->pluck('nama_dep')
+            ->filter(fn($nama) => $perDepartemen->pluck('label')->contains($nama))
+            ->values();
 
         // Matrix Dep × Wilayah
         foreach ($depsForMatrix as $depNama) {
@@ -263,12 +268,13 @@ class RingkasanSiskaController extends Controller
         $perusahaans       = Perusahaan::orderBy('nama_prs1')->get();
         $kontrakOptions    = KontrakKerja::orderBy('kode_ktr')->get();
         $departemenOptions = Departemen::select(
-                                'nama_dep', 'singkatan_dep',
-                                DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode')
-                            )
-                            ->groupBy('nama_dep', 'singkatan_dep')
-                            ->orderBy('min_kode')
-                            ->get();
+            'nama_dep',
+            'singkatan_dep',
+            DB::raw('MIN(CAST(kode_dep AS UNSIGNED)) as min_kode')
+        )
+            ->groupBy('nama_dep', 'singkatan_dep')
+            ->orderBy('min_kode')
+            ->get();
 
         // Wilayah Kerja options (nama unik, bukan ID)
         $wilayahKerjaOptions = WilayahKerja::select('wilayah_krj')
@@ -293,10 +299,29 @@ class RingkasanSiskaController extends Controller
         ];
 
         return view('reports.index', compact(
-            'totalKaryawan', 'statAktif', 'statNonAktif', 'statCalon', 'statLakiLaki', 'statPerempuan',
-            'perPT', 'perPusatCabang', 'perUnitKerja', 'perDepartemen', 'perJabatan', 'perBidangUsaha', 'perKontrak',
-            'depWilayahMatrix', 'depPTMatrix', 'allWilayah', 'allPT', 'depsForMatrix',
-            'perusahaans', 'kontrakOptions', 'wilayahKerjaOptions', 'areaKerjaOptions', 'departemenOptions',
+            'totalKaryawan',
+            'statAktif',
+            'statNonAktif',
+            'statCalon',
+            'statLakiLaki',
+            'statPerempuan',
+            'perPT',
+            'perPusatCabang',
+            'perUnitKerja',
+            'perDepartemen',
+            'perJabatan',
+            'perBidangUsaha',
+            'perKontrak',
+            'depWilayahMatrix',
+            'depPTMatrix',
+            'allWilayah',
+            'allPT',
+            'depsForMatrix',
+            'perusahaans',
+            'kontrakOptions',
+            'wilayahKerjaOptions',
+            'areaKerjaOptions',
+            'departemenOptions',
             'currentFilters'
         ));
     }
@@ -322,8 +347,11 @@ class RingkasanSiskaController extends Controller
         $value = $request->value;
 
         $q = DataKaryawan::with([
-            'perusahaanRelation', 'departemenRelation',
-            'wilayahKerjaRelation', 'kontrakRelation', 'unitKerjaRelation',
+            'perusahaanRelation',
+            'departemenRelation',
+            'wilayahKerjaRelation',
+            'kontrakRelation',
+            'unitKerjaRelation',
         ]);
 
         // Terapkan filter global

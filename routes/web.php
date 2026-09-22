@@ -21,6 +21,7 @@ use App\Http\Controllers\DataMaster\UserAccessController;
 use App\Http\Controllers\DataMaster\UserController;
 use App\Http\Controllers\DataMaster\WilayahKerjaController;
 use App\Http\Controllers\Report\RingkasanSiskaController;
+use App\Http\Controllers\Report\TurnoverController;
 use App\Models\DataMaster\DokumenHrd;
 use Illuminate\Support\Facades\Route;
 
@@ -297,5 +298,17 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/ringkasan-siska/jabatan/{namaDep}', [RingkasanSiskaController::class, 'jabatanByDepartemen'])
             ->name('ringkasan-siska.jabatan');
+
+        Route::get('/turnover', [TurnoverController::class, 'index'])
+            ->name('turnover.index');
+
+        Route::get('/turnover/detail', [TurnoverController::class, 'detail'])
+            ->name('turnover.detail');
+
+        Route::get('/turnover/area-by-wilker', [TurnoverController::class, 'areaByWilker'])
+            ->name('turnover.area-by-wilker');
+
+        Route::get('/turnover/chart-bulanan', [TurnoverController::class, 'chartBulanan'])
+            ->name('turnover.chart-bulanan');
     });
 });

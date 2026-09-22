@@ -35,20 +35,31 @@ class RingkasanSiskaController extends Controller
         if ($request->filter_perusahaan) $q->where('perusahaan', $request->filter_perusahaan);
         if ($request->filter_kontrak)    $q->where('sts_ktr',     $request->filter_kontrak);
 
-        // wilker menyimpan nama wilayah langsung ("JAWA TIMUR")
         if ($request->filter_wilker) {
             $q->where('wilker', $request->filter_wilker);
         }
-
-        // filter_area menyimpan ID WilayahKerja → filter unit_krj
         if ($request->filter_area) {
             $q->where('unit_krj', $request->filter_area);
         }
-
-        // Filter departemen: satu nama_dep bisa punya banyak ID (per jabatan)
         if ($request->filter_departemen) {
             $depIds = Departemen::where('nama_dep', $request->filter_departemen)->pluck('id');
             $q->whereIn('departemen', $depIds);
+        }
+
+        // ── BARU: Filter periode tanggal masuk ──────────────────────────
+        if ($request->filter_tgl_masuk_dari) {
+            $q->whereDate('tgl_masuk', '>=', $request->filter_tgl_masuk_dari);
+        }
+        if ($request->filter_tgl_masuk_sampai) {
+            $q->whereDate('tgl_masuk', '<=', $request->filter_tgl_masuk_sampai);
+        }
+
+        // ── BARU: Filter periode tanggal PHK/keluar ──────────────────────
+        if ($request->filter_tgl_phk_dari) {
+            $q->whereDate('tgl_phk', '>=', $request->filter_tgl_phk_dari);
+        }
+        if ($request->filter_tgl_phk_sampai) {
+            $q->whereDate('tgl_phk', '<=', $request->filter_tgl_phk_sampai);
         }
 
         return $q;
@@ -290,12 +301,16 @@ class RingkasanSiskaController extends Controller
         $areaKerjaOptions = $areaKerjaQuery->get();
 
         $currentFilters = [
-            'perusahaan' => $request->filter_perusahaan,
-            'wilker'     => $request->filter_wilker,
-            'area'       => $request->filter_area,
-            'status'     => $request->filter_status,
-            'kontrak'    => $request->filter_kontrak,
-            'departemen' => $request->filter_departemen,
+            'perusahaan'          => $request->filter_perusahaan,
+            'wilker'              => $request->filter_wilker,
+            'area'                => $request->filter_area,
+            'status'              => $request->filter_status,
+            'kontrak'             => $request->filter_kontrak,
+            'departemen'          => $request->filter_departemen,
+            'tgl_masuk_dari'      => $request->filter_tgl_masuk_dari,
+            'tgl_masuk_sampai'    => $request->filter_tgl_masuk_sampai,
+            'tgl_phk_dari'        => $request->filter_tgl_phk_dari,
+            'tgl_phk_sampai'      => $request->filter_tgl_phk_sampai,
         ];
 
         return view('reports.index', compact(
@@ -371,6 +386,11 @@ class RingkasanSiskaController extends Controller
             $depIds = Departemen::where('nama_dep', $request->filter_departemen)->pluck('id');
             $q->whereIn('departemen', $depIds);
         }
+
+        if ($request->filter_tgl_masuk_dari)   $q->whereDate('tgl_masuk', '>=', $request->filter_tgl_masuk_dari);
+        if ($request->filter_tgl_masuk_sampai) $q->whereDate('tgl_masuk', '<=', $request->filter_tgl_masuk_sampai);
+        if ($request->filter_tgl_phk_dari)     $q->whereDate('tgl_phk',   '>=', $request->filter_tgl_phk_dari);
+        if ($request->filter_tgl_phk_sampai)   $q->whereDate('tgl_phk',   '<=', $request->filter_tgl_phk_sampai);
 
         // Terapkan filter drill-down
         switch ($type) {

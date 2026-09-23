@@ -1725,11 +1725,11 @@
                 cornerRadius: 6,
                 callbacks: {
                     label: c => {
-                        const v = typeof c.parsed === 'object' ?
-                            (c.parsed.x ?? c.parsed.y ?? c.parsed) // x dulu untuk horizontal bar
-                            :
-                            c.parsed;
-                        return ` ${c.dataset.label !== 'Karyawan' ? c.label : c.label}: ${Number(v || 0).toLocaleString('id-ID')} karyawan`;
+                        // Untuk vertical bar: nilai ada di c.parsed.y
+                        // Untuk horizontal bar (indexAxis:'y'): nilai ada di c.parsed.x
+                        const isHoriz = c.chart.options.indexAxis === 'y';
+                        const v = isHoriz ? c.parsed.x : c.parsed.y;
+                        return ` ${Number(v || 0).toLocaleString('id-ID')} karyawan`;
                     }
                 }
             };

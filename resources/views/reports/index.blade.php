@@ -33,10 +33,10 @@
             data-filter-tgl-phk-dari="{{ $currentFilters['tgl_phk_dari'] }}"
             data-filter-tgl-phk-sampai="{{ $currentFilters['tgl_phk_sampai'] }}"
             data-filter-include-top-mgmt="{{ $currentFilters['include_top_mgmt'] }}">
-            <div class="card-header d-flex justify-content-between align-items-center"
+            <div class="card-header bg-primary d-flex justify-content-between align-items-center"
                 style="background:#f8fafc;border-bottom:1px solid #e2e8f0;border-left:4px solid #1a6fcf;">
-                <span class="fw-semibold" style="color:#1e293b;font-size:.875rem;">
-                    <i class="fas fa-sliders-h me-2" style="color:#1a6fcf;"></i>Filter Data
+                <span class="fw-semibold" style="color:#ffffff;font-size:.875rem;">
+                    <i class="fas fa-sliders-h me-2" style="color:#ffffff;"></i>Filter Data
                 </span>
             </div>
             <div class="collapse show" id="filterCollapse">
@@ -125,8 +125,7 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label siska-label">
-                                    <i class="fas fa-crown me-1" style="color:#b45309;"></i>Top Manajement
+                                <label class="form-label siska-label">Top Manajement
                                 </label>
                                 <div class="siska-topmgmt-toggle">
                                     <input type="hidden" name="filter_include_top_mgmt" value="0">
@@ -1263,7 +1262,7 @@
 
         /* Tables */
         .siska-table-mini {
-            max-height: 200px;
+            max-height: none;
             overflow-y: auto;
         }
 
@@ -1726,12 +1725,11 @@
                 cornerRadius: 6,
                 callbacks: {
                     label: c => {
-                        // Bar chart: c.parsed.y (vertical) or c.parsed.x (horizontal)
-                        // Pie/doughnut: c.parsed
                         const v = typeof c.parsed === 'object' ?
-                            (c.parsed.y ?? c.parsed.x ?? c.parsed) :
+                            (c.parsed.x ?? c.parsed.y ?? c.parsed) // x dulu untuk horizontal bar
+                            :
                             c.parsed;
-                        return ` ${c.label}: ${Number(v || 0).toLocaleString('id-ID')} karyawan`;
+                        return ` ${c.dataset.label !== 'Karyawan' ? c.label : c.label}: ${Number(v || 0).toLocaleString('id-ID')} karyawan`;
                     }
                 }
             };
